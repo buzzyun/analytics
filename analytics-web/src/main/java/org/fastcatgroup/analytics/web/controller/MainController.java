@@ -71,7 +71,7 @@ public class MainController {
 //		}
 
 		ModelAndView mav = new ModelAndView();
-		mav.setViewName("login");
+		mav.setViewName("redirect:main/start.html");
 		return mav;
 
 	}

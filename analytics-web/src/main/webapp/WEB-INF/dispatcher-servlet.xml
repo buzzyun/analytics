@@ -11,9 +11,9 @@
    http://www.springframework.org/schema/mvc 
    http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd">
 
-	<!-- <context:component-scan base-package="org.fastcatsearch.console.web.controller" />
+	<context:component-scan base-package="org.fastcatgroup.analytics.web.controller" />
 
-	<bean id="authMainInterceptor" class="org.fastcatsearch.console.web.AuthMainInterceptor" />
+	<!-- <bean id="authMainInterceptor" class="org.fastcatsearch.console.web.AuthMainInterceptor" />
 	<bean id="authManagerInterceptor" class="org.fastcatsearch.console.web.AuthManagerInterceptor" />
 
 	<mvc:interceptors>

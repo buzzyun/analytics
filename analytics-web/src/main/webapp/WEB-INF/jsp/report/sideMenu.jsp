@@ -28,45 +28,98 @@
 		<!--=== Navigation ===-->
 		<ul id="nav">
 			<li class=""><a href="<c:url value="/report/dashboard.html"/>"> <i
-					class="icon-edit"></i> Dashboard 
+					class="icon-dashboard"></i> Dashboard 
 			</a>
 			</li>
 			<li class=""><a href="javascript:void(0);"> <i
-					class="icon-edit"></i> 검색추이 <span
-					class="label label-info pull-right">3</span>
+					class="icon-bar-chart"></i> 검색순위 
 			</a>
 				<ul class="sub-menu">
 					<li class=""><a
-						href="<c:url value="/report/dictionary/"/>/index.html">
-							<i class="icon-angle-right"></i> Keyword
+						href="<c:url value="/report/searchKeywordRank.html"/>">
+							<i class="icon-angle-right"></i> 검색어순위
 					</a></li> 
 					<li class=""><a
-						href="<c:url value="/report/dictionary/"/>/index.html">
-							<i class="icon-angle-right"></i> My Keyword
+						href="<c:url value="/report/myKeywordRank.html"/>">
+							<i class="icon-angle-right"></i> 관심어순위
 					</a></li> 
 					<li class=""><a
-						href="<c:url value="/report/dictionary/"/>/index.html">
-							<i class="icon-angle-right"></i> Hot Keyword
+						href="<c:url value="/report/hotKeywordRank.html"/>">
+							<i class="icon-angle-right"></i> 급상승 검색어 순위
+					</a></li> 
+					<li class=""><a
+						href="<c:url value="/report/hotKeywordRank.html"/>">
+							<i class="icon-angle-right"></i> 급하강 검색어 순위
+					</a></li>
+					<li class=""><a
+						href="<c:url value="/report/hotKeywordRank.html"/>">
+							<i class="icon-angle-right"></i> 결과부족 검색어 순위
+					</a></li>
+				</ul>
+			</li>
+			<li class=""><a href="javascript:void(0);"> <i
+					class="icon-bar-chart"></i> 검색추이 
+			</a>
+				<ul class="sub-menu">
+					<li class=""><a
+						href="<c:url value="/report/searchKeyword.html"/>">
+							<i class="icon-angle-right"></i> 검색어
+					</a></li> 
+					<li class=""><a
+						href="<c:url value="/report/myKeyword.html"/>">
+							<i class="icon-angle-right"></i> 관심어
+					</a></li> 
+					<li class=""><a
+						href="<c:url value="/report/hitCount.html"/>">
+							<i class="icon-angle-right"></i> 검색횟수
+					</a></li> 
+					<li class=""><a
+						href="<c:url value="/report/responseTime.html"/>">
+							<i class="icon-angle-right"></i> 응답시간
 					</a></li> 
 				</ul>
 			</li>
 			
 			<li class=""><a
-				href="javascript:void(0);"> <i class="icon-desktop"></i>
-					검색비율 <span class="label label-info pull-right">3</span>
+				href="javascript:void(0);"> <i class="icon-bar-chart"></i>
+					유형별검색추이
 			</a>
 				<ul class="sub-menu">
 					<li class=""><a
-						href="<c:url value="/report/dictionary/"/>/index.html">
+						href="<c:url value="/report/typeView.html"/>">
 							<i class="icon-angle-right"></i> 정렬별
 					</a></li> 
 					<li class=""><a
-						href="<c:url value="/report/dictionary/"/>/index.html">
+						href="<c:url value="/report/typeView.html"/>">
 							<i class="icon-angle-right"></i> 연령별
 					</a></li> 
 					<li class=""><a
-						href="<c:url value="/report/dictionary/"/>/index.html">
+						href="<c:url value="/report/typeView.html"/>">
 							<i class="icon-angle-right"></i> 서비스별
+					</a></li> 
+					<li class=""><a
+						href="<c:url value="/report/typeView.html"/>">
+							<i class="icon-angle-right"></i> 로그인별
+					</a></li> 
+					<li class=""><a
+						href="<c:url value="/report/typeView.html"/>">
+							<i class="icon-angle-right"></i> 성별
+					</a></li>
+				</ul>
+			</li>
+			
+			<li class=""><a
+				href="javascript:void(0);"> <i class="icon-bar-chart"></i>
+					클릭유입률
+			</a>
+				<ul class="sub-menu">
+					<li class=""><a
+						href="<c:url value="/report/ctr.html"/>">
+							<i class="icon-angle-right"></i> 전체
+					</a></li> 
+					<li class=""><a
+						href="<c:url value="/report/ctrKeyword.html"/>">
+							<i class="icon-angle-right"></i> 키워드
 					</a></li> 
 				</ul>
 			</li>

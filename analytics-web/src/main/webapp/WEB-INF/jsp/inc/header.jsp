@@ -39,7 +39,8 @@
 	
 <link rel="stylesheet"
 	href="${contextPath}/resources/assets/css/console.css">
-	
+<link rel="stylesheet"
+	href="${contextPath}/resources/assets/css/todc-bootstrap.css">	
 <!--=== JavaScript ===-->
 
 <script type="text/javascript" src="${contextPath}/resources/assets/js/libs/jquery-1.10.2.min.js"></script>
@@ -86,8 +87,11 @@
 	src="${contextPath}/resources/plugins/flot/jquery.flot.resize.min.js"></script>
 <script type="text/javascript"
 	src="${contextPath}/resources/plugins/flot/jquery.flot.time.min.js"></script>
+	<script type="text/javascript"
+	src="${contextPath}/resources/plugins/flot/jquery.flot.pie.min.js"></script>
 <script type="text/javascript"
 	src="${contextPath}/resources/plugins/flot/jquery.flot.growraf.min.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/plugins/flot/jquery.flot.orderBars.min.js"></script>
 <script type="text/javascript"
 	src="${contextPath}/resources/plugins/easy-pie-chart/jquery.easy-pie-chart.min.js"></script>
 
@@ -114,7 +118,6 @@
 
 <script type="text/javascript" src="${contextPath}/resources/assets/js/jquery.form.js"></script>
 <script type="text/javascript" src="${contextPath}/resources/assets/js/spin.min.js"></script>
-
 
 <!-- App -->
 <script type="text/javascript" src="${contextPath}/resources/assets/js/app.js"></script>

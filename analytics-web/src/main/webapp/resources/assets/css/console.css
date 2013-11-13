@@ -66,6 +66,9 @@ z-index: 2;
 	border: 1px solid #ccc;
 }
 
+.select_flat-sm {height: 27px; padding: 3px 8px}
+	
+
 .text-danger-imp{
 	color: #b94a48 !important;	
 }
@@ -99,3 +102,12 @@ z-index: 2;
   -moz-border-radius: 10px;
   border-radius: 10px;
 }
+
+.row-bg-sm {
+  padding: 10px 10px;
+  margin-bottom : 20px !important;
+}
+
+.page-title-sm { padding: 10px 0 0 0; }
+
+.bottom-space { padding-bottom: 10px;}

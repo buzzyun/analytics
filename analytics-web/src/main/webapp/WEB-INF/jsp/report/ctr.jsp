@@ -254,16 +254,6 @@ $(document).ready(function() {
 					
 					<div class="col-md-12 bottom-space">
 						<form class="form-inline" role="form">
-							<select class="select_flat select_flat-sm">
-								<option>:: SITE ::</option>
-								<option>통합검색</option>
-								<option>모바일</option>
-							</select> 
-							<select class="select_flat select_flat-sm fcol2">
-								<option>:: CATEGORY ::</option>
-								<option>PC</option>
-								<option>가전</option>
-							</select> 
 							<input type="button" class="btn btn-sm btn-warning" value="DAY"> 
 							<input type="button" class="btn btn-sm btn-default" value="WEEK">
 							<input
@@ -311,6 +301,7 @@ $(document).ready(function() {
 							<div class="widget-content">
 								<ul class="stats">
 									<!-- .no-dividers -->
+									<li><strong>1,520,596</strong> <small>검색횟수</small></li>
 									<li><strong>172,055</strong> <small>검색PV</small></li>
 									<li class="text-success"><strong>86,372</strong> <small>유입건</small></li>
 									<li class="text-primary"><strong>50.20%</strong> <small>유입률</small></li>

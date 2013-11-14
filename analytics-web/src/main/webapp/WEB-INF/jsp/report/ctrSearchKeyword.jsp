@@ -73,42 +73,14 @@
 				
 				
 				<div class="row">
-					<div class="col-md-2">
+					<div class="col-md-12">
 						<div class="widget box">
-							<div class="widget-header">
-								<h4>검색횟수</h4>
-							</div>
 							<div class="widget-content">
 								<ul class="stats">
-									<!-- .no-dividers -->
+									<li><strong>온수매트</strong> <small>키워드</small></li>
 									<li><strong>1,520,596</strong> <small>검색횟수</small></li>
-								</ul>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-5">
-						<div class="widget box">
-							<div class="widget-header">
-								<h4>통합검색 유입률</h4>
-							</div>
-							<div class="widget-content">
-								<ul class="stats">
-									<!-- .no-dividers -->
-									<li><strong>172,055</strong> <small>검색PV</small></li>
 									<li><strong>86,372</strong> <small>유입건</small></li>
 									<li><strong>50.20%</strong> <small>유입률</small></li>
-								</ul>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-5">
-						<div class="widget box">
-							<div class="widget-header">
-								<h4>통합검색 유입건</h4>
-							</div>
-							<div class="widget-content">
-								<ul class="stats">
-									<!-- .no-dividers -->
 									<li><strong>76,086</strong> <small>상품블로그</small></li>
 									<li><strong>7,257</strong> <small>사러가기</small></li>
 									<li><strong>3,029</strong> <small>상품리스트</small></li>
@@ -116,6 +88,7 @@
 							</div>
 						</div>
 					</div>
+					
 				</div>
 				
 				<div class="row">
@@ -131,46 +104,36 @@
 										<tr>
 											<th>#</th>
 											<th>키워드</th>
-											<th>검색횟수</th>
-											<th>총유입건</th>
-											<th>유입률</th>
 											<th>블로그</th>
 											<th>사러가기</th>
-											<th>리스트</th>
 										</tr>
 									</thead>
 									<tbody>
 										<tr>
 											<td>1</td>
-											<td>온수매트</td>
-											<td>18,543</td>
-											<td>7,688</td>
-											<td>41.42</td>
-											<td>7,651</td>
-											<td>37</td>
+											<td>일월 순면 황토 온수매트 2014년형</td>
+											<td>63</td>
 											<td>0</td>
 										</tr>
 										<tr>
 											<td>2</td>
-											<td>노트북</td>
-											<td>48,344</td>
-											<td>9,788</td>
-											<td>32.32</td>
-											<td>8,651</td>
-											<td>12</td>
+											<td>삼진 웰퍼스 스마트 온수매트 극세사 2014년형</td>
+											<td>59</td>
+											<td>0</td>
+										</tr>
+										<tr>
+											<td>3</td>
+											<td>파크론 옐로우베어 온수 놀이방매트</td>
+											<td>28</td>
 											<td>0</td>
 										</tr>
 									<%
-										for(int i =2;i< 15; i++){
+										for(int i =3;i< 12; i++){
 									%>
 										<tr>
 											<td><%=i+1 %></td>
-											<td>마우스</td>
-											<td>9,234</td>
-											<td>3,234</td>
-											<td>23.23</td>
-											<td>2,654</td>
-											<td>32</td>
+											<td>동양이지텍 스팀보이 침대용 순면 온수매트</td>
+											<td><%=40-i %></td>
 											<td>0</td>
 										</tr>
 									<%

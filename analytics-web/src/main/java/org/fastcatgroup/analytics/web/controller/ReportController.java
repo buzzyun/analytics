@@ -113,4 +113,13 @@ public class ReportController {
 		mav.setViewName("report/ctrKeyword");
 		return mav;
 	}
+	
+	//ctr 키워드 검색
+	@RequestMapping("/ctrSearchKeyword")
+	public ModelAndView ctrSearchKeyword() {
+
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("report/ctrSearchKeyword");
+		return mav;
+	}
 }

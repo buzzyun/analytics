@@ -17,8 +17,8 @@ $(document).ready(
 	var d11 = [];
 	var d22 = [];
 	for (var i = 0; i < 10; i++){
-		d11.push([i, parseInt(Math.random() * 30)]);
-		d22.push([i, parseInt(Math.random() * 30)]);
+		d11.push([i, parseInt((10-i)*100) + Math.random() * 100]);
+		d22.push([i, parseInt((10-i)*100) + Math.random() * 100]);
 	}
 
 	var ds1 = new Array();
@@ -178,7 +178,7 @@ $(document).ready(
 												<td>노트북</td>
 												<td><%=i*1000+ i*7 + (i*100 % 13) %></td>
 												<td>+1</td>
-												<td>+100</td>
+												<td>+<%=(30 - i) * 10 %></td>
 											</tr>
 											<%
 											}

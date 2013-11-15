@@ -8,7 +8,61 @@
 <html>
 <head>
 <c:import url="${ROOT_PATH}/inc/header.jsp" />
+<script>
+	
+$(document).ready(function(){
+		// Sample Data
+		var d11 = [];
+		var d22 = [];
+		for (var i = 0; i < 10; i++){
+			d11.push([i, parseInt((10-i)*100) + Math.random() * 100]);
+			d22.push([i, parseInt((10-i)*100) + Math.random() * 100]);
+		}
 
+		var ds1 = new Array();
+
+		ds1.push({
+			label: "Current",
+			data: d11,
+			bars: {
+				show: true,
+				barWidth: 0.2,
+				order: 1
+			}
+		});
+		ds1.push({
+			label: "Previous",
+			data: d22,
+			bars: {
+				show: true,
+				barWidth: 0.2,
+				order: 2
+			}
+		});
+
+		// Initialize Chart
+		$.plot("#chart_keyword_rank1", ds1, $.extend(true, {}, Plugins.getFlotDefaults(), {
+			series: {
+				lines: { show: false },
+				points: { show: false },
+				bars: {
+					fillColor: { colors: [ { opacity: 1 }, { opacity: 0.7 } ] },
+					
+				}
+			},
+			xaxis: {ticks: [[0,'노트북'],[1,'CPU'],[2,'메모리'],[3,'마우스'],[4,'울트라롱핸드폰']
+					,[5,'모바일'],[6,'마우스패드'],[7,'울트라북'],[8,'청바지'],[9,'핸드폰케이스']]},
+			grid:{
+				hoverable: true
+			},
+			tooltip: true,
+			tooltipOpts: {
+				content: '%y'
+			}
+			
+		}));
+});
+</script>
 
 </head>
 <body>
@@ -145,59 +199,3 @@
 	</div>
 </body>
 </html>
-<script>
-	
-
-	// Sample Data
-	var d11 = [];
-	var d22 = [];
-	for (var i = 0; i < 10; i++){
-		d11.push([i, parseInt(Math.random() * 30)]);
-		d22.push([i, parseInt(Math.random() * 30)]);
-	}
-
-	var ds1 = new Array();
-
-	ds1.push({
-		label: "Current",
-		data: d11,
-		bars: {
-			show: true,
-			barWidth: 0.2,
-			order: 1
-		}
-	});
-	ds1.push({
-		label: "Previous",
-		data: d22,
-		bars: {
-			show: true,
-			barWidth: 0.2,
-			order: 2
-		}
-	});
-
-	// Initialize Chart
-	$.plot("#chart_keyword_rank1", ds1, $.extend(true, {}, Plugins.getFlotDefaults(), {
-		series: {
-			lines: { show: false },
-			points: { show: false },
-			bars: {
-				fillColor: { colors: [ { opacity: 1 }, { opacity: 0.7 } ] },
-				
-			}
-		},
-		xaxis: {ticks: [[0,'노트북'],[1,'CPU'],[2,'메모리'],[3,'마우스'],[4,'울트라롱핸드폰']
-				,[5,'모바일'],[6,'마우스패드'],[7,'울트라북'],[8,'청바지'],[9,'핸드폰케이스']]},
-		grid:{
-			hoverable: true
-		},
-		tooltip: true,
-		tooltipOpts: {
-			content: '%y'
-		}
-		
-	}));
-
-	
-</script>

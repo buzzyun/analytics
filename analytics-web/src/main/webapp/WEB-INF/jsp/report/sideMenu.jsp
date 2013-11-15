@@ -44,6 +44,10 @@
 							<i class="icon-angle-right"></i> 관심어순위
 					</a></li> 
 					<li class=""><a
+						href="<c:url value="/report/newKeywordRank.html"/>">
+							<i class="icon-angle-right"></i> 신규 검색어 순위
+					</a></li>
+					<li class=""><a
 						href="<c:url value="/report/hotKeywordRank.html"/>">
 							<i class="icon-angle-right"></i> 급상승 검색어 순위
 					</a></li> 
@@ -85,6 +89,14 @@
 					유형별검색추이
 			</a>
 				<ul class="sub-menu">
+					<li class=""><a
+						href="<c:url value="/report/typeViewCategory.html"/>">
+							<i class="icon-angle-right"></i> 카테고리별
+					</a></li>
+					<li class=""><a
+						href="<c:url value="/report/typeView.html"/>">
+							<i class="icon-angle-right"></i> 페이지번호별
+					</a></li> 
 					<li class=""><a
 						href="<c:url value="/report/typeView.html"/>">
 							<i class="icon-angle-right"></i> 정렬별

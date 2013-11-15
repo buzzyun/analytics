@@ -87,12 +87,32 @@ public class ReportController {
 		return mav;
 	}
 	
+	//신규검색어순위
+	@RequestMapping("/newKeywordRank")
+	public ModelAndView newKeywordRank() {
+
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("report/newKeywordRank");
+		return mav;
+	}
+		
+		
+	
 	//유형별보기.
 	@RequestMapping("/typeView")
 	public ModelAndView typeView() {
 
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/typeView");
+		return mav;
+	}
+	
+	//카테고리별 비율보기.
+	@RequestMapping("/typeViewCategory")
+	public ModelAndView typeViewCategory() {
+
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("report/typeViewCategory");
 		return mav;
 	}
 	

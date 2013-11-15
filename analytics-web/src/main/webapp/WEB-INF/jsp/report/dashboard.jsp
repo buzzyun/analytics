@@ -147,11 +147,11 @@
 			
 			// 서비스별 Data
 			var service_rate_data = [];
-			service_rate_data[0] = { label: "통합검색", data: 50 };
-			service_rate_data[1] = { label: "인기검색어", data: 25 };
-			service_rate_data[2] = { label: "자동완성", data: 20 };
-			service_rate_data[3] = { label: "추천어", data: 5 };
-			$.plot("#chart_service_rate", service_rate_data, $.extend(true, {}, Plugins.getFlotDefaults(), {
+			service_rate_data[0] = { label: "컴퓨터", data: 50 };
+			service_rate_data[1] = { label: "노트북", data: 25 };
+			service_rate_data[2] = { label: "가전", data: 20 };
+			service_rate_data[3] = { label: "주변기기", data: 5 };
+			$.plot("#chart_category_rate", service_rate_data, $.extend(true, {}, Plugins.getFlotDefaults(), {
 				series: {
 					pie: {
 						show: true,
@@ -173,10 +173,11 @@
 					}
 				}
 			}));
-			// 로그인별 Data
+			// 정렬별 Data
 			var login_rate_data = [];
-			login_rate_data[0] = { label: "로그인", data: 50 };
-			login_rate_data[1] = { label: "비로그인", data: 50 };
+			login_rate_data[0] = { label: "인기도순", data: 50 };
+			login_rate_data[1] = { label: "정확도순", data: 30 };
+			login_rate_data[1] = { label: "낮은가격순", data: 20 };
 			$.plot("#chart_login_rate", login_rate_data, $.extend(true, {}, Plugins.getFlotDefaults(), {
 				series: {
 					pie: {
@@ -294,36 +295,7 @@
 
 					</div>
 				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<div class="widget box">
-							<div class="widget-header">
-								<h4>클릭유입률</h4>
-							</div>
-							<div class="widget-content">
-								<div id="chart_dashboard_ctr" class="chart"></div>
-							</div>
-							<div class="divider"></div>
-							<div class="widget-content">
-								<ul class="stats">
-									<!-- .no-dividers -->
-									<li><strong>172,055</strong> <small>검색PV</small></li>
-									<li class="text-success"><strong>86,372</strong> <small>유입건</small></li>
-									<li class="text-primary"><strong>50.20%</strong> <small>유입률</small></li>
-								</ul>
-							</div>
-							<div class="divider"></div>
-							<div class="widget-content">
-								<ul class="stats">
-									<!-- .no-dividers -->
-									<li class="light"><strong>76,086</strong> <small>상품블로그</small></li>
-									<li class="light"><strong>7,257</strong> <small>사러가기</small></li>
-									<li class="light"><strong>3,029</strong> <small>상품리스트</small></li>
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
+				
 				<div class="row">
 					<div class="col-md-12">
 						<div class="widget box">
@@ -597,10 +569,10 @@
 					<div class="col-md-4">
 						<div class="widget box">
 							<div class="widget-header">
-								<h4>서비스별 비율</h4>
+								<h4>카테고리별 비율</h4>
 							</div>
 							<div class="widget-content">
-								<div id="chart_service_rate" class="chart"></div>
+								<div id="chart_category_rate" class="chart"></div>
 							</div>
 						</div>
 					</div>
@@ -629,6 +601,40 @@
 					
 				</div>
 				
+				
+				<!--  -->
+				
+				
+				<div class="row">
+					<div class="col-md-12">
+						<div class="widget box">
+							<div class="widget-header">
+								<h4>클릭유입률</h4>
+							</div>
+							<div class="widget-content">
+								<div id="chart_dashboard_ctr" class="chart"></div>
+							</div>
+							<div class="divider"></div>
+							<div class="widget-content">
+								<ul class="stats">
+									<!-- .no-dividers -->
+									<li><strong>172,055</strong> <small>검색PV</small></li>
+									<li class="text-success"><strong>86,372</strong> <small>유입건</small></li>
+									<li class="text-primary"><strong>50.20%</strong> <small>유입률</small></li>
+								</ul>
+							</div>
+							<div class="divider"></div>
+							<div class="widget-content">
+								<ul class="stats">
+									<!-- .no-dividers -->
+									<li class="light"><strong>76,086</strong> <small>상품블로그</small></li>
+									<li class="light"><strong>7,257</strong> <small>사러가기</small></li>
+									<li class="light"><strong>3,029</strong> <small>상품리스트</small></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

@@ -919,9 +919,9 @@ span.red {
   background: #f9f9f9;
 }
 #sidebar ul#nav ul.sub-menu li:first-child > a {
-  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4) inset;
-  -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4) inset;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4) inset;
+  -webkit-box-shadow: 0 2px 0px rgba(0, 0, 0, 0.1) inset;
+  -moz-box-shadow: 0 2px 0px rgba(0, 0, 0, 0.1) inset;
+  box-shadow: 0 2px 0px rgba(0, 0, 0, 0.1) inset;
 }
 #sidebar ul#nav ul.sub-menu ul.sub-menu {
   margin: 5px;

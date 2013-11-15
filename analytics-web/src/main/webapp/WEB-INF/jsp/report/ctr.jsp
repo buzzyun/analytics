@@ -300,7 +300,6 @@ $(document).ready(function() {
 							<div class="divider"></div>
 							<div class="widget-content">
 								<ul class="stats">
-									<!-- .no-dividers -->
 									<li><strong>1,520,596</strong> <small>검색횟수</small></li>
 									<li><strong>172,055</strong> <small>검색PV</small></li>
 									<li class="text-success"><strong>86,372</strong> <small>유입건</small></li>
@@ -323,28 +322,36 @@ $(document).ready(function() {
 							<div class="divider"></div>
 							<div class="widget-content">
 								<ul class="stats">
-									<!-- .no-dividers -->
+									<li class="text-success"><strong>86,372</strong> <small>유입건</small></li>
 									<li><strong>76,086</strong> <small>상품블로그</small></li>
 									<li><strong>7,257</strong> <small>사러가기</small></li>
 									<li><strong>3,029</strong> <small>상품리스트</small></li>
-									<li><strong>6,086</strong> <small>연관검색</small></li>
+									
 								</ul>
 							</div>
-							<div class="divider"></div>
-							<div class="widget-content">
-								<ul class="stats">
-									<!-- .no-dividers -->
-									<li><strong>3,257</strong> <small>자동완성</small></li>
-									<li><strong>1,029</strong> <small>추천검색</small></li>
-									<li><strong>1,000</strong> <small>바로가기</small></li>
-									<li><strong>8,000</strong> <small>인기검색</small></li>
-								</ul>
-							</div>
+							
 						</div>
 					</div>
 				</div>
-
-
+				
+				<div class="row">
+					<div class="col-md-12">	
+						<div class="widget box">
+						<div class="widget-content">
+							<ul class="stats">
+								<li><strong>6,086</strong> <small>연관검색</small></li>
+								<li><strong>3,257</strong> <small>자동완성</small></li>
+								<li><strong>1,029</strong> <small>추천검색</small></li>
+								<li><strong>1,000</strong> <small>바로가기</small></li>
+								<li><strong>8,000</strong> <small>인기검색</small></li>
+								<li><strong>1,200</strong> <small>ETC</small></li>
+							</ul>
+						</div>
+						</div>
+					</div>
+				</div>
+				
+				
 			</div>
 		</div>
 	</div>

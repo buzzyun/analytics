@@ -117,8 +117,9 @@
 								<option>:: CATEGORY ::</option>
 								<option>PC</option>
 								<option>가전</option>
-							</select> 
-							<input type="button" class="btn btn-sm btn-warning" value="DAY"> 
+							</select>
+							<input type="button" class="btn btn-sm btn-warning" value="TIME">  
+							<input type="button" class="btn btn-sm btn-default" value="DAY"> 
 							<input type="button" class="btn btn-sm btn-default" value="WEEK">
 							<input
 								type="button" class="btn btn-sm btn-default" value="MONTH">
@@ -138,7 +139,7 @@
 						<div class="widget">
 							<div class="widget-header">
 								<h4>
-									<i class="icon-calendar"></i> Period : 2013.10.10 - 2013.10.17
+									<i class="icon-calendar"></i> Period : 2013.10.10
 								</h4>
 								<!-- <div class="toolbar no-padding">
 									<div class="btn-group">

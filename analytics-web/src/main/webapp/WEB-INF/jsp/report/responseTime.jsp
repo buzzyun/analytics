@@ -111,8 +111,9 @@ $(document).ready(function(){
 								<option>:: CATEGORY ::</option>
 								<option>PC</option>
 								<option>가전</option>
-							</select> 
-							<input type="button" class="btn btn-sm btn-warning" value="DAY"> 
+							</select>
+							<input type="button" class="btn btn-sm btn-warning" value="Time">  
+							<input type="button" class="btn btn-sm btn-default" value="DAY"> 
 							<input type="button" class="btn btn-sm btn-default" value="WEEK">
 							<input
 								type="button" class="btn btn-sm btn-default" value="MONTH">

@@ -816,10 +816,10 @@ span.red {
 
 }
 #sidebar ul#nav > li.current > a {
-  border-right: 10px solid #668eb0;
+  border-right: 3px solid #668eb0;
 }
 #sidebar ul#nav > li.current > a > .arrow {
-  right: -3px !important;
+  right: 7px !important;
 }
 #sidebar ul#nav li {
   display: block;

@@ -61,7 +61,48 @@ $(document).ready(function(){
 			}
 			
 		}));
-});
+		
+		var dp = $("#datepicking").datepicker({
+			format: "yyyy.mm.dd"
+		}).on('changeDate', function(ev) {
+			dp.datepicker('hide');		
+		});
+		var dp2 = $("#datepicking2").datepicker({
+			format: "yyyy.mm",
+			viewMode: 1,
+			minViewMode: 1
+		}).on('changeDate', function(ev) {
+			dp2.datepicker('hide');		
+		});
+		var dp3 = $("#datepicking3").datepicker({
+			format: "yyyy.mm",
+			viewMode: 2,
+			minViewMode: 2
+		}).on('changeDate', function(ev) {
+			dp3.datepicker('hide');		
+		});
+		
+		var nowTemp = new Date();
+		var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+	
+		var checkin = $('#dpd1').datepicker({
+			format : "yyyy.mm.dd"
+		}).on('changeDate', function(ev) {
+			if (ev.date.valueOf() > checkout.date.valueOf()) {
+				var newDate = new Date(ev.date)
+				newDate.setDate(newDate.getDate() + 1);
+				checkout.setValue(newDate);
+			}
+			checkin.hide();
+			$('#dpd2')[0].focus();
+		}).data('datepicker');
+
+		var checkout = $('#dpd2').datepicker({
+			format : "yyyy.mm.dd"
+		}).on('changeDate', function(ev) {
+			checkout.hide();
+		}).data('datepicker');
+	});
 </script>
 
 </head>
@@ -121,10 +162,17 @@ $(document).ready(function(){
 								type="button" class="btn btn-sm btn-default" value="MONTH">
 							<input type="button" class="btn btn-sm btn-default" value="YEAR">
 							
-							<button class="btn btn-sm range">
+							<!-- <button class="btn btn-sm range">
 								<i class="icon-calendar"></i>
 								<span></span> <i class="icon-angle-down"></i>
-							</button>
+							</button> -->
+							
+							<input class="form-control fcol1-2 input-sm" id="datepicking" size="16" type="text" value="2013.12.25" >
+							<input class="form-control fcol1-2 input-sm" id="datepicking2" size="16" type="text" value="2013.12" >
+							<input class="form-control fcol1-2 input-sm" id="datepicking3" size="16" type="text" value="" >
+							
+							<input type="text" class="form-control fcol1-2 input-sm" value="" id="dpd1">~<input type="text" class="form-control fcol1-2 input-sm" value="" id="dpd2">
+							
 						</form>
 					</div>
 					<div class="col-md-12">

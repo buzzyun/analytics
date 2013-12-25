@@ -87,20 +87,18 @@
 	src="${contextPath}/resources/plugins/flot/jquery.flot.resize.min.js"></script>
 <script type="text/javascript"
 	src="${contextPath}/resources/plugins/flot/jquery.flot.time.min.js"></script>
-	<script type="text/javascript"
-	src="${contextPath}/resources/plugins/flot/jquery.flot.pie.min.js"></script>
 <script type="text/javascript"
 	src="${contextPath}/resources/plugins/flot/jquery.flot.growraf.min.js"></script>
-<script type="text/javascript" src="${contextPath}/resources/plugins/flot/jquery.flot.orderBars.min.js"></script>
 <script type="text/javascript"
 	src="${contextPath}/resources/plugins/easy-pie-chart/jquery.easy-pie-chart.min.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/plugins/flot/jquery.flot.pie.min.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/plugins/flot/jquery.flot.orderBars.min.js"></script>
 
-<script type="text/javascript"
-	src="${contextPath}/resources/plugins/daterangepicker/moment.min.js"></script>
-<script type="text/javascript"
-	src="${contextPath}/resources/plugins/daterangepicker/daterangepicker.js"></script>
-<script type="text/javascript"
-	src="${contextPath}/resources/plugins/blockui/jquery.blockUI.min.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/plugins/daterangepicker/moment.min.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/plugins/daterangepicker/daterangepicker.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/plugins/pickadate/picker.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/plugins/pickadate/picker.date.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/plugins/blockui/jquery.blockUI.min.js"></script>
 
 <script type="text/javascript"
 	src="${contextPath}/resources/plugins/fullcalendar/fullcalendar.min.js"></script>
@@ -111,8 +109,8 @@
 <script type="text/javascript" src="${contextPath}/resources/plugins/noty/layouts/topRight.js"></script>
 <script type="text/javascript" src="${contextPath}/resources/plugins/noty/themes/default.js"></script>
 
+<script type="text/javascript" src="${contextPath}/resources/plugins/select2/select2.min.js"></script> <!-- Styled select boxes -->
 <!-- Forms -->
-<script type="text/javascript" src="${contextPath}/resources/plugins/uniform/jquery.uniform.min.js"></script>
 <script type="text/javascript" src="${contextPath}/resources/plugins/validation/jquery.validate.min.js"></script>
 
 

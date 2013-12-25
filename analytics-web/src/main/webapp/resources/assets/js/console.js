@@ -57,7 +57,7 @@ var CONTEXT = /(\/[^\/]+)\//.exec(window.location.pathname)[1];
 var PROXY_REQUEST_URI = window.location.protocol + "//" + window.location.host
 		+ CONTEXT+"/main/request.html";
 
-function requestProxy(methodType, data, resultType, successCallback, failCallback){
+function requestProxy(methodType, data, resultType, successCallback, failCallback, completeCallback){
 	
 	$.ajax({
 		url : PROXY_REQUEST_URI,
@@ -65,7 +65,8 @@ function requestProxy(methodType, data, resultType, successCallback, failCallbac
 		data : data,
 		dataType : resultType,
 		success: successCallback,
-		fail: failCallback
+		fail: failCallback,
+		complete: completeCallback 
 	});
 }
 
@@ -84,6 +85,7 @@ function runIndexing(collectionId, indexingType) {
 		dataType : "json"
 
 	}).done(function(msg) {
+		noty({text: collectionId+ " " + indexingType + " Indexing Running.", type: "success", layout:"topRight", timeout: 3000});
 	}).fail(function(jqXHR, textStatus, error) {
 		alert("Request failed: " + jqXHR.responseText);
 	}).always(function() {
@@ -96,16 +98,43 @@ function runFullIndexing(collectionId) {
 function runAddIndexing(collectionId) {
 	runIndexing(collectionId, "add");
 }
+function runDocumentFullIndexing(collectionId) {
+	runIndexing(collectionId, "full/document-store");
+}
 
+function runIndexBuildFullIndexing(collectionId) {
+	runIndexing(collectionId, "full/index-build");
+}
 function stopIndexing(collectionId) {
-	
+	$.ajax({
+		url : PROXY_REQUEST_URI,
+		type : "POST",
+		data : {
+			uri : "/indexing/stop",
+			collectionId : collectionId
+		},
+		dataType : "json"
+
+	}).done(function(result) {
+		if(result.success){
+			noty({text: collectionId+ " Indexing Stop Requested.", type: "success", layout:"topRight", timeout: 3000});
+		}else{
+			noty({text: collectionId+ " indexing job not running.", type: "error", layout:"topRight", timeout: 5000});
+		}
+	}).fail(function(jqXHR, textStatus, error) {
+		alert("Request failed: " + jqXHR.responseText);
+	}).always(function() {
+		// alert("complete");
+	});
 }
 
 
 var indexingStatePollingFlag = false;
-
 function startPollingIndexTaskState(collectionId){
-	indexingStatePollingFlag = true;
+	startPollingIndexTaskState(collectionId, true);
+}
+function startPollingIndexTaskState(collectionId, keepPollingFlag){
+	indexingStatePollingFlag = keepPollingFlag;
 	(function poll() {
 	    $.ajax({
 	        url: PROXY_REQUEST_URI,
@@ -295,18 +324,18 @@ function truncateDictionary(analysisId, dictionaryId, callback){
 
 function checkableTable(tableId) {
 	console.log("checkabel ", $(tableId).find( 'thead th.checkbox-column :checkbox' ));
-	$(tableId).find(':checkbox').each(function(j, cb_self) {
-		$(cb_self).uniform();
-		$.uniform.update($(cb_self));
-	});
+//	$(tableId).find(':checkbox').each(function(j, cb_self) {
+//		$(cb_self).uniform();
+//		$.uniform.update($(cb_self));
+//	});
 	$(tableId).find( 'thead th.checkbox-column :checkbox' ).on('change', function() {
 		var checked = $( this ).prop( 'checked' );
 		$( this ).parents('table').children('tbody').each(function(i, tbody) {
 			$(tbody).find('.checkbox-column').each(function(j, cb) {
 				var cb_self = $( ':checkbox', $(cb) ).prop( "checked", checked ).trigger('change');
-				if (cb_self.hasClass('uniform')) {
-					$.uniform.update(cb_self);
-				}
+//				if (cb_self.hasClass('uniform')) {
+//					$.uniform.update(cb_self);
+//				}
 
 				$(cb).closest('tr').toggleClass( 'checked', checked );
 			});
@@ -404,17 +433,138 @@ function hideModalSpinner(){
 
 
 
-
-
-
-
 /////////////////////////// collection data 
-function loadDataRawTab(collectionId, shardId, pageNo, targetId){
-	console.log("loadDataRawTab", collectionId, shardId, pageNo, targetId);
-	loadToTab('dataRaw.html', {collectionId: collectionId, shardId: shardId, pageNo: pageNo, targetId: targetId}, targetId);
+function loadDataRawTab(collectionId, pageNo, targetId){
+	console.log("loadDataRawTab", collectionId, pageNo, targetId);
+	loadToTab('dataRaw.html', {collectionId: collectionId, pageNo: pageNo, targetId: targetId}, targetId);
 }
 
-function loadDataSearchTab(collectionId, shardId, pageNo, targetId){
-	console.log("loadDataRawTab", collectionId, shardId, pageNo, targetId);
-	loadToTab('dataRaw.html', {collectionId: collectionId, shardId: shardId, pageNo: pageNo, targetId: targetId}, targetId);
+function loadDataAnalyzedTab(collectionId, pageNo, targetId){
+	console.log("loadDataAnalyzedTab", collectionId, pageNo, targetId);
+	loadToTab('dataAnalyzed.html', {collectionId: collectionId, pageNo: pageNo, targetId: targetId}, targetId);
+}
+
+function loadDataSearchTab(collectionId, pageNo, targetId){
+	console.log("loadDataRawTab", collectionId, pageNo, targetId);
+	loadToTab('dataRaw.html', {collectionId: collectionId, pageNo: pageNo, targetId: targetId}, targetId);
+}
+
+/////////////////////////// account setting
+
+function updateUsingProxy(formName, mode) {
+	var form = $("form#"+formName+"");
+	if(!form.valid()){
+		return;
+	}
+	
+	form[0].mode.value=mode;
+	console.log("updateUsingProxy > ", form);
+	form.submit(function(e) {
+		var postData = $(this).serializeArray();
+		$.ajax({
+				url : PROXY_REQUEST_URI,
+				type: "POST",
+				data : postData,
+				dataType : "json",
+				success:function(data, textStatus, jqXHR) {
+					try {
+						if(data["success"]=="true") {
+							location.href = location.href;
+						}
+					} catch (e) { 
+						alert("error occured for update");
+					}
+					
+				}, error: function(jqXHR, textStatus, errorThrown) {
+					alert("ERROR" + textStatus + " : " + errorThrown);
+				}
+		});
+		e.preventDefault(); //STOP default action
+	});
+	form.submit();
+}
+
+
+/////////////////////// test > search
+
+function loadSearchTestTab(queryString, targetId){
+	console.log("loadSearchTestTab", queryString, targetId);
+	loadToTab('searchResult.html', {queryString: queryString, targetId: targetId}, targetId);
+}
+
+
+/////////////////// cookie
+
+function setCookie(cookieName, value, expireDays) {
+	var expireDate = new Date();
+	expireDate.setDate(expireDate.getDate() + expireDays);
+	var cookieValue = escape(value)
+			+ ((expireDays == null) ? "" : "; expires=" + expireDate.toUTCString());
+	document.cookie = cookieName + "=" + cookieValue;
+}
+
+function getCookie(cookieName) {
+	var cookieValue = document.cookie;
+	var startIndex = cookieValue.indexOf(" " + cookieName + "=");
+	if (startIndex == -1) {
+		startIndex = cookieValue.indexOf(cookieName + "=");
+	}
+	if (startIndex == -1) {
+		cookieValue = null;
+	} else {
+		startIndex = cookieValue.indexOf("=", startIndex) + 1;
+		var endIndex = cookieValue.indexOf(";", startIndex);
+		if (endIndex == -1) {
+			endIndex = cookieValue.length;
+		}
+		cookieValue = unescape(cookieValue.substring(startIndex, endIndex));
+	}
+	return cookieValue;
+}
+
+function deleteCookie(cookieName) {
+	var expireDate = new Date();
+
+	// 어제 날짜를 쿠키 소멸 날짜로 설정한다.
+	expireDate.setDate(expireDate.getDate() - 1);
+	document.cookie = cookieName + "= " + "; expires=" + expireDate.toGMTString();
+}
+
+function storeQueryHistory(host, queryString){
+	
+	
+}
+
+function getQueryHistory(host){
+	
+}
+
+
+/////////////////////////// logs data 
+function loadNotificationTab(pageNo, targetId){
+	loadToTab('notificationsDataRaw.html', {pageNo: pageNo}, targetId);
+}
+
+function loadExceptionTab(pageNo, targetId){
+	loadToTab('exceptionsDataRaw.html', {pageNo: pageNo}, targetId);
+}
+
+/////
+function startCollection(collectionId){
+	operateCollection(collectionId, "Start");
+}
+function stopCollection(collectionId){
+	operateCollection(collectionId, "Stop");
+}
+
+function operateCollection(collectionId, command){
+	
+	if(confirm(command+" collection " + collectionId + "?")){
+		requestProxy("POST", {uri:"/management/collections/operate", collectionId: collectionId, command: command}, "json"
+			, function(){
+				location.href = location.href;
+			}, function(){
+				noty({text: "Cannot "+command+" collection "+collectionId+" : " + response["errorMessage"], type: "error", layout:"topRight", timeout: 5000});
+			});
+	}
 }

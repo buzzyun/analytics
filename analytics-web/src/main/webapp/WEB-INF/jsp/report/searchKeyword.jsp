@@ -76,7 +76,10 @@
 	<c:import url="${ROOT_PATH}/inc/mainMenu.jsp" />
 
 	<div id="container">
-		<c:import url="${ROOT_PATH}/report/sideMenu.jsp" />
+		<c:import url="${ROOT_PATH}/report/sideMenu.jsp">
+			<c:param name="lcat" value="keywordProgress" />
+			<c:param name="mcat" value="searchKeyword" />
+		</c:import>
 		<div id="content">
 			<div class="container">
 				<!-- Breadcrumbs line -->

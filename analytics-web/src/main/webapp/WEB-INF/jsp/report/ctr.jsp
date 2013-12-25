@@ -222,7 +222,10 @@ $(document).ready(function() {
 	<c:import url="${ROOT_PATH}/inc/mainMenu.jsp" />
 
 	<div id="container">
-		<c:import url="${ROOT_PATH}/report/sideMenu.jsp" />
+		<c:import url="${ROOT_PATH}/report/sideMenu.jsp">
+			<c:param name="lcat" value="ctr" />
+			<c:param name="mcat" value="overview" />
+		</c:import>
 		<div id="content">
 			<div class="container">
 				<!-- Breadcrumbs line -->
@@ -252,7 +255,7 @@ $(document).ready(function() {
 				<div class="row row-bg row-bg-sm">
 					<!-- .row-bg -->
 					
-					<div class="col-md-12 bottom-space">
+					<div class="col-md-12">
 						<form class="form-inline" role="form">
 							<input type="button" class="btn btn-sm btn-warning" value="DAY"> 
 							<input type="button" class="btn btn-sm btn-default" value="WEEK">

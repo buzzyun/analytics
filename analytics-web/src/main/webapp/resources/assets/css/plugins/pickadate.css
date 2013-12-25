@@ -75,7 +75,7 @@
  * When the picker is opened, the input element is “activated”.
  */
 .picker__input.picker__input--active {
-  border-color: #4d7496;
+  border-color: #416cb6;
 }
 /**
  * The holder is the only “scrollable” top-level container element.
@@ -345,7 +345,7 @@
 }
 .picker__select--month:focus,
 .picker__select--year:focus {
-  border-color: #4d7496;
+  border-color: #416cb6;
 }
 /**
  * The month navigation buttons.
@@ -448,7 +448,7 @@
   border: 1px solid transparent;
 }
 .picker__day--today {
-  color: #4d7496;
+  color: #416cb6;
   position: relative;
 }
 .picker__day--today:before {
@@ -463,7 +463,7 @@
 }
 .picker__day--selected,
 .picker__day--selected:hover {
-  border-color: #4d7496;
+  border-color: #416cb6;
 }
 .picker__day--highlighted {
   background: #a9bfd3;
@@ -486,7 +486,7 @@
 }
 .picker__day--highlighted:hover,
 .picker--focused .picker__day--highlighted {
-  background: #4d7496;
+  background: #416cb6;
   color: #ffffff;
 }
 .picker__day--disabled,
@@ -527,7 +527,7 @@
 .picker__button--today:focus,
 .picker__button--clear:focus {
   background: #a9bfd3;
-  border-color: #4d7496;
+  border-color: #416cb6;
   outline: none;
 }
 .picker__button--today:before,
@@ -662,13 +662,13 @@
   cursor: pointer;
   color: #000000;
   background: #a9bfd3;
-  border-color: #4d7496;
+  border-color: #416cb6;
   z-index: 10;
 }
 /* Selected time */
 .picker__list-item--selected,
 .picker__list-item--selected:hover {
-  border-color: #4d7496;
+  border-color: #416cb6;
   z-index: 10;
 }
 /* Highlighted time */
@@ -678,7 +678,7 @@
 /* Highlighted and hovered/focused time */
 .picker__list-item--highlighted:hover,
 .picker--focused .picker__list-item--highlighted {
-  background: #4d7496;
+  background: #416cb6;
   color: #ffffff;
 }
 /* Disabled time */

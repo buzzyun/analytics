@@ -1,26 +1,12 @@
-.fcol1 {
-	width: 30px;
-}
-
-.fcol1-2 {
-	width: 100px;
-}
-
-.fcol2 {
-	width: 150px;
-}
-
-.fcol3 {
-	width: 300px;
-}
-
-.fcol4 {
-	width: 400px;
-}
-
-.fcol5 {
-	width: 500px;
-}
+.fcol1 {width: 30px;}
+.fcol1-1 {width: 70px;}
+.fcol1-2 {width: 100px;}
+.fcol2 {width: 150px;}
+.fcol2-1 {width: 200px;}
+.fcol2-2 {width: 250px;}
+.fcol3 {width: 300px;}
+.fcol4 {width: 400px;}
+.fcol5 {width: 500px;}
 
 .dataWidth { width: 150px; }
 
@@ -51,7 +37,6 @@
 .btn-console {
 color: #ffffff;
 background-color: #4d7496;
-border-
 z-index: 2;
 }
 
@@ -67,7 +52,6 @@ z-index: 2;
 }
 
 .select_flat-sm {height: 27px; padding: 3px 8px}
-	
 
 .text-danger-imp{
 	color: #b94a48 !important;	
@@ -102,6 +86,60 @@ z-index: 2;
   -moz-border-radius: 10px;
   border-radius: 10px;
 }
+
+
+/*error page */
+body.error {
+background: #eb8544;height: 100%;
+}
+body.error .main {
+width:100%; padding-top: 90px;
+}
+body.error .wrapper {
+width: 600px;top: 90px;text-align: center;margin: 0 auto;
+}
+body.error .wrapper .code {
+color: #fff;
+font-size: 90px;
+/* text-align: center; */
+}
+body.error .wrapper .code span {
+margin-right: 15px;
+}
+body.error .buttons { text-align: center; margin-top:30px;}
+body.error .trace {
+	height:200px; border: 1px solid #fff; overflow: scroll; text-align: left; color: #fff;
+}
+
+form.searchTest input, form.searchTest textarea, input.largeText {font-size: 18px !important;}
+
+.long2 {height:200px;}
+.long3 {height:300px;}
+.long4 {height:400px;}
+.long5 {height:500px;}
+.long6 {height:600px;}
+
+#searchResultModal .modal-dialog {width: 90%;}
+
+.group-panel-title {font-size: 12px !important; font-weight: bold;}
+.group-panel-title a {text-decoration:underline; font-weight:none; color:#1155cc;}
+
+.result-queryString {overflow-wrap: break-word;}
+
+label.has-error { color: #dd4b39 !important; }
+input.has-error { border-color: #dd4b39  !important; }
+
+.wordwrap { 
+   white-space: pre-wrap;      /* CSS3 */   
+   white-space: -moz-pre-wrap; /* Firefox */    
+   white-space: -pre-wrap;     /* Opera <7 */   
+   white-space: -o-pre-wrap;   /* Opera 7 */    
+   word-wrap: break-word;      /* IE */
+}
+
+td input[type=checkbox].edit { margin-top: 8px;}
+
+td.analysis-tools-detail div {line-height: 200%;}
 
 .row-bg-sm {
   padding: 10px 10px;

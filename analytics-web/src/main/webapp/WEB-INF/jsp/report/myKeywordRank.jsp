@@ -1,3 +1,4 @@
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -66,9 +67,13 @@ $(document).ready(function(){
 </head>
 <body>
 	<c:import url="${ROOT_PATH}/inc/mainMenu.jsp" />
-
+	
 	<div id="container">
-		<c:import url="${ROOT_PATH}/report/sideMenu.jsp" />
+		<c:import url="${ROOT_PATH}/report/sideMenu.jsp">
+		<c:param name="lcat" value="rank" />
+		<c:param name="mcat" value="myKeyword" />
+	</c:import>
+	
 		<div id="content">
 			<div class="container">
 				<!-- Breadcrumbs line -->
@@ -98,7 +103,7 @@ $(document).ready(function(){
 				<div class="row row-bg row-bg-sm">
 					<!-- .row-bg -->
 					
-					<div class="col-md-12 bottom-space">
+					<div class="col-md-12">
 						<form class="form-inline" role="form">
 							<select class="select_flat select_flat-sm">
 								<option>:: SITE ::</option>

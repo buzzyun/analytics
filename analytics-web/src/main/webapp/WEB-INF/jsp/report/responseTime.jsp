@@ -100,7 +100,7 @@ $(document).ready(function(){
 				<div class="row row-bg row-bg-sm">
 					<!-- .row-bg -->
 					
-					<div class="col-md-12 bottom-space">
+					<div class="col-md-12">
 						<form class="form-inline" role="form">
 							<select class="select_flat select_flat-sm">
 								<option>:: SITE ::</option>

@@ -23,8 +23,8 @@ var Plugins = function() {
 			$('.range').daterangepicker({
 				startDate: moment().subtract('days', 29),
 				endDate: moment(),
-				minDate: '2012.01.01',
-				maxDate: '2030.12.31',
+				minDate: '01/01/2012',
+				maxDate: '12/31/2014',
 				dateLimit: { days: 60 },
 				showDropdowns: true,
 				showWeekNumbers: true,
@@ -43,7 +43,7 @@ var Plugins = function() {
 				buttonClasses: ['btn btn-default'],
 				applyClass: 'btn-sm btn-primary',
 				cancelClass: 'btn-sm',
-				format: 'YYYY.MM.DD',
+				format: 'MM/DD/YYYY',
 				separator: ' to ',
 				locale: {
 					applyLabel: 'Submit',
@@ -57,7 +57,7 @@ var Plugins = function() {
 			},
 
 			function (start, end) {
-				var range_updated = start.format('YYYY.MM.DD') + ' - ' + end.format('YYYY.MM.DD');
+				var range_updated = start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY');
 
 				App.blockUI($("#content"));
 				setTimeout(function () {
@@ -73,7 +73,7 @@ var Plugins = function() {
 				$('.range span').html(range_updated);
 			});
 
-			$('.range span').html(moment().subtract('days', 29).format('YYYY.MM.DD') + ' - ' + moment().format('YYYY.MM.DD'));
+			$('.range span').html(moment().subtract('days', 29).format('MMMM D, YYYY') + ' - ' + moment().format('MMMM D, YYYY'));
 		}
 	}
 
@@ -341,7 +341,7 @@ var Plugins = function() {
 				show: true,
 				lineWidth: 2, // in pixels
 				fill: false,
-				fillColor: { colors: [ { opacity: 0.4 }, { opacity: 0.1 } ] },
+				fillColor: { colors: [ { opacity: 0.4 }, { opacity: 0.1 } ] }
 			},
 			bars: {
 				lineWidth: 1, // in pixels
@@ -377,7 +377,7 @@ var Plugins = function() {
 		},
 		tooltipOpts: {
 			defaultTheme: false
-		},
+		}
 	};
 
 	var defaultPlotWidgetOptions = {
@@ -392,7 +392,7 @@ var Plugins = function() {
 		},
 		grid: {
 			tickColor: 'rgba(255, 255, 255, 0.1)',
-			color: '#ffffff',
+			color: '#ffffff'
 		},
 		shadowSize: 1
 	};

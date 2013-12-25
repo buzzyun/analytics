@@ -76,7 +76,10 @@
 	<c:import url="${ROOT_PATH}/inc/mainMenu.jsp" />
 
 	<div id="container">
-		<c:import url="${ROOT_PATH}/report/sideMenu.jsp" />
+		<c:import url="${ROOT_PATH}/report/sideMenu.jsp">
+			<c:param name="lcat" value="keywordProgress" />
+			<c:param name="mcat" value="hitCount" />
+		</c:import>
 		<div id="content">
 			<div class="container">
 				<!-- Breadcrumbs line -->
@@ -106,7 +109,7 @@
 				<div class="row row-bg row-bg-sm">
 					<!-- .row-bg -->
 					
-					<div class="col-md-12 bottom-space">
+					<div class="col-md-12">
 						<form class="form-inline" role="form">
 							<select class="select_flat select_flat-sm">
 								<option>:: SITE ::</option>

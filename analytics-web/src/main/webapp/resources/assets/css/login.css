@@ -22,39 +22,49 @@
   clear: both;
 }
 .login {
-  background-color: #f9f9f9;
-  padding-top: 60px;
-  /* Helper */
-
+  	padding-top: 60px;
+	/* fallback */
+	background-color: #eb8544;
+	/* Safari 4-5, Chrome 1-9 */
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#64381C), to(#eb8544));
+	/* Safari 5.1, Chrome 10+ */
+	background: -webkit-linear-gradient(top, #eb8544, #64381C);
+	/* Firefox 3.6+ */
+	background: -moz-linear-gradient(top, #eb8544, #64381C);
+	/* IE 10 */
+	background: -ms-linear-gradient(top, #eb8544, #64381C);
+	/* Opera 11.10+ */
+	background: -o-linear-gradient(top, #eb8544, #64381C);
 }
 .login .logo,
 .login .single-sign-on,
 .login .footer {
   margin: 0 auto;
   text-align: center;
+  color: #fff;
 }
 .login .logo {
   padding: 15px;
-  font-size: 23px;
+  font-size: 48px;;
 }
 .login .box {
   background-color: #fff;
-  width: 350px;
+  width: 500px;
   margin: 0 auto;
   border: 1px solid #d9d9d9;
-  border-top: 5px solid #4d7496;
-  /* * * * * * * * * * * *
-		 * Inner Box
-		 * * * * * * * * * * * */
-
+  padding-top: 20px;
 }
 .login .box .content {
   padding: 30px;
   padding-top: 10px;
   padding-bottom: 15px;
+  margin:0 auto;
 }
+.login .box .content table td.left {width: 200px; background: url(../img/fastcat-cat.png) 0px 100% no-repeat; background-position: left top;}
+.login .box .content table td.right {width: 300px; }
+
 .login .box form {
-  padding: 0;
+  padding: 10px 0;
   margin: 0;
 }
 .login .box .form-title {
@@ -73,9 +83,9 @@
   padding: 10px 0;
   margin: 0;
 }
-.login .box .input-icon input {
+/* .login .box .input-icon input {
   border-left: 2px solid #4d7496;
-}
+} */
 .login .box .checkbox {
   margin-top: 7px;
 }
@@ -160,7 +170,7 @@
 }
 .login .footer {
   width: 350px;
-  padding-top: 30px;
+  padding-top: 50px;
 }
 .login .footer a {
   font-size: 13px;

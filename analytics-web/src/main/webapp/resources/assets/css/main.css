@@ -28,7 +28,7 @@
 }
 html,
 body {
-  height: 100%;
+  /* height: 100%; */
 }
 body {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -54,7 +54,7 @@ body {
   height: 100%;
 }
 #container.fixed-header {
-  margin-top: 49px;
+  margin-top: 52px;
 }
 #container > #content > .container {
   float: left;
@@ -65,7 +65,7 @@ body {
   margin-left: 250px;
   overflow: visible;
   padding-bottom: 30px;
-  min-height: 100%;
+  /* min-height: 100%; */
 }
 #content > .wrapper {
   -webkit-transition: margin ease-in-out 0.1s;
@@ -96,7 +96,7 @@ body {
 }
 .page-title {
   float: left;
-  padding: 25px 0;
+  padding: 25px 0 10px 0;
 }
 .page-title h3 {
   margin: 0;
@@ -712,7 +712,9 @@ span.red {
   position: absolute;
   margin-left: 250px;
   right: -1px;
+  /* width: 8px; */
   border-left: 1px solid #d1d1d1;
+  /* border-right: 1px solid #d1d1d1; */
 }
 #sidebar .resizeable {
   cursor: col-resize;
@@ -740,7 +742,7 @@ span.red {
   margin-right: 23px;
 }
 #sidebar .sidebar-search .input-box {
-  border: 1px solid #d9d9d9 !important;
+  border-bottom: 1px solid #d9d9d9 !important;
   padding-bottom: 2px;
 }
 #sidebar .sidebar-search span {
@@ -761,7 +763,7 @@ span.red {
 #sidebar .sidebar-search .submit {
   display: block;
   float: right;
-  margin-top: 4px;
+  margin-top: 8px;
   opacity: 0.7;
 }
 #sidebar .sidebar-search .submit:hover,
@@ -811,9 +813,11 @@ span.red {
   list-style: none;
   margin: 15px 0;
   padding: 0;
+  /* * * * * * * * * * * *
+		 * Mainmenu and submenus
+		 * * * * * * * * * * * */
   border-bottom: 1px solid #ebebeb;
   border-top: 1px solid #ebebeb;
-
 }
 #sidebar ul#nav > li.current > a {
   border-right: 3px solid #668eb0;
@@ -919,9 +923,9 @@ span.red {
   background: #f9f9f9;
 }
 #sidebar ul#nav ul.sub-menu li:first-child > a {
-  -webkit-box-shadow: 0 2px 0px rgba(0, 0, 0, 0.1) inset;
-  -moz-box-shadow: 0 2px 0px rgba(0, 0, 0, 0.1) inset;
-  box-shadow: 0 2px 0px rgba(0, 0, 0, 0.1) inset;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4) inset;
+  -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4) inset;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4) inset;
 }
 #sidebar ul#nav ul.sub-menu ul.sub-menu {
   margin: 5px;
@@ -1532,7 +1536,7 @@ span.red {
 /* * * * * * * * * * * *
  * Button Groups
  * * * * * * * * * * * */
-.btn-group > .btn:first-child,
+/* .btn-group > .btn:first-child,
 .btn-group > .btn:last-child {
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
@@ -1545,11 +1549,11 @@ span.red {
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   border-radius: 0;
-}
+} */
 /* * * * * * * * * * * *
  * Dropdown Toggles
  * * * * * * * * * * * */
-.btn-group > .btn + .dropdown-toggle {
+/* .btn-group > .btn + .dropdown-toggle {
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
@@ -1562,7 +1566,7 @@ span.red {
   -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.13) inset;
   -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.13) inset;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.13) inset;
-}
+} */
 /* * * * * * * * * * * *
  * Icon Buttons
  * * * * * * * * * * * */
@@ -2088,9 +2092,9 @@ a.list-group-item.active {
 /* * * * * * * * * * * *
  * General
  * * * * * * * * * * * */
-form {
-  /*margin: 0 5px;*/
-}
+/* form {
+  margin: 0 5px;
+} */
 label,
 input,
 button,
@@ -2724,7 +2728,7 @@ label > span.required {
 }
 .widget-chart {
   display: block;
-  background-color: #658db3;
+  background-color: #eb8544;
   border: 1px solid #4c7399;
   padding: 12px;
   /* Colors */
@@ -2742,7 +2746,7 @@ label > span.required {
   border: 1px solid #41586c;
 }
 .widget-chart.widget-chart-blueLight {
-  background-color: #658db3;
+  background-color: #eb8544;
   border: 1px solid #4c7399;
 }
 .widget-chart.widget-chart-green {
@@ -2802,7 +2806,7 @@ ul.stats:not(.no-dividers) li {
 }
 ul.stats li {
   display: table-cell;
-  /*padding: 15px;*/
+  padding: 15px;
 }
 ul.stats li:last-child {
   border-right: none;
@@ -3037,7 +3041,7 @@ ul.stats li.light strong {
 }
 .tabbable-custom.tabbable-full-width .nav-tabs > li > a {
   font-size: 15px;
-  padding: 8px 20px;
+  padding: 5px 12px;
   color: #555555;
 }
 .tabbable-custom.tabbable-full-width > .tab-content {
@@ -3302,3 +3306,8 @@ ul.stats li.light strong {
 .theme-dark #sidebar .notifications li a:hover {
   color: #eaebee;
 }
+
+
+
+
+

@@ -20,10 +20,6 @@ public class Environment {
 	
 	private SettingManager settingManager;
 	
-//	private String myNodeId;
-//	private String masterNodeId;
-//	private boolean isMasterNode;
-	
 	public Environment(String homeDirPath){
 		home = homeDirPath;
 		homeFile= new File(homeDirPath);
@@ -38,6 +34,7 @@ public class Environment {
 		
 		logger = LoggerFactory.getLogger(Environment.class);
 		 
+		logger.info("JAVA >> {} {}", System.getProperty("java.vendor"), System.getProperty("java.version"));
 		logger.info("Setting Home = {}", home);
 		logger.info("logback.configurationFile = {}", new File(new File(homeFile, "conf"), "logback.xml").getAbsolutePath());
 	}
@@ -45,16 +42,8 @@ public class Environment {
 	public Environment init() throws AnalyticsException {
 		settingManager = new SettingManager(this);
 		
-//		myNodeId = settingManager.getIdSettings().getString("me");
-//		masterNodeId = settingManager.getIdSettings().getString("master");
-//		if(myNodeId == null || masterNodeId == null){
-//			throw new AnalyticsException("ID 셋팅이 잘못되었습니다. me="+myNodeId+", master="+masterNodeId);
-//		}
-//		if(myNodeId.equals(masterNodeId)){
-//			isMasterNode = true;
-//		}
-//		
-//		logger.info("[ID] me[{}] master[{}]", myNodeId, masterNodeId);
+//		Settings idSettings = settingManager.getIdSettings();
+//		int servicePort = idSettings.getInt("servicePort");
 		return this;
 	}
 	
@@ -73,13 +62,4 @@ public class Environment {
 		return new Path(homeFile);
 	}
 
-//	public String myNodeId(){
-//		return myNodeId;
-//	}
-//	public String masterNodeId(){
-//		return masterNodeId;
-//	}
-//	public boolean isMasterNode(){
-//		return isMasterNode;
-//	}
 }

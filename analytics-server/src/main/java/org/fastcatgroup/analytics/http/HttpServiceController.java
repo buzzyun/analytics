@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 public class HttpServiceController {
 	private static final Logger logger = LoggerFactory.getLogger(HttpServiceController.class);
 	private ExecutorService executorService;
-	private Map<String, ServiceAction> actionMap;
+	private Map<String, HttpAction> actionMap;
 	private HttpSessionManager httpSessionManager;
 	
 	public HttpServiceController(ExecutorService executorService, HttpSessionManager httpSessionManager) {
@@ -61,12 +61,15 @@ public class HttpServiceController {
 		}else if(uri.endsWith(".html")){ 
 			standardURI = uri.substring(0, uri.length() - 5);
 			contenType = Type.html;
+		}else if(uri.endsWith(".text")){ 
+			standardURI = uri.substring(0, uri.length() - 5);
+			contenType = Type.text;
 		}else{
 			standardURI = uri;
 			contenType = Type.json;
 		}
 		
-		ServiceAction actionObj = actionMap.get(standardURI);
+		HttpAction actionObj = actionMap.get(standardURI);
 		if(actionObj == null) {
 			return null;
 		}
@@ -79,12 +82,15 @@ public class HttpServiceController {
 		ActionResponse actionResponse = new ActionResponse();
 		HttpSession httpSession = httpSessionManager.handleCookie(request, actionResponse);
 		
-		ServiceAction action = actionObj.clone();
+		HttpAction action = actionObj.clone();
 		action.init(contenType, new ActionRequest(uri, request), actionResponse, httpSession, httpChannel);
 		return action;
 	}
 
-	public void setActionMap(Map<String, ServiceAction> actionMap) {
+	public void setActionMap(Map<String, HttpAction> actionMap) {
 		this.actionMap = actionMap;
+	}
+	public Map<String, HttpAction> getActionMap() {
+		return actionMap;
 	}
 }

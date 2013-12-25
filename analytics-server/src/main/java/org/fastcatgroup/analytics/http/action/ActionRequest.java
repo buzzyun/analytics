@@ -34,7 +34,7 @@ public class ActionRequest {
 			} else if (request.getMethod() == HttpMethod.POST) {
 				long len = HttpHeaders.getContentLength(request);
 				ChannelBuffer buffer = request.getContent();
-				queryString = new String(buffer.array(), 0, (int) len);
+				queryString = new String(buffer.toByteBuffer().array(), 0, (int) len);
 			} else {
 	
 			}
@@ -72,7 +72,7 @@ public class ActionRequest {
 	public Map<String, String> getParameterMap() {
 		return parameterMap;
 	}
-
+	
 	public String getParameter(String key) {
 		return getParameter(key, null);
 	}

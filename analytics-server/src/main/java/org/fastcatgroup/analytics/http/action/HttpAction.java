@@ -1,8 +1,10 @@
 package org.fastcatgroup.analytics.http.action;
 
+import org.fastcatgroup.analytics.env.Environment;
 import org.fastcatgroup.analytics.http.ActionMethod;
 import org.fastcatgroup.analytics.http.HttpChannel;
 import org.fastcatgroup.analytics.http.HttpSession;
+import org.fastcatgroup.analytics.http.action.ServiceAction.Type;
 import org.jboss.netty.handler.codec.http.HttpResponseStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,16 +13,32 @@ public abstract class HttpAction implements Runnable, Cloneable {
 	protected static final Logger logger = LoggerFactory.getLogger(HttpAction.class);
 	private ActionMethod[] method; //허용 http 메소드.
 	
-	protected ActionRequest request;
-	protected HttpChannel httpChannel;
-	protected ActionResponse response;
+	private ActionRequest request;
+	private HttpChannel httpChannel;
+	private ActionResponse response;
+	protected Environment environment;
 	protected HttpSession session;
-	
+	protected Type resultType;
 	
 	public HttpAction(){
 	}
 	
-	public void init(ActionRequest request, ActionResponse response, HttpSession session, HttpChannel httpChannel){
+	public HttpAction clone(){
+		HttpAction action;
+		try {
+			action = (HttpAction) super.clone();
+			action.request = null;
+			action.httpChannel = null;
+			action.response = null;
+			return action;
+		} catch (CloneNotSupportedException e) {
+			logger.error("Clone error", e);
+		}
+		return null;
+	}
+	
+	public void init(Type resultType, ActionRequest request, ActionResponse response, HttpSession session, HttpChannel httpChannel){
+		this.resultType = resultType;
 		this.request = request;
 		this.response = response;
 		this.session = session;
@@ -57,4 +75,7 @@ public abstract class HttpAction implements Runnable, Cloneable {
 		this.method = method;
 	}
 	
+	public void setEnvironement(Environment environment) {
+		this.environment = environment;
+	}
 }

@@ -27,6 +27,7 @@ import org.fastcatgroup.analytics.env.Settings;
 import org.fastcatgroup.analytics.exception.AnalyticsException;
 import org.fastcatgroup.analytics.job.Job;
 import org.fastcatgroup.analytics.job.ScheduledJob;
+import org.fastcatgroup.analytics.job.StatisticsJob;
 import org.fastcatgroup.analytics.service.AbstractService;
 import org.fastcatgroup.analytics.service.ServiceManager;
 import org.slf4j.Logger;
@@ -52,7 +53,7 @@ public class JobService extends AbstractService implements JobExecutor {
 
 	private JobConsumer worker;
 	private SequencialJobWorker sequencialJobWorker;
-//	private IndexingMutex indexingMutex;
+	private StatisticsMutex statisticsMutex;
 //	private boolean useJobScheduler;
 	private int executorMaxPoolSize;
 	private static JobService instance;
@@ -76,15 +77,16 @@ public class JobService extends AbstractService implements JobExecutor {
 		runningJobList = new ConcurrentHashMap<Long, Job>();
 		jobQueue = new LinkedBlockingQueue<Job>();
 		sequencialJobQueue = new LinkedBlockingQueue<Job>();
-//		indexingMutex = new IndexingMutex();
+		statisticsMutex = new StatisticsMutex();
 
-		executorMaxPoolSize = settings.getInt("pool.max");
+//		executorMaxPoolSize = settings.getInt("pool.max");
 
 		// int indexJobMaxSize = 100;
 		// int searchJobMaxSize = 100;
 		// int otherJobMaxSize = 100;
 
-		jobExecutor = ThreadPoolFactory.newCachedThreadPool("JobService.jobExecutor", executorMaxPoolSize);
+//		jobExecutor = ThreadPoolFactory.newCachedThreadPool("JobService.jobExecutor", executorMaxPoolSize);
+		jobExecutor = ThreadPoolFactory.newUnlimitedCachedThreadPool("JobService.jobExecutor");
 
 		worker = new JobConsumer();
 		worker.start();
@@ -126,21 +128,27 @@ public class JobService extends AbstractService implements JobExecutor {
 		return jobQueue.size();
 	}
 
-//	public void setUseJobScheduler(boolean useJobScheduler) {
-//		this.useJobScheduler = useJobScheduler;
-//	}
-
 	public Collection<Job> getRunningJobs() {
 		return runningJobList.values();
+	}
+	
+	public Job findRunningJob(Job findJob){
+		String findJobKey = getJobKey(findJob);
+		for(Job job : runningJobList.values()){
+			if(getJobKey(job).equals(findJobKey)){
+				return job;
+			}
+		}
+		return null;
 	}
 	
 	public Collection<ScheduledJob> getScheduledJobs() {
 		return scheduleMap.values();
 	}
 
-//	public Collection<String> getIndexingList() {
-//		return indexingMutex.getIndexingList();
-//	}
+	public Collection<String> getIndexingList() {
+		return statisticsMutex.getStatisticsRunningList();
+	}
 
 	public ThreadPoolExecutor getJobExecutor() {
 		return jobExecutor;
@@ -153,10 +161,10 @@ public class JobService extends AbstractService implements JobExecutor {
 		job.setEnvironment(environment);
 		job.setJobExecutor(this);
 
-//		if (job instanceof IndexingJob) {
-//			// 색인작업은 execute로 실행할수 없다.
-//			return null;
-//		}
+		if (job instanceof StatisticsJob) {
+			// 색인작업은 execute로 실행할수 없다.
+			return null;
+		}
 		long myJobId = jobIdIncrement.getAndIncrement();
 		ResultFuture resultFuture = new ResultFuture(myJobId, resultFutureMap);
 		resultFutureMap.put(myJobId, resultFuture);
@@ -169,19 +177,19 @@ public class JobService extends AbstractService implements JobExecutor {
 		job.setEnvironment(environment);
 		job.setJobExecutor(this);
 
-//		if (job instanceof IndexingJob) {
-//			if (indexingMutex.isLocked(job)) {
-//				indexingLogger.info("The collection [" + job.getStringArgs(0) + "] has already started an indexing job.");
-//				return null;
-//			}
-//		}
+		if (job instanceof StatisticsJob) {
+			if (statisticsMutex.isLocked((StatisticsJob) job)) {
+				indexingLogger.info("The collection [" + job.getStringArgs() + "] has already started an indexing job.");
+				return null;
+			}
+		}
 
 		long myJobId = jobIdIncrement.getAndIncrement();
-		logger.debug("### OFFER Job-{}", myJobId);
+		logger.debug("### OFFER Job-{} : {}", myJobId, job.getClass().getSimpleName());
 
-//		if (job instanceof IndexingJob) {
-//			indexingMutex.access(myJobId, job);
-//		}
+		if (job instanceof StatisticsJob) {
+			statisticsMutex.access(myJobId, (StatisticsJob) job);
+		}
 
 		if (job.isNoResult()) {
 			job.setId(myJobId);
@@ -205,9 +213,9 @@ public class JobService extends AbstractService implements JobExecutor {
 					job.getClass().getSimpleName(), result, isSuccess });
 		}
 
-//		if (job instanceof IndexingJob) {
-//			indexingMutex.release(jobId);
-//		}
+		if (job instanceof StatisticsJob) {
+			statisticsMutex.release(jobId);
+		}
 
 		if (resultFuture != null) {
 			resultFuture.put(result, isSuccess);
@@ -234,6 +242,7 @@ public class JobService extends AbstractService implements JobExecutor {
 			scheduledJob = new ScheduledJob(job, startTime, periodInSecond);
 			ScheduledJob oldScheduledJob = scheduleMap.put(jobKey, scheduledJob);
 			if(oldScheduledJob != null){
+				logger.info("Cancel old schdule {}", oldScheduledJob);
 				oldScheduledJob.cancel();
 			}
 			offer(scheduledJob);
@@ -242,10 +251,13 @@ public class JobService extends AbstractService implements JobExecutor {
 		}
 	}
 	
+	
 	public void cancelSchedule(Job job){
 		String jobKey = getJobKey(job);
 		ScheduledJob scheduledJob = scheduleMap.remove(jobKey);
-		scheduledJob.cancel();
+		if(scheduledJob != null){
+			scheduledJob.cancel();
+		}
 	}
 	
 	private String getJobKey(Job job){

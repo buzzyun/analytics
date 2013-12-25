@@ -5,8 +5,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -16,6 +17,7 @@ import org.fastcatgroup.analytics.env.Environment;
 import org.fastcatgroup.analytics.env.Settings;
 import org.fastcatgroup.analytics.exception.AnalyticsException;
 import org.fastcatgroup.analytics.http.action.AuthAction;
+import org.fastcatgroup.analytics.http.action.HttpAction;
 import org.fastcatgroup.analytics.http.action.ServiceAction;
 import org.fastcatgroup.analytics.service.AbstractService;
 import org.fastcatgroup.analytics.service.ServiceManager;
@@ -33,7 +35,8 @@ public class HttpRequestService extends AbstractService implements HttpServerAda
 
 	@Override
 	protected boolean doStart() throws AnalyticsException {
-		transportModule = new HttpTransportModule(environment, settings);
+		int servicePort = environment.settingManager().getSystemSettings().getInt("servicePort");
+		transportModule = new HttpTransportModule(environment, settings, servicePort);
 		transportModule.httpServerAdapter(this);
 		ExecutorService executorService = ThreadPoolFactory.newUnlimitedCachedDaemonThreadPool("http-execute-pool");
 		HttpSessionManager httpSessionManager = new HttpSessionManager();
@@ -43,21 +46,36 @@ public class HttpRequestService extends AbstractService implements HttpServerAda
 			throw new AnalyticsException("can not load transport module!");
 		}
 
-		Map<String, ServiceAction> actionMap = new HashMap<String, ServiceAction>();
-		List<String> actionBasePackage = settings.getList("action-base-package", String.class);
-		scanActions(actionMap, actionBasePackage);
+		Map<String, HttpAction> actionMap = new HashMap<String, HttpAction>();
+
+		String[] actionBasePackageList = settings.getStringArray("action-base-package", ",");
+		if (actionBasePackageList != null) {
+			scanActions(actionMap, actionBasePackageList);
+		}
 
 		serviceController.setActionMap(actionMap);
 		return true;
 	}
 
-	private void scanActions(Map<String, ServiceAction> actionMap, List<String> actionBasePackageList) {
+	private void scanActions(Map<String, HttpAction> actionMap, String[] actionBasePackageList) {
 		for (String actionBasePackage : actionBasePackageList) {
 			scanActions(actionMap, actionBasePackage);
 		}
 	}
 
-	private void scanActions(Map<String, ServiceAction> actionMap, String actionBasePackage) {
+	private void addDirectory(Set<File> set, File d){
+		File[] files = d.listFiles();
+		for (int i = 0; i < files.length; i++) {
+			if(files[i].isDirectory()){
+				addDirectory(set, files[i]);
+			}else{
+				set.add(files[i]);
+			}
+		}
+	}
+	
+	// 하위패키지까지 모두 포함되도록 한다.
+	private void scanActions(Map<String, HttpAction> actionMap, String actionBasePackage) {
 		String path = actionBasePackage.replace(".", "/");
 		if (!path.endsWith("/")) {
 			path = path + "/";
@@ -65,27 +83,41 @@ public class HttpRequestService extends AbstractService implements HttpServerAda
 		try {
 			String findPath = path;// +"**/*.class";
 			Enumeration<URL> em = DynamicClassLoader.getResources(findPath);
-			logger.debug("findPath >> {}, {}", findPath, em);
+			// logger.debug("findPath >> {}, {}", findPath, em);
 			while (em.hasMoreElements()) {
 				String urlstr = em.nextElement().toString();
-				logger.debug("urlstr >> {}", urlstr);
+				// logger.debug("urlstr >> {}", urlstr);
 				if (urlstr.startsWith("jar:file:")) {
 					String jpath = urlstr.substring(9);
 					int st = jpath.indexOf("!/");
-					jpath = jpath.substring(0, st);
-					JarFile jf = new JarFile(jpath);
+					String jarPath = jpath.substring(0, st);
+					String entryPath = jpath.substring(st + 2);
+					JarFile jf = new JarFile(jarPath);
 					Enumeration<JarEntry> jee = jf.entries();
 					while (jee.hasMoreElements()) {
 						JarEntry je = jee.nextElement();
 						String ename = je.getName();
-						registerAction(actionMap, ename, true);
+						if(ename.startsWith(entryPath)){
+							registerAction(actionMap, ename, true);
+						}
 					}
 				} else if (urlstr.startsWith("file:")) {
-					logger.debug("urlstr >> {}", urlstr);
-					File file = new File(urlstr.substring(5));
-					File[] dir = file.listFiles();
-					for (int i = 0; i < dir.length; i++) {
-						registerAction(actionMap, path + dir[i].getName(), true);
+					// logger.debug("urlstr >> {}", urlstr);
+					String rootPath = urlstr.substring(5);
+					int prefixLength = rootPath.indexOf(path);
+					File file = new File(rootPath);
+					
+					Set<File> actionFileSet = new HashSet<File>();
+					if(file.isDirectory()){
+						addDirectory(actionFileSet, file);
+					}else{
+						actionFileSet.add(file);
+					}
+					for(File f : actionFileSet){
+						String classPath = f.toURI().toURL().toString().substring(5)
+								.substring(prefixLength);
+						//logger.debug("file >> {}", classPath);
+						registerAction(actionMap, classPath, true);
 					}
 				}
 			}
@@ -93,8 +125,18 @@ public class HttpRequestService extends AbstractService implements HttpServerAda
 			logger.error("action load error!", e);
 		}
 	}
-
-	private void registerAction(Map<String, ServiceAction> actionMap, String className, boolean isFile) {
+	public void registerAction(String className, String pathPrefix) {
+		registerAction(serviceController.getActionMap(), className, pathPrefix, false);
+	}
+	
+	private void registerAction(Map<String, HttpAction> actionMap, String className, boolean isFile) {
+		registerAction(actionMap, className, null, isFile);
+	}
+	private void registerAction(Map<String, HttpAction> actionMap, String className, String pathPrefix, boolean isFile) {
+		if(className == null){
+			logger.warn("Cannot register action class name >> {} : {}", className, pathPrefix);
+			return;
+		}
 		if (isFile) {
 			if (className.endsWith(".class")) {
 				className = className.substring(0, className.length() - 6);
@@ -111,23 +153,30 @@ public class HttpRequestService extends AbstractService implements HttpServerAda
 			// actionClass 가 serviceAction을 상속받은 경우만 등록.
 			if (actionClass != null) {
 				if (ServiceAction.class.isAssignableFrom(actionClass)) {
-					ServiceAction actionObj = null;
+					HttpAction actionObj = null;
 					ActionMapping actionMapping = actionClass.getAnnotation(ActionMapping.class);
 					// annotation이 존재할 경우만 사용.
 					if (actionMapping != null) {
 						String path = actionMapping.value();
+						if(pathPrefix != null){
+							path = pathPrefix + path;
+						}
 						ActionMethod[] method = actionMapping.method();
-						actionObj = (ServiceAction) actionClass.newInstance();
+						actionObj = (HttpAction) actionClass.newInstance();
 						if (actionObj != null) {
 							actionObj.setMethod(method);
-							logger.debug("ACTION path={}, action={}, method={}", path, actionObj, method);
+							actionObj.setEnvironement(environment);
+							
 							// 권한 필요한 액션일 경우.
 							if (actionObj instanceof AuthAction) {
 								AuthAction authAction = (AuthAction) actionObj;
 								authAction.setAuthority(actionMapping.authority(), actionMapping.authorityLevel());
-								logger.debug("ACTION path={}, authority={}, authorityLevel={}", path, actionMapping.authority(), actionMapping.authorityLevel());
+								 logger.debug("ACTION path={}, action={}, method={}, authority={}, authorityLevel={}", path, actionObj, method, actionMapping.authority(),
+										 actionMapping.authorityLevel());
+							}else{
+								 logger.debug("ACTION path={}, action={}, method={}", path, actionObj, method);	
 							}
-							
+
 							actionMap.put(path, actionObj);
 
 						}

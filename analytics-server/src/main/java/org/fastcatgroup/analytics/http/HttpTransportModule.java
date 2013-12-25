@@ -1,12 +1,8 @@
 package org.fastcatgroup.analytics.http;
 
 import java.net.InetSocketAddress;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicLong;
 
-import org.fastcatgroup.analytics.control.ResultFuture;
 import org.fastcatgroup.analytics.env.Environment;
 import org.fastcatgroup.analytics.env.Settings;
 import org.fastcatgroup.analytics.module.AbstractModule;
@@ -30,8 +26,6 @@ import org.jboss.netty.handler.timeout.ReadTimeoutException;
 
 public class HttpTransportModule extends AbstractModule {
 
-	private final AtomicLong requestIds = new AtomicLong();
-
 	private volatile Channel serverChannel;
 	private volatile ServerBootstrap serverBootstrap;
 
@@ -52,10 +46,6 @@ public class HttpTransportModule extends AbstractModule {
 
 	private final int port;
 
-	private final String bindHost;
-
-	private final String publishHost;
-
 	private final Boolean tcpNoDelay;
 
 	private final Boolean tcpKeepAlive;
@@ -68,16 +58,11 @@ public class HttpTransportModule extends AbstractModule {
 	final int maxCumulationBufferCapacity; // Integer.MAX_VALUE가 최대이다. 넘는다면 재설정해준다.
 	final int maxCompositeBufferComponents;
 
-	private ExecutorService executorService;
-	private int bossCount;
-
-	private ConcurrentHashMap<Long, ResultFuture> resultFutureMap;
-
 	private volatile HttpServerAdapter httpServerAdapter;
 
-	public HttpTransportModule(Environment environment, Settings settings) {
+	public HttpTransportModule(Environment environment, Settings settings, int port) {
 		super(environment, settings);
-
+		this.port = port;
 		maxContentLength = settings.getInt("max_content_length", settings.getInt("http.max_content_length", 100 * 1024 * 1024));
 		this.maxChunkSize = settings.getInt("max_chunk_size", settings.getInt("http.max_chunk_size", 8 * 1024));
 		this.maxHeaderSize = settings.getInt("max_header_size", settings.getInt("http.max_header_size", 8 * 1024));
@@ -88,9 +73,7 @@ public class HttpTransportModule extends AbstractModule {
 		this.maxCumulationBufferCapacity = settings.getInt("max_cumulation_buffer_capacity", 0);
 		this.maxCompositeBufferComponents = settings.getInt("max_composite_buffer_components", -1);
 		this.workerCount = settings.getInt("worker_count", Runtime.getRuntime().availableProcessors() * 2);
-		this.port = settings.getInt("port");
-		this.bindHost = settings.getString("bind_host", settings.getString("http.bind_host", settings.getString("http.host")));
-		this.publishHost = settings.getString("publish_host", settings.getString("http.publish_host", settings.getString("http.host")));
+		
 		this.tcpNoDelay = settings.getBoolean("tcp_no_delay", true);
 		this.tcpKeepAlive = settings.getBoolean("tcp_keep_alive", true);
 		this.reuseAddress = settings.getBoolean("reuse_address", true);
@@ -120,8 +103,6 @@ public class HttpTransportModule extends AbstractModule {
 
 		serverChannel = serverBootstrap.bind(new InetSocketAddress(port));
 		logger.debug("Bound to port [{}]", port);
-
-		resultFutureMap = new ConcurrentHashMap<Long, ResultFuture>();
 
 		return true;
 	}

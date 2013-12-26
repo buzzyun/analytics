@@ -23,13 +23,24 @@ public interface SearchHitMapper {
 			@Param("category") String category, @Param("timeId") String timeId)
 			throws Exception;
 	
-	public List<SearchHitVO> getEntryList(@Param("site") String site,
+	public SearchHitVO getMinEntry (@Param("site") String site,
 			@Param("category") String category) throws Exception;
 	
-	public int getCount(@Param("site") String site,
-			@Param("category") String category);
+	public SearchHitVO getMaxEntry (@Param("site") String site,
+			@Param("category") String category) throws Exception;
 	
-	public int sumBetween(@Param("site") String site,
+	/**
+	 * process All if #from and #to are null
+	 */
+	public List<SearchHitVO> getEntryListBetween(@Param("site") String site,
+			@Param("category") String category, @Param("from") String from,
+			@Param("to") String to);
+	
+	public int getCountBetween(@Param("site") String site,
+			@Param("category") String category, @Param("from") String from,
+			@Param("to") String to);
+	
+	public int getSumBetween(@Param("site") String site,
 			@Param("category") String category, @Param("from") String from,
 			@Param("to") String to);
 	
@@ -43,9 +54,6 @@ public interface SearchHitMapper {
 	
 	public int deleteEntry(@Param("site") String site,
 			@Param("category") String category, @Param("timeId") String timeId);
-	
-	public int deleteEntryList(@Param("site") String site,
-			@Param("category") String category, @Param("timeIdList") String timeIdList);
 	
 	public int deleteEntryBetween(@Param("site") String site,
 			@Param("category") String category, @Param("from") String from,

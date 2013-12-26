@@ -7,18 +7,18 @@
 
 	<update id="createTable" parameterType="map" >
 		create table ${site}_${category}_hit (
-			timeid varchar(11),
+			timeId varchar(11),
 			hit int,
-			primary key (timeid)
+			primary key (timeId)
 		)
 	</update>
 	
 	<update id="createIndex" parameterType="map" >
-		create index timeid_${site}_${category}_hit on ${site}_${category}_hit(timeid)
+		create index timeId_${site}_${category}_hit on ${site}_${category}_hit(timeId)
 	</update>
 	
 	<select id="validateTable" parameterType="map" resultType="map">
-		select timeid, hit
+		select timeId, hit
 		from ${site}_${category}_hit 
 		limit 1
 	</select>
@@ -28,15 +28,58 @@
 	</update>
 	
 	<select id="getEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchHitVO">
+		select * from ${site}_${category}_hit where timeId=#{timeId}
 	</select>
 	
-	<select id="getEntryList" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchHitVO">
+	<select id="getMinEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchHitVO">
+		select * from ${site}_${category}_hit where timeId=(select min(timeId) from ${site}_${category}_hit) limit 1
 	</select>
 	
-	<select id="getCount" parameterType="map" resultType="int">
+	<select id="getMaxEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchHitVO">
+		select * from ${site}_${category}_hit where timeId=(select max(timeId) from ${site}_${category}_hit) limit 1
 	</select>
 	
-	<select id="sumBetween" parameterType="map" resultType="int">
+	<select id="getEntryListBetween" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchHitVO">
+		select * from ${site}_${category}_hit 
+		<if test="from != null and from != '' and to != null and to !=''">
+			where timeId between #{from} and #{to}
+		</if>
 	</select>
+	
+	<select id="getCountBetween" parameterType="map" resultType="int">
+		select count(*) from ${site}_${category}_hit 
+		<if test="from != null and from != '' and to != null and to !=''">
+			where timeId between #{from} and #{to}
+		</if>
+	</select>
+	
+	<select id="getSumBetween" parameterType="map" resultType="int">
+		select sum(hit) from ${site}_${category}_hit 
+		<if test="from != null and from != '' and to != null and to !=''">
+			where timeId between #{from} and #{to}
+		</if>
+	</select>
+	
+	<insert id="putEntry" parameterType="map" useGeneratedKeys="true" >
+		insert into ${site}_${category}_hit 
+		(timeId, hit) values (#{timeId},#{hit})
+	</insert>
+	
+	<update id="updateEntry" parameterType="map">
+		update ${site}_${category}_hit set hit = #{hit} where timeId = #{timeId}
+	</update>
+	
+	<delete id="deleteEntry" parameterType="map">
+		delete ${site}_${category}_hit set hit = #{hit} where timeId = #{timeId}
+	</delete>
+	
+	<delete id="deleteEntryBetween" parameterType="map">
+	<!-- from and to is required -->
+		delete ${site}_${category}_hit set hit = #{hit} where timeId between #{from} and #{to} 
+	</delete>
+	
+	<delete id="truncate" parameterType="map">
+		truncate table ${site}_${category}_hit 
+	</delete>
 
 </mapper>

@@ -21,7 +21,7 @@
 	<select id="validateTable" parameterType="map" resultType="map">
 		select timeid, stype, hit
 		from ${site}_${category}_${stype}
-		fetch first 1 rows only
+		limit 1
 	</select>
 
 	<update id="dropTable" parameterType="map">

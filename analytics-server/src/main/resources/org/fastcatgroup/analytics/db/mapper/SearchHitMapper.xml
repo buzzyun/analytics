@@ -20,11 +20,23 @@
 	<select id="validateTable" parameterType="map" resultType="map">
 		select timeid, hit
 		from ${site}_${category}_hit 
-		fetch first 1 rows only
+		limit 1
 	</select>
 
 	<update id="dropTable" parameterType="map">
 		drop table ${site}_${category}_hit
 	</update>
+	
+	<select id="getEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchHitVO">
+	</select>
+	
+	<select id="getEntryList" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchHitVO">
+	</select>
+	
+	<select id="getCount" parameterType="map" resultType="int">
+	</select>
+	
+	<select id="sumBetween" parameterType="map" resultType="int">
+	</select>
 
 </mapper>

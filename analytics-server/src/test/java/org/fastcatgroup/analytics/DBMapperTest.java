@@ -47,13 +47,13 @@ public class DBMapperTest {
 			driver = System.getProperty("JDBC_DRIVER");
 		}
 		if (System.getProperty("JDBC_URL") != null) {
-			driver = System.getProperty("JDBC_URL");
+			dbUrl = System.getProperty("JDBC_URL");
 		}
 		if (System.getProperty("JDBC_USER") != null) {
-			driver = System.getProperty("JDBC_USER");
+			dbUser = System.getProperty("JDBC_USER");
 		}
 		if (System.getProperty("JDBC_PASS") != null) {
-			driver = System.getProperty("JDBC_PASS");
+			dbPass = System.getProperty("JDBC_PASS");
 		}
 	}
 
@@ -140,22 +140,31 @@ public class DBMapperTest {
 				
 				if(obj instanceof SearchHitMapper) {
 					SearchHitMapper mapper = (SearchHitMapper)obj;
-					mapper.createTable(site, category);
-					mapper.createIndex(site, category);
-					mapper.validateTable(site, category);
-					mapper.dropTable(site, category);
+					try {
+						mapper.createTable(site, category);
+						mapper.createIndex(site, category);
+						mapper.validateTable(site, category);
+					} finally {
+						mapper.dropTable(site, category);
+					}
 				} else if(obj instanceof SearchKeywordHitMapper) {
 					SearchKeywordHitMapper mapper = (SearchKeywordHitMapper)obj;
-					mapper.createTable(site, category);
-					mapper.createIndex(site, category);
-					mapper.validateTable(site, category);
-					mapper.dropTable(site, category);
+					try {
+						mapper.createTable(site, category);
+						mapper.createIndex(site, category);
+						mapper.validateTable(site, category);
+					} finally {
+						mapper.dropTable(site, category);
+					}
 				} else if(obj instanceof SearchTypeRatioMapper) {
 					SearchTypeRatioMapper mapper = (SearchTypeRatioMapper)obj;
-					mapper.createTable(site, category, stype);
-					mapper.createIndex(site, category, stype);
-					mapper.validateTable(site, category, stype);
-					mapper.dropTable(site, category, stype);
+					try {
+						mapper.createTable(site, category, stype);
+						mapper.createIndex(site, category, stype);
+						mapper.validateTable(site, category, stype);
+					} finally {
+						mapper.dropTable(site, category, stype);
+					}
 				}
 				
 				logger.debug("obj : {}", obj);

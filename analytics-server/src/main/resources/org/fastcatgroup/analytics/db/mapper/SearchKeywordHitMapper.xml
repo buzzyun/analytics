@@ -27,5 +27,95 @@
 	<update id="dropTable" parameterType="map">
 		drop table ${site}_${category}_keyword_hit
 	</update>
+	
+	<select id="getEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchKeywordHitVO">
+		select * from ${site}_${category}_hit where timeId=#{timeId} and keyword=#{keyword}
+	</select>
+	
+	<select id="getMinEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchKeywordHitVO">
+		select * from ${site}_${category}_hit where keyword=#{keyword} and timeId like '${dType}%' and timeId=(select min(timeId) from ${site}_${category}_hit) limit 1
+	</select>
+	
+	<select id="getMaxEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchKeywordHitVO">
+		select * from ${site}_${category}_hit where keyword=#{keyword} and timeId like '${dType}%' and timeId=(select max(timeId) from ${site}_${category}_hit) limit 1
+	</select>
+	
+	<select id="searchKeyword" parameterType="map" resultType="string">
+		select keyword from ${site}_${category}_hit
+		<where>
+			<if test="search != null and search != ''">
+			and keyword like '%${keyword}%'
+			</if>
+			<if test="from != null and from != '' and to != null and to !=''">
+			and timeId between #{from} and #{to}
+			</if>
+		</where>
+		group by keyword
+	</select>
+	
+	<select id="getEntryListBetween" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchKeywordHitVO">
+		select * from ${site}_${category}_hit
+		<where>
+			<if test="keyword != null and keyword !=''">
+				and keyword = #{keyword}
+			</if>
+			<if test="from != null and from != '' and to != null and to !=''">
+				and timeId between #{from} and #{to}
+			</if>
+			and timeId like '${dType}%'
+		</where>
+	</select>
+	
+	<select id="getCountBetween" parameterType="map" resultType="int">
+		select count(*) from ${site}_${category}_hit 
+		<where>
+			<if test="keyword != null and keyword !=''">
+				and keyword = #{keyword}
+			</if>
+			<if test="from != null and from != '' and to != null and to !=''">
+				and timeId between #{from} and #{to}
+			</if>
+			and timeId like '${dType}%'
+		</where>
+	</select>
+	
+	<select id="getSumBetween" parameterType="map" resultType="int">
+		select sum(hit) from ${site}_${category}_hit 
+		<where>
+			<if test="keyword != null and keyword !=''">
+			and keyword = #{keyword} 
+			</if>
+			and timeId between #{from} and #{to}
+		</where>
+	</select>
+	
+	<insert id="putEntry" parameterType="map" useGeneratedKeys="true" >
+		insert into ${site}_${category}_hit 
+		(timeId, keyword, hit) values (#{timeId},#{keyword}, #{hit})
+	</insert>
+	
+	<update id="updateEntry" parameterType="map">
+		update ${site}_${category}_hit set hit = #{hit} 
+		where timeId = #{timeId} and keyword = #{keyword}
+	</update>
+	
+	<delete id="deleteEntry" parameterType="map">
+		delete ${site}_${category}_hit set hit = #{hit} where timeId = #{timeId}
+		and keyword = #{keyword}
+	</delete>
+	
+	<delete id="deleteEntryBetween" parameterType="map">
+		delete ${site}_${category}_hit set hit = #{hit}
+		<where>
+			<if test="keyword != null and keyword != '' ">
+				and keyword=#{keyword}
+			</if>
+			and timeId between #{from} and #{to} 
+		</where>
+	</delete>
+	
+	<delete id="truncate" parameterType="map">
+		truncate table ${site}_${category}_hit 
+	</delete>
 
 </mapper>

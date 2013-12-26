@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="org.fastcatgroup.analytics.db.mapper.SearchTypeRatioMapper">
+
+	<update id="createTable" parameterType="map" >
+		create table ${site}_${category}_${stype} (
+			timeid varchar(11),
+			stype varchar(128),
+			hit int,
+			primary key (timeid, stype)
+		)
+	</update>
+	
+	<update id="createIndex" parameterType="map" >
+		create index typeid_${site}_${category}_${stype} on ${site}_${category}_${stype}(stype)
+	</update>
+	
+	<select id="validateTable" parameterType="map" resultType="map">
+		select timeid, stype, hit
+		from ${site}_${category}_${stype}
+		fetch first 1 rows only
+	</select>
+
+	<update id="dropTable" parameterType="map">
+		drop table ${site}_${category}_${stype}
+	</update>
+
+</mapper>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="org.fastcatgroup.analytics.db.mapper.SearchKeywordHitMapper">
+
+	<update id="createTable" parameterType="map" >
+		create table ${site}_${category}_keyword_hit (
+			timeid varchar(11),
+			keyword varchar(128),
+			hit int,
+			primary key (timeid, keyword)
+		)
+	</update>
+	
+	<update id="createIndex" parameterType="map" >
+		create index keywordid_${site}_${category}_keyword_hit on ${site}_${category}_keyword_hit(keyword)
+	</update>
+	
+	<select id="validateTable" parameterType="map" resultType="map">
+		select timeid, keyword, hit
+		from ${site}_${category}_keyword_hit
+		fetch first 1 rows only
+	</select>
+
+	<update id="dropTable" parameterType="map">
+		drop table ${site}_${category}_keyword_hit
+	</update>
+
+</mapper>

@@ -28,24 +28,21 @@ public interface SearchKeywordHitMapper {
 			throws Exception;
 	
 	public SearchKeywordHitVO getMaxEntry(@Param("site") String site,
-			@Param("category") String category, @Param("dType") String dType,
+			@Param("category") String category, @Param("dFilter") String dFilter,
 			@Param("keyword") String keyword) throws Exception;
 
 	public List<String> searchKeyword(@Param("site") String site,
 			@Param("category") String category, @Param("search") String search,
 			@Param("from") String from, @Param("to") String to);
 	
-	/**
-	 * process All if #from and #to are null
-	 */
 	public List<SearchKeywordHitVO> getEntryListBetween(
 			@Param("site") String site, @Param("category") String category,
-			@Param("dType") String dType, @Param("keyword") String keyword,
+			@Param("dFilter") String dFilter, @Param("keyword") String keyword,
 			@Param("from") String from, @Param("to") String to,
 			@Param("isGroup") boolean isGroup);
 	
 	public int getCountBetween(@Param("site") String site,
-			@Param("category") String category, @Param("dType") String dType,
+			@Param("category") String category, @Param("dFilter") String dFilter,
 			@Param("keyword") String keyword, @Param("from") String from,
 			@Param("to") String to);
 	

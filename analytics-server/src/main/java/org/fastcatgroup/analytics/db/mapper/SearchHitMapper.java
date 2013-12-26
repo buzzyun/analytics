@@ -31,9 +31,6 @@ public interface SearchHitMapper {
 			@Param("category") String category, @Param("dType") String dType)
 			throws Exception;
 
-	/**
-	 * process All if #from and #to are null
-	 */
 	public List<SearchHitVO> getEntryListBetween(@Param("site") String site,
 			@Param("category") String category, @Param("dType") String dType,
 			@Param("from") String from, @Param("to") String to);

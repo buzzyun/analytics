@@ -24,8 +24,8 @@ public interface SearchKeywordHitMapper {
 			@Param("keyword") String keyword) throws Exception;
 	
 	public SearchKeywordHitVO getMinEntry(@Param("site") String site,
-			@Param("category") String category, @Param("keyword") String keyword)
-			throws Exception;
+			@Param("category") String category, @Param("dFilter") String dFilter, 
+			@Param("keyword") String keyword) throws Exception;
 	
 	public SearchKeywordHitVO getMaxEntry(@Param("site") String site,
 			@Param("category") String category, @Param("dFilter") String dFilter,

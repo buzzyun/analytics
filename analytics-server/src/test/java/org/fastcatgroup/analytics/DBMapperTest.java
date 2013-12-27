@@ -15,6 +15,8 @@ import org.fastcatgroup.analytics.db.mapper.SearchHitMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchKeywordHitMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchTypeRatioMapper;
 import org.fastcatgroup.analytics.db.vo.SearchHitVO;
+import org.fastcatgroup.analytics.db.vo.SearchKeywordHitVO;
+import org.fastcatgroup.analytics.db.vo.SearchTypeRatioVO;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -113,6 +115,8 @@ public class DBMapperTest {
 						mapper.createTable(site, category);
 						mapper.createIndex(site, category);
 						mapper.validateTable(site, category);
+						//입력자료 설정
+						mapper.putEntry(site, category, "m201311", 200);
 						mapper.putEntry(site, category, "d20131225", 1);
 						mapper.putEntry(site, category, "m201312", 100);
 						mapper.putEntry(site, category, "d20131226", 2);
@@ -121,52 +125,172 @@ public class DBMapperTest {
 						mapper.putEntry(site, category, "d20131229", 5);
 						mapper.putEntry(site, category, "d20131230", 6);
 						mapper.putEntry(site, category, "d20131231", 7);
+						session.commit();
+						
+						//최古 항목
 						vo = mapper.getMinEntry(site, category, "d");
 						assertEquals("d20131225", vo.getTimeId());
 						
+						//최근 항목
 						vo = mapper.getMaxEntry(site, category, "d");
 						assertEquals("d20131231", vo.getTimeId());
 						
 						vo = mapper.getMaxEntry(site, category, "m");
 						assertEquals("m201312", vo.getTimeId());
 						
+						//범위내 항목 덤프
 						list = mapper.getEntryListBetween(site, category, "d", "d20131226", "d20131227");
 						for(SearchHitVO entry : list) {
 							logger.debug("entry : {}", entry.getTimeId());
 						}
 						
+						//범위내 항목 덤프 (날자타입)
 						list = mapper.getEntryListBetween(site, category, "d", null, null);
 						for(SearchHitVO entry : list) {
 							logger.debug("entry : {}", entry.getTimeId());
 						}
 						
+						//범위내 항목 갯수
 						int count = mapper.getCountBetween(site, category, "d", "d20131226", "d20131230");
 						assertEquals(count,5);
 						
+						//범위내 조회수 합
 						int sum = mapper.getSumBetween(site, category, "d20131226", "d20131231");
 						assertEquals(sum,2+3+4+5+6+7);
 						
 					} finally {
 						mapper.dropTable(site, category);
+						session.commit();
 					}
 				} else if(obj instanceof SearchKeywordHitMapper) {
-//					SearchKeywordHitMapper mapper = (SearchKeywordHitMapper)obj;
-//					try {
-//						mapper.createTable(site, category);
-//						mapper.createIndex(site, category);
-//						mapper.validateTable(site, category);
-//					} finally {
-//						mapper.dropTable(site, category);
-//					}
-//				} else if(obj instanceof SearchTypeRatioMapper) {
-//					SearchTypeRatioMapper mapper = (SearchTypeRatioMapper)obj;
-//					try {
-//						mapper.createTable(site, category, stype);
-//						mapper.createIndex(site, category, stype);
-//						mapper.validateTable(site, category, stype);
-//					} finally {
-//						mapper.dropTable(site, category, stype);
-//					}
+					SearchKeywordHitMapper mapper = (SearchKeywordHitMapper)obj;
+					SearchKeywordHitVO vo;
+					List<SearchKeywordHitVO> list;
+					List<String> keywordList;
+					try {
+						mapper.createTable(site, category);
+						mapper.createIndex(site, category);
+						mapper.validateTable(site, category);
+						
+						mapper.putEntry(site, category, "d20131101", "조아라", 5);
+						mapper.putEntry(site, category, "d20131101", "테스트", 5);
+						mapper.putEntry(site, category, "d20131201", "테스트", 5);
+						mapper.putEntry(site, category, "d20131201", "키워드", 6);
+						mapper.putEntry(site, category, "d20131201", "마스터", 7);
+						mapper.putEntry(site, category, "d20131202", "드래곤", 8);
+						mapper.putEntry(site, category, "d20131203", "키워드", 9);
+						mapper.putEntry(site, category, "d20131203", "노트북", 10);
+						mapper.putEntry(site, category, "d20131204", "노트북", 10);
+						mapper.putEntry(site, category, "m201312", "키워드", 11);
+						mapper.putEntry(site, category, "m201313", "키워드", 12);
+						session.commit();
+						
+						vo = mapper.getMinEntry(site, category, "d", "키워드");
+						assertEquals(vo.getTimeId(), "d20131201");
+						vo = mapper.getMaxEntry(site, category, "d", "키워드");
+						assertEquals(vo.getTimeId(), "d20131203");
+						
+						vo = mapper.getMinEntry(site, category, "d", "");
+						assertEquals(vo.getTimeId(), "d20131101");
+						vo = mapper.getMaxEntry(site, category, "d", "");
+						assertEquals(vo.getTimeId(), "d20131204");
+						
+						keywordList = mapper.searchKeyword(site, category, "", "d20131202", "d20131204");
+						for(String keyword : keywordList) {
+							logger.debug("keyword : {}", keyword);
+						}
+						
+						keywordList = mapper.searchKeyword(site, category, "", "", "");
+						for(String keyword : keywordList) {
+							logger.debug("keyword : {}", keyword);
+						}
+						
+						keywordList = mapper.searchKeyword(site, category, "노트", "", "");
+						for(String keyword : keywordList) {
+							logger.debug("keyword : {}", keyword);
+							assertEquals(keyword,"노트북");
+						}
+						
+						list = mapper.getEntryListBetween(site, category, "d", "", "d20131202", "d20131204", false);
+						for(SearchKeywordHitVO entry : list) {
+							logger.debug("entry : {} / {}", entry.getTimeId(), entry.getKeyword());
+						}
+						
+						list = mapper.getEntryListBetween(site, category, "d", "노트북", "", "", false);
+						for(SearchKeywordHitVO entry : list) {
+							logger.debug("entry : {} / {}", entry.getTimeId(), entry.getKeyword());
+						}
+						
+						list = mapper.getEntryListBetween(site, category, "d", "노트북", "", "", true);
+						for(SearchKeywordHitVO entry : list) {
+							logger.debug("entry : {} / {}", entry.getTimeId(), entry.getKeyword());
+						}
+						
+						int count = mapper.getCountBetween(site, category, "m", "키워드", "", "");
+						assertEquals(count, 2);
+						
+						count = mapper.getCountBetween(site, category, "d", "", "d20131101", "d20131204");
+						assertEquals(count, 9);
+						
+						int sum = mapper.getSumBetween(site, category, "키워드", "d20131101", "d20131204");
+						assertEquals(sum, 15);
+						
+					} finally {
+						mapper.dropTable(site, category);
+						session.commit();
+					}
+				} else if(obj instanceof SearchTypeRatioMapper) {
+					SearchTypeRatioMapper mapper = (SearchTypeRatioMapper)obj;
+					SearchTypeRatioVO vo;
+					List<SearchTypeRatioVO> list;
+					List<String> typeList;
+					try {
+						mapper.createTable(site, category, stype);
+						mapper.createIndex(site, category, stype);
+						mapper.validateTable(site, category, stype);
+						
+						mapper.putEntry(site, category, stype, "prod_main", "d20131201", 100);
+						mapper.putEntry(site, category, stype, "prod_list", "d20131201", 100);
+						mapper.putEntry(site, category, stype, "prod_detail", "d20131201", 500);
+						mapper.putEntry(site, category, stype, "prod_main", "d20131202", 80);
+						mapper.putEntry(site, category, stype, "prod_list", "d20131202", 80);
+						mapper.putEntry(site, category, stype, "prod_detail", "d20131202", 500);
+						mapper.putEntry(site, category, stype, "prod_detail", "d20131203", 800);
+						mapper.putEntry(site, category, stype, "prod_event", "d20131204", 800);
+						
+						vo = mapper.getMinEntry(site, category, stype, "d", "prod_main");
+						assertEquals(vo.getTimeId(), "d20131201");
+						vo = mapper.getMaxEntry(site, category, stype, "d", "prod_main");
+						assertEquals(vo.getTimeId(), "d20131202");
+						vo = mapper.getMaxEntry(site, category, stype, "d", "prod_detail");
+						assertEquals(vo.getTimeId(), "d20131203");
+						
+						typeList = mapper.listTypes(site, category, stype, "", "");
+						
+						for(String type : typeList) {
+							logger.debug("type : {}", type);
+						}
+						
+						list = mapper.getEntryListBetween(site, category, stype, "d", "prod_main", "", "", false);
+						for(SearchTypeRatioVO entry: list) {
+							logger.debug("entry : {}/{}", entry.getTimeId(), entry.getDtype());
+						}
+						
+						list = mapper.getEntryListBetween(site, category, stype, "d", "", "d20131201", "d20131204", false);
+						for(SearchTypeRatioVO entry: list) {
+							logger.debug("entry : {}/{}", entry.getTimeId(), entry.getDtype());
+						}
+						
+						int count = mapper.getCountBetween(site, category, stype, "d", "prod_event", "d20131201", "d20131204");
+						assertEquals(count,1);
+						
+						int sum = mapper.getSumBetween(site, category, stype, "d", "prod_main", "d20131201", "d20131204");
+						assertEquals(sum,180);
+						
+					} finally {
+						mapper.dropTable(site, category, stype);
+						session.commit();
+					}
 				}
 				
 				logger.debug("obj : {}", obj);
@@ -190,7 +314,7 @@ public class DBMapperTest {
 
 		site = "www";
 		category = "01";
-		stype = "main";
+		stype = "product";
 
 		testModules(site, category, stype);
 	}

@@ -71,6 +71,7 @@ public class CommonDBModule extends AbstractModule {
 		PooledDataSource dataSource = new PooledDataSource(driver, dbUrl, dbUser, dbPass);
 		org.apache.ibatis.mapping.Environment environment = new org.apache.ibatis.mapping.Environment("ID", new JdbcTransactionFactory(), dataSource);
 		Configuration configuration = new Configuration(environment);
+		configuration.getVariables().put("DBMS", "");
 		configuration.getVariables().putAll(globalParam);
 		
 		if(mapperFileList != null){

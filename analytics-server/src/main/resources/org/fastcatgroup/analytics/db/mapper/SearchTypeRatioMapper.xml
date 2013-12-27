@@ -15,14 +15,14 @@
 	</update>
 	
 	<update id="createIndex" parameterType="map" >
-		create index typeid_${site}_${category}_${stype} on ${site}_${category}_${stype}(stype)
+		create index typeid_${site}_${category}_${stype} on ${site}_${category}_${stype}(dtype)
 	</update>
 	
 	<select id="validateTable" parameterType="map" resultType="map">
 		select timeid, dtype, hit
 		from ${site}_${category}_${stype}
 		<if test="'${DBMS}' == 'mysql'"> limit 1</if>
-		<if test="'${DBMS}' == null or '${DBMS}' == ''"> fetch first 1 rows only </if>
+		<if test="'${DBMS}' == ''"> fetch first 1 rows only </if>
 	</select>
 
 	<update id="dropTable" parameterType="map">
@@ -34,28 +34,40 @@
 	</select>
 	
 	<select id="getMinEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchTypeRatioVO">
-		select * from ${site}_${category}_${stype} where dtype=#{dtype} and timeId=(select min(timeId) from ${site}_${category}_${stype} where timeId like '${dFilter}%') 
+		select * from ${site}_${category}_${stype} where 
+		timeId=(
+			select min(timeId) from ${site}_${category}_${stype} where timeId like '${dFilter}%'
+			<if test="dtype !=null and dtype !=''">
+			and dtype=#{dtype}
+			</if>
+		) 
 		<if test="'${DBMS}' == 'mysql'"> limit 1</if>
-		<if test="'${DBMS}' == null or '${DBMS}' == ''"> fetch first 1 rows only </if>
+		<if test="'${DBMS}' == ''"> fetch first 1 rows only </if>
 	</select>
 	
 	<select id="getMaxEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchTypeRatioVO">
-		select * from ${site}_${category}_${stype} where dtype=#{dtype} and timeId=(select max(timeId) from ${site}_${category}_${stype} where timeId like '${dFilter}%') 
+		select * from ${site}_${category}_${stype} where 
+		timeId=(
+			select max(timeId) from ${site}_${category}_${stype} where timeId like '${dFilter}%'
+			<if test="dtype !=null and dtype !=''">
+			and dtype=#{dtype}
+			</if>
+		) 
 		<if test="'${DBMS}' == 'mysql'"> limit 1</if>
-		<if test="'${DBMS}' == null or '${DBMS}' == ''"> fetch first 1 rows only </if>
+		<if test="'${DBMS}' == ''"> fetch first 1 rows only </if>
 	</select>
 	
 	<select id="listTypes" parameterType="map" resultType="string">
-		select dtype from ${site}_${category}_${stype}
+		select distinct dtype from ${site}_${category}_${stype}
 		<where>
 			<if test="from != null and from != '' and to != null and to !=''">
 			and timeId between #{from} and #{to}
 			</if>
 		</where>
-		group by dtype
 	</select>
 	
 	<select id="getEntryListBetween" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchTypeRatioVO">
+		select a.* from (
 		select * from ${site}_${category}_${stype}
 		<where>
 			<if test="dtype != null and dtype !=''">
@@ -66,8 +78,17 @@
 			</if>
 			and timeId like '${dFilter}%'
 		</where>
-		<if test="isGroup = 'true'">
-		group by dtype
+		<if test="'${DBMS}' == 'mysql'">
+			<if test="isGroup == true">
+			group by dtype
+			</if>
+		</if>
+		) a
+		<if test="'${DBMS}' == ''">
+			<if test="isGroup == true">
+			inner join (select dtype from ${site}_${category}_${stype} group by dtype) b
+			on a.dtype = b.dtype
+			</if>
 		</if>
 	</select>
 	

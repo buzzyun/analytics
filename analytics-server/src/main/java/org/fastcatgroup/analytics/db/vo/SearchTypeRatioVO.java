@@ -4,7 +4,7 @@ public class SearchTypeRatioVO {
 	
 	private String timeId;
 	
-	private String type;
+	private String dtype;
 	
 	private int hit;
 	
@@ -14,11 +14,11 @@ public class SearchTypeRatioVO {
 	public void setTimeId(String timeId) {
 		this.timeId = timeId;
 	}
-	public String getType() {
-		return type;
+	public String getDtype() {
+		return dtype;
 	}
-	public void setType(String type) {
-		this.type = type;
+	public void setDtype(String dType) {
+		this.dtype = dType;
 	}
 	public int getHit() {
 		return hit;

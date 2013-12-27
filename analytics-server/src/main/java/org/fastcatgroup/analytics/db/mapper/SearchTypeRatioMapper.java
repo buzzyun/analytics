@@ -29,38 +29,43 @@ public interface SearchTypeRatioMapper {
 	
 	public SearchTypeRatioVO getMinEntry(@Param("site") String site,
 			@Param("category") String category, @Param("stype") String stype,
-			@Param("dtype") String dtype) throws Exception;
+			@Param("dFilter") String dFilter, @Param("dtype") String dtype)
+			throws Exception;
 	
 	public SearchTypeRatioVO getMaxEntry(@Param("site") String site,
 			@Param("category") String category, @Param("stype") String stype,
-			@Param("dtype") String dtype, @Param("dFilter") String dFilter)
+			@Param("dFilter") String dFilter, @Param("dtype") String dtype)
 			throws Exception;
+	
+	public List<String> listTypes(@Param("site") String site,
+			@Param("category") String category, @Param("stype") String stype,
+			@Param("from") String from, @Param("to") String to);
 
 	public List<SearchTypeRatioVO> getEntryListBetween(
 			@Param("site") String site, @Param("category") String category,
-			@Param("stype") String stype, @Param("dtype") String dtype,
-			@Param("dFilter") String dFilter, @Param("from") String from,
+			@Param("stype") String stype, @Param("dFilter") String dFilter,
+			@Param("dtype") String dtype, @Param("from") String from,
 			@Param("to") String to, @Param("isGroup") boolean isGroup);
 	
 	public int getCountBetween(@Param("site") String site,
 			@Param("category") String category, @Param("stype") String stype,
-			@Param("dtype") String dtype, @Param("dFilter") String dFilter,
+			@Param("dFilter") String dFilter, @Param("dtype") String dtype,
 			@Param("from") String from, @Param("to") String to);
 	
 	public int getSumBetween(@Param("site") String site,
 			@Param("category") String category, @Param("stype") String stype,
-			@Param("dtype") String dtype, @Param("from") String from,
-			@Param("to") String to);
+			@Param("dFilter") String dFilter, @Param("dtype") String dtype,
+			@Param("from") String from, @Param("to") String to);
 	
 	public int putEntry(@Param("site") String site,
 			@Param("category") String category, @Param("stype") String stype,
 			@Param("dtype") String dtype, @Param("timeId") String timeId,
-			@Param("ratio") int ratio);
+			@Param("hit") int hit);
 	
 	public int updateEntry(@Param("site") String site,
 			@Param("category") String category, @Param("stype") String stype,
 			@Param("dtype") String dtype, @Param("timeId") String timeId,
-			@Param("ratio") int ratio);
+			@Param("hit") int hit);
 	
 	public int deleteEntry(@Param("site") String site,
 			@Param("category") String category, @Param("stype") String stype,

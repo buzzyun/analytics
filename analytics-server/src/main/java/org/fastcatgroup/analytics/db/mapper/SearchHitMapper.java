@@ -24,19 +24,19 @@ public interface SearchHitMapper {
 			throws Exception;
 	
 	public SearchHitVO getMinEntry(@Param("site") String site,
-			@Param("category") String category, @Param("dType") String dType)
+			@Param("category") String category, @Param("dFilter") String dFilter)
 			throws Exception;
 
 	public SearchHitVO getMaxEntry(@Param("site") String site,
-			@Param("category") String category, @Param("dType") String dType)
+			@Param("category") String category, @Param("dFilter") String dFilter)
 			throws Exception;
 
 	public List<SearchHitVO> getEntryListBetween(@Param("site") String site,
-			@Param("category") String category, @Param("dType") String dType,
+			@Param("category") String category, @Param("dFilter") String dFilter,
 			@Param("from") String from, @Param("to") String to);
 	
 	public int getCountBetween(@Param("site") String site,
-			@Param("category") String category, @Param("dType") String dType,
+			@Param("category") String category, @Param("dFilter") String dFilter,
 			@Param("from") String from, @Param("to") String to);
 
 	public int getSumBetween(@Param("site") String site,

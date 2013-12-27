@@ -17,6 +17,7 @@ import java.net.URL;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.builder.xml.XMLMapperBuilder;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
@@ -38,6 +39,7 @@ public class CommonDBModule extends AbstractModule {
 	private String dbUrl;
 	private String dbUser;
 	private String dbPass;
+	private Map<String,Object> globalParam;
 
 	protected static CommonDBModule instance;
 
@@ -53,12 +55,13 @@ public class CommonDBModule extends AbstractModule {
 		instance = this;
 	}
 
-	public CommonDBModule(String driver, String dbUrl, String user, String pass, List<URL> mapperFileList, Environment environment, Settings settings, ServiceManager serviceManager) {
+	public CommonDBModule(String driver, String dbUrl, String user, String pass, Map<String,Object> globalParam, List<URL> mapperFileList, Environment environment, Settings settings, ServiceManager serviceManager) {
 		super(environment, settings);
 		this.driver = driver;
 		this.dbUrl = dbUrl;
 		this.dbUser = user;
 		this.dbPass = pass;
+		this.globalParam = globalParam;
 		this.mapperFileList = mapperFileList;
 	}
 
@@ -68,6 +71,7 @@ public class CommonDBModule extends AbstractModule {
 		PooledDataSource dataSource = new PooledDataSource(driver, dbUrl, dbUser, dbPass);
 		org.apache.ibatis.mapping.Environment environment = new org.apache.ibatis.mapping.Environment("ID", new JdbcTransactionFactory(), dataSource);
 		Configuration configuration = new Configuration(environment);
+		configuration.getVariables().putAll(globalParam);
 		
 		if(mapperFileList != null){
 			for(URL mapperFile : mapperFileList){

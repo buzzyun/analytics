@@ -35,20 +35,20 @@ public class WebAdminService extends AbstractService {
 			}
 		});
 		
-		File dir = new File("/Users/swsong/git-stable2/analytics/analytics-web/src/main/webapp");
 		File warFile = null;
 		if(files != null && files.length > 0){
 			warFile = files[0];
 		}else{
-			if(dir.exists()){
-				warFile = dir;
+			//war파일을 찾지못했다면 개발환경 경로를 확인한다.
+			File devWebApp = new File("../analytics-web/src/main/webapp");
+			if(devWebApp.exists()){
+				warFile = devWebApp;
 			}else{
 				return false;
 			}
 		}
 		
 		String warFilePath = warFile.getAbsolutePath();
-		logger.debug("warFilePath >> {}", warFilePath);
 		
 		server = new Server(SERVER_PORT);
 		File tempDir = environment.filePaths().file("web", "temp");
@@ -57,7 +57,7 @@ public class WebAdminService extends AbstractService {
 		WebAppContext webapp = new WebAppContext();
 		webapp.setContextPath("/analytics");
 		webapp.setWar(warFilePath);
-		//webapp.setTempDirectory(tempDir);
+		webapp.setTempDirectory(tempDir);
 		webapp.setParentLoaderPriority(true);
 		server.setHandler(webapp);
 		
@@ -65,7 +65,7 @@ public class WebAdminService extends AbstractService {
 			// stop을 명령하면 즉시 중지되도록.
 			server.setStopAtShutdown(true);
 			server.start();
-			logger.info("WebAdmin jetty[{}] port[{}]", server.getVersion(), SERVER_PORT);
+			logger.info("WebAdmin jetty[{}] port[{}] webapp[{}]", Server.getVersion(), SERVER_PORT, warFilePath);
 		} catch (Exception e) {
 			throw new AnalyticsException(SERVER_PORT + " PORT로 웹서버 시작중 에러발생. ", e);
 

@@ -25,6 +25,8 @@ import org.fastcatgroup.analytics.env.Environment;
 import org.fastcatgroup.analytics.exception.AnalyticsException;
 import org.fastcatgroup.analytics.http.HttpRequestService;
 import org.fastcatgroup.analytics.keyword.KeywordService;
+import org.fastcatgroup.analytics.manager.WebAdminService;
+import org.fastcatgroup.analytics.service.AbstractService;
 import org.fastcatgroup.analytics.service.ServiceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -168,27 +170,22 @@ public class CatServer {
 		SearchStatisticsService searchStatisticsService = serviceManager.createService("statistics", SearchStatisticsService.class);
 		KeywordService keywordService = serviceManager.createService("keyword", KeywordService.class);
 		
+		WebAdminService webAdminService = serviceManager.createService("keyword", WebAdminService.class);
 		
 		logger = LoggerFactory.getLogger(CatServer.class);
 		logger.info("ServerHome = {}", serverHome);
-		try {
-			dbService.start();
-			jobService.start();
-			httpRequestService.start();
-			
-			searchStatisticsService.start();
-			keywordService.start();
-			/*
-			 * 서비스가 모두 뜬 상태에서 후속작업.
-			 */
-			
-			
-			
-			
-		} catch (AnalyticsException e) {
-			logger.error("CatServer 시작에 실패했습니다.", e);
-			stop();
-		}
+		
+		startService(dbService);
+		startService(jobService);
+		startService(httpRequestService);
+		
+		startService(searchStatisticsService);
+		startService(keywordService);
+		startService(webAdminService);
+		/*
+		 * 서비스가 모두 뜬 상태에서 후속작업.
+		 */
+		
 
 		if (shutdownHook == null) {
 			shutdownHook = new ServerShutdownHook();
@@ -205,6 +202,13 @@ public class CatServer {
 		}
 	}
 
+	private void startService(AbstractService service){
+		try{
+			service.start();
+		}catch(Throwable e){
+			logger.error("", e);
+		}
+	}
 	private void setKeepAlive() {
 		keepAliveLatch = new CountDownLatch(1);
 
@@ -233,6 +237,7 @@ public class CatServer {
 	public void stop() throws AnalyticsException {
 
 		//뜨는 도중 에러 발생시 NullPointerException 발생가능성.
+		serviceManager.stopService(WebAdminService.class);
 		serviceManager.stopService(HttpRequestService.class);
 		serviceManager.stopService(JobService.class);
 		serviceManager.stopService(DBService.class);
@@ -247,6 +252,7 @@ public class CatServer {
 	}
 
 	public void close() throws AnalyticsException {
+		serviceManager.closeService(WebAdminService.class);
 		serviceManager.closeService(HttpRequestService.class);
 		serviceManager.closeService(JobService.class);
 		serviceManager.closeService(DBService.class);

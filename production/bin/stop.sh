@@ -17,5 +17,5 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #-------------------------------------------------------------------------------
 #Fastcat stop script
-echo kill `ps -ef|grep java|grep fastcatsearch|awk '{print $2}'`
-kill `ps -ef|grep java|grep fastcatsearch|awk '{print $2}'`
+echo kill `ps -ef|grep java|grep analytics-server-bootstrap|awk '{print $2}'`
+kill `ps -ef|grep java|grep analytics-server-bootstrap|awk '{print $2}'`

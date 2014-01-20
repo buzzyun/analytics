@@ -18,12 +18,12 @@
 #-------------------------------------------------------------------------------
 #Fastcat start script
 cd `dirname $0`/../
-if [ -n "$FASTCAT_HOME" ]; then IR_HOME=$FASTCAT_HOME; else IR_HOME=`pwd`; fi
+SERVER_HOME=`pwd`;
 
-CONF=$IR_HOME/conf
-LIB=$IR_HOME/lib
+CONF=$SERVER_HOME/conf
+LIB=$SERVER_HOME/lib
 
 #for background service
 FASTCAT_CLASSPATH=".:bin"
 for jarfile in `find $LIB | grep [.]jar$`; do FASTCAT_CLASSPATH="$FASTCAT_CLASSPATH:$jarfile"; done
-java -Dserver.home=$IR_HOME -Xmx512m -server -Dfile.encoding=UTF-8 -Dlogback.configurationFile=$CONF/logback.xml -Dderby.stream.error.file=logs/db.log -classpath $FASTCAT_CLASSPATH org.fastcatsearch.cli.Console $1 $2
+java -Xmx512m -server -Dfile.encoding=UTF-8 -Dlogback.configurationFile=$CONF/logback.xml -Dderby.stream.error.file=logs/db.log -classpath $FASTCAT_CLASSPATH org.fastcatgroup.analytics.server.CatServer $SERVER_HOME

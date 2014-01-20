@@ -3,6 +3,7 @@
 	<name>analytics-web</name>
 	<comment></comment>
 	<projects>
+		<project>analytics-server</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

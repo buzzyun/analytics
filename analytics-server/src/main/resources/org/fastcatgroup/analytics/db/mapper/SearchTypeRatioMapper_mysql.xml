@@ -21,8 +21,7 @@
 	<select id="validateTable" parameterType="map" resultType="map">
 		select timeid, dtype, hit
 		from ${site}_${category}_${stype}
-		<if test="'${DBMS}' == 'mysql'"> limit 1</if>
-		<if test="'${DBMS}' == ''"> fetch first 1 rows only </if>
+		limit 1
 	</select>
 
 	<update id="dropTable" parameterType="map">
@@ -41,8 +40,7 @@
 			and dtype=#{dtype}
 			</if>
 		) 
-		<if test="'${DBMS}' == 'mysql'"> limit 1</if>
-		<if test="'${DBMS}' == ''"> fetch first 1 rows only </if>
+		limit 1
 	</select>
 	
 	<select id="getMaxEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchTypeRatioVO">
@@ -53,8 +51,7 @@
 			and dtype=#{dtype}
 			</if>
 		) 
-		<if test="'${DBMS}' == 'mysql'"> limit 1</if>
-		<if test="'${DBMS}' == ''"> fetch first 1 rows only </if>
+		limit 1
 	</select>
 	
 	<select id="listTypes" parameterType="map" resultType="string">
@@ -78,18 +75,10 @@
 			</if>
 			and timeId like '${dFilter}%'
 		</where>
-		<if test="'${DBMS}' == 'mysql'">
-			<if test="isGroup == true">
-			group by dtype
-			</if>
+		<if test="isGroup == true">
+		group by dtype
 		</if>
 		) a
-		<if test="'${DBMS}' == ''">
-			<if test="isGroup == true">
-			inner join (select dtype from ${site}_${category}_${stype} group by dtype) b
-			on a.dtype = b.dtype
-			</if>
-		</if>
 	</select>
 	
 	<select id="getCountBetween" parameterType="map" resultType="int">

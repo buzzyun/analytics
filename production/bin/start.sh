@@ -18,13 +18,18 @@
 #-------------------------------------------------------------------------------
 #Fastcat start script
 cd `dirname $0`/../
-if [ -n "$FASTCAT_HOME" ]; then IR_HOME=$FASTCAT_HOME; else IR_HOME=`pwd`; fi
+SERVER_HOME=`pwd`;
 
-CONF=$IR_HOME/conf
-LIB=$IR_HOME/lib
-JSP_LIB=$LIB/jsp/commons-el.jar:$LIB/jsp/jasper-compiler-5.5.15.jar:$LIB/jsp/jasper-compiler-jdt-5.5.15.jar:$LIB/jsp/jasper-runtime-5.5.15.jar:$LIB/jsp/jsp-api-2.0.jar
+CONF=$SERVER_HOME/conf
+LIB=$SERVER_HOME/lib
+LOGS=$SERVER_HOME/logs
+OUTPUT_LOG=$LOGS/output.log
 
-#for background service
-FASTCAT_CLASSPATH=".:bin"
-for jarfile in `find $LIB | grep [.]jar$`; do FASTCAT_CLASSPATH="$FASTCAT_CLASSPATH:$jarfile"; done
-nohup java -Dserver.home=$IR_HOME -Xmx512m -server -Dfile.encoding=UTF-8 -Dlogback.configurationFile=$CONF/logback.xml -Dderby.stream.error.file=logs/db.log -classpath $FASTCAT_CLASSPATH org.fastcatsearch.server.CatServer $IR_HOME 2>&1 &
+HEAP_MEMORY_SIZE=512m
+JVM_OPTS="-Xms$HEAP_MEMORY_SIZE -Xmx$HEAP_MEMORY_SIZE -XX:+HeapDumpOnOutOfMemoryError"
+JAVA_OPTS="-server -Dfile.encoding=UTF-8 -Dlogback.configurationFile=$CONF/logback.xml -Dderby.stream.error.file=logs/db.log"
+ADDITIONAL_OPTS=
+
+trap '' 1 2 
+
+java -Dserver.home=$SERVER_HOME $JVM_OPTS $JAVA_OPTS $ADDITIONAL_OPTS -classpath $LIB/analytics-server-bootstrap.jar org.fastcatgroup.analytics.server.Bootstrap > $OUTPUT_LOG 2>&1 & 

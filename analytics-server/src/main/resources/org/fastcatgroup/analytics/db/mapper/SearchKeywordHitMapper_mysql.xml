@@ -21,8 +21,7 @@
 	<select id="validateTable" parameterType="map" resultType="map">
 		select timeid, keyword, hit
 		from ${site}_${category}_keyword_hit
-		<if test="'${DBMS}' == 'mysql'"> limit 1</if>
-		<if test="'${DBMS}' == ''"> fetch first 1 rows only </if>
+		limit 1
 	</select>
 
 	<update id="dropTable" parameterType="map">
@@ -41,8 +40,7 @@
 			and keyword=#{keyword}
 			</if>
 		) 
-		<if test="'${DBMS}' == 'mysql'"> limit 1</if>
-		<if test="'${DBMS}' == ''"> fetch first 1 rows only </if>
+		limit 1
 	</select>
 	
 	<select id="getMaxEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchKeywordHitVO">
@@ -53,8 +51,7 @@
 			and keyword=#{keyword}
 			</if>
 		) 
-		<if test="'${DBMS}' == 'mysql'"> limit 1</if>
-		<if test="'${DBMS}' == ''"> fetch first 1 rows only </if>
+		limit 1
 	</select>
 	
 	<select id="searchKeyword" parameterType="map" resultType="string">
@@ -81,18 +78,10 @@
 			</if>
 			and timeId like '${dFilter}%'
 		</where>
-		<if test="'${DBMS}' == 'mysql'">
-			<if test="isGroup == true">
-			group by keyword
-			</if>
+		<if test="isGroup == true">
+		group by keyword
 		</if>
 		) a
-		<if test="'${DBMS}' == ''">
-			<if test="isGroup == true">
-			inner join (select keyword from ${site}_${category}_keyword_hit group by keyword) b
-			on a.keyword = b.keyword
-			</if>
-		</if>
 	</select>
 	
 	<select id="getCountBetween" parameterType="map" resultType="int">

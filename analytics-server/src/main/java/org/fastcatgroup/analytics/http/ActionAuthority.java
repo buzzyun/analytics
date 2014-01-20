@@ -7,7 +7,8 @@ public enum ActionAuthority {
 	NULL ("NULL"), 
 	Analysis_Dictionary ("Analysis Dictionary"), 
 	Collection_Schema ("Collection Schema"), 
-	Collection_Indexing  ("Collection Indexing");
+	Collection_Indexing  ("Collection Indexing"),
+	Keyword  ("Keyword");
 	
 	private String name;
 	private String code;

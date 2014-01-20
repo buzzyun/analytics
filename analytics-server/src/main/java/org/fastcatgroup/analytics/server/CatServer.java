@@ -18,11 +18,13 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.util.concurrent.CountDownLatch;
 
+import org.fastcatgroup.analytics.analysis.SearchStatisticsService;
 import org.fastcatgroup.analytics.control.JobService;
 import org.fastcatgroup.analytics.db.DBService;
 import org.fastcatgroup.analytics.env.Environment;
 import org.fastcatgroup.analytics.exception.AnalyticsException;
 import org.fastcatgroup.analytics.http.HttpRequestService;
+import org.fastcatgroup.analytics.keyword.KeywordService;
 import org.fastcatgroup.analytics.service.ServiceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -163,6 +165,10 @@ public class CatServer {
 
 		HttpRequestService httpRequestService = serviceManager.createService("http", HttpRequestService.class);
 		
+		SearchStatisticsService searchStatisticsService = serviceManager.createService("statistics", SearchStatisticsService.class);
+		KeywordService keywordService = serviceManager.createService("keyword", KeywordService.class);
+		
+		
 		logger = LoggerFactory.getLogger(CatServer.class);
 		logger.info("ServerHome = {}", serverHome);
 		try {
@@ -170,7 +176,8 @@ public class CatServer {
 			jobService.start();
 			httpRequestService.start();
 			
-			
+			searchStatisticsService.start();
+			keywordService.start();
 			/*
 			 * 서비스가 모두 뜬 상태에서 후속작업.
 			 */
@@ -230,6 +237,9 @@ public class CatServer {
 		serviceManager.stopService(JobService.class);
 		serviceManager.stopService(DBService.class);
 
+		serviceManager.stopService(SearchStatisticsService.class);
+		serviceManager.stopService(KeywordService.class);
+		
 		logger.info("CatServer shutdown!");
 		isRunning = false;
 
@@ -240,6 +250,9 @@ public class CatServer {
 		serviceManager.closeService(HttpRequestService.class);
 		serviceManager.closeService(JobService.class);
 		serviceManager.closeService(DBService.class);
+		
+		serviceManager.closeService(SearchStatisticsService.class);
+		serviceManager.closeService(KeywordService.class);
 		
 		if(fileLock != null){
 			try {

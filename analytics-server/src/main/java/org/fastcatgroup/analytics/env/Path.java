@@ -2,8 +2,6 @@ package org.fastcatgroup.analytics.env;
 
 import java.io.File;
 
-import org.fastcatgroup.analytics.util.FilePaths;
-
 public class Path {
 
 	private File root;
@@ -98,14 +96,13 @@ public class Path {
 	public String toString() {
 		return root.getPath();
 	}
-
 	
-	public Path getCollectionsRoot() {
-		return makeRelativePath("collections");
+	public Path getStatisticsRoot() {
+		return makeRelativePath("statistics");
 	}
-
-	public FilePaths collectionFilePaths(String collectionId) {
-		return new FilePaths(getCollectionsRoot().file(), collectionId);
+	
+	public Path getKeywordsRoot() {
+		return makeRelativePath("keywords");
 	}
 
 }

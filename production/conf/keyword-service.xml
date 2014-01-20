@@ -1,0 +1,9 @@
+<keyword-service>
+	
+	<category-list>
+		<category id="root" name="root" servicePopularKeyword="true" popularKeywordServiceType="3D, 1W" serviceRelateKeyword="true" serviceRealTimePopularKeyword="true"/>
+		<category id="total" name="통합검색" servicePopularKeyword="true" popularKeywordServiceType="3D, 1W" serviceRelateKeyword="true" serviceRealTimePopularKeyword="true"/>
+		<category id="detail" name="상세검색" servicePopularKeyword="true" popularKeywordServiceType="3D, 1W" serviceRelateKeyword="true" serviceRealTimePopularKeyword="true"/>
+	</category-list>
+	
+</keyword-service>

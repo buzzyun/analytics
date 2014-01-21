@@ -47,6 +47,28 @@ public class ReportController extends AbstractController {
 	@RequestMapping("/hitCount")
 	public ModelAndView hitCount() {
 
+		
+		
+		//TODO
+		
+		//mapper가져와서
+		
+		
+		//select해서 보낸다.
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/hitCount");
 		return mav;

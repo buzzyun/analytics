@@ -10,7 +10,7 @@ import java.util.Map;
 
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
-import org.fastcatgroup.analytics.db.CommonDBModule;
+import org.fastcatgroup.analytics.db.CommonDBHandler;
 import org.fastcatgroup.analytics.db.mapper.SearchHitMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchKeywordHitMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchTypeRatioMapper;
@@ -32,7 +32,7 @@ public class DBMapperTest {
 	private String dbUser = "sa";
 	private String dbPass = "";
 	private String dbms = "";
-	private CommonDBModule dbModule;
+	private CommonDBHandler dbModule;
 
 	@Before
 	public void init() {
@@ -68,19 +68,12 @@ public class DBMapperTest {
 	}
 
 	public SqlSession initDb(String driver, String dbUrl, String dbUser,
-			String dbPass, String[] classList) throws Exception {
-		
-		List<URL> mapperFileList = new ArrayList<URL>();
-		for(String path : classList) {
-			path = path.replaceAll("[.]", "/")+".xml";
-			mapperFileList.add(Resources.getResourceURL(path));
-		}
+			String dbPass, Class[] classList) throws Exception {
 		
 		Map<String,Object> globalParam = new HashMap<String,Object>();
 		globalParam.put("DBMS", dbms);
 		
-		dbModule = new CommonDBModule(driver, dbUrl,
-				dbUser, dbPass, globalParam, mapperFileList, null, null, null);
+		dbModule = new CommonDBHandler(null, classList);
 		dbModule.load();
 		SqlSession session = dbModule.openSession();
 	
@@ -90,22 +83,22 @@ public class DBMapperTest {
 	}
 
 	public void testModules(String site, String category, String stype) throws Exception {
-		String[] classList = new String[] {
-			SearchHitMapper.class.getName(),
-			SearchKeywordHitMapper.class.getName(),
-			SearchTypeRatioMapper.class.getName()
+		Class[] classList = new Class[] {
+			SearchHitMapper.class,
+			SearchKeywordHitMapper.class,
+			SearchTypeRatioMapper.class
 			};
 		
-		CommonDBModule dbModule = null;
+		CommonDBHandler dbModule = null;
 		SqlSession session = null;
 		
 		try {
 		
 			session = initDb(driver, dbUrl, dbUser, dbPass, classList);
 			
-			for(String classStr : classList) {
+			for(Class<?> clazz : classList) {
 				
-				Object obj = session.getMapper(Class.forName(classStr));
+				Object obj = session.getMapper(clazz);
 				
 				if(obj instanceof SearchHitMapper) {
 					SearchHitMapper mapper = (SearchHitMapper)obj;

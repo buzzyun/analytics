@@ -5,7 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.fastcatgroup.analytics.db.vo.SearchHitVO;
 
-public interface SearchHitMapper {
+public interface SearchHitMapper extends AnalyticsMapper {
 	
 	public void createTable(@Param("site") String site,
 			@Param("category") String category);

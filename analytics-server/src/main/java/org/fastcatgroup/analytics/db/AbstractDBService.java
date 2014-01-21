@@ -11,14 +11,11 @@
 
 package org.fastcatgroup.analytics.db;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
-import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
-import org.fastcatgroup.analytics.db.mapper.ManagedMapper;
+import org.fastcatgroup.analytics.db.mapper.AnalyticsMapper;
 import org.fastcatgroup.analytics.env.Environment;
 import org.fastcatgroup.analytics.env.Settings;
 import org.fastcatgroup.analytics.exception.AnalyticsException;
@@ -28,83 +25,56 @@ import org.fastcatgroup.analytics.service.ServiceManager;
 
 public abstract class AbstractDBService extends AbstractService {
 
-	protected InternalDBModule internalDBModule;
+	protected CommonDBHandler dbHandler;
+	
 	private Class<?>[] mapperList;
-
-	public AbstractDBService(String dbPath, Class<?>[] mapperList, Environment environment, Settings settings, ServiceManager serviceManager) {
+	private Properties driverProperties;
+	private Map<String,Object> globalParam;
+	
+	public AbstractDBService(Environment environment, Settings settings, ServiceManager serviceManager) {
 		super(environment, settings, serviceManager);
-		this.mapperList = mapperList;
-		String dbmsName = "mysql"; // TODO 차후 셋팅으로..
-		String absoluteDbPath = environment.filePaths().file(dbPath).getAbsolutePath();
+		
+		
+		
+		//TODO 
+//		String absoluteDbPath = environment.filePaths().file(dbUrl).getAbsolutePath();
 		// system관련 mapper설정.
-		List<URL> mapperFileList = new ArrayList<URL>();
-		for (Class<?> mapperDAO : mapperList) {
-			try {
-				String mapperFilePath = mapperDAO.getName().replace('.', '/') + "_" + dbmsName + ".xml";
-				URL mapperFile = Resources.getResourceURL(mapperFilePath);
-				mapperFileList.add(mapperFile);
-			} catch (IOException e) {
-				logger.error("error load MapperFile", e);
-			}
-		}
-		internalDBModule = new InternalDBModule(absoluteDbPath, mapperFileList, environment, settings, serviceManager);
 
 	}
 
-	public InternalDBModule internalDBModule() {
-		return internalDBModule;
+	public CommonDBHandler dbHandler() {
+		return dbHandler;
 	}
 
+	protected void init(Settings settings, Class<?>[] mapperList, Properties driverProperties, Map<String,Object> globalParam) {
+		this.settings = settings;
+		this.mapperList = mapperList;
+		this.driverProperties = driverProperties;
+		this.globalParam = globalParam;
+		dbHandler = new CommonDBHandler(settings, mapperList, driverProperties, globalParam);
+	}
+	
 	public <T> MapperSession<T> getMapperSession(Class<T> type) {
-		SqlSession session = internalDBModule.openSession();
+		SqlSession session = dbHandler.openSession();
 		return new MapperSession<T>(session, session.getMapper(type));
 
 	}
 
 	@Override
 	protected boolean doStart() throws AnalyticsException {
-		internalDBModule.load();
-		for (Class<?> mapperDAO : mapperList) {
-			Class<? extends ManagedMapper> clazz = (Class<? extends ManagedMapper>) mapperDAO;
-			MapperSession<? extends ManagedMapper> mapperSession = (MapperSession<? extends ManagedMapper>) getMapperSession(clazz);
-			ManagedMapper managedMapper = mapperSession.getMapper();
-			try {
-				logger.debug("valiadte {}", clazz.getSimpleName());
-				managedMapper.validateTable();
-			} catch (Exception e) {
-				try {
-					logger.debug("drop {}", clazz.getSimpleName());
-					managedMapper.dropTable();
-					mapperSession.commit();
-				} catch (Exception ignore) {
-				}
-				try {
-					logger.debug("create table {}", clazz.getSimpleName());
-					managedMapper.createTable();
-					mapperSession.commit();
-					logger.debug("create index {}", clazz.getSimpleName());
-					managedMapper.createIndex();
-					mapperSession.commit();
-
-					initMapper(managedMapper);
-
-				} catch (Exception e2) {
-					logger.error("", e2);
-				}
-			}
-			mapperSession.closeSession();
-
-		}
-
+		
+		dbHandler.load();
+		
+		initMapper(mapperList);
 		return true;
 	}
 
-	protected abstract void initMapper(ManagedMapper managedMapper) throws Exception;
+	protected abstract void initMapper(Class<?>[] mapperList) throws AnalyticsException;
 
 	@Override
 	protected boolean doStop() throws AnalyticsException {
 		try {
-			internalDBModule.unload();
+			dbHandler.unload();
 		} catch (ModuleException e) {
 			logger.error(e.getMessage(), e);
 			return false;
@@ -114,7 +84,7 @@ public abstract class AbstractDBService extends AbstractService {
 
 	@Override
 	protected boolean doClose() throws AnalyticsException {
-		internalDBModule = null;
+		dbHandler = null;
 		return true;
 	}
 

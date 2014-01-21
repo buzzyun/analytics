@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.xml.bind.JAXBException;
 
@@ -48,7 +50,7 @@ public class KeywordService extends AbstractDBService {
 	private static Class<?>[] mapperList = new Class<?>[] { PopularKeywordMapper.class, RelateKeywordMapper.class, KeywordSuggestionMapper.class, ADKeywordMapper.class };
 
 	public KeywordService(Environment environment, Settings settings, ServiceManager serviceManager) {
-		super("db/keyword", KeywordService.mapperList, environment, settings, serviceManager);
+		super(environment, settings, serviceManager);
 
 		moduleHome = environment.filePaths().getKeywordsRoot().file();
 		popularKeywordModule = new PopularKeywordModule(moduleHome, environment, settings);
@@ -79,7 +81,10 @@ public class KeywordService extends AbstractDBService {
 
 	@Override
 	protected boolean doStart() throws AnalyticsException {
-
+		Properties driverProperties = null;
+		Map<String,Object> globalParam = null;
+		init(settings, mapperList, driverProperties, globalParam);
+		
 		File keywordServiceConfigFile = environment.filePaths().configPath().path(SettingFileNames.keywordServiceConfig).file();
 		try {
 			keywordServiceSettings = JAXBConfigs.readConfig(keywordServiceConfigFile, KeywordServiceSettings.class);
@@ -98,33 +103,7 @@ public class KeywordService extends AbstractDBService {
 		// 모듈 로딩.
 		loadKeywordModules();
 
-		// 마스터 노드만 통계를 낸다.
-		if (isMaster) {
-			// 수집 스케쥴을 건다.
-			// Realtime 정시에서 시작하여 5분단위.
-			Calendar calendar = DateUtils.getLatestTimeLargerThanNow(5);
-			calendar.add(Calendar.MINUTE, 2); // +2분 여유.
-			Date nextTimeForRealtimeLog = calendar.getTime();
-			JobService.getInstance().schedule(new MakeRealtimePopularKeywordJob(), nextTimeForRealtimeLog, DateUtils.getSecondsByMinutes(5)); // 5분주기.
-			// Daily 매 정시기준으로 1일 단위.
-			calendar = DateUtils.getNextDayHour(0); // 다음날 0시.
-			calendar.add(Calendar.MINUTE, 10); // +10분 여유.
-			Date nextTimeForDailyLog = calendar.getTime();
-			JobService.getInstance().schedule(new MakePopularKeywordJob(), nextTimeForDailyLog, DateUtils.getSecondsByDays(1)); // 1일
-			
-			JobService.getInstance().schedule(new MakeRelateKeywordJob(), nextTimeForDailyLog, DateUtils.getSecondsByDays(1)); // 1일
-			
-			
-		}
-
-		if (isMaster) {
-			// 마스터서버이면, 자동완성, 연관키워드, 인기검색어 등의 db를 연다.
-			return super.doStart();
-		} else {
-
-			return true;
-		}
-
+		return true;
 	}
 
 	public void loadPopularKeywordDictionary(String categoryId, KeywordDictionaryType type, int interval) throws IOException {
@@ -192,8 +171,9 @@ public class KeywordService extends AbstractDBService {
 	}
 
 	@Override
-	protected void initMapper(ManagedMapper managedMapper) throws Exception {
-		// do nothing
+	protected void initMapper(Class<?>[] mapperList) throws AnalyticsException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -4,12 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import org.fastcatgroup.analytics.analysis.log.AbstractLog;
+import org.fastcatgroup.analytics.analysis.log.CategoryLog;
 import org.fastcatgroup.analytics.util.DirBufferedReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LogAggregator<LogType extends AbstractLog> {
+public class LogAggregator<LogType extends CategoryLog> {
 
 	protected static Logger logger = LoggerFactory.getLogger(LogAggregator.class);
 

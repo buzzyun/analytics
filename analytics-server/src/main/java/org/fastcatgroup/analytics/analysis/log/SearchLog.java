@@ -1,10 +1,10 @@
 package org.fastcatgroup.analytics.analysis.log;
 
-public class SearchLog extends AbstractLog {
+public class SearchLog  {
 	private String prevKeyword;
 
 	public SearchLog(String keyword, String prevKeyword) {
-		super(keyword);
+//		super(keyword);
 		this.prevKeyword = prevKeyword;
 	}
 
@@ -13,6 +13,6 @@ public class SearchLog extends AbstractLog {
 	}
 
 	public String toString() {
-		return getClass().getSimpleName() + ": " + getKey() + " : " + prevKeyword;
+		return getClass().getSimpleName() + ": " + null + " : " + prevKeyword;
 	}
 }

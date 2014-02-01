@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
-import org.fastcatgroup.analytics.analysis.SearchStatisticsService;
+import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.exception.AnalyticsException;
 import org.fastcatgroup.analytics.job.Job;
 import org.fastcatgroup.analytics.service.ServiceManager;
@@ -33,7 +33,7 @@ public class MakeRelateKeywordJob extends Job {
 		cal.add(Calendar.HOUR_OF_DAY, -1);
 		String prevTimeFormatString = "R" + new SimpleDateFormat("yyyyMMddHHmm").format(cal.getTime()); // 1시간 이전.
 
-		SearchStatisticsService searchStatisticsService = ServiceManager.getInstance().getService(SearchStatisticsService.class);
+		StatisticsService searchStatisticsService = ServiceManager.getInstance().getService(StatisticsService.class);
 		StatisticsSettings statisticsSettings = searchStatisticsService.statisticsSettings();
 		List<Category> categoryList = statisticsSettings.getCategoryList();
 

@@ -7,7 +7,7 @@ import java.util.Map;
 import javax.management.Query;
 
 import org.fastcatgroup.analytics.analysis.CategoryStatistics;
-import org.fastcatgroup.analytics.analysis.SearchStatisticsService;
+import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.http.ActionMapping;
 import org.fastcatgroup.analytics.http.action.ActionRequest;
 import org.fastcatgroup.analytics.http.action.ActionResponse;
@@ -24,7 +24,7 @@ public class PutSearchKeywordAction extends ServiceAction {
 		String keyword = request.getParameter("keyword");
 		String prevKeyword = request.getParameter("prevKeyword");
 		
-		SearchStatisticsService searchStatisticsService = ServiceManager.getInstance().getService(SearchStatisticsService.class);
+		StatisticsService searchStatisticsService = ServiceManager.getInstance().getService(StatisticsService.class);
 		
 		searchStatisticsService.searchStatistics().add(keyword);
 		

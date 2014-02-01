@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.fastcatgroup.analytics.analysis.SearchStatisticsService;
+import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.db.mapper.PopularKeywordMapper;
 import org.fastcatgroup.analytics.db.mapper.RelateKeywordMapper;
 import org.fastcatgroup.analytics.db.vo.PopularKeywordVO;
@@ -46,7 +46,7 @@ public class KeywordDictionaryCompileApplyJob extends Job {
 
 		KeywordService keywordService = ServiceManager.getInstance().getService(KeywordService.class);
 
-		SearchStatisticsService statisticsService = ServiceManager.getInstance().getService(SearchStatisticsService.class);
+		StatisticsService statisticsService = ServiceManager.getInstance().getService(StatisticsService.class);
 
 		List<Category> categoryList = statisticsService.statisticsSettings().getCategoryList();
 

@@ -18,7 +18,7 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.util.concurrent.CountDownLatch;
 
-import org.fastcatgroup.analytics.analysis.SearchStatisticsService;
+import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.control.JobService;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.env.Environment;
@@ -161,7 +161,7 @@ public class CatServer {
 
 		HttpRequestService httpRequestService = serviceManager.createService("http", HttpRequestService.class);
 
-		SearchStatisticsService searchStatisticsService = serviceManager.createService("statistics", SearchStatisticsService.class);
+		StatisticsService searchStatisticsService = serviceManager.createService("statistics", StatisticsService.class);
 		KeywordService keywordService = serviceManager.createService("keyword", KeywordService.class);
 
 		WebAdminService webAdminService = serviceManager.createService("keyword", WebAdminService.class);
@@ -241,7 +241,7 @@ public class CatServer {
 		serviceManager.stopService(JobService.class);
 		serviceManager.stopService(AnalyticsDBService.class);
 
-		serviceManager.stopService(SearchStatisticsService.class);
+		serviceManager.stopService(StatisticsService.class);
 		serviceManager.stopService(KeywordService.class);
 
 		logger.info("CatServer shutdown!");
@@ -256,7 +256,7 @@ public class CatServer {
 		serviceManager.closeService(JobService.class);
 		serviceManager.closeService(AnalyticsDBService.class);
 
-		serviceManager.closeService(SearchStatisticsService.class);
+		serviceManager.closeService(StatisticsService.class);
 		serviceManager.closeService(KeywordService.class);
 
 		if (fileLock != null) {

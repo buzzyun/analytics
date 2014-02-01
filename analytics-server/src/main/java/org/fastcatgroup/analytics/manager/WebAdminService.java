@@ -13,7 +13,7 @@ import org.fastcatgroup.analytics.service.ServiceManager;
 
 public class WebAdminService extends AbstractService {
 
-	private int SERVER_PORT;
+	private int webPort;
 	private Server server;
 
 	public WebAdminService(Environment environment, Settings settings, ServiceManager serviceManager) {
@@ -24,7 +24,7 @@ public class WebAdminService extends AbstractService {
 	@Override
 	protected boolean doStart() throws AnalyticsException {
 		
-		SERVER_PORT = 8080;
+		webPort = settings.getInt("admin.web.port", 8080);
 		File webDir = environment.filePaths().file("web");//,"analytics-web.war"
 		
 		File[] files = webDir.listFiles(new FilenameFilter() {
@@ -50,7 +50,7 @@ public class WebAdminService extends AbstractService {
 		
 		String warFilePath = warFile.getAbsolutePath();
 		
-		server = new Server(SERVER_PORT);
+		server = new Server(webPort);
 		File tempDir = environment.filePaths().file("web", "temp");
 		tempDir.mkdir();
 		
@@ -65,9 +65,9 @@ public class WebAdminService extends AbstractService {
 			// stop을 명령하면 즉시 중지되도록.
 			server.setStopAtShutdown(true);
 			server.start();
-			logger.info("WebAdmin jetty[{}] port[{}] webapp[{}]", Server.getVersion(), SERVER_PORT, warFilePath);
+			logger.info("WebAdmin jetty[{}] port[{}] webapp[{}]", Server.getVersion(), webPort, warFilePath);
 		} catch (Exception e) {
-			throw new AnalyticsException(SERVER_PORT + " PORT로 웹서버 시작중 에러발생. ", e);
+			throw new AnalyticsException(webPort + " PORT로 웹서버 시작중 에러발생. ", e);
 
 		}
 		return true;

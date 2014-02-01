@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.fastcatgroup.analytics.analysis.LogAggregator.Counter;
-import org.fastcatgroup.analytics.analysis.log.AbstractLog;
+import org.fastcatgroup.analytics.analysis.log.CategoryLog;
 import org.fastcatgroup.analytics.analysis.util.AggregationResultWriter;
 import org.fastcatgroup.analytics.analysis.util.LogParser;
 import org.fastcatgroup.analytics.analysis.util.RunMerger;
@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  * 하위클래스에서는 source 로그파일을 읽어들이는 reader를 정의하고, output을 위한 comparator 를 정의한다.
  * 
  * */
-public abstract class LogAggregateHandler<LogType extends AbstractLog> {
+public abstract class LogAggregateHandler<LogType extends CategoryLog> {
 	protected static Logger logger = LoggerFactory.getLogger(LogAggregateHandler.class);
 
 	private LogParser<LogType> logParser;

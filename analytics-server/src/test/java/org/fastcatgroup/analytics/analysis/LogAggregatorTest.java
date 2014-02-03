@@ -38,7 +38,7 @@ public class LogAggregatorTest {
 		});
 		String outputFilename = "0.log";
 		
-		List<LogAggregateHandler<LogData>> handlerList = new ArrayList<LogAggregateHandler<LogData>>();
+		List<AbstractLogAggregator<LogData>> handlerList = new ArrayList<AbstractLogAggregator<LogData>>();
 //		handlerList.add(new PopularKeywordLogAggregateHandler(targetDir, outputFilename, runKeySize, outputEncoding, banWords, 0));
 		
 		LogAggregator<LogData> tmpLogAggregator = new LogAggregator<LogData>(inFileList, inputEncoding, handlerList);

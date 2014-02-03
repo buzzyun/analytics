@@ -7,11 +7,11 @@ import org.fastcatgroup.analytics.analysis.log.SearchLog;
 import org.fastcatgroup.analytics.analysis2.LogHandler;
 import org.fastcatgroup.analytics.util.Counter;
 
-public class SimpleLogHandler extends LogHandler<SearchLog> {
+public class TestSearchLogHandler extends LogHandler<SearchLog> {
 
 	Map<String, Counter> map;
 
-	public SimpleLogHandler(){
+	public TestSearchLogHandler(){
 		map = new HashMap<String, Counter>();
 	}
 	

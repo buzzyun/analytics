@@ -2,13 +2,12 @@ package org.fastcatgroup.analytics.analysis;
 
 import java.util.Map;
 
-import org.fastcatgroup.analytics.analysis2.ProcessHandler;
+import org.fastcatgroup.analytics.analysis2.handler.ProcessHandler;
 
 public class SimpleProcessHandler extends ProcessHandler {
 
 	@Override
-	protected void reset() {
-		
+	public void reset() {
 	}
 
 	@Override

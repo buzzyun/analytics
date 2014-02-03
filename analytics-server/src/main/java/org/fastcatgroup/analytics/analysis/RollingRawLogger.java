@@ -4,10 +4,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Calendar;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -21,14 +19,12 @@ public class RollingRawLogger {
 
 	private BufferedLogger aLogger;
 	private File baseDir;
-	private String prefix;
-	private int rollingLimit;
+	private String targetFilename;
 	private int sequence;
 
-	public RollingRawLogger(File baseDir, String prefix, int rollingLimit) {
+	public RollingRawLogger(File baseDir, String targetFilename) {
 		this.baseDir = baseDir;
-		this.prefix = prefix;
-		this.rollingLimit = rollingLimit;
+		this.targetFilename = targetFilename;
 		this.sequence = readSequence();
 		this.aLogger = new BufferedLogger(getTempFile(sequence), true);
 	}
@@ -106,34 +102,19 @@ public class RollingRawLogger {
 	}
 
 	private File getTempFile(int index) {
-		return new File(baseDir, prefix + ".tmp." + index);
-	}
-
-	private File getFile(int index) {
-		return new File(baseDir, prefix + "." + index + ".log");
+		return new File(baseDir, index + ".tmp.log");
 	}
 
 	public void rolling() {
 
 		File prevFile = rollingRawLogger();
 
-		for (int i = rollingLimit - 2; i >= 0; i--) {
-			File srcFile = getFile(i);
-			if (srcFile.exists()) {
-				File destFile = getFile(i + 1);
-				if(destFile.exists()){
-					destFile.delete();
-				}
-				try {
-					FileUtils.moveFile(srcFile, destFile);
-				} catch (IOException e) {
-					logger.error("", e);
-				}
-			}
-		}
-
 		try {
-			FileUtils.moveFile(prevFile, getFile(0));
+			File f = new File(baseDir, targetFilename);
+			if(f.exists()){
+				f.delete();
+			}
+			FileUtils.moveFile(prevFile, f);
 		} catch (IOException e) {
 			logger.error("", e);
 		}

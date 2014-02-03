@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
+import org.fastcatgroup.analytics.analysis.log.LogData;
 import org.fastcatgroup.analytics.control.JobExecutor;
 import org.fastcatgroup.analytics.control.ResultFuture;
 import org.slf4j.Logger;
@@ -12,20 +13,20 @@ import org.slf4j.LoggerFactory;
 /**
  * 스케줄링된 여러 task를 가지고 작업을 수행한다. 다음 스케줄에 실행될 작업을 리턴해준다.
  * */
-public class ScheduledTaskRunner extends Thread {
+public class ScheduledTaskRunner<LogType extends LogData> extends Thread {
 	protected static Logger logger = LoggerFactory.getLogger(ScheduledTaskRunner.class);
 
 	private JobExecutor jobExecutor;
-	private Queue<AnalysisTask> priorityJobQueue;
+	private Queue<AnalysisTask<LogType>> priorityJobQueue;
 	private boolean isCanceled;
 
 	public ScheduledTaskRunner(String name, JobExecutor jobExecutor) {
 		super(name);
 		this.jobExecutor = jobExecutor;
-		this.priorityJobQueue = new PriorityQueue<AnalysisTask>(5);
+		this.priorityJobQueue = new PriorityQueue<AnalysisTask<LogType>>(5);
 	}
 
-	public void addAnalysisTask(AnalysisTask task) {
+	public void addTask(AnalysisTask<LogType> task) {
 		priorityJobQueue.add(task);
 	}
 
@@ -36,15 +37,15 @@ public class ScheduledTaskRunner extends Thread {
 	
 	@Override
 	public void run() {
-		Iterator<AnalysisTask> iterator = priorityJobQueue.iterator();
+		Iterator<AnalysisTask<LogType>> iterator = priorityJobQueue.iterator();
 		while (iterator.hasNext()) {
-			AnalysisTask e = iterator.next();
+			AnalysisTask<LogType> e = iterator.next();
 			e.updateScheduleTimeByNow();
 		}
 
 		while (!isCanceled) {
 			try {
-				AnalysisTask task = priorityJobQueue.poll();
+				AnalysisTask<LogType> task = priorityJobQueue.poll();
 				long timeToWait = task.getDelayedScheduledTime() - System.currentTimeMillis();
 				if (timeToWait < 0) {
 					// 이미 지났을 경우 바로실행한다. 스케쥴링된 모든 작업은 실행이 보장되어야한다.

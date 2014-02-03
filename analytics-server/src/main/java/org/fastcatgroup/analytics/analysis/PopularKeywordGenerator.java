@@ -116,8 +116,8 @@ public class PopularKeywordGenerator {
 		 * 내부적으로 _run임시 디렉토리 사용함.
 		 */
 
-		List<LogAggregateHandler<SearchLog>> handlerList = new ArrayList<LogAggregateHandler<SearchLog>>();
-		handlerList.add(new PopularKeywordLogAggregateHandler(WORKING_DIR, WORKING_LOG_FILENAME, runKeySize, fileEncoding, banWords, minimumHitCount));
+		List<AbstractLogAggregateHandler<SearchLog>> handlerList = new ArrayList<AbstractLogAggregateHandler<SearchLog>>();
+		handlerList.add(new KeyCountLogAggregator(WORKING_DIR, WORKING_LOG_FILENAME, runKeySize, fileEncoding, banWords, minimumHitCount));
 		LogAggregator<SearchLog> tmpLogAggregator = new LogAggregator<SearchLog>(logFileList, fileEncoding, handlerList);
 		tmpLogAggregator.aggregate();
 

@@ -6,11 +6,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.fastcatgroup.analytics.analysis.LogAggregator.Counter;
 import org.fastcatgroup.analytics.analysis.log.LogData;
 import org.fastcatgroup.analytics.analysis.util.AggregationResultWriter;
 import org.fastcatgroup.analytics.analysis.util.LogParser;
 import org.fastcatgroup.analytics.analysis.util.RunMerger;
+import org.fastcatgroup.analytics.util.Counter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,8 +23,8 @@ import org.slf4j.LoggerFactory;
  * 하위클래스에서는 source 로그파일을 읽어들이는 reader를 정의하고, output을 위한 comparator 를 정의한다.
  * 
  * */
-public abstract class LogAggregateHandler<LogType extends LogData> {
-	protected static Logger logger = LoggerFactory.getLogger(LogAggregateHandler.class);
+public abstract class AbstractLogAggregator<LogType extends LogData> {
+	protected static Logger logger = LoggerFactory.getLogger(AbstractLogAggregator.class);
 
 	private LogParser<LogType> logParser;
 	private int runKeySize;
@@ -35,7 +35,7 @@ public abstract class LogAggregateHandler<LogType extends LogData> {
 	protected int minimumHitCount;
 	
 	
-	public LogAggregateHandler(LogParser<LogType> logParser, int runKeySize, String outputEncoding, Set<String> banWords, int minimumHitCount) {
+	public AbstractLogAggregator(LogParser<LogType> logParser, int runKeySize, String outputEncoding, Set<String> banWords, int minimumHitCount) {
 		this.logParser = logParser;
 		this.runKeySize = runKeySize;
 		this.aggregateMap = new HashMap<String, Counter>(runKeySize);
@@ -51,8 +51,6 @@ public abstract class LogAggregateHandler<LogType extends LogData> {
 	protected abstract RunMerger newFinalMerger(String encoding, int flushCount);
 
 	protected abstract void doDone();
-
-//	protected abstract boolean checkNeedMerge(int flushCount);
 
 	public void handleLog(String line) throws IOException {
 		LogType log = logParser.parseLine(line);
@@ -114,5 +112,6 @@ public abstract class LogAggregateHandler<LogType extends LogData> {
 
 		doDone();
 	}
+	
 
 }

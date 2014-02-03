@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fastcatgroup.analytics.analysis.log.LogData;
+import org.fastcatgroup.analytics.analysis2.handler.ProcessHandler;
 import org.fastcatgroup.analytics.analysis2.schedule.Schedule;
 import org.fastcatgroup.analytics.job.Job;
 import org.slf4j.Logger;
@@ -16,6 +17,8 @@ public class AnalysisTask<LogType extends LogData> extends Job implements Compar
 
 	private Schedule schedule;
 	private int priority;
+	private ProcessHandler preProcess;
+	
 	private List<Calculator<LogType>> calculatorList;
 	private SourceLogReaderFactory<LogType> readerFactory;
 	private int executeCount;
@@ -27,6 +30,10 @@ public class AnalysisTask<LogType extends LogData> extends Job implements Compar
 		calculatorList = new ArrayList<Calculator<LogType>>();
 	}
 
+	public void preProcess(ProcessHandler preProcess){
+		this.preProcess = preProcess;
+	}
+	
 	public int priority() {
 		return priority;
 	}
@@ -43,6 +50,9 @@ public class AnalysisTask<LogType extends LogData> extends Job implements Compar
 	
 	@Override
 	public JobResult doRun() {
+		if(preProcess != null){
+			preProcess.process(null);
+		}
 		SourceLogReader<LogType> reader = readerFactory.createReader();
 		try {
 			LogType logData = null;

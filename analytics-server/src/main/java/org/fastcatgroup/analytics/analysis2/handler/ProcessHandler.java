@@ -1,4 +1,4 @@
-package org.fastcatgroup.analytics.analysis2;
+package org.fastcatgroup.analytics.analysis2.handler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +12,7 @@ public abstract class ProcessHandler {
 	protected ProcessHandler nextHandler;
 
 	//초기화.
-	protected abstract void reset();
+	public abstract void reset();
 	
 	/**
 	 * 다음 handler셋팅.

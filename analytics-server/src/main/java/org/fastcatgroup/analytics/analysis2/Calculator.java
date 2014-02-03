@@ -1,6 +1,7 @@
 package org.fastcatgroup.analytics.analysis2;
 
 import org.fastcatgroup.analytics.analysis.log.LogData;
+import org.fastcatgroup.analytics.analysis2.handler.ProcessHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -12,17 +12,18 @@ import org.fastcatgroup.analytics.analysis.util.RunMerger;
 import org.fastcatgroup.analytics.analysis.util.SortedRunFileMerger;
 
 /**
- * 인기검색어를 만들기 위한 handler LogAggregateHandler를 구현하여 run파일의 위치와 최종 머저를 생성한다.
+ * 인기검색어를 만들기 위한 handler AbstractLogAggregator를 구현하여 run파일의 위치와 최종 머저를 생성한다.
  * 
  * */
-public class PopularKeywordLogAggregateHandler extends LogAggregateHandler<SearchLog> {
+public class KeyCountLogAggregator extends AbstractLogAggregator<SearchLog> {
 
 	private File runTmpDir;
 	private File destFile;
-	public PopularKeywordLogAggregateHandler(File targetDir, String fileName, int runKeySize, String outputEncoding, Set<String> banWords, int minimumHitCount) {
+	
+	public KeyCountLogAggregator(File targetDir, String targetFilename, int runKeySize, String outputEncoding, Set<String> banWords, int minimumHitCount) {
 		super(new SearchLogParser(), runKeySize, outputEncoding, banWords, minimumHitCount);
 		this.runTmpDir = new File(targetDir, "_run");
-		this.destFile = new File(targetDir, fileName);
+		this.destFile = new File(targetDir, targetFilename);
 		
 		if (!targetDir.exists()) {
 			targetDir.mkdir();
@@ -37,24 +38,6 @@ public class PopularKeywordLogAggregateHandler extends LogAggregateHandler<Searc
 		File file = getRunFile(flushId);
 		return new AggregationResultFileWriter(file, encoding);
 	}
-
-//	@Override
-//	protected boolean checkNeedMerge(int flushCount) {
-//		if (flushCount == 1) {
-//			File srcFile = getRunFile(0);
-//			if(destFile.exists()){
-//				destFile.delete();
-//			}
-//			try {
-//				FileUtils.moveFile(srcFile, destFile);
-//			} catch (IOException e) {
-//				logger.error("", e);
-//			}
-//		}
-//		
-//		//flush가 1번이거나 없으면, 머징하지 않는다.
-//		return flushCount > 1;
-//	}
 
 	@Override
 	protected RunMerger newFinalMerger(String encoding, int flushCount) {

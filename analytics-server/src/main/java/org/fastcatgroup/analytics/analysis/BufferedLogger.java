@@ -145,18 +145,12 @@ public class BufferedLogger {
 		}
 		@Override
 		public void run() {
-			if (memoryData.size() >= bufferSize) {
+			if (memoryData.size() >= bufferSize || tryCount >= tryLimit) {
 				flush();
 				tryCount = 0;
 			}else {
 				tryCount++;
-				
-				if(tryCount >= tryLimit){
-					flush();
-					tryCount = 0;
-				}
 			}
-				
 		}
 
 	}

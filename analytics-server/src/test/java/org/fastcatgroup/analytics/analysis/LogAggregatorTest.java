@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
-import org.fastcatgroup.analytics.analysis.log.SearchLog;
+import org.fastcatgroup.analytics.analysis.log.LogData;
 import org.junit.Test;
 
 /*
@@ -38,10 +38,10 @@ public class LogAggregatorTest {
 		});
 		String outputFilename = "0.log";
 		
-		List<LogAggregateHandler<SearchLog>> handlerList = new ArrayList<LogAggregateHandler<SearchLog>>();
-		handlerList.add(new PopularKeywordLogAggregateHandler(targetDir, outputFilename, runKeySize, outputEncoding, banWords, 0));
+		List<LogAggregateHandler<LogData>> handlerList = new ArrayList<LogAggregateHandler<LogData>>();
+//		handlerList.add(new PopularKeywordLogAggregateHandler(targetDir, outputFilename, runKeySize, outputEncoding, banWords, 0));
 		
-		LogAggregator<SearchLog> tmpLogAggregator = new LogAggregator<SearchLog>(inFileList, inputEncoding, handlerList);
+		LogAggregator<LogData> tmpLogAggregator = new LogAggregator<LogData>(inFileList, inputEncoding, handlerList);
 		tmpLogAggregator.aggregate(); 
 		
 		

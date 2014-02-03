@@ -4,12 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import org.fastcatgroup.analytics.analysis.log.CategoryLog;
+import org.fastcatgroup.analytics.analysis.log.LogData;
 import org.fastcatgroup.analytics.util.DirBufferedReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LogAggregator<LogType extends CategoryLog> {
+public class LogAggregator<LogType extends LogData> {
 
 	protected static Logger logger = LoggerFactory.getLogger(LogAggregator.class);
 
@@ -59,6 +59,11 @@ public class LogAggregator<LogType extends CategoryLog> {
 
 		public int value() {
 			return count;
+		}
+		
+		@Override
+		public String toString(){
+			return String.valueOf(count);
 		}
 	}
 

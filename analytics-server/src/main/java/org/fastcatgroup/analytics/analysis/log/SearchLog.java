@@ -1,18 +1,28 @@
 package org.fastcatgroup.analytics.analysis.log;
 
-public class SearchLog  {
-	private String prevKeyword;
+public class SearchLog extends LogData {
 
-	public SearchLog(String keyword, String prevKeyword) {
-//		super(keyword);
-		this.prevKeyword = prevKeyword;
+	public SearchLog(String[] data) {
+		super(data);
 	}
 
-	public String getPrevKeyword() {
-		return prevKeyword;
+	public String category() {
+		return data[0];
 	}
 
-	public String toString() {
-		return getClass().getSimpleName() + ": " + null + " : " + prevKeyword;
+	public String keyword() {
+		if (data.length >= 2) {
+			return data[1];
+		}else{
+			return null;
+		}
+	}
+
+	public String previousKeyword() {
+		if (data.length >= 3) {
+			return data[2];
+		} else {
+			return null;
+		}
 	}
 }

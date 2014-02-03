@@ -227,38 +227,38 @@ public class JobService extends AbstractService implements JobExecutor {
 
 	}
 
-	public void schedule(Job job, Date startTime, int periodInSecond){
-		schedule(job, startTime, periodInSecond, false);
-	}
+//	public void schedule(Job job, Date startTime, int periodInSecond){
+//		schedule(job, startTime, periodInSecond, false);
+//	}
 	
-	public void schedule(Job job, Date startTime, int periodInSecond, boolean forceUpdate){
-		if(periodInSecond <= 0){
-			logger.error("Schedule must be positive integer. periodInSecond = {}", periodInSecond);
-			return;
-		}
-		String jobKey = getJobKey(job);
-		ScheduledJob scheduledJob = scheduleMap.get(jobKey);
-		if(scheduledJob == null || forceUpdate){
-			scheduledJob = new ScheduledJob(job, startTime, periodInSecond);
-			ScheduledJob oldScheduledJob = scheduleMap.put(jobKey, scheduledJob);
-			if(oldScheduledJob != null){
-				logger.info("Cancel old schdule {}", oldScheduledJob);
-				oldScheduledJob.cancel();
-			}
-			offer(scheduledJob);
-		}else{
-			logger.error("{} is already scheduled", job);
-		}
-	}
-	
-	
-	public void cancelSchedule(Job job){
-		String jobKey = getJobKey(job);
-		ScheduledJob scheduledJob = scheduleMap.remove(jobKey);
-		if(scheduledJob != null){
-			scheduledJob.cancel();
-		}
-	}
+//	public void schedule(Job job, Date startTime, int periodInSecond, boolean forceUpdate){
+//		if(periodInSecond <= 0){
+//			logger.error("Schedule must be positive integer. periodInSecond = {}", periodInSecond);
+//			return;
+//		}
+//		String jobKey = getJobKey(job);
+//		ScheduledJob scheduledJob = scheduleMap.get(jobKey);
+//		if(scheduledJob == null || forceUpdate){
+//			scheduledJob = new ScheduledJob(job, startTime, periodInSecond);
+//			ScheduledJob oldScheduledJob = scheduleMap.put(jobKey, scheduledJob);
+//			if(oldScheduledJob != null){
+//				logger.info("Cancel old schdule {}", oldScheduledJob);
+//				oldScheduledJob.cancel();
+//			}
+//			offer(scheduledJob);
+//		}else{
+//			logger.error("{} is already scheduled", job);
+//		}
+//	}
+//	
+//	
+//	public void cancelSchedule(Job job){
+//		String jobKey = getJobKey(job);
+//		ScheduledJob scheduledJob = scheduleMap.remove(jobKey);
+//		if(scheduledJob != null){
+//			scheduledJob.cancel();
+//		}
+//	}
 	
 	private String getJobKey(Job job){
 		if(job != null){

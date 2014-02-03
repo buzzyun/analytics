@@ -26,7 +26,7 @@ public class PutSearchKeywordAction extends ServiceAction {
 		
 		StatisticsService searchStatisticsService = ServiceManager.getInstance().getService(StatisticsService.class);
 		
-		searchStatisticsService.searchStatistics().add(keyword);
+//		searchStatisticsService.categoryStatistics(categoryId)searchStatistics().add(keyword);
 		
 		CategoryStatistics categoryStatistics = searchStatisticsService.categoryStatistics(category);
 		

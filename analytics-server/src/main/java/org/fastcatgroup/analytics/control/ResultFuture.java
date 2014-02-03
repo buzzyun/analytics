@@ -31,6 +31,14 @@ public class ResultFuture {
 	
 	private static class NullResult { }
 	
+	/**
+	 * 실패 결과.
+	 * */
+	public ResultFuture() {
+		requestId = -1;
+		result = NULL_RESULT;
+	}
+	
 	public ResultFuture(long requestId, Map<Long, ? extends ResultFuture> resultFutureMap) {
 		this.requestId = requestId;
 		this.resultFutureMap = resultFutureMap;

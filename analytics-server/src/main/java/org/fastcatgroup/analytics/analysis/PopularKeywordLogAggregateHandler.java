@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.fastcatgroup.analytics.analysis.log.LogData;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
 import org.fastcatgroup.analytics.analysis.util.AggregationResultFileWriter;
 import org.fastcatgroup.analytics.analysis.util.AggregationResultWriter;

@@ -1,6 +1,7 @@
 package org.fastcatgroup.analytics.analysis.util;
 
 import java.util.Comparator;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,21 +12,21 @@ public class RunEntryMergeReader<E extends RunEntry> {
 	private Comparator<E> comparator;
 
 	private int[] heap;
-	private RunEntryReader<E>[] reader;
+	private List<RunEntryReader<E>> readerList;
 	private int runSize;
 
 	private E entry;
 	private E entryOld;
 
-	public RunEntryMergeReader(RunEntryReader<E>[] entryReaderList) {
+	public RunEntryMergeReader(List<RunEntryReader<E>> entryReaderList) {
 		this(entryReaderList, null);
 	}
 
-	public RunEntryMergeReader(RunEntryReader<E>[] entryReaderList, Comparator<E> comparator) {
-		this.reader = entryReaderList;
+	public RunEntryMergeReader(List<RunEntryReader<E>> entryReaderList, Comparator<E> comparator) {
+		this.readerList = entryReaderList;
 		this.comparator = comparator;
 
-		runSize = entryReaderList.length;
+		runSize = entryReaderList.size();
 		makeHeap(runSize);
 	}
 
@@ -33,7 +34,7 @@ public class RunEntryMergeReader<E extends RunEntry> {
 		E result = null;
 		while (true) {
 			int idx = heap[1];
-			entry = reader[idx].entry();
+			entry = readerList.get(idx).entry();
 
 			// logger.debug("## check {} : {}", entry, entryOld);
 
@@ -59,7 +60,7 @@ public class RunEntryMergeReader<E extends RunEntry> {
 			// backup cv to old
 			entryOld = entry;
 
-			reader[idx].next();
+			readerList.get(idx).next();
 
 			heapify(1, runSize);
 
@@ -140,7 +141,7 @@ public class RunEntryMergeReader<E extends RunEntry> {
 		int b = heap[another];
 
 		// return compareKey(reader[a].entry(), reader[b].entry());
-		int r = compareEntry(reader[a].entry(), reader[b].entry());
+		int r = compareEntry(readerList.get(a).entry(), readerList.get(b).entry());
 
 		return r;
 	}

@@ -48,7 +48,7 @@ public class LogSorter {
 		try {
 			while (entryReader.next()) {
 				KeyCountRunEntry entry = entryReader.entry();
-//				logger.debug(">>> {}", entry);
+				// logger.debug(">>> {}", entry);
 				if (entry != null) {
 					list.add(entry);
 
@@ -74,7 +74,7 @@ public class LogSorter {
 		for (int i = 0; i < flushCount; i++) {
 			runFileList[i] = getRunFile(workDir, i);
 		}
-		KeyCountRunEntryReader[] entryReaderList = getReaderList(runFileList);
+		List<RunEntryReader<KeyCountRunEntry>> entryReaderList = getReaderList(runFileList);
 		RunEntryMergeReader<KeyCountRunEntry> mergeReader = new RunEntryMergeReader<KeyCountRunEntry>(entryReaderList, comparator);
 
 		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, encoding));
@@ -87,7 +87,7 @@ public class LogSorter {
 			}
 
 		} finally {
-			for (KeyCountRunEntryReader r : entryReaderList) {
+			for (RunEntryReader<KeyCountRunEntry> r : entryReaderList) {
 				r.close();
 			}
 
@@ -119,12 +119,15 @@ public class LogSorter {
 		return new File(workDir, Integer.valueOf(i) + ".run");
 	}
 
-	private KeyCountRunEntryReader[] getReaderList(File[] fileList) throws IOException {
-		KeyCountRunEntryReader[] list = new KeyCountRunEntryReader[fileList.length];
+	private List<RunEntryReader<KeyCountRunEntry>> getReaderList(File[] fileList) throws IOException {
+		List<RunEntryReader<KeyCountRunEntry>> list = new ArrayList<RunEntryReader<KeyCountRunEntry>>();
 		for (int i = 0; i < fileList.length; i++) {
 			File f = fileList[i];
-			list[i] = new KeyCountRunEntryReader(f, encoding);
-			list[i].next();
+			if (f.exists()) {
+				KeyCountRunEntryReader r = new KeyCountRunEntryReader(f, encoding);
+				r.next();
+				list.add(r);
+			}
 		}
 		return list;
 	}

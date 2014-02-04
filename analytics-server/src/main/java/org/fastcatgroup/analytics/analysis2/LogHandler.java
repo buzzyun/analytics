@@ -14,6 +14,6 @@ public abstract class LogHandler<LogType extends LogData> extends ProcessHandler
 	 * */
 	public abstract void handleLog(LogType logData);
 
-	
+	public abstract Object done();
 
 }

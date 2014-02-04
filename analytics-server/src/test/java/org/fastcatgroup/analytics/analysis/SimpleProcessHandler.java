@@ -11,14 +11,11 @@ public class SimpleProcessHandler extends ProcessHandler {
 	}
 
 	@Override
-	public void process(Object[] parameters) {
-		Map map =  (Map) parameters[0];
+	public Object process(Object parameter) {
+		Map map =  (Map) parameter;
 		logger.debug("Result > {}", map);
-	}
-
-	@Override
-	protected Object[] doDone() {
 		return null;
 	}
+
 
 }

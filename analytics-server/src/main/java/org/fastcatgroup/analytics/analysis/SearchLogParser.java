@@ -19,7 +19,7 @@ public class SearchLogParser extends LogParser<SearchLog> {
 			if(el.length > 1){
 				prevKeyword = el[1].trim().toLowerCase();
 			}
-			return null;//new SearchLog(keyword, prevKeyword);
+			return new SearchLog(null, keyword, prevKeyword);
 		}
 		
 		return null;

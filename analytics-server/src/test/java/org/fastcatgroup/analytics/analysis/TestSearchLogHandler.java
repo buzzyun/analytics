@@ -34,14 +34,16 @@ public class TestSearchLogHandler extends LogHandler<SearchLog> {
 	}
 
 	@Override
-	public void process(Object[] parameters) {
+	public Object process(Object parameter) {
 		// do nothing.
+		return null;
 	}
 
 	@Override
-	protected Object[] doDone() {
-		return new Object[] { map };
+	public Object done() {
+		return null;
 	}
+
 
 	
 

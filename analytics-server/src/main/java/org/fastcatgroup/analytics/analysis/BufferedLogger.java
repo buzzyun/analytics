@@ -114,7 +114,7 @@ public class BufferedLogger {
 		}
 	}
 
-	public void log(String[] data) {
+	public void log(String... data) {
 		if (data != null && data.length > 0) {
 			memoryData.add(data);
 		}

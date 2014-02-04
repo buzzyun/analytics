@@ -21,7 +21,7 @@ public class ScheduledTasksTest {
 	public void test() throws IOException, InterruptedException {
 		
 		ScheduledTaskRunner<SearchLog> taskRunner = new ScheduledTaskRunner<SearchLog>("test", new TestJobExecutor());
-		File[] f = new File[]{new File("/Users/swsong/tmp/test.log")};
+		File f = new File("/Users/swsong/tmp/test.log");
 		FileSearchLogReaderFactory readerFactory = new FileSearchLogReaderFactory(f, "utf-8");
 		Schedule schedule = new FixedSchedule(new Date(), 2, 1);
 		AnalysisTask<SearchLog> task = new AnalysisTask<SearchLog>(schedule, 0, readerFactory);
@@ -36,7 +36,7 @@ public class ScheduledTasksTest {
 	public void testWithCalculator() throws IOException, InterruptedException {
 		
 		ScheduledTaskRunner<SearchLog> taskRunner = new ScheduledTaskRunner<SearchLog>("test", new TestJobExecutor());
-		File[] f = new File[]{new File("/Users/swsong/tmp/test.log")};
+		File f = new File("/Users/swsong/tmp/test.log");
 		FileSearchLogReaderFactory readerFactory = new FileSearchLogReaderFactory(f, "utf-8");
 		Schedule schedule = new FixedSchedule(new Date(), 2, 1);
 		AnalysisTask<SearchLog> task = new AnalysisTask<SearchLog>(schedule, 0, readerFactory);

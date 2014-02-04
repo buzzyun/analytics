@@ -54,7 +54,7 @@ public abstract class AbstractLogAggregator<LogType extends LogData> {
 
 	public void handleLog(String line) throws IOException {
 		LogType log = logParser.parseLine(line);
-//		logger.debug("{}: {}", getClass().getSimpleName(), log);
+		logger.debug("{}: {}", getClass().getSimpleName(), log);
 		if (log != null) {
 
 			if (banWords != null) {

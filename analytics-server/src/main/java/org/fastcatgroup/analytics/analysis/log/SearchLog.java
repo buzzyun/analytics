@@ -2,27 +2,30 @@ package org.fastcatgroup.analytics.analysis.log;
 
 public class SearchLog extends LogData {
 
-	public SearchLog(String[] data) {
-		super(data);
+	protected String categoryId;
+	protected String keyword;
+	protected String previousKeyword;
+	
+	public SearchLog(String categoryId, String keyword, String previousKeyword) {
+		this.categoryId = categoryId;
+		this.keyword = keyword;
+		this.previousKeyword = previousKeyword;
 	}
 
-	public String category() {
-		return data[0];
+	public String categoryId() {
+		return categoryId;
 	}
 
 	public String keyword() {
-		if (data.length >= 2) {
-			return data[1];
-		}else{
-			return null;
-		}
+		return keyword;
 	}
 
 	public String previousKeyword() {
-		if (data.length >= 3) {
-			return data[2];
-		} else {
-			return null;
-		}
+		return previousKeyword;
+	}
+
+	@Override
+	public String getKey() {
+		return keyword;
 	}
 }

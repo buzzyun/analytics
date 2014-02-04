@@ -1,28 +1,8 @@
 package org.fastcatgroup.analytics.analysis.log;
 
-public class LogData {
+public abstract class LogData {
 
-	protected String[] data;
+	public abstract String getKey();
 	
-	public LogData(String[] data){
-		this.data = data;
-	}
-
-	public String[] getData() {
-		return data;
-	}
 	
-	public String getKey() {
-		return null;
-	}
-	
-	@Override
-	public String toString(){
-		StringBuffer sb = new StringBuffer();
-		for(String d : data){
-			sb.append(d);
-			sb.append(" ");
-		}
-		return sb.toString();
-	}
 }

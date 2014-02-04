@@ -9,42 +9,13 @@ import org.slf4j.LoggerFactory;
 public abstract class ProcessHandler {
 	protected static Logger logger = LoggerFactory.getLogger(ProcessHandler.class);
 
-	protected ProcessHandler nextHandler;
-
 	//초기화.
 	public abstract void reset();
 	
 	/**
-	 * 다음 handler셋팅.
-	 * @param handler
+	 * 전달된 parameter 로 통계수행.
+	 * @param parameter
 	 */
-	public void next(ProcessHandler handler) {
-		nextHandler = handler;
-	}
-
-	/**
-	 * 전달된 parameters 로 통계수행.
-	 * @param parameters
-	 */
-	public abstract void process(Object[] parameters);
+	public abstract Object process(Object parameter);
 	
-
-	/**
-	 *  이 handler작업끝.
-	 */
-	public void done() {
-		callNext(doDone());
-	}
-
-	private void callNext(Object[] parameters) {
-		logger.debug("## {} calls {}", getClass().getSimpleName(), nextHandler);
-		if (nextHandler != null) {
-			nextHandler.reset();
-			nextHandler.process(parameters);
-			nextHandler.done();
-		}
-	}
-
-	// 마무리 작업과 다음 handler로 넘겨줄 파라미터들 리턴.
-	protected abstract Object[] doDone();
 }

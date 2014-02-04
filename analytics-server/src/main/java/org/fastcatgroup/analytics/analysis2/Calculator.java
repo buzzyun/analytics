@@ -1,5 +1,8 @@
 package org.fastcatgroup.analytics.analysis2;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.fastcatgroup.analytics.analysis.log.LogData;
 import org.fastcatgroup.analytics.analysis2.handler.ProcessHandler;
 import org.slf4j.Logger;
@@ -13,28 +16,32 @@ public class Calculator<LogType extends LogData> {
 	protected static Logger logger = LoggerFactory.getLogger(Calculator.class);
 	
 	protected LogHandler<LogType> logHandler;
-	private ProcessHandler tail;
+	private List<ProcessHandler> handlerList;
 	
 	public Calculator(LogHandler<LogType> logHandler) {
 		this.logHandler = logHandler;
-		tail = logHandler;
+		handlerList = new ArrayList<ProcessHandler>();
 	}
 
 	/**
-	 * calculate작업의 마무리를 한다.
+	 * logHandler로 읽은 로그를 바탕으로 다음 프로세스를 진행한다.
 	 * */
-	public final void done() {
-		logHandler.done();
+	public final void calculate() {
+		Object parameter = logHandler.done();
+		logger.debug("## calculate {} > {}", this, handlerList);
+		for(ProcessHandler handler : handlerList){
+			handler.reset();
+			logger.debug("# handler process {}", parameter);
+			parameter = handler.process(parameter);
+		}
 	}
 	
 	public final void offerLog(LogType logData) {
 		logHandler.handleLog(logData);
 	}
 
-	public ProcessHandler appendProcess(ProcessHandler handler) {
-		tail.next(handler);
-		tail = handler;
-		return handler;
+	public void appendProcess(ProcessHandler handler) {
+		handlerList.add(handler);
 	}
 
 	/**

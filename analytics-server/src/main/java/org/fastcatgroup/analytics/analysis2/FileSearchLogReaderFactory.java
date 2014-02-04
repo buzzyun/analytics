@@ -1,26 +1,27 @@
 package org.fastcatgroup.analytics.analysis2;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
-import org.fastcatgroup.analytics.util.DirBufferedReader;
 
 public class FileSearchLogReaderFactory implements SourceLogReaderFactory<SearchLog> {
 
-	private File[] files;
+	private File file;
 	private String encoding;
 
-	public FileSearchLogReaderFactory(File[] files, String encoding) {
-		this.files = files;
+	public FileSearchLogReaderFactory(File file, String encoding) {
+		this.file = file;
 		this.encoding = encoding;
 	}
 
 	@Override
 	public SourceLogReader<SearchLog> createReader() {
-		// TODO 파일선택 규칙을 구현한다.
 		try {
-			return new FileSearchLogReader(files, encoding);
+			return new FileSearchLogReader(file, encoding);
 		} catch (IOException e) {
 			logger.error("", e);
 		}
@@ -30,12 +31,10 @@ public class FileSearchLogReaderFactory implements SourceLogReaderFactory<Search
 
 class FileSearchLogReader implements SourceLogReader<SearchLog> {
 
-	private File[] files;
-	private DirBufferedReader reader;
+	private BufferedReader reader;
 
-	public FileSearchLogReader(File[] files, String encoding) throws IOException {
-		this.files = files;
-		reader = new DirBufferedReader(files, encoding);
+	public FileSearchLogReader(File file, String encoding) throws IOException {
+		reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), encoding));
 	}
 
 	@Override
@@ -45,7 +44,9 @@ class FileSearchLogReader implements SourceLogReader<SearchLog> {
 			if (line == null) {
 				return null;
 			} else {
-				return new SearchLog(line.split("\t"));
+				String[] el = line.split("\t");
+				
+				return new SearchLog(el[0], el[1], el.length >= 3 ? el[2] : "");
 			}
 		} catch (IOException e) {
 			logger.error("", e);

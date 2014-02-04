@@ -64,7 +64,7 @@ public class AnalysisTask<LogType extends LogData> extends Job implements Compar
 			}
 
 			for (Calculator<LogType> c : calculatorList) {
-				c.done();
+				c.calculate();
 			}
 		} finally {
 			if (reader != null) {

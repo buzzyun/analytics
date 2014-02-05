@@ -40,8 +40,6 @@ public class KeywordService extends AbstractDBService {
 
 	private KeywordServiceSettings keywordServiceSettings;
 
-	private boolean isMaster;
-
 	private PopularKeywordModule popularKeywordModule;
 	private RelateKeywordModule relateKeywordModule;
 
@@ -82,9 +80,9 @@ public class KeywordService extends AbstractDBService {
 	@Override
 	protected boolean doStart() throws AnalyticsException {
 		Properties driverProperties = null;
-		Map<String,Object> globalParam = null;
+		Map<String, Object> globalParam = null;
 		init(settings, mapperList, driverProperties, globalParam);
-		
+
 		File keywordServiceConfigFile = environment.filePaths().configPath().path(SettingFileNames.keywordServiceConfig).file();
 		try {
 			keywordServiceSettings = JAXBConfigs.readConfig(keywordServiceConfigFile, KeywordServiceSettings.class);
@@ -96,9 +94,6 @@ public class KeywordService extends AbstractDBService {
 			logger.error("Cannot load KeywordService setting file >> {}", keywordServiceSettings);
 			return false;
 		}
-
-		// 키워드 서비스노드이면..
-		logger.info("This node provides KeywordService. isMaster > {}", isMaster);
 
 		// 모듈 로딩.
 		loadKeywordModules();
@@ -132,22 +127,12 @@ public class KeywordService extends AbstractDBService {
 
 		unloadKeywordModules();
 
-		if (isMaster) {
-			return super.doStop();
-		} else {
-
-			return true;
-		}
+		return super.doStop();
 	}
 
 	@Override
 	protected boolean doClose() throws AnalyticsException {
-		if (isMaster) {
-			return super.doClose();
-		} else {
-
-			return true;
-		}
+		return super.doClose();
 	}
 
 	public KeywordDictionary getKeywordDictionary(String categoryId, KeywordDictionaryType key) {
@@ -173,7 +158,7 @@ public class KeywordService extends AbstractDBService {
 	@Override
 	protected void initMapper(Class<?>[] mapperList) throws AnalyticsException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

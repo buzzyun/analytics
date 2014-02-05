@@ -1,12 +1,13 @@
 package org.fastcatgroup.analytics.analysis2.schedule;
 
+import java.util.Calendar;
 import java.util.Date;
 
 public class FixedSchedule extends Schedule {
 	private int periodInSeconds;
 
-	public FixedSchedule(Date startTime, int periodInSeconds, int delayInSeconds) {
-		super(startTime.getTime(), delayInSeconds);
+	public FixedSchedule(Calendar startTime, int periodInSeconds, int delayInSeconds) {
+		super(startTime.getTimeInMillis(), delayInSeconds);
 		this.periodInSeconds = periodInSeconds;
 	}
 

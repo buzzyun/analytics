@@ -9,12 +9,12 @@ import java.util.Set;
 
 import org.fastcatgroup.analytics.analysis.BufferedLogger;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
-import org.fastcatgroup.analytics.analysis2.LogHandler;
+import org.fastcatgroup.analytics.analysis2.CategoryLogHandler;
 
 /**
  * search log를 읽어들여 카테고리별로 분류하여 재 저장한다.
  * */
-public class CategorySearchLogHandler extends LogHandler<SearchLog> {
+public class CategorySearchLogHandler extends CategoryLogHandler<SearchLog> {
 
 	private File baseDir;
 
@@ -61,7 +61,7 @@ public class CategorySearchLogHandler extends LogHandler<SearchLog> {
 	}
 
 	@Override
-	public Object done() {
+	public Set<String> done() {
 		rootLogger.close();
 		for (Entry<String, BufferedLogger> entry : categoryLoggerMap.entrySet()) {
 			entry.getValue().close();
@@ -70,12 +70,7 @@ public class CategorySearchLogHandler extends LogHandler<SearchLog> {
 		Set<String> keySet = categoryLoggerMap.keySet();
 		Set<String> categoryIdSet = new HashSet<String>(keySet);
 		categoryIdSet.add("_root");
-		return new Object[] { baseDir, categoryIdSet };
+		return categoryIdSet;
 	}
 
-	@Override
-	public Object process(Object parameter) {
-		// no dot use
-		return null;
-	}
 }

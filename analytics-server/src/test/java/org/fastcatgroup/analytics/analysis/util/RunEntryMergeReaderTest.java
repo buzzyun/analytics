@@ -3,6 +3,7 @@ package org.fastcatgroup.analytics.analysis.util;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.List;
 
 import org.fastcatgroup.analytics.analysis.KeyCountRunEntryReader;
 import org.fastcatgroup.analytics.analysis.util.KeyCountRunEntry;
@@ -22,7 +23,8 @@ public class RunEntryMergeReaderTest {
 			}
 		});
 
-		KeyCountRunEntryReader[] entryReaderList = getReaderList(fileList);
+//		KeyCountRunEntryReader[] entryReaderList = getReaderList(fileList);
+		List<RunEntryReader<KeyCountRunEntry>> entryReaderList = null;
 		RunEntryMergeReader<KeyCountRunEntry> reader = new RunEntryMergeReader<KeyCountRunEntry>(entryReaderList);
 
 		try {
@@ -33,7 +35,7 @@ public class RunEntryMergeReaderTest {
 			}
 
 		} finally {
-			for (KeyCountRunEntryReader r : entryReaderList) {
+			for (RunEntryReader r : entryReaderList) {
 				r.close();
 			}
 		}

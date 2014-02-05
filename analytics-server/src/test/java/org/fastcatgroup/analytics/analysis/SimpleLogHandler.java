@@ -2,12 +2,13 @@ package org.fastcatgroup.analytics.analysis;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
-import org.fastcatgroup.analytics.analysis2.LogHandler;
+import org.fastcatgroup.analytics.analysis2.CategoryLogHandler;
 import org.fastcatgroup.analytics.util.Counter;
 
-public class SimpleLogHandler extends LogHandler<SearchLog> {
+public class SimpleLogHandler extends CategoryLogHandler<SearchLog> {
 
 	Map<String, Counter> map;
 
@@ -34,16 +35,8 @@ public class SimpleLogHandler extends LogHandler<SearchLog> {
 	}
 
 	@Override
-	public Object process(Object parameter) {
-		// do nothing.
+	public Set<String> done() {
 		return null;
 	}
-
-	@Override
-	public Object done() {
-		return null;
-	}
-
-	
 
 }

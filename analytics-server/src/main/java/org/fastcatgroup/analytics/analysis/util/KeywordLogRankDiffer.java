@@ -41,8 +41,8 @@ public class KeywordLogRankDiffer {
 					}
 					
 					KeyCountRunEntry entry = targetReader.entry();
-
-					result.add(new RankKeyword(entry.getKey(), rank++));
+					RankKeyword rankKeyword = new RankKeyword(entry.getKey(), rank++, entry.getCount());
+					result.add(rankKeyword);
 				}
 			} finally {
 				if (targetReader != null) {
@@ -64,6 +64,7 @@ public class KeywordLogRankDiffer {
 							String targetKeyword = keyword.getKeyword();
 							if (compareKeyword.equals(targetKeyword)) {
 								int rankDiff = prevRank - keyword.getRank();
+//								logger.debug("{}:{} , {}:{} > {}", targetKeyword, keyword.getRank(), compareKeyword, prevRank, rankDiff);
 								keyword.setRankDiff(Math.abs(rankDiff));
 								if (rankDiff == 0) {
 									keyword.setRankDiffType(RankDiffType.EQ);

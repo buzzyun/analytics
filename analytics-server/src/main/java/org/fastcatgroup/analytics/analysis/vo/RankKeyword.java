@@ -9,13 +9,18 @@ public class RankKeyword {
 
 	private String keyword;
 	private int rank;
+	private int count;
 	
 	private RankDiffType rankDiffType = RankDiffType.NEW; //기본적으로 NEW이다. 
 	private int rankDiff;
-
+	
 	public RankKeyword(String keyword, int rank) {
+		this(keyword, rank, 0);
+	}
+	public RankKeyword(String keyword, int rank, int count) {
 		this.keyword = keyword;
 		this.rank = rank;
+		this.count = count;
 	}
 
 	public String getKeyword() {
@@ -50,9 +55,13 @@ public class RankKeyword {
 		this.rankDiff = rankDiff;
 	}
 	
+	public int getCount() {
+		return count;
+	}
+
 	@Override
 	public String toString(){
-		return "["+rank+"] " + keyword +" : " + rankDiffType.toString() + " " + rankDiff;
+		return "["+rank+"] " + keyword + " : " + rankDiff +" " + rankDiffType.toString() + " " + count;
 	}
 
 }

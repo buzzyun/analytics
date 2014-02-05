@@ -74,7 +74,7 @@ public class RollingRawLogger {
 	}
 
 	// 0번째 요소는 카테고리Id 이다.
-	public void log(String[] data) {
+	public void log(String... data) {
 		aLogger.log(data);
 	}
 

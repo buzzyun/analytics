@@ -1,6 +1,5 @@
 package org.fastcatgroup.analytics.http.action.service.keyword;
 
-import org.fastcatgroup.analytics.analysis.StatisticsLogManager;
 import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.http.ActionMapping;
 import org.fastcatgroup.analytics.http.action.ActionRequest;
@@ -34,11 +33,8 @@ public class PostKeywordHitAction extends ServiceAction {
 		try {
 
 			StatisticsService statisticsService = ServiceManager.getInstance().getService(StatisticsService.class);
-			String[] data = new String[] { categoryId, keyword, prevKeyword };
-			StatisticsLogManager logManager = statisticsService.logManager(type);
-			if(logManager != null){
-				logManager.log(siteId, data);
-			}
+			
+			statisticsService.log(type, siteId, categoryId, keyword, prevKeyword);
 
 		} catch (Exception e) {
 			errorMessage = e.getMessage();

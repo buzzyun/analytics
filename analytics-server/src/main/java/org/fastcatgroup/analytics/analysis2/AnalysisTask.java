@@ -17,8 +17,8 @@ public class AnalysisTask<LogType extends LogData> extends Job implements Compar
 
 	private Schedule schedule;
 	private int priority;
-	private ProcessHandler preProcess;
-	
+
+	private Runnable preProcess;
 	private List<Calculator<LogType>> calculatorList;
 	private SourceLogReaderFactory<LogType> readerFactory;
 	private int executeCount;
@@ -30,10 +30,7 @@ public class AnalysisTask<LogType extends LogData> extends Job implements Compar
 		calculatorList = new ArrayList<Calculator<LogType>>();
 	}
 
-	public void preProcess(ProcessHandler preProcess){
-		this.preProcess = preProcess;
-	}
-	
+
 	public int priority() {
 		return priority;
 	}
@@ -42,34 +39,43 @@ public class AnalysisTask<LogType extends LogData> extends Job implements Compar
 		calculatorList.add(calculator);
 	}
 
-	public void reset(){
+	public void reset() {
 		for (Calculator<LogType> c : calculatorList) {
 			c.reset();
 		}
 	}
-	
+
 	@Override
 	public JobResult doRun() {
-		if(preProcess != null){
-			preProcess.process(null);
-		}
-		SourceLogReader<LogType> reader = readerFactory.createReader();
 		try {
-			LogType logData = null;
-			while ((logData = reader.readLog()) != null) {
-				logger.debug("logData > {}", logData);
-				for (Calculator<LogType> c : calculatorList) {
-					c.offerLog(logData);
+			
+			if(preProcess != null){
+				preProcess.run();
+			}
+			
+			SourceLogReader<LogType> reader = readerFactory.createReader();
+			try {
+				LogType logData = null;
+				while ((logData = reader.readLog()) != null) {
+					logger.debug("logData > {}", logData);
+					for (Calculator<LogType> c : calculatorList) {
+						c.offerLog(logData);
+					}
+				}
+			} finally {
+				if (reader != null) {
+					reader.close();
 				}
 			}
 
 			for (Calculator<LogType> c : calculatorList) {
 				c.calculate();
 			}
-		} finally {
-			if (reader != null) {
-				reader.close();
-			}
+			
+			
+		}catch(Exception e){
+			logger.error("", e);
+			return new JobResult(false);
 		}
 		
 		return new JobResult(true);
@@ -104,6 +110,11 @@ public class AnalysisTask<LogType extends LogData> extends Job implements Compar
 
 	public void incrementExecution() {
 		executeCount++;
+	}
+
+
+	public void preProcess(Runnable runnable) {
+		
 	}
 
 }

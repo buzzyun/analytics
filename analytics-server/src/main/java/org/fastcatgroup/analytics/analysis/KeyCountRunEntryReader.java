@@ -31,7 +31,6 @@ public class KeyCountRunEntryReader extends RunEntryReader<KeyCountRunEntry> {
 		String line = null;
 		try {
 			while ((line = reader.readLine()) != null) {
-//				logger.debug("[{}] read >> {}", this.hashCode(), line);
 				String[] el = line.split("\t");
 				if (el.length == 2) {
 					try {

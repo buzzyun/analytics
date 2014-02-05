@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
-import org.fastcatgroup.analytics.analysis.RealtimePopularKeywordGenerator;
 import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
 import org.fastcatgroup.analytics.db.MapperSession;
@@ -75,9 +74,9 @@ public class MakeRealtimePopularKeywordJob extends Job {
 						logger.warn("[{}] Skip making realtime popular keyword due to no log files > {}", categoryId, inFileList);
 						continue;
 					}
-					RealtimePopularKeywordGenerator g = new RealtimePopularKeywordGenerator(targetDir, inFileList, statisticsSettings, fileEncoding);
+//					RealtimePopularKeywordGenerator g = new RealtimePopularKeywordGenerator(targetDir, inFileList, statisticsSettings, fileEncoding);
 					// 카테고리별 실시간 인기키워드결과.
-					List<RankKeyword> result = g.generate();
+					List<RankKeyword> result = null;//g.generate();
 
 					logger.debug("-- REALTIME POPULAR [{}] --", category.getId());
 					for (RankKeyword rankKeyword : result) {

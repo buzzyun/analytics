@@ -14,8 +14,9 @@ public abstract class ProcessHandler {
 	
 	/**
 	 * 전달된 parameter 로 통계수행.
-	 * @param parameter
+	 * @param categoryId
+	 * @param parameter2 
 	 */
-	public abstract Object process(Object parameter);
+	public abstract Object process(String categoryId, Object parameter) throws Exception;
 	
 }

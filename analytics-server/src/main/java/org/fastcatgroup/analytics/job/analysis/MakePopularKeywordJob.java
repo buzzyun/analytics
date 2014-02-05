@@ -8,16 +8,13 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
-import org.fastcatgroup.analytics.analysis.PopularKeywordGenerator;
 import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
-import org.fastcatgroup.analytics.control.ResultFuture;
 import org.fastcatgroup.analytics.db.MapperSession;
 import org.fastcatgroup.analytics.db.mapper.PopularKeywordMapper;
 import org.fastcatgroup.analytics.db.vo.PopularKeywordVO;
 import org.fastcatgroup.analytics.exception.AnalyticsException;
 import org.fastcatgroup.analytics.job.Job;
-import org.fastcatgroup.analytics.job.Job.JobResult;
 import org.fastcatgroup.analytics.keyword.KeywordService;
 import org.fastcatgroup.analytics.service.ServiceManager;
 import org.fastcatgroup.analytics.settings.StatisticsSettings;
@@ -80,9 +77,9 @@ public class MakePopularKeywordJob extends Job {
 					 * */
 					
 					
-					PopularKeywordGenerator g = new PopularKeywordGenerator(targetDir, inFileList, statisticsSettings, fileEncoding);
+//					PopularKeywordGenerator g = new PopularKeywordGenerator(targetDir, inFileList, statisticsSettings, fileEncoding);
 					// 카테고리별 실시간 인기키워드결과.
-					List<RankKeyword> result = g.generate();
+					List<RankKeyword> result = null;//g.generate();
 
 					logger.debug("-- POPULAR [{}] --", category.getId());
 					for (RankKeyword rankKeyword : result) {

@@ -158,11 +158,12 @@ public class CatServer {
 
 		AnalyticsDBService dbService = serviceManager.createService("db", AnalyticsDBService.class);
 		JobService jobService = serviceManager.createService("job", JobService.class);
-
+		jobService.asSingleton();
+		
 		HttpRequestService httpRequestService = serviceManager.createService("http", HttpRequestService.class);
 
 		StatisticsService searchStatisticsService = serviceManager.createService("statistics", StatisticsService.class);
-		KeywordService keywordService = serviceManager.createService("keyword", KeywordService.class);
+		//KeywordService keywordService = serviceManager.createService("keyword", KeywordService.class);
 
 		WebAdminService webAdminService = serviceManager.createService("keyword", WebAdminService.class);
 
@@ -174,7 +175,7 @@ public class CatServer {
 		startService(httpRequestService);
 
 		startService(searchStatisticsService);
-		startService(keywordService);
+		//startService(keywordService);
 		startService(webAdminService);
 		/*
 		 * 서비스가 모두 뜬 상태에서 후속작업.
@@ -242,7 +243,7 @@ public class CatServer {
 		serviceManager.stopService(AnalyticsDBService.class);
 
 		serviceManager.stopService(StatisticsService.class);
-		serviceManager.stopService(KeywordService.class);
+		//serviceManager.stopService(KeywordService.class);
 
 		logger.info("CatServer shutdown!");
 		isRunning = false;
@@ -257,7 +258,7 @@ public class CatServer {
 		serviceManager.closeService(AnalyticsDBService.class);
 
 		serviceManager.closeService(StatisticsService.class);
-		serviceManager.closeService(KeywordService.class);
+		//serviceManager.closeService(KeywordService.class);
 
 		if (fileLock != null) {
 			try {

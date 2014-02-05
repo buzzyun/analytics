@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.fastcatgroup.analytics.analysis.log.LogData;
+import org.fastcatgroup.analytics.analysis2.Calculator.PostProcess;
 import org.fastcatgroup.analytics.analysis2.handler.ProcessHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,7 @@ public class Calculator<LogType extends LogData> {
 	protected String name;
 	protected CategoryLogHandler<LogType> logHandler;
 	private List<ProcessHandler> handlerList;
+	private PostProcess postProcess;
 
 	public Calculator(String name, CategoryLogHandler<LogType> logHandler) {
 		this.name = name;
@@ -40,7 +42,12 @@ public class Calculator<LogType extends LogData> {
 				logger.debug("# handler process {} > {}", categoryId, handler.getClass().getSimpleName());
 				parameter = handler.process(categoryId, parameter);
 			}
+			
+			if(postProcess != null){
+				postProcess.handle(categoryId, parameter);
+			}
 		}
+		
 	}
 
 	public final void offerLog(LogType logData) {
@@ -51,6 +58,9 @@ public class Calculator<LogType extends LogData> {
 		handlerList.add(handler);
 	}
 
+	public void postProcess(PostProcess postProcess){
+		this.postProcess = postProcess;
+	}
 	
 	/**
 	 * 초기화
@@ -64,5 +74,9 @@ public class Calculator<LogType extends LogData> {
 	@Override
 	public String toString(){
 		return getClass().getSimpleName() +" [" + name + "]";
+	}
+	
+	public static abstract class PostProcess {
+		public abstract void handle(String categoryId, Object parameter);
 	}
 }

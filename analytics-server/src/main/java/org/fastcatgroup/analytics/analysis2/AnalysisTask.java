@@ -113,8 +113,8 @@ public class AnalysisTask<LogType extends LogData> extends Job implements Compar
 	}
 
 
-	public void preProcess(Runnable runnable) {
-		
+	public void preProcess(Runnable preProcess) {
+		this.preProcess = preProcess;
 	}
 
 }

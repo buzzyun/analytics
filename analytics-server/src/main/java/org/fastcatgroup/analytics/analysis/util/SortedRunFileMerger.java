@@ -29,21 +29,25 @@ public class SortedRunFileMerger implements RunMerger {
 	@Override
 	public void merge() throws IOException {
 		List<RunEntryReader<KeyCountRunEntry>> entryReaderList = getReaderList(runFileList);
-		RunEntryMergeReader<KeyCountRunEntry> reader = new RunEntryMergeReader<KeyCountRunEntry>(entryReaderList);
+		if (entryReaderList.size() > 0) {
+			RunEntryMergeReader<KeyCountRunEntry> reader = new RunEntryMergeReader<KeyCountRunEntry>(entryReaderList);
 
-		try {
-			KeyCountRunEntry entry = null;
+			try {
+				KeyCountRunEntry entry = null;
 
-			while ((entry = reader.read()) != null) {
-				writer.write(entry.getKey(), entry.getCount());
+				while ((entry = reader.read()) != null) {
+					writer.write(entry.getKey(), entry.getCount());
+				}
+
+			} finally {
+				for (RunEntryReader<KeyCountRunEntry> r : entryReaderList) {
+					r.close();
+				}
+
+				writer.close();
 			}
-
-		} finally {
-			for (RunEntryReader<KeyCountRunEntry> r : entryReaderList) {
-				r.close();
-			}
-
-			writer.close();
+		}else{
+			logger.debug("no file to merge");
 		}
 
 	}

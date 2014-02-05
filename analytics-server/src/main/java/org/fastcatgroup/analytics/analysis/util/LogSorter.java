@@ -75,25 +75,28 @@ public class LogSorter {
 			runFileList[i] = getRunFile(workDir, i);
 		}
 		List<RunEntryReader<KeyCountRunEntry>> entryReaderList = getReaderList(runFileList);
-		RunEntryMergeReader<KeyCountRunEntry> mergeReader = new RunEntryMergeReader<KeyCountRunEntry>(entryReaderList, comparator);
 
-		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, encoding));
-		try {
-			KeyCountRunEntry entry = null;
+		if (entryReaderList.size() > 0) {
+			RunEntryMergeReader<KeyCountRunEntry> mergeReader = new RunEntryMergeReader<KeyCountRunEntry>(entryReaderList, comparator);
 
-			while ((entry = mergeReader.read()) != null) {
-				writer.write(entry.getRawLine());
-				writer.write("\n");
+			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, encoding));
+			try {
+				KeyCountRunEntry entry = null;
+
+				while ((entry = mergeReader.read()) != null) {
+					writer.write(entry.getRawLine());
+					writer.write("\n");
+				}
+
+			} finally {
+				for (RunEntryReader<KeyCountRunEntry> r : entryReaderList) {
+					r.close();
+				}
+
+				writer.close();
+
+				FileUtils.deleteQuietly(workDir);
 			}
-
-		} finally {
-			for (RunEntryReader<KeyCountRunEntry> r : entryReaderList) {
-				r.close();
-			}
-
-			writer.close();
-
-			FileUtils.deleteQuietly(workDir);
 		}
 
 	}

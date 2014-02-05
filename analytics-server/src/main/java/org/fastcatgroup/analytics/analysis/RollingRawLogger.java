@@ -24,9 +24,13 @@ public class RollingRawLogger {
 
 	public RollingRawLogger(File baseDir, String targetFilename) {
 		this.baseDir = baseDir;
+		if(!baseDir.exists()){
+			baseDir.mkdirs();
+		}
 		this.targetFilename = targetFilename;
 		this.sequence = readSequence();
 		this.aLogger = new BufferedLogger(getTempFile(sequence), true);
+		logger.debug("RollongLogger use {}", aLogger.getFile().getName());
 	}
 
 	private int readSequence() {
@@ -50,6 +54,11 @@ public class RollingRawLogger {
 			}
 			return s;
 		} else {
+			try {
+				sequenceFile.createNewFile();
+			} catch (IOException e) {
+				logger.error("", e);
+			}
 			writeSequence();
 			return sequence;
 		}
@@ -81,11 +90,12 @@ public class RollingRawLogger {
 	private File rollingRawLogger() {
 		
 		BufferedLogger prevLogger = aLogger;
-		
+		logger.debug("prev file = {}", prevLogger.getFile().getAbsolutePath());
 		//먼저 새 로거를 만들어서 셋팅한다.
 		int newSequence = (sequence + 1) % 2;
-		File f = getTempFile(sequence);
+		File f = getTempFile(newSequence);
 		aLogger = new BufferedLogger(f);
+		logger.debug("new file = {}", aLogger.getFile().getAbsolutePath());
 		sequence = newSequence;
 		writeSequence();
 		
@@ -111,8 +121,13 @@ public class RollingRawLogger {
 
 		try {
 			File f = new File(baseDir, targetFilename);
+			logger.debug("rolling {}", f.getAbsolutePath());
 			if(f.exists()){
 				f.delete();
+			}
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
 			}
 			FileUtils.moveFile(prevFile, f);
 		} catch (IOException e) {

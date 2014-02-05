@@ -1,11 +1,10 @@
-package org.fastcatgroup.analytics.analysis;
+package org.fastcatgroup.analytics.analysis2.handler;
 
 import java.io.File;
 import java.util.List;
 
 import org.fastcatgroup.analytics.analysis.util.KeywordLogRankDiffer;
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
-import org.fastcatgroup.analytics.analysis2.handler.ProcessHandler;
 
 public class KeywordRankDiffHandler extends ProcessHandler {
 	int topCount;

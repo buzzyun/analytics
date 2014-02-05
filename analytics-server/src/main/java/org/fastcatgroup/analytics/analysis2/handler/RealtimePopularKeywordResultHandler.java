@@ -1,4 +1,4 @@
-package org.fastcatgroup.analytics.analysis;
+package org.fastcatgroup.analytics.analysis2.handler;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -7,7 +7,6 @@ import java.io.OutputStreamWriter;
 import java.util.List;
 
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
-import org.fastcatgroup.analytics.analysis2.handler.ProcessHandler;
 import org.fastcatgroup.analytics.control.JobService;
 import org.fastcatgroup.analytics.service.ServiceManager;
 
@@ -51,7 +50,7 @@ public class RealtimePopularKeywordResultHandler extends ProcessHandler {
 			}
 		}
 		
-		return null;
+		return result;
 	}
 
 }

@@ -54,7 +54,6 @@ public class JobService extends AbstractService implements JobExecutor {
 	private JobConsumer worker;
 	private SequencialJobWorker sequencialJobWorker;
 	private StatisticsMutex statisticsMutex;
-//	private boolean useJobScheduler;
 	private int executorMaxPoolSize;
 	private static JobService instance;
 	private ConcurrentHashMap<String, ScheduledJob> scheduleMap; 

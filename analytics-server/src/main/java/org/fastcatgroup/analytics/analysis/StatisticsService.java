@@ -46,9 +46,10 @@ public class StatisticsService extends AbstractService {
 		statisticsHome.mkdir();
 
 		File realtimeKeywordBaseDir = new File(statisticsHome, "rt");
-		if (!realtimeKeywordBaseDir.exists()) {
-			realtimeKeywordBaseDir.mkdirs();
-		}
+//		if (!realtimeKeywordBaseDir.exists()) {
+//			realtimeKeywordBaseDir.mkdirs();
+//		}
+		
 		realtimePopularKeywordMap = new ConcurrentHashMap<String, Map<String, List<RankKeyword>>>();
 
 		siteStatisticsModuleMap = new ConcurrentHashMap<String, SiteSearchLogStatisticsModule>();
@@ -58,62 +59,35 @@ public class StatisticsService extends AbstractService {
 		siteIdList.add("mobile");
 
 		for (String siteId : siteIdList) {
-			SiteSearchLogStatisticsModule module = new SiteSearchLogStatisticsModule(statisticsHome, siteId, environment, settings);
+			SiteSearchLogStatisticsModule module = new SiteSearchLogStatisticsModule(this, statisticsHome, siteId, environment, settings);
 			module.load();
 			siteStatisticsModuleMap.put(siteId, module);
 		}
-		for (String siteId : siteIdList) {
+		
+//		for (String siteId : siteIdList) {
+//
+//			File siteBaseDir = new File(realtimeKeywordBaseDir, siteId);
+////			if (!siteBaseDir.exists()) {
+////				siteBaseDir.mkdir();
+////			}
+//
+//			// 하위 카테고리를 확인하여 로딩한다.
+//			File[] categoryDirList = listCategoryDir(siteBaseDir);
+//			for (File categoryDir : categoryDirList) {
+//				String categoryId = categoryDir.getName();
+//				File resultDir = new File(categoryDir, "result");
+//				if (resultDir.exists()) {
+//					File f = new File(resultDir, "rt-popular.txt");
+//					if (f.exists()) {
+//						// load keyword file to dictionary.
+//						List<RankKeyword> keywordList = loadKeywordListFile(f);
+//						updateRealtimePopularKeywordList(siteId, categoryId, keywordList);
+//					}
+//				}
+//			}
+//
+//		}
 
-			File siteBaseDir = new File(realtimeKeywordBaseDir, siteId);
-			if (!siteBaseDir.exists()) {
-				siteBaseDir.mkdir();
-			}
-
-			// 하위 카테고리를 확인하여 로딩한다.
-			File[] categoryDirList = listCategoryDir(siteBaseDir);
-			for (File categoryDir : categoryDirList) {
-				String categoryId = categoryDir.getName();
-				File resultDir = new File(categoryDir, "result");
-				if (resultDir.exists()) {
-					File f = new File(resultDir, "rt-popular.txt");
-					if (f.exists()) {
-						// load keyword file to dictionary.
-						List<RankKeyword> keywordList = loadKeywordListFile(f);
-						updateRealtimePopularKeywordList(siteId, categoryId, keywordList);
-					}
-				}
-			}
-
-		}
-
-	}
-
-	private List<RankKeyword> loadKeywordListFile(File f) {
-		BufferedReader reader = null;
-		String line = null;
-		List<RankKeyword> list = new ArrayList<RankKeyword>();
-		try {
-			reader = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
-			int rank = 1;
-			while ((line = reader.readLine()) != null) {
-				String[] el = line.split("\t");
-				RankKeyword k = new RankKeyword(el[0], rank);
-				k.setRankDiff(Integer.parseInt(el[1]));
-				k.setRankDiffType(RankDiffType.valueOf(el[2]));
-				list.add(k);
-				rank++;
-			}
-		} catch (IOException e) {
-
-		} finally {
-			if (reader != null) {
-				try {
-					reader.close();
-				} catch (IOException e) {
-				}
-			}
-		}
-		return list;
 	}
 
 	/**
@@ -122,6 +96,9 @@ public class StatisticsService extends AbstractService {
 	public List<RankKeyword> getRealtimePopularKeywordList(String siteId, String categoryId) {
 		Map<String, List<RankKeyword>> map = realtimePopularKeywordMap.get(siteId);
 		if (map != null) {
+			if(categoryId == null){
+				categoryId = "_root";
+			}
 			return map.get(categoryId);
 		}
 		return null;
@@ -134,15 +111,6 @@ public class StatisticsService extends AbstractService {
 			realtimePopularKeywordMap.put(siteId, map);
 		}
 		map.put(categoryId, keywordList);
-	}
-
-	private File[] listCategoryDir(File dir) {
-		return dir.listFiles(new FileFilter() {
-			@Override
-			public boolean accept(File pathname) {
-				return pathname.isDirectory();
-			}
-		});
 	}
 
 	public Collection<CategoryStatistics> getCategoryStatisticsList() {
@@ -165,12 +133,12 @@ public class StatisticsService extends AbstractService {
 		}
 
 		List<Category> categoryList = statisticsSettings.getCategoryList();
-		for (Category category : categoryList) {
-			String categoryId = category.getId();
-			CategoryStatistics categoryStatistics = new CategoryStatistics(category, statisticsHome);
-			categoryStatisticsMap.put(categoryId, categoryStatistics);
-			logger.debug("> {}", category);
-		}
+//		for (Category category : categoryList) {
+//			String categoryId = category.getId();
+//			CategoryStatistics categoryStatistics = new CategoryStatistics(category, statisticsHome);
+//			categoryStatisticsMap.put(categoryId, categoryStatistics);
+//			logger.debug("> {}", category);
+//		}
 
 		return true;
 	}

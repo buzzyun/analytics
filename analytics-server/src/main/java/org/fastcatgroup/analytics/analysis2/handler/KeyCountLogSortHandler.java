@@ -1,4 +1,4 @@
-package org.fastcatgroup.analytics.analysis;
+package org.fastcatgroup.analytics.analysis2.handler;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,7 +10,6 @@ import java.util.Comparator;
 import org.apache.commons.io.FileUtils;
 import org.fastcatgroup.analytics.analysis.util.KeyCountRunEntry;
 import org.fastcatgroup.analytics.analysis.util.LogSorter;
-import org.fastcatgroup.analytics.analysis2.handler.ProcessHandler;
 
 public class KeyCountLogSortHandler extends ProcessHandler {
 	private final String KEY_COUNT_RANK_LOG_FILENAME = "key-count-rank.log";

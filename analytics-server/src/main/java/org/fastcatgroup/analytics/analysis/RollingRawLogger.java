@@ -90,12 +90,10 @@ public class RollingRawLogger {
 	private File rollingRawLogger() {
 		
 		BufferedLogger prevLogger = aLogger;
-		logger.debug("prev file = {}", prevLogger.getFile().getAbsolutePath());
 		//먼저 새 로거를 만들어서 셋팅한다.
 		int newSequence = (sequence + 1) % 2;
 		File f = getTempFile(newSequence);
 		aLogger = new BufferedLogger(f);
-		logger.debug("new file = {}", aLogger.getFile().getAbsolutePath());
 		sequence = newSequence;
 		writeSequence();
 		

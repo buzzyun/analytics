@@ -1,13 +1,17 @@
 package org.fastcatgroup.analytics.analysis2.handler;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.fastcatgroup.analytics.analysis.BufferedLogger;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
 import org.fastcatgroup.analytics.analysis2.CategoryLogHandler;
 
@@ -16,60 +20,90 @@ import org.fastcatgroup.analytics.analysis2.CategoryLogHandler;
  * */
 public class CategorySearchLogHandler extends CategoryLogHandler<SearchLog> {
 
+	private final static String rootLoggerId = "_root";
 	private File baseDir;
 
-	private BufferedLogger rootLogger;
-	private Map<String, BufferedLogger> categoryLoggerMap;
+	private BufferedWriter rootLogger;
+	private Map<String, BufferedWriter> categoryWriterMap;
 
 	public CategorySearchLogHandler(File baseDir) {
 		this.baseDir = baseDir;
-		categoryLoggerMap = new HashMap<String, BufferedLogger>();
-		rootLogger = newBufferedLogger("_root");
+		categoryWriterMap = new HashMap<String, BufferedWriter>();
 	}
 
 	@Override
 	public void handleLog(SearchLog logData) {
 		String categoryId = logData.categoryId();
 		String keyword = logData.keyword();
-		if (keyword != null && keyword.length() > 0) {
-			if (categoryId != null && categoryId.length() > 0) {
-				BufferedLogger categoryLogger = categoryLoggerMap.get(categoryId);
-				if (categoryLogger == null) {
-					categoryLogger = newBufferedLogger(categoryId);
-					categoryLoggerMap.put(categoryId, categoryLogger);
-				}
+		try {
+			if (keyword != null && keyword.length() > 0) {
+				if (categoryId != null && categoryId.length() > 0) {
+					BufferedWriter categoryWriter = categoryWriterMap.get(categoryId);
+					if (categoryWriter == null) {
+						categoryWriter = newBufferedwriter(categoryId);
+						categoryWriterMap.put(categoryId, categoryWriter);
+					}
 
-				categoryLogger.log(logData.keyword(), logData.previousKeyword());
+					categoryWriter.append(logData.keyword());
+					categoryWriter.append("\t");
+					categoryWriter.append(logData.previousKeyword());
+					categoryWriter.append("\n");
+				}
+				// root logger에는 무조건 기록.
+				if (rootLogger == null) {
+					rootLogger = newBufferedwriter(rootLoggerId);
+				}
+				rootLogger.append(logData.keyword());
+				rootLogger.append("\t");
+				rootLogger.append(logData.previousKeyword());
+				rootLogger.append("\n");
 			}
-			// root logger에는 무조건 기록.
-			rootLogger.log(logData.keyword(), logData.previousKeyword());
+		} catch (Exception e) {
+			logger.error("", e);
 		}
 	}
 
-	private BufferedLogger newBufferedLogger(String categoryId) {
+	private BufferedWriter newBufferedwriter(String categoryId) {
 		File dir = new File(baseDir, categoryId);
 		if (!dir.exists()) {
 			dir.mkdir();
 		}
 		File f = new File(dir, "tmp.log");
-		return new BufferedLogger(f);
+		try {
+			return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f)));
+		} catch (FileNotFoundException e) {
+			logger.error("", e);
+		}
+		return null;
 	}
 
 	@Override
 	public void reset() {
-		categoryLoggerMap.clear();
+		categoryWriterMap.clear();
+		rootLogger = null;
 	}
 
 	@Override
 	public Set<String> done() {
-		rootLogger.close();
-		for (Entry<String, BufferedLogger> entry : categoryLoggerMap.entrySet()) {
-			entry.getValue().close();
+
+		for (Entry<String, BufferedWriter> entry : categoryWriterMap.entrySet()) {
+			try {
+				entry.getValue().close();
+			} catch (IOException e) {
+				logger.error("", e);
+			}
 		}
 
-		Set<String> keySet = categoryLoggerMap.keySet();
+		Set<String> keySet = categoryWriterMap.keySet();
 		Set<String> categoryIdSet = new HashSet<String>(keySet);
-		categoryIdSet.add("_root");
+		if (rootLogger != null) {
+			try {
+				rootLogger.close();
+			} catch (IOException e) {
+				logger.error("", e);
+			}
+			categoryIdSet.add(rootLoggerId);
+		}
 		return categoryIdSet;
 	}
 

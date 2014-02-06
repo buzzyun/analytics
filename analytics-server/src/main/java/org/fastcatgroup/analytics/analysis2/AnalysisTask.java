@@ -1,9 +1,13 @@
 package org.fastcatgroup.analytics.analysis2;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fastcatgroup.analytics.analysis.FileSearchLogReader;
 import org.fastcatgroup.analytics.analysis.log.LogData;
+import org.fastcatgroup.analytics.analysis.log.SearchLog;
+import org.fastcatgroup.analytics.analysis2.handler.CategorySearchLogHandler;
 import org.fastcatgroup.analytics.analysis2.handler.ProcessHandler;
 import org.fastcatgroup.analytics.analysis2.schedule.Schedule;
 import org.fastcatgroup.analytics.job.Job;
@@ -45,6 +49,36 @@ public class AnalysisTask<LogType extends LogData> extends Job implements Compar
 		}
 	}
 
+	//1차적처리.. cate별 분류..
+	protected void handleLog(){
+		
+		SourceLogReader<LogType> reader = new FileSearchLogReader(logFile, encoding);
+		CategoryLogHandler<LogType> handler = new CategorySearchLogHandler(workingDir, fileName);
+		try {
+			LogType logData = null;
+			while ((logData = reader.readLog()) != null) {
+				logger.debug("logData > {}", logData);
+				handler.handleLog(logData);
+			}
+		} finally {
+			if (reader != null) {
+				reader.close();
+			}
+		}
+		handler.done();
+	}
+	
+//	protected SourceLogReader<SearchLog> newLogReader(File logFile, String encoding){
+//		return new FileSearchLogReader(logFile, encoding);
+//	}
+//	
+//	
+//	///abstract
+//	protected CategoryLogHandler<SearchLog> newLogHandler(File workingDir, String fileName){
+//		return new CategorySearchLogHandler(workingDir, fileName);
+//	}
+	
+	
 	@Override
 	public JobResult doRun() {
 		try {
@@ -53,7 +87,9 @@ public class AnalysisTask<LogType extends LogData> extends Job implements Compar
 				preProcess.run();
 			}
 			
-			SourceLogReader<LogType> reader = readerFactory.createReader();
+			handleLog();
+			
+//			SourceLogReader<LogType> reader = readerFactory.createReader();
 			try {
 				LogType logData = null;
 				while ((logData = reader.readLog()) != null) {

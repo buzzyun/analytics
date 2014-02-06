@@ -22,12 +22,14 @@ public class CategorySearchLogHandler extends CategoryLogHandler<SearchLog> {
 
 	private final static String rootLoggerId = "_root";
 	private File baseDir;
-
+	String fileName;
+	
 	private BufferedWriter rootLogger;
 	private Map<String, BufferedWriter> categoryWriterMap;
 
-	public CategorySearchLogHandler(File baseDir) {
+	public CategorySearchLogHandler(File baseDir, String fileName) {
 		this.baseDir = baseDir;
+		this.fileName = fileName;
 		categoryWriterMap = new HashMap<String, BufferedWriter>();
 	}
 
@@ -40,7 +42,7 @@ public class CategorySearchLogHandler extends CategoryLogHandler<SearchLog> {
 				if (categoryId != null && categoryId.length() > 0) {
 					BufferedWriter categoryWriter = categoryWriterMap.get(categoryId);
 					if (categoryWriter == null) {
-						categoryWriter = newBufferedwriter(categoryId);
+						categoryWriter = newBuffererWriter(categoryId);
 						categoryWriterMap.put(categoryId, categoryWriter);
 					}
 
@@ -51,7 +53,7 @@ public class CategorySearchLogHandler extends CategoryLogHandler<SearchLog> {
 				}
 				// root logger에는 무조건 기록.
 				if (rootLogger == null) {
-					rootLogger = newBufferedwriter(rootLoggerId);
+					rootLogger = newBuffererWriter(rootLoggerId);
 				}
 				rootLogger.append(logData.keyword());
 				rootLogger.append("\t");
@@ -63,12 +65,12 @@ public class CategorySearchLogHandler extends CategoryLogHandler<SearchLog> {
 		}
 	}
 
-	private BufferedWriter newBufferedwriter(String categoryId) {
+	private BufferedWriter newBuffererWriter(String categoryId) {
 		File dir = new File(baseDir, categoryId);
 		if (!dir.exists()) {
 			dir.mkdir();
 		}
-		File f = new File(dir, "tmp.log");
+		File f = new File(dir, fileName);
 		try {
 			return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f)));
 		} catch (FileNotFoundException e) {

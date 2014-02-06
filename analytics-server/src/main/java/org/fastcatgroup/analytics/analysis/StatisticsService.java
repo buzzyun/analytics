@@ -1,11 +1,6 @@
 package org.fastcatgroup.analytics.analysis;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -16,7 +11,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.xml.bind.JAXBException;
 
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
-import org.fastcatgroup.analytics.db.vo.PopularKeywordVO.RankDiffType;
 import org.fastcatgroup.analytics.env.Environment;
 import org.fastcatgroup.analytics.env.SettingFileNames;
 import org.fastcatgroup.analytics.env.Settings;
@@ -36,20 +30,15 @@ public class StatisticsService extends AbstractService {
 	private StatisticsSettings statisticsSettings;
 	private Map<String, CategoryStatistics> categoryStatisticsMap;
 
-	Map<String, Map<String, List<RankKeyword>>> realtimePopularKeywordMap;
+	private Map<String, Map<String, List<RankKeyword>>> realtimePopularKeywordMap;
 
-	Map<String, SiteSearchLogStatisticsModule> siteStatisticsModuleMap;
+	private Map<String, SiteSearchLogStatisticsModule> siteStatisticsModuleMap;
 
 	public StatisticsService(Environment environment, Settings settings, ServiceManager serviceManager) {
 		super(environment, settings, serviceManager);
 		statisticsHome = environment.filePaths().getStatisticsRoot().file();
 		statisticsHome.mkdir();
 
-		File realtimeKeywordBaseDir = new File(statisticsHome, "rt");
-//		if (!realtimeKeywordBaseDir.exists()) {
-//			realtimeKeywordBaseDir.mkdirs();
-//		}
-		
 		realtimePopularKeywordMap = new ConcurrentHashMap<String, Map<String, List<RankKeyword>>>();
 
 		siteStatisticsModuleMap = new ConcurrentHashMap<String, SiteSearchLogStatisticsModule>();
@@ -63,30 +52,6 @@ public class StatisticsService extends AbstractService {
 			module.load();
 			siteStatisticsModuleMap.put(siteId, module);
 		}
-		
-//		for (String siteId : siteIdList) {
-//
-//			File siteBaseDir = new File(realtimeKeywordBaseDir, siteId);
-////			if (!siteBaseDir.exists()) {
-////				siteBaseDir.mkdir();
-////			}
-//
-//			// 하위 카테고리를 확인하여 로딩한다.
-//			File[] categoryDirList = listCategoryDir(siteBaseDir);
-//			for (File categoryDir : categoryDirList) {
-//				String categoryId = categoryDir.getName();
-//				File resultDir = new File(categoryDir, "result");
-//				if (resultDir.exists()) {
-//					File f = new File(resultDir, "rt-popular.txt");
-//					if (f.exists()) {
-//						// load keyword file to dictionary.
-//						List<RankKeyword> keywordList = loadKeywordListFile(f);
-//						updateRealtimePopularKeywordList(siteId, categoryId, keywordList);
-//					}
-//				}
-//			}
-//
-//		}
 
 	}
 

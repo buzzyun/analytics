@@ -8,7 +8,6 @@ import java.util.TreeMap;
 
 import org.fastcatgroup.analytics.analysis.log.LogData;
 import org.fastcatgroup.analytics.analysis.util.AggregationResultWriter;
-import org.fastcatgroup.analytics.analysis.util.LogParser;
 import org.fastcatgroup.analytics.analysis.util.RunMerger;
 import org.fastcatgroup.analytics.util.Counter;
 import org.slf4j.Logger;
@@ -26,7 +25,6 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractLogAggregator<LogType extends LogData> {
 	protected static Logger logger = LoggerFactory.getLogger(AbstractLogAggregator.class);
 
-	private LogParser<LogType> logParser;
 	private int runKeySize;
 	private Map<String, Counter> aggregateMap;
 	private int flushCount;
@@ -35,8 +33,7 @@ public abstract class AbstractLogAggregator<LogType extends LogData> {
 	protected int minimumHitCount;
 	
 	
-	public AbstractLogAggregator(LogParser<LogType> logParser, int runKeySize, String outputEncoding, Set<String> banWords, int minimumHitCount) {
-		this.logParser = logParser;
+	public AbstractLogAggregator(int runKeySize, String outputEncoding, Set<String> banWords, int minimumHitCount) {
 		this.runKeySize = runKeySize;
 		this.aggregateMap = new HashMap<String, Counter>(runKeySize);
 		this.outputEncoding = outputEncoding;
@@ -52,9 +49,8 @@ public abstract class AbstractLogAggregator<LogType extends LogData> {
 
 	protected abstract void doDone();
 
-	public void handleLog(String line) throws IOException {
-		LogType log = logParser.parseLine(line);
-		logger.debug("{}: {}", getClass().getSimpleName(), log);
+	public void handleLog(LogType log) throws IOException {
+//		logger.debug("{}: {}", getClass().getSimpleName(), log);
 		if (log != null) {
 
 			if (banWords != null) {

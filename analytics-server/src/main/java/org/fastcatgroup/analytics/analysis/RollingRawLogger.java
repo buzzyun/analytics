@@ -33,6 +33,11 @@ public class RollingRawLogger {
 		logger.debug("RollongLogger use {}", aLogger.getFile().getName());
 	}
 
+	@Override
+	public String toString(){
+		return getClass().getSimpleName() + "] " + new File(baseDir, targetFilename).getAbsolutePath();
+	}
+	
 	private int readSequence() {
 
 		File sequenceFile = getSequenceFile();

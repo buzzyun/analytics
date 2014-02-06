@@ -21,7 +21,7 @@ public class KeyCountLogAggregator extends AbstractLogAggregator<SearchLog> {
 	private File destFile;
 	
 	public KeyCountLogAggregator(File targetDir, String targetFilename, int runKeySize, String outputEncoding, Set<String> banWords, int minimumHitCount) {
-		super(new SearchLogParser(), runKeySize, outputEncoding, banWords, minimumHitCount);
+		super(runKeySize, outputEncoding, banWords, minimumHitCount);
 		this.runTmpDir = new File(targetDir, "_run");
 		this.destFile = new File(targetDir, targetFilename);
 		

@@ -8,6 +8,7 @@ import org.fastcatgroup.analytics.analysis.log.LogData;
 import org.fastcatgroup.analytics.analysis.task.AnalysisTask;
 import org.fastcatgroup.analytics.control.JobExecutor;
 import org.fastcatgroup.analytics.control.ResultFuture;
+import org.fastcatgroup.analytics.env.Environment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,21 +19,25 @@ public class ScheduledTaskRunner<LogType extends LogData> extends Thread {
 	protected static Logger logger = LoggerFactory.getLogger(ScheduledTaskRunner.class);
 
 	private JobExecutor jobExecutor;
+	private Environment environment;
 	private Queue<AnalysisTask<LogType>> priorityJobQueue;
 	private boolean isCanceled;
 
-	public ScheduledTaskRunner(String name, JobExecutor jobExecutor) {
+	public ScheduledTaskRunner(String name, JobExecutor jobExecutor, Environment environment) {
 		super(name);
 		this.jobExecutor = jobExecutor;
+		this.environment = environment;
 		this.priorityJobQueue = new PriorityQueue<AnalysisTask<LogType>>(5);
 	}
 
 	public void addTask(AnalysisTask<LogType> task) {
+		task.setEnvironment(environment);
 		priorityJobQueue.add(task);
 	}
 
 	public void cancel(){
 		logger.info("[{}] cancel requested! > {}",  getClass().getSimpleName(), priorityJobQueue);
+		this.interrupt();
 		isCanceled = true;
 	}
 	
@@ -65,7 +70,6 @@ public class ScheduledTaskRunner<LogType extends LogData> extends Thread {
 				}
 
 				try {
-					task.prepare();
 					task.incrementExecution();
 					logger.debug("{} run!", task);
 					

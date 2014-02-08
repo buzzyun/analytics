@@ -33,23 +33,25 @@ public class StatisticsService extends AbstractService {
 	private Map<String, Map<String, List<RankKeyword>>> realtimePopularKeywordMap;
 
 	private Map<String, SiteSearchLogStatisticsModule> siteStatisticsModuleMap;
-
+	
+	List<String> siteIdList;
+	
+	
 	public StatisticsService(Environment environment, Settings settings, ServiceManager serviceManager) {
 		super(environment, settings, serviceManager);
-		statisticsHome = environment.filePaths().getStatisticsRoot().file();
+		statisticsHome = environment.filePaths().getStatisticsRoot().file("search");
 		statisticsHome.mkdir();
 
 		realtimePopularKeywordMap = new ConcurrentHashMap<String, Map<String, List<RankKeyword>>>();
 
 		siteStatisticsModuleMap = new ConcurrentHashMap<String, SiteSearchLogStatisticsModule>();
-		//
-		List<String> siteIdList = new ArrayList<String>();
+		
+		siteIdList = new ArrayList<String>();
 		siteIdList.add("total");
 		siteIdList.add("mobile");
 
 		for (String siteId : siteIdList) {
 			SiteSearchLogStatisticsModule module = new SiteSearchLogStatisticsModule(this, statisticsHome, siteId, environment, settings);
-			module.load();
 			siteStatisticsModuleMap.put(siteId, module);
 		}
 
@@ -97,6 +99,13 @@ public class StatisticsService extends AbstractService {
 			return false;
 		}
 
+		
+		for (String siteId : siteIdList) {
+			SiteSearchLogStatisticsModule module = siteStatisticsModuleMap.get(siteId);
+			module.load();
+		}
+		
+		
 		List<Category> categoryList = statisticsSettings.getCategoryList();
 //		for (Category category : categoryList) {
 //			String categoryId = category.getId();
@@ -110,15 +119,20 @@ public class StatisticsService extends AbstractService {
 
 	@Override
 	protected boolean doStop() throws AnalyticsException {
-		for (CategoryStatistics categoryStatistics : categoryStatisticsMap.values()) {
-			categoryStatistics.close();
+//		for (CategoryStatistics categoryStatistics : categoryStatisticsMap.values()) {
+//			categoryStatistics.close();
+//		}
+		
+		for (String siteId : siteIdList) {
+			SiteSearchLogStatisticsModule module = siteStatisticsModuleMap.get(siteId);
+			module.unload();
 		}
 		return true;
 	}
 
 	@Override
 	protected boolean doClose() throws AnalyticsException {
-
+		siteStatisticsModuleMap.clear();
 		return true;
 	}
 

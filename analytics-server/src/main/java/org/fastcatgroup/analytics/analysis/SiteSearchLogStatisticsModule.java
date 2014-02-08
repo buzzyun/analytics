@@ -15,6 +15,7 @@ import org.fastcatgroup.analytics.analysis.schedule.FixedSchedule;
 import org.fastcatgroup.analytics.analysis.schedule.Schedule;
 import org.fastcatgroup.analytics.analysis.schedule.ScheduledTaskRunner;
 import org.fastcatgroup.analytics.analysis.task.DailySearchLogAnalysisTask;
+import org.fastcatgroup.analytics.analysis.task.RealtimeSearchLogAnalysisTask;
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
 import org.fastcatgroup.analytics.control.JobService;
 import org.fastcatgroup.analytics.db.vo.PopularKeywordVO.RankDiffType;
@@ -29,7 +30,7 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 	ScheduledTaskRunner<SearchLog> realtimeTaskRunner;
 	ScheduledTaskRunner<SearchLog> dailyTaskRunner;
 	RollingRawLogger realtimeRawLogger;
-	RollingRawLogger dailyRawLogger;
+	DailyRawLogger dailyRawLogger;
 	StatisticsService statisticsService;
 
 	public SiteSearchLogStatisticsModule(StatisticsService statisticsService, File fileHome, String siteId, Environment environment, Settings settings) {
@@ -41,8 +42,8 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 
 	@Override
 	protected boolean doLoad() throws ModuleException {
-		File realtimeKeywordBaseDir = new File(new File(fileHome, siteId), "rt");
-		File dailyKeywordBaseDir = new File(new File(fileHome, siteId), "daily");
+		File dateKeywordBaseDir = new File(fileHome, "date");
+		File realtimeKeywordBaseDir = new File(new File(fileHome, "rt"), "data");
 
 		/*
 		 * 실시간 인기검색어 서비스 로딩
@@ -64,10 +65,8 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		}
 
 		String logFileName = "raw.log";
-		realtimeRawLogger = new RollingRawLogger(realtimeKeywordBaseDir, logFileName);
-		dailyRawLogger = new RollingRawLogger(dailyKeywordBaseDir, logFileName);
-
-		String encoding = "utf-8";
+		realtimeRawLogger = new RollingRawLogger(realtimeKeywordBaseDir, siteId, logFileName);
+		dailyRawLogger = new DailyRawLogger(Calendar.getInstance(), dateKeywordBaseDir, siteId, logFileName);
 
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.MINUTE, 0);
@@ -76,25 +75,29 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 
 		int periodInSeconds = 30;
 		int delayInSeconds = 5;
+		
+		List<String> categoryIdList = new ArrayList<String>();
+		categoryIdList.add("_root");
+		categoryIdList.add("cat1");
+		categoryIdList.add("cat2");
 		/*
 		 * 실시간 인기검색어.
 		 */
-		realtimeTaskRunner = new ScheduledTaskRunner<SearchLog>("rt-search-log-task-runner", JobService.getInstance());
+		realtimeTaskRunner = new ScheduledTaskRunner<SearchLog>("rt-search-log-task-runner", JobService.getInstance(), environment);
 		Schedule realtimeSchedule = new FixedSchedule(cal, periodInSeconds, delayInSeconds);
-		//TODO RealtimeSearchLogAnalysisTask
-//		realtimeTaskRunner.addTask(task);
-//		realtimeTaskRunner.start();
+		RealtimeSearchLogAnalysisTask realtimeTask = new RealtimeSearchLogAnalysisTask(siteId, categoryIdList, realtimeSchedule, 0, realtimeRawLogger);
+		realtimeTaskRunner.addTask(realtimeTask);
+		realtimeTaskRunner.start();
 
 		/*
 		 * 일별 통계 인기검색어. 일,주,월,년
 		 */
-		dailyTaskRunner = new ScheduledTaskRunner<SearchLog>("daily-search-log-task-runner", JobService.getInstance());
+		dailyTaskRunner = new ScheduledTaskRunner<SearchLog>("daily-search-log-task-runner", JobService.getInstance(), environment);
 
 		// 일
-
 		Schedule dailySchedule = new FixedSchedule(cal, periodInSeconds, delayInSeconds);
 		
-		DailySearchLogAnalysisTask dailySearchLogAnalysisTask = new DailySearchLogAnalysisTask(dailySchedule, 1);
+		DailySearchLogAnalysisTask dailySearchLogAnalysisTask = new DailySearchLogAnalysisTask(siteId, categoryIdList, dailySchedule, 1);
 		dailyTaskRunner.addTask(dailySearchLogAnalysisTask);
 		// 주
 		// Schedule weeklySchedule = new FixedSchedule(cal, periodInSeconds, delayInSeconds);
@@ -109,6 +112,8 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		// AnalysisTask<SearchLog> yearlyTask = makeAnalysisTask(yearlySchedule, realtimeKeywordBaseDir, logFileName, encoding);
 		// dailyTaskRunner.addTask(yearlyTask);
 
+		dailyTaskRunner.start();
+		
 		return true;
 	}
 

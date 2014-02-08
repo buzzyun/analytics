@@ -12,25 +12,29 @@ import org.fastcatgroup.analytics.analysis.util.KeyCountRunEntry;
 import org.fastcatgroup.analytics.analysis.util.LogSorter;
 
 public class KeyCountLogSortHandler extends ProcessHandler {
-	private final String KEY_COUNT_RANK_LOG_FILENAME = "key-count-rank.log";
-	private final String KEY_COUNT_RANK_PREV_LOG_FILENAME = "key-count-rank-prev.log";
 
 	private File baseDir;
+	String inFileName;
+	String sortedFileName;
+	String prevSortedFileName;
 	private String encoding;
 	private int runKeySize;
 
-	public KeyCountLogSortHandler(File baseDir, String encoding, int runKeySize) {
+	public KeyCountLogSortHandler(File baseDir, String inFileName, String sortedFileName, String prevSortedFileName, String encoding, int runKeySize) {
 		this.baseDir = baseDir;
+		this.inFileName = inFileName;
+		this.sortedFileName = sortedFileName;
+		this.prevSortedFileName = prevSortedFileName;
 		this.encoding = encoding;
 		this.runKeySize = runKeySize;
 	}
 
 	@Override
 	public Object process(Object parameter) throws Exception {
-		File keyCountFile = (File) parameter;
-
-		File rankFile = new File(baseDir, KEY_COUNT_RANK_LOG_FILENAME);
-		File prevRankFile = new File(baseDir, KEY_COUNT_RANK_PREV_LOG_FILENAME);
+		logger.debug("process {} [{}]", getClass().getSimpleName(), parameter);
+		File keyCountFile = new File(baseDir, inFileName);
+		File rankFile = new File(baseDir, sortedFileName);
+		File prevRankFile = new File(baseDir, prevSortedFileName);
 		if (rankFile.exists()) {
 			if (prevRankFile.exists()) {
 				prevRankFile.delete();

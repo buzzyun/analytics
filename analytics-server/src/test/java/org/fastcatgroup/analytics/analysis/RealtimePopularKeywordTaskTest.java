@@ -8,6 +8,7 @@ import org.fastcatgroup.analytics.analysis.schedule.FixedSchedule;
 import org.fastcatgroup.analytics.analysis.schedule.Schedule;
 import org.fastcatgroup.analytics.analysis.schedule.ScheduledTaskRunner;
 import org.fastcatgroup.analytics.analysis.task.AnalysisTask;
+import org.fastcatgroup.analytics.env.Environment;
 import org.fastcatgroup.analytics.job.TestJobExecutor;
 import org.junit.Test;
 
@@ -17,7 +18,7 @@ public class RealtimePopularKeywordTaskTest {
 	public void test() throws InterruptedException {
 
 		String encoding = "utf-8";
-		ScheduledTaskRunner<SearchLog> taskRunner = new ScheduledTaskRunner<SearchLog>("test", new TestJobExecutor());
+		ScheduledTaskRunner<SearchLog> taskRunner = new ScheduledTaskRunner<SearchLog>("test", new TestJobExecutor(), new Environment("."));
 		File f = new File("/Users/swsong/tmp/test.log");
 		Schedule schedule = new FixedSchedule(Calendar.getInstance(), 3, 1);
 		AnalysisTask<SearchLog> task = null;

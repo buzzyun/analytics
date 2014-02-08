@@ -9,6 +9,7 @@ import org.fastcatgroup.analytics.analysis.schedule.FixedSchedule;
 import org.fastcatgroup.analytics.analysis.schedule.Schedule;
 import org.fastcatgroup.analytics.analysis.schedule.ScheduledTaskRunner;
 import org.fastcatgroup.analytics.analysis.task.AnalysisTask;
+import org.fastcatgroup.analytics.env.Environment;
 import org.fastcatgroup.analytics.job.TestJobExecutor;
 import org.junit.Test;
 
@@ -17,7 +18,7 @@ public class ScheduledTasksTest {
 	@Test
 	public void test() throws IOException, InterruptedException {
 		
-		ScheduledTaskRunner<SearchLog> taskRunner = new ScheduledTaskRunner<SearchLog>("test", new TestJobExecutor());
+		ScheduledTaskRunner<SearchLog> taskRunner = new ScheduledTaskRunner<SearchLog>("test", new TestJobExecutor(), new Environment("."));
 		File f = new File("/Users/swsong/tmp/test.log");
 		Schedule schedule = new FixedSchedule(Calendar.getInstance(), 2, 1);
 		AnalysisTask<SearchLog> task = null;
@@ -31,7 +32,7 @@ public class ScheduledTasksTest {
 	@Test
 	public void testWithCalculator() throws IOException, InterruptedException {
 		
-		ScheduledTaskRunner<SearchLog> taskRunner = new ScheduledTaskRunner<SearchLog>("test", new TestJobExecutor());
+		ScheduledTaskRunner<SearchLog> taskRunner = new ScheduledTaskRunner<SearchLog>("test", new TestJobExecutor(), new Environment("."));
 		File f = new File("/Users/swsong/tmp/test.log");
 		Schedule schedule = new FixedSchedule(Calendar.getInstance(), 2, 1);
 		AnalysisTask<SearchLog> task = null;

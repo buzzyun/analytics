@@ -14,21 +14,27 @@ public abstract class AnalysisTask<LogType extends LogData> extends Job implemen
 	private static final long serialVersionUID = -8028269282257112376L;
 
 	protected static Logger logger = LoggerFactory.getLogger(AnalysisTask.class);
-
+	
+	protected String siteId;
+	protected List<String> categoryIdList;
 	private Schedule schedule;
 	private int priority;
 
-	private Runnable preProcess;
 	protected List<Calculator<LogType>> calculatorList;
 	protected SourceLogReader<LogType> logReader;
 	private int executeCount;
 
-	public AnalysisTask(Schedule schedule, int priority) {
+	public AnalysisTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
+		this.siteId = siteId;
+		this.categoryIdList = categoryIdList;
 		this.schedule = schedule;
 		this.priority = priority;
 	}
 
-	public abstract void prepare();
+	protected abstract void prepare();
+	
+	protected void preProcess(){ 
+	}
 
 	public int priority() {
 		return priority;
@@ -38,10 +44,10 @@ public abstract class AnalysisTask<LogType extends LogData> extends Job implemen
 	public JobResult doRun() {
 		try {
 
-			if (preProcess != null) {
-				preProcess.run();
-			}
-
+			preProcess();
+			
+			prepare();
+			
 			if (logReader != null) {
 				try {
 					LogType logData = null;
@@ -100,10 +106,6 @@ public abstract class AnalysisTask<LogType extends LogData> extends Job implemen
 
 	public void incrementExecution() {
 		executeCount++;
-	}
-
-	public void preProcess(Runnable preProcess) {
-		this.preProcess = preProcess;
 	}
 
 }

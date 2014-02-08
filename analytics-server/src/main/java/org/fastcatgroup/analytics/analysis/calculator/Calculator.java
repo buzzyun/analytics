@@ -53,6 +53,7 @@ public abstract class Calculator<LogType extends LogData> {
 	 * */
 	public final void calculate() throws Exception {
 		logger.debug("## calculate > {}", this);
+		prepareProcess();
 		
 		for (CategoryProcess<LogType> process : categoryProcessList) {
 			Object parameter = process.logHandler().done();
@@ -92,7 +93,7 @@ public abstract class Calculator<LogType extends LogData> {
 	public final void offerLog(LogType logData) throws IOException {
 		// category별로 모두 입력해준다.
 		for (CategoryProcess<LogType> process : categoryProcessList) {
-			logger.debug("# calculate process > {}", process.getClass().getSimpleName());
+			logger.debug("# calculate process offerLog > {}", process.getClass().getSimpleName());
 			process.logHandler().handleLog(logData);
 		}
 	}

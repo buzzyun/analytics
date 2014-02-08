@@ -3,6 +3,7 @@ package org.fastcatgroup.analytics.analysis.task;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
@@ -21,20 +22,19 @@ public class DailySearchLogAnalysisTask extends AnalysisTask<SearchLog> {
 
 	private static final long serialVersionUID = 4212969890908932929L;
 
-	private List<String> categoryIdList;
 	private File baseDir;
 	private Set<String> banWords;
 	private int minimumHitCount;
 
-	public DailySearchLogAnalysisTask(Schedule schedule, int priority) {
-		super(schedule, priority);
+	public DailySearchLogAnalysisTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
+		super(siteId, categoryIdList, schedule, priority);
 	}
 
 	@Override
 	public void prepare() {
-		categoryIdList = null; // _root
-		// baseDir : statistics/search/date 경로
-		baseDir = null;
+		// baseDir : statistics/search/date/Y####/M##/D##/data/{siteId} 경로
+		File dir = environment.filePaths().getStatisticsRoot().file("search", "date");
+		baseDir = new File(SearchStatisticsProperties.getDayDataDir(dir, Calendar.getInstance()), siteId);
 		banWords = null;
 		minimumHitCount = 1;
 		int topCount = 10;
@@ -44,7 +44,7 @@ public class DailySearchLogAnalysisTask extends AnalysisTask<SearchLog> {
 		try {
 			logReader = new FileSearchLogReader(logFile, encoding);
 		} catch (IOException e) {
-			logger.error("", e);
+			logger.error("", e.getMessage());
 		}
 
 		calculatorList = new ArrayList<Calculator<SearchLog>>();

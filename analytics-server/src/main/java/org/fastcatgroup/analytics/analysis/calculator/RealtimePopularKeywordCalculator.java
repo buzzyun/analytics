@@ -13,13 +13,17 @@ import org.fastcatgroup.analytics.analysis.handler.SearchLogKeyCountHandler;
 import org.fastcatgroup.analytics.analysis.handler.UpdatePopularKeywordHandler;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
 
-public class DailyPopularKeywordCalculator extends Calculator<SearchLog> {
+/**
+ * 실시간 인기검색어 계산기.
+ * 
+ * */
+public class RealtimePopularKeywordCalculator extends Calculator<SearchLog> {
 	
 	private Set<String> banWords;
 	private int minimumHitCount;
 	private int topCount;
 	
-	public DailyPopularKeywordCalculator(String name, File baseDir, List<String> categoryIdList, Set<String> banWords, int minimumHitCount, int topCount) {
+	public RealtimePopularKeywordCalculator(String name, File baseDir, List<String> categoryIdList, Set<String> banWords, int minimumHitCount, int topCount) {
 		super(name, baseDir, categoryIdList);
 		this.banWords = banWords;
 		this.minimumHitCount = minimumHitCount;

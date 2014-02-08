@@ -22,15 +22,15 @@ public class RollingRawLogger {
 	private String targetFilename;
 	private int sequence;
 
-	public RollingRawLogger(File baseDir, String targetFilename) {
-		this.baseDir = baseDir;
+	public RollingRawLogger(File dir, String siteId, String targetFilename) {
+		this.baseDir = new File(dir, siteId);
 		if(!baseDir.exists()){
 			baseDir.mkdirs();
 		}
 		this.targetFilename = targetFilename;
 		this.sequence = readSequence();
 		this.aLogger = new BufferedLogger(getTempFile(sequence), true);
-		logger.debug("RollongLogger use {}", aLogger.getFile().getName());
+		logger.debug("RollongLogger use {}/{}, {}", baseDir.getAbsolutePath(), aLogger.getFile().getName(), targetFilename);
 	}
 
 	@Override

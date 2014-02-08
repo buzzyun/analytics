@@ -1,10 +1,11 @@
-package org.fastcatgroup.analytics.analysis2;
+package org.fastcatgroup.analytics.analysis.schedule;
 
 import java.util.Iterator;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
 import org.fastcatgroup.analytics.analysis.log.LogData;
+import org.fastcatgroup.analytics.analysis.task.AnalysisTask;
 import org.fastcatgroup.analytics.control.JobExecutor;
 import org.fastcatgroup.analytics.control.ResultFuture;
 import org.slf4j.Logger;

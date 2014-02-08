@@ -1,9 +1,11 @@
-package org.fastcatgroup.analytics.analysis2;
+package org.fastcatgroup.analytics.analysis.task;
 
 import java.util.List;
 
+import org.fastcatgroup.analytics.analysis.calculator.Calculator;
 import org.fastcatgroup.analytics.analysis.log.LogData;
-import org.fastcatgroup.analytics.analysis2.schedule.Schedule;
+import org.fastcatgroup.analytics.analysis.log.SourceLogReader;
+import org.fastcatgroup.analytics.analysis.schedule.Schedule;
 import org.fastcatgroup.analytics.job.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

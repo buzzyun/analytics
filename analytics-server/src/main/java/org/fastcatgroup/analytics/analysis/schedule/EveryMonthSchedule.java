@@ -1,4 +1,4 @@
-package org.fastcatgroup.analytics.analysis2.schedule;
+package org.fastcatgroup.analytics.analysis.schedule;
 
 import java.util.Date;
 

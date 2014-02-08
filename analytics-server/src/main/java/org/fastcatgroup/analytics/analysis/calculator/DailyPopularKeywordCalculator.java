@@ -1,18 +1,17 @@
-package org.fastcatgroup.analytics.analysis;
+package org.fastcatgroup.analytics.analysis.calculator;
 
 import java.io.File;
 import java.util.List;
 import java.util.Set;
 
+import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.handler.KeyCountLogSortHandler;
+import org.fastcatgroup.analytics.analysis.handler.KeywordRankDiffHandler;
+import org.fastcatgroup.analytics.analysis.handler.ProcessHandler;
+import org.fastcatgroup.analytics.analysis.handler.RealtimePopularKeywordResultHandler;
+import org.fastcatgroup.analytics.analysis.handler.SearchLogKeyCountHandler;
+import org.fastcatgroup.analytics.analysis.handler.UpdatePopularKeywordHandler;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
-import org.fastcatgroup.analytics.analysis2.Calculator;
-import org.fastcatgroup.analytics.analysis2.SearchStatisticsProperties;
-import org.fastcatgroup.analytics.analysis2.handler.KeyCountLogSortHandler;
-import org.fastcatgroup.analytics.analysis2.handler.KeywordRankDiffHandler;
-import org.fastcatgroup.analytics.analysis2.handler.ProcessHandler;
-import org.fastcatgroup.analytics.analysis2.handler.RealtimePopularKeywordResultHandler;
-import org.fastcatgroup.analytics.analysis2.handler.SearchLogKeyCountHandler;
-import org.fastcatgroup.analytics.analysis2.handler.UpdatePopularKeywordHandler;
 
 public class DailyPopularKeywordCalculator extends Calculator<SearchLog> {
 	

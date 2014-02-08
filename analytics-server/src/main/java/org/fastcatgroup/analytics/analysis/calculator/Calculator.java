@@ -1,4 +1,4 @@
-package org.fastcatgroup.analytics.analysis2;
+package org.fastcatgroup.analytics.analysis.calculator;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,8 +7,9 @@ import java.util.EmptyStackException;
 import java.util.List;
 import java.util.Stack;
 
+import org.fastcatgroup.analytics.analysis.handler.CategoryLogHandler;
+import org.fastcatgroup.analytics.analysis.handler.ProcessHandler;
 import org.fastcatgroup.analytics.analysis.log.LogData;
-import org.fastcatgroup.analytics.analysis2.handler.ProcessHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

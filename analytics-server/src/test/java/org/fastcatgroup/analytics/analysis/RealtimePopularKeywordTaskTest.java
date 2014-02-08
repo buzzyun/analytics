@@ -4,10 +4,10 @@ import java.io.File;
 import java.util.Calendar;
 
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
-import org.fastcatgroup.analytics.analysis2.AnalysisTask;
-import org.fastcatgroup.analytics.analysis2.ScheduledTaskRunner;
-import org.fastcatgroup.analytics.analysis2.schedule.FixedSchedule;
-import org.fastcatgroup.analytics.analysis2.schedule.Schedule;
+import org.fastcatgroup.analytics.analysis.schedule.FixedSchedule;
+import org.fastcatgroup.analytics.analysis.schedule.Schedule;
+import org.fastcatgroup.analytics.analysis.schedule.ScheduledTaskRunner;
+import org.fastcatgroup.analytics.analysis.task.AnalysisTask;
 import org.fastcatgroup.analytics.job.TestJobExecutor;
 import org.junit.Test;
 

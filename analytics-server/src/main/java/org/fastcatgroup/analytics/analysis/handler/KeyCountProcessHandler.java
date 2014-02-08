@@ -1,12 +1,12 @@
-package org.fastcatgroup.analytics.analysis2.handler;
+package org.fastcatgroup.analytics.analysis.handler;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
 import org.fastcatgroup.analytics.analysis.KeyCountLogAggregator;
+import org.fastcatgroup.analytics.analysis.log.FileSearchLogReader;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
-import org.fastcatgroup.analytics.analysis2.FileSearchLogReader;
 
 /**
  * tmp.log 파일을 key-count로 합산한 0.log로 만든다.

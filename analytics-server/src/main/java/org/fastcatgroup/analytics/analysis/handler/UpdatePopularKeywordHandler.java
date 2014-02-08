@@ -1,4 +1,4 @@
-package org.fastcatgroup.analytics.analysis2.handler;
+package org.fastcatgroup.analytics.analysis.handler;
 
 import java.util.List;
 

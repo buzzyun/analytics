@@ -1,4 +1,4 @@
-package org.fastcatgroup.analytics.analysis2;
+package org.fastcatgroup.analytics.analysis.task;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,9 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.fastcatgroup.analytics.analysis.DailyPopularKeywordCalculator;
+import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.calculator.Calculator;
+import org.fastcatgroup.analytics.analysis.calculator.DailyPopularKeywordCalculator;
+import org.fastcatgroup.analytics.analysis.log.FileSearchLogReader;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
-import org.fastcatgroup.analytics.analysis2.schedule.Schedule;
+import org.fastcatgroup.analytics.analysis.schedule.Schedule;
 
 /**
  * 일별 검색로그 계산 task 내부에 인기검색어, 검색횟수 calculator를 가지고 있다.

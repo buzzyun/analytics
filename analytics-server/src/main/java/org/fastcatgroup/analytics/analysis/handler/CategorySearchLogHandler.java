@@ -1,4 +1,4 @@
-package org.fastcatgroup.analytics.analysis2.handler;
+package org.fastcatgroup.analytics.analysis.handler;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -13,7 +13,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
-import org.fastcatgroup.analytics.analysis2.CategoryLogHandler;
 
 /**
  * search log를 읽어들여 카테고리별로 분류하여 재 저장한다.

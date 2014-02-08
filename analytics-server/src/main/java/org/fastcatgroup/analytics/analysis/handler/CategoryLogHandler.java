@@ -1,4 +1,4 @@
-package org.fastcatgroup.analytics.analysis2;
+package org.fastcatgroup.analytics.analysis.handler;
 
 import java.io.IOException;
 

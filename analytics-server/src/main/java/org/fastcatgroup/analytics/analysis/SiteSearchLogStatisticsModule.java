@@ -11,11 +11,11 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
+import org.fastcatgroup.analytics.analysis.schedule.FixedSchedule;
+import org.fastcatgroup.analytics.analysis.schedule.Schedule;
+import org.fastcatgroup.analytics.analysis.schedule.ScheduledTaskRunner;
+import org.fastcatgroup.analytics.analysis.task.DailySearchLogAnalysisTask;
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
-import org.fastcatgroup.analytics.analysis2.DailySearchLogAnalysisTask;
-import org.fastcatgroup.analytics.analysis2.ScheduledTaskRunner;
-import org.fastcatgroup.analytics.analysis2.schedule.FixedSchedule;
-import org.fastcatgroup.analytics.analysis2.schedule.Schedule;
 import org.fastcatgroup.analytics.control.JobService;
 import org.fastcatgroup.analytics.db.vo.PopularKeywordVO.RankDiffType;
 import org.fastcatgroup.analytics.env.Environment;

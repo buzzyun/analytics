@@ -1,4 +1,4 @@
-package org.fastcatgroup.analytics.analysis2;
+package org.fastcatgroup.analytics.analysis;
 
 import java.io.File;
 import java.util.Calendar;

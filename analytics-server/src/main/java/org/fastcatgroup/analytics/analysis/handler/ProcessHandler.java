@@ -1,4 +1,4 @@
-package org.fastcatgroup.analytics.analysis2.handler;
+package org.fastcatgroup.analytics.analysis.handler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

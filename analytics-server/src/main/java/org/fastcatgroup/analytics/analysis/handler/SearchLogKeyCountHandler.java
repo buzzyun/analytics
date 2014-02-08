@@ -1,13 +1,12 @@
-package org.fastcatgroup.analytics.analysis2.handler;
+package org.fastcatgroup.analytics.analysis.handler;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
 import org.fastcatgroup.analytics.analysis.KeyCountLogAggregator;
+import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
-import org.fastcatgroup.analytics.analysis2.CategoryLogHandler;
-import org.fastcatgroup.analytics.analysis2.SearchStatisticsProperties;
 
 /**
  * search log를 읽어들여 key-count를 계산한다.

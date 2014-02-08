@@ -28,4 +28,9 @@ public class SearchLog extends LogData {
 	public String getKey() {
 		return keyword;
 	}
+	
+	@Override
+	public String toString(){
+		return categoryId + "\t" + keyword + "\t" + previousKeyword;
+	}
 }

@@ -27,7 +27,8 @@ public class CategorySearchLogHandler extends CategoryLogHandler<SearchLog> {
 	private BufferedWriter rootLogger;
 	private Map<String, BufferedWriter> categoryWriterMap;
 
-	public CategorySearchLogHandler(File baseDir, String fileName) {
+	public CategorySearchLogHandler(String categoryId, File baseDir, String fileName) {
+		super(categoryId);
 		this.baseDir = baseDir;
 		this.fileName = fileName;
 		categoryWriterMap = new HashMap<String, BufferedWriter>();

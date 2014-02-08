@@ -7,8 +7,6 @@ import java.io.OutputStreamWriter;
 import java.util.List;
 
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
-import org.fastcatgroup.analytics.control.JobService;
-import org.fastcatgroup.analytics.service.ServiceManager;
 
 public class RealtimePopularKeywordResultHandler extends ProcessHandler {
 
@@ -21,14 +19,8 @@ public class RealtimePopularKeywordResultHandler extends ProcessHandler {
 	}
 
 	@Override
-	public void reset() {
-
-	}
-
-	@Override
-	public Object process(String categoryId, Object parameter) throws Exception {
-		File categoryDir = new File(baseDir, categoryId);
-		File targetFile = new File(categoryDir, "rt-popular.txt");
+	public Object process(Object parameter) throws Exception {
+		File targetFile = new File(baseDir, "rt-popular.txt");
 
 		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(targetFile)));
 

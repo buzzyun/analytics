@@ -37,22 +37,15 @@ public class KeyCountProcessHandler extends ProcessHandler {
 	}
 
 	@Override
-	public void reset() {
+	public Object process(Object parameter) {
 
-	}
-
-	@Override
-	public Object process(String categoryId, Object parameter) {
-
-		File categoryDir = new File(baseDir, categoryId);
-
-		File inFile = new File(categoryDir, inFileName);
+		File inFile = new File(baseDir, inFileName);
 		logger.debug("Process file > {}", inFile);
 
 		FileSearchLogReader reader = null;
 		try {
 			reader = new FileSearchLogReader(inFile, encoding);
-			merger = new KeyCountLogAggregator(categoryDir, outFileName, runKeySize, encoding, banWords, minimumHitCount);
+			merger = new KeyCountLogAggregator(baseDir, outFileName, runKeySize, encoding, banWords, minimumHitCount);
 			SearchLog log = null;
 			while ((log = reader.readLog()) != null) {
 				merger.handleLog(log);
@@ -69,5 +62,6 @@ public class KeyCountProcessHandler extends ProcessHandler {
 
 		return parameter;
 	}
+
 
 }

@@ -22,15 +22,9 @@ public class RollingLogProcessHandler extends ProcessHandler {
 	}
 
 	@Override
-	public void reset() {
+	public Object process(Object parameter) {
 
-	}
-
-	@Override
-	public Object process(String categoryId, Object parameter) {
-
-		File categoryDir = new File(baseDir, categoryId);
-		File lastFile = getLogFile(categoryDir, fileLimitCount - 1);
+		File lastFile = getLogFile(baseDir, fileLimitCount - 1);
 		if (lastFile.exists()) {
 			lastFile.delete();
 			try {
@@ -40,10 +34,10 @@ public class RollingLogProcessHandler extends ProcessHandler {
 		}
 
 		for (int i = fileLimitCount - 1; i >= 0; i--) {
-			File file = getLogFile(categoryDir, i);
+			File file = getLogFile(baseDir, i);
 
 			if (file.exists()) {
-				File destFile = getLogFile(categoryDir, i + 1);
+				File destFile = getLogFile(baseDir, i + 1);
 				try {
 					FileUtils.moveFile(file, destFile);
 				} catch (IOException e) {

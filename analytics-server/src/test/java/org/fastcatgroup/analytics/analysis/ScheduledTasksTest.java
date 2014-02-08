@@ -3,13 +3,9 @@ package org.fastcatgroup.analytics.analysis;
 import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.Date;
 
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
 import org.fastcatgroup.analytics.analysis2.AnalysisTask;
-import org.fastcatgroup.analytics.analysis2.Calculator;
-import org.fastcatgroup.analytics.analysis2.FileSearchLogReaderFactory;
-import org.fastcatgroup.analytics.analysis2.CategoryLogHandler;
 import org.fastcatgroup.analytics.analysis2.ScheduledTaskRunner;
 import org.fastcatgroup.analytics.analysis2.schedule.FixedSchedule;
 import org.fastcatgroup.analytics.analysis2.schedule.Schedule;
@@ -23,9 +19,8 @@ public class ScheduledTasksTest {
 		
 		ScheduledTaskRunner<SearchLog> taskRunner = new ScheduledTaskRunner<SearchLog>("test", new TestJobExecutor());
 		File f = new File("/Users/swsong/tmp/test.log");
-		FileSearchLogReaderFactory readerFactory = new FileSearchLogReaderFactory(f, "utf-8");
 		Schedule schedule = new FixedSchedule(Calendar.getInstance(), 2, 1);
-		AnalysisTask<SearchLog> task = new AnalysisTask<SearchLog>(schedule, 0, readerFactory);
+		AnalysisTask<SearchLog> task = null;
 		taskRunner.addTask(task);
 		taskRunner.start();
 		System.out.println("Started " + taskRunner);
@@ -38,14 +33,9 @@ public class ScheduledTasksTest {
 		
 		ScheduledTaskRunner<SearchLog> taskRunner = new ScheduledTaskRunner<SearchLog>("test", new TestJobExecutor());
 		File f = new File("/Users/swsong/tmp/test.log");
-		FileSearchLogReaderFactory readerFactory = new FileSearchLogReaderFactory(f, "utf-8");
 		Schedule schedule = new FixedSchedule(Calendar.getInstance(), 2, 1);
-		AnalysisTask<SearchLog> task = new AnalysisTask<SearchLog>(schedule, 0, readerFactory);
-		
-		Calculator<SearchLog> calculator = new Calculator<SearchLog>("test-calculator", new SimpleLogHandler());
-		calculator.appendProcess(new SimpleProcessHandler());
-		
-		task.addCalculator(calculator);
+		AnalysisTask<SearchLog> task = null;
+		String categoryId = "cat1";
 		taskRunner.addTask(task);
 		taskRunner.start();
 		System.out.println("Started " + taskRunner);

@@ -9,22 +9,11 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Set;
 
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
-import org.fastcatgroup.analytics.analysis2.AnalysisTask;
-import org.fastcatgroup.analytics.analysis2.Calculator;
-import org.fastcatgroup.analytics.analysis2.Calculator.PostProcess;
-import org.fastcatgroup.analytics.analysis2.FileSearchLogReaderFactory;
+import org.fastcatgroup.analytics.analysis2.DailySearchLogAnalysisTask;
 import org.fastcatgroup.analytics.analysis2.ScheduledTaskRunner;
-import org.fastcatgroup.analytics.analysis2.handler.CategorySearchLogHandler;
-import org.fastcatgroup.analytics.analysis2.handler.KeyCountLogSortHandler;
-import org.fastcatgroup.analytics.analysis2.handler.KeyCountProcessHandler;
-import org.fastcatgroup.analytics.analysis2.handler.KeywordRankDiffHandler;
-import org.fastcatgroup.analytics.analysis2.handler.MergeKeyCountProcessHandler;
-import org.fastcatgroup.analytics.analysis2.handler.RealtimePopularKeywordResultHandler;
-import org.fastcatgroup.analytics.analysis2.handler.RollingLogProcessHandler;
 import org.fastcatgroup.analytics.analysis2.schedule.FixedSchedule;
 import org.fastcatgroup.analytics.analysis2.schedule.Schedule;
 import org.fastcatgroup.analytics.control.JobService;
@@ -92,9 +81,9 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		 */
 		realtimeTaskRunner = new ScheduledTaskRunner<SearchLog>("rt-search-log-task-runner", JobService.getInstance());
 		Schedule realtimeSchedule = new FixedSchedule(cal, periodInSeconds, delayInSeconds);
-		AnalysisTask<SearchLog> task = makeRealtimePopularKeywordAnalysisTask(realtimeSchedule, realtimeKeywordBaseDir, logFileName, encoding);
-		realtimeTaskRunner.addTask(task);
-		realtimeTaskRunner.start();
+		//TODO RealtimeSearchLogAnalysisTask
+//		realtimeTaskRunner.addTask(task);
+//		realtimeTaskRunner.start();
 
 		/*
 		 * 일별 통계 인기검색어. 일,주,월,년
@@ -104,8 +93,9 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		// 일
 
 		Schedule dailySchedule = new FixedSchedule(cal, periodInSeconds, delayInSeconds);
-		AnalysisTask<SearchLog> dailyTask = makeDailyPopularKeywordAnalysisTask(dailySchedule, dailyKeywordBaseDir, logFileName, encoding);
-		dailyTaskRunner.addTask(dailyTask);
+		
+		DailySearchLogAnalysisTask dailySearchLogAnalysisTask = new DailySearchLogAnalysisTask(dailySchedule, 1);
+		dailyTaskRunner.addTask(dailySearchLogAnalysisTask);
 		// 주
 		// Schedule weeklySchedule = new FixedSchedule(cal, periodInSeconds, delayInSeconds);
 		// AnalysisTask<SearchLog> weeklyTask = makeAnalysisTask(weeklySchedule, realtimeKeywordBaseDir, logFileName, encoding);
@@ -142,67 +132,67 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		dailyRawLogger.log(data);
 	}
 
-	private AnalysisTask<SearchLog> makeRealtimePopularKeywordAnalysisTask(Schedule schedule, File logDir, String fileName, String encoding) {
-		FileSearchLogReaderFactory readerFactory = new FileSearchLogReaderFactory(new File(logDir, fileName), encoding);
-
-		AnalysisTask<SearchLog> task = new AnalysisTask<SearchLog>(schedule, 0, readerFactory);
-
-		File workingDir = new File(logDir, "working");
-		File resultDir = new File(logDir, "result");
-		if (!workingDir.exists()) {
-			workingDir.mkdirs();
-		}
-		if (!resultDir.exists()) {
-			resultDir.mkdirs();
-		}
-
-		int topCount = 10;
-		int fileLimitCount = 6;
-		int runKeySize = 10 * 10000;
-		String tempFileName = "tmp.log"; // 각 카테고리하위에 tempFileName이름으로 키워드로그가 만들어진다.
-		String outFileName = "0.log";
-		Calculator<SearchLog> calculator = new Calculator<SearchLog>("Realtime popular keyword calculator", new CategorySearchLogHandler(workingDir, tempFileName));
-
-		/* 1. 카테고리별로 키워드-갯수를 계산하여 0.log에 쓴다. */
-		Set<String> banWords = null;
-		int minimumHitCount = 1;
-
-		calculator.appendProcess(new RollingLogProcessHandler(workingDir, fileLimitCount));
-		calculator.appendProcess(new KeyCountProcessHandler(workingDir, tempFileName, outFileName, runKeySize, banWords, minimumHitCount, encoding));
-
-		/* 2. 0.log, 1.log ..를 취합하여 key-count.log 로 통합한다. */
-		calculator.appendProcess(new MergeKeyCountProcessHandler(workingDir, resultDir, fileLimitCount, encoding));
-
-		/* 3. count로 정렬하여 key-count-rank.log로 저장. */
-		calculator.appendProcess(new KeyCountLogSortHandler(resultDir, encoding, runKeySize));
-
-		/* 4. 구해진 인기키워드를 저장한다. */
-		calculator.appendProcess(new KeywordRankDiffHandler(topCount, encoding));
-		calculator.appendProcess(new RealtimePopularKeywordResultHandler(resultDir, encoding));
-		calculator.postProcess(new PostProcess() {
-
-			@Override
-			public void handle(String categoryId, Object parameter) {
-				if (parameter != null) {
-					List<RankKeyword> keywordList = (List<RankKeyword>) parameter;
-					statisticsService.updateRealtimePopularKeywordList(siteId, categoryId, keywordList);
-				}
-			}
-		});
-
-		task.preProcess(new Runnable() {
-
-			@Override
-			public void run() {
-				logger.debug("Rolling log file. {}", realtimeRawLogger);
-				realtimeRawLogger.rolling();
-			}
-		});
-
-		task.addCalculator(calculator);
-
-		return task;
-	}
+//	private AnalysisTask<SearchLog> makeRealtimePopularKeywordAnalysisTask(Schedule schedule, File logDir, String fileName, String encoding) {
+//		FileSearchLogReaderFactory readerFactory = new FileSearchLogReaderFactory(new File(logDir, fileName), encoding);
+//
+//		AnalysisTask<SearchLog> task = new AnalysisTask<SearchLog>(schedule, 0, readerFactory);
+//
+//		File workingDir = new File(logDir, "working");
+//		File resultDir = new File(logDir, "result");
+//		if (!workingDir.exists()) {
+//			workingDir.mkdirs();
+//		}
+//		if (!resultDir.exists()) {
+//			resultDir.mkdirs();
+//		}
+//
+//		int topCount = 10;
+//		int fileLimitCount = 6;
+//		int runKeySize = 10 * 10000;
+//		String tempFileName = "tmp.log"; // 각 카테고리하위에 tempFileName이름으로 키워드로그가 만들어진다.
+//		String outFileName = "0.log";
+//		Calculator<SearchLog> calculator = new Calculator<SearchLog>("Realtime popular keyword calculator", new CategorySearchLogHandler(workingDir, tempFileName));
+//
+//		/* 1. 카테고리별로 키워드-갯수를 계산하여 0.log에 쓴다. */
+//		Set<String> banWords = null;
+//		int minimumHitCount = 1;
+//
+//		calculator.appendProcess(new RollingLogProcessHandler(workingDir, fileLimitCount));
+//		calculator.appendProcess(new KeyCountProcessHandler(workingDir, tempFileName, outFileName, runKeySize, banWords, minimumHitCount, encoding));
+//
+//		/* 2. 0.log, 1.log ..를 취합하여 key-count.log 로 통합한다. */
+//		calculator.appendProcess(new MergeKeyCountProcessHandler(workingDir, resultDir, fileLimitCount, encoding));
+//
+//		/* 3. count로 정렬하여 key-count-rank.log로 저장. */
+//		calculator.appendProcess(new KeyCountLogSortHandler(resultDir, encoding, runKeySize));
+//
+//		/* 4. 구해진 인기키워드를 저장한다. */
+//		calculator.appendProcess(new KeywordRankDiffHandler(topCount, encoding));
+//		calculator.appendProcess(new RealtimePopularKeywordResultHandler(resultDir, encoding));
+//		calculator.postProcess(new PostProcess() {
+//
+//			@Override
+//			public void handle(String categoryId, Object parameter) {
+//				if (parameter != null) {
+//					List<RankKeyword> keywordList = (List<RankKeyword>) parameter;
+//					statisticsService.updateRealtimePopularKeywordList(siteId, categoryId, keywordList);
+//				}
+//			}
+//		});
+//
+//		task.preProcess(new Runnable() {
+//
+//			@Override
+//			public void run() {
+//				logger.debug("Rolling log file. {}", realtimeRawLogger);
+//				realtimeRawLogger.rolling();
+//			}
+//		});
+//
+//		task.addCalculator(calculator);
+//
+//		return task;
+//	}
 
 	private File[] listCategoryDir(File dir) {
 		return dir.listFiles(new FileFilter() {
@@ -242,81 +232,5 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		return list;
 	}
 
-	private AnalysisTask<SearchLog> makeDailyPopularKeywordAnalysisTask(Schedule schedule, File logDir, String fileName, String encoding) {
-		
-		//TODO 수정할 사항.
-		
-//		task에서 처음받는 로그는 FileSearchLogReaderFactory 가 결정하며, task내의 calc들은 모두 동일한 타입의 로그를 사용하게 된다.
-//		그러므로, 로그를 cate별로 분류하여 저장하는 CategorySearchLogHandler도 calc내에 있으 필요는 없으며, task에서 처리하고
-//		calc는 그후부터 처리하도록 한다.
-		//그렇게 되면 calc를 상속받아 구현하는 방식을 사용할수 있다.
-		//또, 주,월,년 간 처럼 raw로그가 필요없이 기존 일일 로그를 취합하여 사용하는 방식도 그대로 사용할수 있다. 즉, calc만 구현하여 로직으로만 사용.
-		
-		
-		
-		
-		FileSearchLogReaderFactory readerFactory = new FileSearchLogReaderFactory(new File(logDir, fileName), encoding);
-
-//		AnalysisTask<SearchLog> task = new AnalysisTask<SearchLog>(schedule, 0, readerFactory);
-		AnalysisTask<SearchLog> task = new AnalysisTask<SearchLog>(schedule, 0);
-		//task는 reader가 없어도 된다.
-		task.setLogReader(new FileSearchLogReader(new File(logDir, fileName), encoding));
-		task.setLogHandler(new CategorySearchLogHandler(new File(logDir, fileName), encoding));
-		
-		//TODO 
-		//task1에는 일일인기검색어 계산 calc과 연관검색어 calc 및 (비율, 횟수 calc등)을 물리고. -> 로그필요.
-		//task2에는 주,월,년 인기검색어 계산 calc와 (비율, 횟수 calc등)을 물린다.  -> 로그없음.
-
-		File workingDir = new File(logDir, "working");
-		if (!workingDir.exists()) {
-			workingDir.mkdirs();
-		}
-
-		int topCount = 10;
-		int runKeySize = 10 * 10000;
-		String tempFileName = "tmp.log";
-		String outFileName = "key-count.log";
-
-		
-		DailyPopularKeywordCalculator cal = new DailyPopularKeywordCalculator("Daily popular keyword calculator", logDir, fileName, encoding);
-		task.add(cal);
-		
-		
-		Calculator<SearchLog> calculator = new Calculator<SearchLog>("Daily popular keyword calculator", new CategorySearchLogHandler(workingDir, tempFileName));
-
-		/* 1. 카테고리별로 키워드-갯수를 계산하여 key-count.log에 쓴다. */
-		Set<String> banWords = null;
-		int minimumHitCount = 1;
-		calculator.appendProcess(new KeyCountProcessHandler(workingDir, tempFileName, outFileName, runKeySize, banWords, minimumHitCount, encoding));
-
-		/* 2. count로 정렬하여 key-count-rank.log로 저장. */
-		calculator.appendProcess(new KeyCountLogSortHandler(workingDir, encoding, runKeySize));
-
-		/* 3. 구해진 인기키워드를 저장한다. */
-		calculator.appendProcess(new KeywordRankDiffHandler(topCount, encoding));
-		calculator.appendProcess(new RealtimePopularKeywordResultHandler(workingDir, encoding));
-		calculator.postProcess(new PostProcess() {
-
-			@Override
-			public void handle(String categoryId, Object parameter) {
-				if (parameter != null) {
-					List<RankKeyword> keywordList = (List<RankKeyword>) parameter;
-					statisticsService.updateRealtimePopularKeywordList(siteId, categoryId, keywordList);
-				}
-			}
-		});
-
-		task.preProcess(new Runnable() {
-
-			@Override
-			public void run() {
-				logger.debug("Rolling log file. {}", dailyRawLogger);
-				dailyRawLogger.rolling();
-			}
-		});
-
-		task.addCalculator(calculator);
-
-		return task;
-	}
+	
 }

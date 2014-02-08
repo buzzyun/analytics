@@ -64,8 +64,8 @@ public class ScheduledTaskRunner<LogType extends LogData> extends Thread {
 				}
 
 				try {
+					task.prepare();
 					task.incrementExecution();
-					task.reset();
 					logger.debug("{} run!", task);
 					
 					ResultFuture resultFuture = jobExecutor.offer(task);

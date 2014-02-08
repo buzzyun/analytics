@@ -1,6 +1,6 @@
 package org.fastcatgroup.analytics.analysis2;
 
-import java.util.Set;
+import java.io.IOException;
 
 import org.fastcatgroup.analytics.analysis.log.LogData;
 import org.slf4j.Logger;
@@ -11,18 +11,28 @@ import org.slf4j.LoggerFactory;
  * */
 public abstract class CategoryLogHandler<LogType extends LogData> {
 	protected static Logger logger = LoggerFactory.getLogger(CategoryLogHandler.class);
-	
-	//초기화.
+
+	protected String categoryId;
+
+	public CategoryLogHandler(String categoryId) {
+		this.categoryId = categoryId;
+	}
+
+	public String categoryId() {
+		return categoryId;
+	}
+
+	// 초기화.
 	public abstract void reset();
-	
+
 	/**
 	 * 로그가 한줄단위 tab구분된 LogData로 이 메소드로 전달된다.
 	 * */
-	public abstract void handleLog(LogType logData);
+	public abstract void handleLog(LogType logData) throws IOException;
 
 	/**
 	 * 마무리작업 및 카테고리 set를 전달한다.
 	 * */
-	public abstract Set<String> done();
+	public abstract Object done() throws IOException;
 
 }

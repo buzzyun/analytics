@@ -16,12 +16,7 @@ public class KeywordRankDiffHandler extends ProcessHandler {
 	}
 	
 	@Override
-	public void reset() {
-
-	}
-
-	@Override
-	public Object process(String categoryId, Object parameter) throws Exception {
+	public Object process(Object parameter) throws Exception {
 		File[] files = (File[]) parameter;
 		File rankFile = files[0];
 		File prevRankFile = files[1];

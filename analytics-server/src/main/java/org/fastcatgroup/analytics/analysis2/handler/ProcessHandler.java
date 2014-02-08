@@ -9,14 +9,33 @@ import org.slf4j.LoggerFactory;
 public abstract class ProcessHandler {
 	protected static Logger logger = LoggerFactory.getLogger(ProcessHandler.class);
 
-	//초기화.
-	public abstract void reset();
+	protected ProcessHandler[] nextList;
 	
 	/**
 	 * 전달된 parameter 로 통계수행.
-	 * @param categoryId
 	 * @param parameter2 
 	 */
-	public abstract Object process(String categoryId, Object parameter) throws Exception;
+	public abstract Object process(Object parameter) throws Exception;
 	
+	public void next(ProcessHandler... next){
+		if(nextList == null){
+			this.nextList = next;
+		}else{
+			int size = nextList.length;
+			int newSize = size + next.length;
+			ProcessHandler[] newList = new ProcessHandler[newSize];
+			System.arraycopy(nextList, 0, newList, 0, size);
+			System.arraycopy(next, 0, newList, size, next.length);
+			nextList = newList;
+		}
+	}
+	
+	public ProcessHandler[] next(){
+		return nextList;
+	}
+	
+	public ProcessHandler appendTo(ProcessHandler prevHandler) {
+		prevHandler.next(this);
+		return this;
+	}
 }

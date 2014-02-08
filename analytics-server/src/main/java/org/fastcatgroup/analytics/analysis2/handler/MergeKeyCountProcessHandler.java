@@ -25,19 +25,16 @@ public class MergeKeyCountProcessHandler extends ProcessHandler {
 	}
 
 	@Override
-	public void reset() {
-	}
-
-	@Override
-	public Object process(String categoryId, Object parameter) {
-		File categoryDir = new File(baseDir, categoryId);
+	public Object process(Object parameter) {
 		File[] inFileList = new File[fileLimitCount];
 		float[] weightList = new float[fileLimitCount];
 		for (int i = 0; i < fileLimitCount; i++) {
-			inFileList[i] = new File(categoryDir, i + ".log");
+			inFileList[i] = new File(baseDir, i + ".log");
 			weightList[i] = (float) (fileLimitCount - i) / (float) fileLimitCount;
 		}
-		File targetDir = new File(resultDir, categoryId);
+		
+		//FIXME
+		File targetDir = new File(resultDir, "");
 		File keyCountFile = new File(targetDir, KEY_COUNT_LOG_FILENAME);
 		try {
 

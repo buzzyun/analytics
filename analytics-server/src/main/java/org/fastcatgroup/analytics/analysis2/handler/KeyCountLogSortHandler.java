@@ -26,17 +26,11 @@ public class KeyCountLogSortHandler extends ProcessHandler {
 	}
 
 	@Override
-	public void reset() {
-
-	}
-
-	@Override
-	public Object process(String categoryId, Object parameter) throws Exception {
+	public Object process(Object parameter) throws Exception {
 		File keyCountFile = (File) parameter;
 
-		File categoryDir = new File(baseDir, categoryId);
-		File rankFile = new File(categoryDir, KEY_COUNT_RANK_LOG_FILENAME);
-		File prevRankFile = new File(categoryDir, KEY_COUNT_RANK_PREV_LOG_FILENAME);
+		File rankFile = new File(baseDir, KEY_COUNT_RANK_LOG_FILENAME);
+		File prevRankFile = new File(baseDir, KEY_COUNT_RANK_PREV_LOG_FILENAME);
 		if (rankFile.exists()) {
 			if (prevRankFile.exists()) {
 				prevRankFile.delete();
@@ -64,7 +58,7 @@ public class KeyCountLogSortHandler extends ProcessHandler {
 		};
 
 		// LogSorter를 사용해 keyCountFile -> rankFile 로 저장한다.
-		File sortWorkDir = new File(categoryDir, "tmp");
+		File sortWorkDir = new File(baseDir, "tmp");
 		InputStream is = new FileInputStream(keyCountFile);
 		OutputStream os = new FileOutputStream(rankFile);
 		try {

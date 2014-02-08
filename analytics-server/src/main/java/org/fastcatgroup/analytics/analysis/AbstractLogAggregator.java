@@ -99,7 +99,6 @@ public abstract class AbstractLogAggregator<LogType extends LogData> {
 		// 여기까지오면, targetDir에 0.log, 1.log 등의 run들이 쌓여있다.
 		// 이제 정렬된 run들을 모아서 하나로 만든다.
 		if(flushCount > 0) {
-//		if (checkNeedMerge(flushCount)) {
 			RunMerger merger = newFinalMerger(outputEncoding, flushCount);
 			if (merger != null) {
 				merger.merge();

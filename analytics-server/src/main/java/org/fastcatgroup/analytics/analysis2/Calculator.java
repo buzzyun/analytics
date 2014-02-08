@@ -1,91 +1,147 @@
 package org.fastcatgroup.analytics.analysis2;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 import java.util.List;
-import java.util.Set;
+import java.util.Stack;
 
 import org.fastcatgroup.analytics.analysis.log.LogData;
-import org.fastcatgroup.analytics.analysis2.Calculator.PostProcess;
 import org.fastcatgroup.analytics.analysis2.handler.ProcessHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 순차적으로 수행되는 handler를 담고있는 객체.
+ * 카테고리별로 통계계산을 수행하는 클래스. 어느카테고리인지는 prepareProcess 에서 설정하도록 한다. task에서 호출시 매번 새로 생성하여 사용하므로 multi-thread를 지원할 필요없음.
  * 
  * */
 public abstract class Calculator<LogType extends LogData> {
 	protected static Logger logger = LoggerFactory.getLogger(Calculator.class);
 
 	protected String name;
-	protected CategoryLogHandler<LogType> logHandler;
-	private List<ProcessHandler> processList;
-	private PostProcess postProcess;
+	protected File baseDir;
+	protected List<String> categoryIdList;
 	
-	public Calculator(String name) {
-		this(name, null);
-	}
-	public Calculator(String name, CategoryLogHandler<LogType> logHandler) {
+	// 모든 카테고리의 프로세스를 각각 담고 있다.
+	private List<CategoryProcess<LogType>> categoryProcessList;
+	private Stack<ProcessHandlerParameter> nextStack;
+
+	public Calculator(String name, File baseDir, List<String> categoryIdList) {
 		this.name = name;
-		this.logHandler = logHandler;
-		processList = new ArrayList<ProcessHandler>();
+		this.baseDir = baseDir;
+		this.categoryIdList = categoryIdList;
+		this.categoryProcessList = new ArrayList<CategoryProcess<LogType>>();
+		this.nextStack = new Stack<ProcessHandlerParameter>();
 	}
 
-	protected abstract void prepareProcess();
-		
+	/*
+	 * calculate에서 카테고리별로 수행할 CalculatorProcess들을 정의한다.
+	 */
+	protected abstract CategoryProcess<LogType> newCategoryProcess(String categoryId);
+
+	public void prepareProcess() {
+		for (String categoryId : categoryIdList) {
+			CategoryProcess<LogType> process = newCategoryProcess(categoryId);
+			categoryProcessList.add(process);
+		}
+	}
+
 	/**
-	 * logHandler로 읽은 로그를 바탕으로 다음 프로세스를 진행한다.
+	 * 순차적으로 프로세스를 진행한다.
 	 * */
 	public final void calculate() throws Exception {
-		prepareProcess();
-
-		Set<String> categoryIdSet = logHandler.done();
-
-		Object parameter = null;
-		for (String categoryId : categoryIdSet) {
-			logger.debug("## calculate [{}] > {}", categoryId, this);
-			for (ProcessHandler handler : processList) {
-				handler.reset();
-				logger.debug("# handler process {} > {}", categoryId, handler.getClass().getSimpleName());
-				parameter = handler.process(categoryId, parameter);
-			}
-			
-			if(postProcess != null){
-				postProcess.handle(categoryId, parameter);
-			}
-		}
+		logger.debug("## calculate > {}", this);
 		
-	}
+		for (CategoryProcess<LogType> process : categoryProcessList) {
+			Object parameter = process.logHandler().done();
+			logger.debug("# calculate process > {}", process.getClass().getSimpleName());
+			ProcessHandler next = process.processHandler();
+			while (next != null) {
+				
+				parameter = next.process(parameter);
 
-	public final void offerLog(LogType logData) {
-		if(logHandler != null){
-			logHandler.handleLog(logData);
+				ProcessHandler[] nextList = next.next();
+
+				if (nextList == null) {
+					ProcessHandlerParameter p = null;
+					try{
+						p = nextStack.pop();
+						next = p.processHandler;
+						parameter = p.parameter;
+					}catch(EmptyStackException e) {
+						//stack도 비어있다면 모두 끝난것이다.
+						break;
+					}
+				} else {
+					if (nextList.length > 1) {
+						// 여러개이면 뒤부터 stack에 넣는다.
+						for (int i = nextList.length - 1; i >= 1; i--) {
+							nextStack.push(new ProcessHandlerParameter(nextList[i], parameter));
+						}
+						
+					}
+					next = nextList[0];
+				}
+
+			}
 		}
 	}
 
-	public void appendProcess(ProcessHandler handler) {
-		processList.add(handler);
-	}
-
-	protected void postProcess(PostProcess postProcess){
-		this.postProcess = postProcess;
-	}
-	
-	/**
-	 * 초기화
-	 * */
-	public void reset() {
-		if (logHandler != null) {
-			logHandler.reset();
+	public final void offerLog(LogType logData) throws IOException {
+		// category별로 모두 입력해준다.
+		for (CategoryProcess<LogType> process : categoryProcessList) {
+			logger.debug("# calculate process > {}", process.getClass().getSimpleName());
+			process.logHandler().handleLog(logData);
 		}
 	}
 
 	@Override
-	public String toString(){
-		return getClass().getSimpleName() +" [" + name + "]";
+	public String toString() {
+		return getClass().getSimpleName() + " [" + name + "]";
 	}
-	
-	public static abstract class PostProcess {
-		public abstract void handle(String categoryId, Object parameter);
+
+	// ProcessHandler와 파라미터를 stack에 넣기위한 클래스.
+	public static class ProcessHandlerParameter {
+		private ProcessHandler processHandler;
+		private Object parameter;
+
+		public ProcessHandlerParameter(ProcessHandler processHandler, Object parameter) {
+			this.processHandler = processHandler;
+			this.parameter = parameter;
+		}
+
+		public ProcessHandler processHandler() {
+			return processHandler;
+		}
+
+		public Object parameter() {
+			return parameter;
+		}
 	}
+
+	public static class CategoryProcess<LogType extends LogData> {
+		private ProcessHandler processHandler;
+		private CategoryLogHandler<LogType> logHandler;
+
+		public CategoryProcess() {
+		}
+
+		public void setLogHandler(CategoryLogHandler<LogType> logHandler) {
+			this.logHandler = logHandler;
+		}
+
+		public void setProcessHandler(ProcessHandler processHandler) {
+			this.processHandler = processHandler;
+		}
+
+		public ProcessHandler processHandler() {
+			return processHandler;
+		}
+
+		public CategoryLogHandler<LogType> logHandler() {
+			return logHandler;
+		}
+	}
+
 }

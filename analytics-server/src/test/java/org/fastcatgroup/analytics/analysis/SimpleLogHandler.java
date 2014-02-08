@@ -12,7 +12,8 @@ public class SimpleLogHandler extends CategoryLogHandler<SearchLog> {
 
 	Map<String, Counter> map;
 
-	public SimpleLogHandler(){
+	public SimpleLogHandler(String categoryId){
+		super(categoryId);
 		map = new HashMap<String, Counter>();
 	}
 	

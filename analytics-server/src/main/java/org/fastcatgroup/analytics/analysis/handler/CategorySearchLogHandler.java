@@ -80,12 +80,6 @@ public class CategorySearchLogHandler extends CategoryLogHandler<SearchLog> {
 	}
 
 	@Override
-	public void reset() {
-		categoryWriterMap.clear();
-		rootLogger = null;
-	}
-
-	@Override
 	public Set<String> done() {
 
 		for (Entry<String, BufferedWriter> entry : categoryWriterMap.entrySet()) {

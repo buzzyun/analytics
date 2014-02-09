@@ -73,7 +73,7 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.MILLISECOND, 0);
 
-		int periodInSeconds = 30;
+		int periodInSeconds = 10;
 		int delayInSeconds = 5;
 		
 		List<String> categoryIdList = new ArrayList<String>();

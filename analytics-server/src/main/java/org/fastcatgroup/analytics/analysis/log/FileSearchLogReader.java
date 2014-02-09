@@ -9,9 +9,11 @@ import java.io.InputStreamReader;
 
 public class FileSearchLogReader implements SourceLogReader<SearchLog> {
 	
+	private File file;
 	private BufferedReader reader;
 
 	public FileSearchLogReader(File file, String encoding) throws IOException {
+		this.file = file;
 		reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), encoding));
 	}
 
@@ -40,5 +42,10 @@ public class FileSearchLogReader implements SourceLogReader<SearchLog> {
 			}
 		} catch (IOException ignore) {
 		}
+	}
+	
+	@Override
+	public String toString(){
+		return getClass().getSimpleName() + " / " + file.getAbsolutePath();
 	}
 }

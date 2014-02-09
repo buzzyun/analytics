@@ -17,23 +17,26 @@ public class SearchLogKeyCountHandler extends CategoryLogHandler<SearchLog> {
 	
 	public SearchLogKeyCountHandler(String categoryId, File baseDir, Set<String> banWords, int minimumHitCount) {
 		super(categoryId);
-		File categoryDir = new File(baseDir, categoryId);
 		String targetFilename = SearchStatisticsProperties.KEY_COUNT_LOG_FILENAME;
 		int runKeySize = SearchStatisticsProperties.runKeySize;
 		String encoding = SearchStatisticsProperties.encoding;
-		aggregator = new KeyCountLogAggregator(categoryDir, targetFilename, runKeySize, encoding, banWords, minimumHitCount);
+		aggregator = new KeyCountLogAggregator(baseDir, targetFilename, runKeySize, encoding, banWords, minimumHitCount);
 	}
 
 	@Override
 	public void handleLog(SearchLog logData) throws IOException {
+		logger.debug("handleLog[{}] > {}", categoryId, logData);
 		String keyword = logData.keyword();
 		if (keyword != null && keyword.length() > 0) {
-			aggregator.handleLog(logData);
+			if(categoryId.equals(logData.categoryId())){
+				//해당 카테고리만 
+				aggregator.handleLog(logData);
+			}else if(categoryId.equals("_root")){
+				//root는 모두다.
+				aggregator.handleLog(logData);
+			}
+			
 		}
-	}
-
-	@Override
-	public void reset() {
 	}
 
 	@Override

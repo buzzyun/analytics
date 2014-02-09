@@ -18,11 +18,6 @@ public class SimpleLogHandler extends CategoryLogHandler<SearchLog> {
 	}
 	
 	@Override
-	public void reset() {
-		map.clear();
-	}
-	
-	@Override
 	public void handleLog(SearchLog logData) {
 		String keyword = logData.keyword();
 		logger.debug("keyword > {}", keyword);

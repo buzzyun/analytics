@@ -78,12 +78,12 @@ public abstract class AbstractLogAggregator<LogType extends LogData> {
 	private void flushRun() throws IOException {
 		TreeMap<String, Counter> sortedMap = new TreeMap<String, Counter>();
 		sortedMap.putAll(aggregateMap);
+		aggregateMap.clear();
 		AggregationResultWriter logWriter = newRunWriter(outputEncoding, flushCount++);
 		try {
 			for (Map.Entry<String, Counter> entry : sortedMap.entrySet()) {
 				logWriter.write(entry.getKey(), entry.getValue().value());
 			}
-			aggregateMap.clear();
 		} finally {
 			if (logWriter != null) {
 				logWriter.close();
@@ -92,6 +92,8 @@ public abstract class AbstractLogAggregator<LogType extends LogData> {
 	}
 
 	public void done() throws IOException {
+		
+		logger.debug("##aggregate count {}", flushCount);
 		if (aggregateMap.size() > 0) {
 			flushRun();
 		}

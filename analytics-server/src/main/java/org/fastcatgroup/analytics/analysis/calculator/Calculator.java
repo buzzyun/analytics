@@ -23,7 +23,7 @@ public abstract class Calculator<LogType extends LogData> {
 	protected String name;
 	protected File baseDir;
 	protected List<String> categoryIdList;
-	
+
 	// 모든 카테고리의 프로세스를 각각 담고 있다.
 	private List<CategoryProcess<LogType>> categoryProcessList;
 	private Stack<ProcessHandlerParameter> nextStack;
@@ -32,8 +32,13 @@ public abstract class Calculator<LogType extends LogData> {
 		this.name = name;
 		this.baseDir = baseDir;
 		this.categoryIdList = categoryIdList;
-		this.categoryProcessList = new ArrayList<CategoryProcess<LogType>>();
 		this.nextStack = new Stack<ProcessHandlerParameter>();
+		
+		this.categoryProcessList = new ArrayList<CategoryProcess<LogType>>();
+		for (String categoryId : categoryIdList) {
+			CategoryProcess<LogType> process = newCategoryProcess(categoryId);
+			categoryProcessList.add(process);
+		}
 	}
 
 	/*
@@ -41,56 +46,55 @@ public abstract class Calculator<LogType extends LogData> {
 	 */
 	protected abstract CategoryProcess<LogType> newCategoryProcess(String categoryId);
 
-	public void prepareProcess() {
-		for (String categoryId : categoryIdList) {
-			CategoryProcess<LogType> process = newCategoryProcess(categoryId);
-			categoryProcessList.add(process);
-		}
-	}
-
 	/**
 	 * 순차적으로 프로세스를 진행한다.
 	 * */
 	public final void calculate() throws Exception {
 		logger.debug("## calculate > {}", this);
-		prepareProcess();
-		
+
 		for (CategoryProcess<LogType> process : categoryProcessList) {
-			Object parameter = process.logHandler().done();
-			logger.debug("# calculate process > {}", process.getClass().getSimpleName());
-			ProcessHandler next = process.processHandler();
-			while (next != null) {
+			try {
+				nextStack.clear();
 				
-				parameter = next.process(parameter);
+				Object parameter = process.logHandler().done();
+//				logger.debug("# calculate process > {}", process.getClass().getSimpleName());
+				ProcessHandler next = process.processHandler();
+				while (next != null) {
 
-				ProcessHandler[] nextList = next.next();
+					parameter = next.process(parameter);
 
-				if (nextList == null) {
-					ProcessHandlerParameter p = null;
-					try{
-						p = nextStack.pop();
-						next = p.processHandler;
-						parameter = p.parameter;
-					}catch(EmptyStackException e) {
-						//stack도 비어있다면 모두 끝난것이다.
-						break;
-					}
-				} else {
-					if (nextList.length > 1) {
-						// 여러개이면 뒤부터 stack에 넣는다.
-						for (int i = nextList.length - 1; i >= 1; i--) {
-							nextStack.push(new ProcessHandlerParameter(nextList[i], parameter));
+					ProcessHandler[] nextList = next.next();
+
+					if (nextList == null) {
+						ProcessHandlerParameter p = null;
+						try {
+							p = nextStack.pop();
+							next = p.processHandler;
+							parameter = p.parameter;
+						} catch (EmptyStackException e) {
+							// stack도 비어있다면 모두 끝난것이다.
+							break;
 						}
-						
-					}
-					next = nextList[0];
-				}
+					} else {
+						if (nextList.length > 1) {
+							// 여러개이면 뒤부터 stack에 넣는다.
+							for (int i = nextList.length - 1; i >= 1; i--) {
+								nextStack.push(new ProcessHandlerParameter(nextList[i], parameter));
+							}
 
+						}
+						next = nextList[0];
+					}
+
+				}
+			} catch (Exception e) {
+				logger.error("{}", e.getMessage());
 			}
 		}
 	}
 
 	public final void offerLog(LogType logData) throws IOException {
+		logger.debug("### offerLog {} : {}", logData, categoryProcessList);
 		// category별로 모두 입력해준다.
 		for (CategoryProcess<LogType> process : categoryProcessList) {
 			logger.debug("# calculate process offerLog > {}", process.getClass().getSimpleName());

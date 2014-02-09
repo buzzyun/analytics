@@ -22,9 +22,6 @@ public abstract class CategoryLogHandler<LogType extends LogData> {
 		return categoryId;
 	}
 
-	// 초기화.
-	public abstract void reset();
-
 	/**
 	 * 로그가 한줄단위 tab구분된 LogData로 이 메소드로 전달된다.
 	 * */

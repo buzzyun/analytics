@@ -8,6 +8,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 public class AggregationResultFileWriter implements AggregationResultWriter {
+	private File file;
 	private Writer writer;
 	private int minimumCount; //유효한 최소 검색횟수. 이 횟수보다 작으면 기록하지 않는다.
 	 
@@ -15,6 +16,7 @@ public class AggregationResultFileWriter implements AggregationResultWriter {
 		this(file, encoding, 0);
 	}
 	public AggregationResultFileWriter(File file, String encoding, int minimumCount) {
+		this.file = file;
 		try {
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), encoding));
 		} catch (IOException e) {
@@ -44,6 +46,11 @@ public class AggregationResultFileWriter implements AggregationResultWriter {
 			} catch (IOException ignore) {
 			}
 		}
+	}
+	
+	@Override
+	public String toString(){
+		return getClass().getSimpleName() + " / " + file.getAbsolutePath();
 	}
 
 }

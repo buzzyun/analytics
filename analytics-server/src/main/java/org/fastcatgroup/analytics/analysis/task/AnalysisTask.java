@@ -43,18 +43,21 @@ public abstract class AnalysisTask<LogType extends LogData> extends Job implemen
 	@Override
 	public JobResult doRun() {
 		try {
-
 			preProcess();
 			
 			prepare();
+			
+			logger.debug("AnalysisTask logReader > {}", logReader);
 			
 			if (logReader != null) {
 				try {
 					LogType logData = null;
 					int n = 0;
 					while ((logData = logReader.readLog()) != null) {
-						logger.debug("{} : {}", n++, logData);
+						logger.debug("logReader.readLog() {} : {}", n++, logData);
+						logger.debug("Task calculatorList {}", calculatorList);
 						for (Calculator<LogType> c : calculatorList) {
+							logger.debug("offer log to  {} < {}", c, logData);
 							c.offerLog(logData);
 						}
 					}

@@ -45,6 +45,8 @@ public class SortedRunFileMerger implements RunMerger {
 				}
 
 				writer.close();
+				
+				logger.debug("Wrote merge file {}", writer);
 			}
 		}else{
 			logger.debug("no file to merge");

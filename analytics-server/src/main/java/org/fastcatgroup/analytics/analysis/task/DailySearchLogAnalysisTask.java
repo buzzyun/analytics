@@ -2,7 +2,6 @@ package org.fastcatgroup.analytics.analysis.task;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
@@ -22,10 +21,6 @@ public class DailySearchLogAnalysisTask extends AnalysisTask<SearchLog> {
 
 	private static final long serialVersionUID = 4212969890908932929L;
 
-	private File baseDir;
-	private Set<String> banWords;
-	private int minimumHitCount;
-
 	public DailySearchLogAnalysisTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
 		super(siteId, categoryIdList, schedule, priority);
 	}
@@ -34,9 +29,13 @@ public class DailySearchLogAnalysisTask extends AnalysisTask<SearchLog> {
 	public void prepare() {
 		// baseDir : statistics/search/date/Y####/M##/D##/data/{siteId} 경로
 		File dir = environment.filePaths().getStatisticsRoot().file("search", "date");
-		baseDir = new File(SearchStatisticsProperties.getDayDataDir(dir, Calendar.getInstance()), siteId);
-		banWords = null;
-		minimumHitCount = 1;
+		Calendar calendar = Calendar.getInstance();
+		Calendar prevCalendar = Calendar.getInstance();
+		prevCalendar.add(Calendar.DAY_OF_MONTH, -1);
+		File baseDir = new File(SearchStatisticsProperties.getDayDataDir(dir, calendar), siteId);
+		File prevDir = new File(SearchStatisticsProperties.getDayDataDir(dir, prevCalendar), siteId);
+		Set<String> banWords = null;
+		int minimumHitCount = 1;
 		int topCount = 10;
 
 		File logFile = new File(baseDir, "raw.log");
@@ -47,11 +46,9 @@ public class DailySearchLogAnalysisTask extends AnalysisTask<SearchLog> {
 			logger.error("", e.getMessage());
 		}
 
-		calculatorList = new ArrayList<Calculator<SearchLog>>();
-
 		// calc를 카테고리별로 모두 만든다.
-		Calculator<SearchLog> calculator = new DailyPopularKeywordCalculator("Daily popular keyword calculator", baseDir, categoryIdList, banWords, minimumHitCount, topCount);
-		calculatorList.add(calculator);
+		Calculator<SearchLog> calculator = new DailyPopularKeywordCalculator("Daily popular keyword calculator", baseDir, prevDir, siteId, categoryIdList, banWords, minimumHitCount, topCount);
+		addCalculator(calculator);
 	}
 
 }

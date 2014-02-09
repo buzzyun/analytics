@@ -30,7 +30,6 @@ public class KeywordLogRankDiffer {
 	public List<RankKeyword> diff() {
 		List<RankKeyword> result = new ArrayList<RankKeyword>();
 		try {
-
 			// 1. target 파일에서 top N개를 뽑아낸다.
 			KeyCountRunEntryReader targetReader = new KeyCountRunEntryReader(targetFile, encoding);
 			try {
@@ -41,6 +40,8 @@ public class KeywordLogRankDiffer {
 					}
 					
 					KeyCountRunEntry entry = targetReader.entry();
+					logger.debug("@@rank diff {} > {}", rank, entry);
+					
 					RankKeyword rankKeyword = new RankKeyword(entry.getKey(), rank++, entry.getCount());
 					result.add(rankKeyword);
 				}

@@ -8,23 +8,22 @@ import java.util.List;
 
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
 
-public class RealtimePopularKeywordResultHandler extends ProcessHandler {
+public class PopularKeywordResultHandler extends ProcessHandler {
 
-	File baseDir;
+	File popularKeywordLogFile;
 	String encoding;
 
-	public RealtimePopularKeywordResultHandler(File baseDir, String encoding) {
-		this.baseDir = baseDir;
-		this.encoding = encoding;
+	public PopularKeywordResultHandler(File popularKeywordLogFile, String encoding) {
+		this.popularKeywordLogFile = popularKeywordLogFile;
 	}
 
 	@Override
 	public Object process(Object parameter) throws Exception {
-		File targetFile = new File(baseDir, "rt-popular.txt");
 
-		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(targetFile)));
+		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(popularKeywordLogFile)));
 
 		List<RankKeyword> result = (List<RankKeyword>) parameter;
+		logger.debug("##Popular Keyword > {}", result);
 		try {
 			for (RankKeyword k : result) {
 				writer.append(k.getKeyword());

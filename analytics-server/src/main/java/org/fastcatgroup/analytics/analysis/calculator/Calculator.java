@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 public abstract class Calculator<LogType extends LogData> {
 	protected static Logger logger = LoggerFactory.getLogger(Calculator.class);
 
+	protected String siteId;
 	protected String name;
 	protected File baseDir;
 	protected List<String> categoryIdList;
@@ -28,19 +29,21 @@ public abstract class Calculator<LogType extends LogData> {
 	private List<CategoryProcess<LogType>> categoryProcessList;
 	private Stack<ProcessHandlerParameter> nextStack;
 
-	public Calculator(String name, File baseDir, List<String> categoryIdList) {
+	public Calculator(String name, File baseDir, String siteId, List<String> categoryIdList) {
 		this.name = name;
 		this.baseDir = baseDir;
+		this.siteId = siteId;
 		this.categoryIdList = categoryIdList;
 		this.nextStack = new Stack<ProcessHandlerParameter>();
-		
+	}
+
+	public void init(){
 		this.categoryProcessList = new ArrayList<CategoryProcess<LogType>>();
 		for (String categoryId : categoryIdList) {
 			CategoryProcess<LogType> process = newCategoryProcess(categoryId);
 			categoryProcessList.add(process);
 		}
 	}
-
 	/*
 	 * calculate에서 카테고리별로 수행할 CalculatorProcess들을 정의한다.
 	 */

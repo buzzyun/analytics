@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Comparator;
 
-import org.apache.commons.io.FileUtils;
 import org.fastcatgroup.analytics.analysis.util.KeyCountRunEntry;
 import org.fastcatgroup.analytics.analysis.util.LogSorter;
 
@@ -16,15 +15,13 @@ public class KeyCountLogSortHandler extends ProcessHandler {
 	private File baseDir;
 	String inFileName;
 	String sortedFileName;
-	String prevSortedFileName;
 	private String encoding;
 	private int runKeySize;
 
-	public KeyCountLogSortHandler(File baseDir, String inFileName, String sortedFileName, String prevSortedFileName, String encoding, int runKeySize) {
+	public KeyCountLogSortHandler(File baseDir, String inFileName, String sortedFileName, String encoding, int runKeySize) {
 		this.baseDir = baseDir;
 		this.inFileName = inFileName;
 		this.sortedFileName = sortedFileName;
-		this.prevSortedFileName = prevSortedFileName;
 		this.encoding = encoding;
 		this.runKeySize = runKeySize;
 	}
@@ -34,13 +31,13 @@ public class KeyCountLogSortHandler extends ProcessHandler {
 		logger.debug("process {} [{}]", getClass().getSimpleName(), parameter);
 		File keyCountFile = new File(baseDir, inFileName);
 		File rankFile = new File(baseDir, sortedFileName);
-		File prevRankFile = new File(baseDir, prevSortedFileName);
-		if (rankFile.exists()) {
-			if (prevRankFile.exists()) {
-				prevRankFile.delete();
-			}
-			FileUtils.copyFile(rankFile, prevRankFile);
-		}
+//		File prevRankFile = new File(baseDir, prevSortedFileName);
+//		if (rankFile.exists()) {
+//			if (prevRankFile.exists()) {
+//				prevRankFile.delete();
+//			}
+//			FileUtils.copyFile(rankFile, prevRankFile);
+//		}
 
 		// count 내림차순정렬을 위한 comparator
 		Comparator<KeyCountRunEntry> comparator = new Comparator<KeyCountRunEntry>() {
@@ -77,7 +74,7 @@ public class KeyCountLogSortHandler extends ProcessHandler {
 			}
 		}
 
-		return new File[] { rankFile, prevRankFile };
+		return null;
 	}
 
 }

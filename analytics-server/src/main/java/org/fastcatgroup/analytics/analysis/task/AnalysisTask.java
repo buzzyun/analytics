@@ -1,5 +1,6 @@
 package org.fastcatgroup.analytics.analysis.task;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.fastcatgroup.analytics.analysis.calculator.Calculator;
@@ -20,7 +21,7 @@ public abstract class AnalysisTask<LogType extends LogData> extends Job implemen
 	private Schedule schedule;
 	private int priority;
 
-	protected List<Calculator<LogType>> calculatorList;
+	private List<Calculator<LogType>> calculatorList;
 	protected SourceLogReader<LogType> logReader;
 	private int executeCount;
 
@@ -29,9 +30,15 @@ public abstract class AnalysisTask<LogType extends LogData> extends Job implemen
 		this.categoryIdList = categoryIdList;
 		this.schedule = schedule;
 		this.priority = priority;
+		this.calculatorList = new ArrayList<Calculator<LogType>>();
 	}
 
 	protected abstract void prepare();
+	
+	protected void addCalculator(Calculator<LogType> calculator){
+		calculator.init();
+		calculatorList.add(calculator);
+	}
 	
 	protected void preProcess(){ 
 	}

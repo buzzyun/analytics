@@ -27,13 +27,13 @@ public class KeyCountLogAggregator extends AbstractLogAggregator<SearchLog> {
 		if (!targetDir.exists()) {
 			targetDir.mkdir();
 		}
-		if (!runTmpDir.exists()) {
-			runTmpDir.mkdir();
-		}
 	}
 
 	@Override
 	protected AggregationResultWriter newRunWriter(String encoding, int flushId) {
+		if (!runTmpDir.exists()) {
+			runTmpDir.mkdir();
+		}
 		File file = getRunFile(flushId);
 		return new AggregationResultFileWriter(file, encoding);
 	}

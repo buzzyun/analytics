@@ -2,6 +2,7 @@ package org.fastcatgroup.analytics.analysis.handler;
 
 import java.io.IOException;
 
+import org.fastcatgroup.analytics.analysis.calculator.Calculator.CategoryProcess;
 import org.fastcatgroup.analytics.analysis.log.LogData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,4 +33,8 @@ public abstract class CategoryLogHandler<LogType extends LogData> {
 	 * */
 	public abstract Object done() throws IOException;
 
+	public CategoryLogHandler<LogType> attachLogHandlerTo(CategoryProcess<LogType> categoryProcess) {
+		categoryProcess.setLogHandler(this);
+		return this;
+	}
 }

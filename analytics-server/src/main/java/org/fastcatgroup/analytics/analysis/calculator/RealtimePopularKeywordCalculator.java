@@ -7,8 +7,10 @@ import java.util.Set;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.handler.KeyCountLogSortHandler;
 import org.fastcatgroup.analytics.analysis.handler.KeywordRankDiffHandler;
+import org.fastcatgroup.analytics.analysis.handler.MergeKeyCountProcessHandler;
 import org.fastcatgroup.analytics.analysis.handler.ProcessHandler;
 import org.fastcatgroup.analytics.analysis.handler.PopularKeywordResultHandler;
+import org.fastcatgroup.analytics.analysis.handler.RealtimeSearchLogKeyCountHandler;
 import org.fastcatgroup.analytics.analysis.handler.SearchLogKeyCountHandler;
 import org.fastcatgroup.analytics.analysis.handler.UpdateRealtimePopularKeywordHandler;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
@@ -40,17 +42,25 @@ public class RealtimePopularKeywordCalculator extends Calculator<SearchLog> {
 		String KEY_COUNT_RANK_FILENAME = "key-count-rank.log";
 		String KEY_COUNT_RANK_PREV_FILENAME = "key-count-rank-prev.log";
 		String REALTIME_POPULAR_FILENAME = "popular.log";
-		
+
+		File storeDir = new File(workingDir, "store");
+		String tmpLogFilename = "0.log";
 		
 		//TODO 0.log, 1.log 사용하는 부분 구현필요.
-		
-		
-		
+		int realtimeSearchLogLimit = SearchStatisticsProperties.realtimeSearchLogLimit;
 		
 		
 		logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
+		
+		CategoryProcess<SearchLog> categoryProcess = new CategoryProcess<SearchLog>();
+		//store디렉토리에 기존 #.log를 shift하고 저장한다.
+		new RealtimeSearchLogKeyCountHandler(categoryId, storeDir, tmpLogFilename, banWords, minimumHitCount, realtimeSearchLogLimit).attachLogHandlerTo(categoryProcess);
+		
+		/* 0. store/#.log파일들을 모아서 하나의 key-count.log로 저장한다. */
+		ProcessHandler mergeKeyCount = new MergeKeyCountProcessHandler(storeDir, workingDir, KEY_COUNT_FILENAME, encoding, realtimeSearchLogLimit).attachProcessTo(categoryProcess);
+		
 		/* 1. count로 정렬하여 key-count-rank.log로 저장. */
-		ProcessHandler logSort = new KeyCountLogSortHandler(workingDir, KEY_COUNT_FILENAME, KEY_COUNT_RANK_FILENAME, encoding, runKeySize);
+		ProcessHandler logSort = new KeyCountLogSortHandler(workingDir, KEY_COUNT_FILENAME, KEY_COUNT_RANK_FILENAME, encoding, runKeySize).appendTo(mergeKeyCount);
 		
 		/* 2. 이전일과 비교하여 key-count-diff.log */
 		File rankLogFile = new File(workingDir, KEY_COUNT_RANK_FILENAME);
@@ -63,10 +73,6 @@ public class RealtimePopularKeywordCalculator extends Calculator<SearchLog> {
 		
 		/* 4. 인기검색어 객체 업데이트 */
 		new UpdateRealtimePopularKeywordHandler(siteId, categoryId).appendTo(popularKeywordResultHandler);
-		
-		CategoryProcess<SearchLog> categoryProcess = new CategoryProcess<SearchLog>();
-		categoryProcess.setLogHandler(new SearchLogKeyCountHandler(categoryId, workingDir, banWords, minimumHitCount));
-		categoryProcess.setProcessHandler(logSort);
 		
 		return categoryProcess;
 	}

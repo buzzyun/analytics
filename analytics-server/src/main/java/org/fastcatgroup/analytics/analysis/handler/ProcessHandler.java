@@ -1,5 +1,7 @@
 package org.fastcatgroup.analytics.analysis.handler;
 
+import org.fastcatgroup.analytics.analysis.calculator.Calculator.CategoryProcess;
+import org.fastcatgroup.analytics.analysis.log.SearchLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,4 +40,10 @@ public abstract class ProcessHandler {
 		prevHandler.next(this);
 		return this;
 	}
+	
+	public ProcessHandler attachProcessTo(CategoryProcess categoryProcess) {
+		categoryProcess.setProcessHandler(this);
+		return this;
+	}
+	
 }

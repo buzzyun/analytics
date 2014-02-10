@@ -11,15 +11,16 @@ import org.fastcatgroup.analytics.analysis.util.WeightedSortedRunFileMerger;
  * */
 public class MergeKeyCountProcessHandler extends ProcessHandler {
 
-	private final String KEY_COUNT_LOG_FILENAME = "key-count.log";
 	File baseDir;
 	File resultDir;
+	String outFileName;
 	int fileLimitCount;
 	String encoding;
 
-	public MergeKeyCountProcessHandler(File baseDir, File resultDir, int fileLimitCount, String encoding) {
+	public MergeKeyCountProcessHandler(File baseDir, File resultDir, String outFileName, String encoding, int fileLimitCount) {
 		this.baseDir = baseDir;
 		this.resultDir = resultDir;
+		this.outFileName = outFileName;
 		this.fileLimitCount = fileLimitCount;
 		this.encoding = encoding;
 	}
@@ -33,9 +34,7 @@ public class MergeKeyCountProcessHandler extends ProcessHandler {
 			weightList[i] = (float) (fileLimitCount - i) / (float) fileLimitCount;
 		}
 		
-		//FIXME
-		File targetDir = new File(resultDir, "");
-		File keyCountFile = new File(targetDir, KEY_COUNT_LOG_FILENAME);
+		File keyCountFile = new File(resultDir, outFileName);
 		try {
 
 			if (inFileList == null || inFileList.length == 0) {
@@ -43,8 +42,8 @@ public class MergeKeyCountProcessHandler extends ProcessHandler {
 				return null;
 			}
 
-			if (!targetDir.exists()) {
-				targetDir.mkdirs();
+			if (!resultDir.exists()) {
+				resultDir.mkdirs();
 			}
 			
 			AggregationResultFileWriter writer = new AggregationResultFileWriter(keyCountFile, encoding);
@@ -55,7 +54,7 @@ public class MergeKeyCountProcessHandler extends ProcessHandler {
 		} finally {
 		}
 
-		return keyCountFile;
+		return null;
 	}
 
 }

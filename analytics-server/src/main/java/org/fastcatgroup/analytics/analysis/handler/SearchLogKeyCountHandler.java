@@ -15,9 +15,8 @@ public class SearchLogKeyCountHandler extends CategoryLogHandler<SearchLog> {
 	
 	private KeyCountLogAggregator aggregator;
 	
-	public SearchLogKeyCountHandler(String categoryId, File baseDir, Set<String> banWords, int minimumHitCount) {
+	public SearchLogKeyCountHandler(String categoryId, File baseDir, String targetFilename, Set<String> banWords, int minimumHitCount) {
 		super(categoryId);
-		String targetFilename = SearchStatisticsProperties.KEY_COUNT_LOG_FILENAME;
 		int runKeySize = SearchStatisticsProperties.runKeySize;
 		String encoding = SearchStatisticsProperties.encoding;
 		aggregator = new KeyCountLogAggregator(baseDir, targetFilename, runKeySize, encoding, banWords, minimumHitCount);

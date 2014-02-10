@@ -42,8 +42,11 @@ public class DailyPopularKeywordCalculator extends Calculator<SearchLog> {
 		String POPULAR_FILENAME = "popular.log";
 		
 		logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
+		CategoryProcess<SearchLog> categoryProcess = new CategoryProcess<SearchLog>();
+		new SearchLogKeyCountHandler(categoryId, workingDir, KEY_COUNT_FILENAME, banWords, minimumHitCount).attachLogHandlerTo(categoryProcess);
+		
 		/* 1. count로 정렬하여 key-count-rank.log로 저장. */
-		ProcessHandler logSort = new KeyCountLogSortHandler(workingDir, KEY_COUNT_FILENAME, KEY_COUNT_RANK_FILENAME, encoding, runKeySize);
+		ProcessHandler logSort = new KeyCountLogSortHandler(workingDir, KEY_COUNT_FILENAME, KEY_COUNT_RANK_FILENAME, encoding, runKeySize).attachProcessTo(categoryProcess);
 		
 		/* 2. 이전일과 비교하여 key-count-diff.log */
 		File rankLogFile = new File(workingDir, KEY_COUNT_RANK_FILENAME);
@@ -56,10 +59,6 @@ public class DailyPopularKeywordCalculator extends Calculator<SearchLog> {
 		
 		/* 4. 인기검색어 객체 업데이트 */
 		new UpdateDailyPopularKeywordHandler(siteId, categoryId).appendTo(popularKeywordResultHandler);
-		
-		CategoryProcess<SearchLog> categoryProcess = new CategoryProcess<SearchLog>();
-		categoryProcess.setLogHandler(new SearchLogKeyCountHandler(categoryId, workingDir, banWords, minimumHitCount));
-		categoryProcess.setProcessHandler(logSort);
 		
 		return categoryProcess;
 	}

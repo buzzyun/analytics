@@ -7,6 +7,7 @@ public class SearchStatisticsProperties {
 	public static final String KEY_COUNT_LOG_FILENAME = "key-count.log";
 	public static final String encoding = "utf-8";
 	public static int runKeySize = 10 * 10000;
+	public static int realtimeSearchLogLimit = 6; //이전 타임 6개까지 저장.
 
 	public static final String ROOT_ID = "_root";
 

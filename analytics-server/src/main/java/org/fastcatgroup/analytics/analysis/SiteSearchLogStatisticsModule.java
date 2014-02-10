@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
+import org.fastcatgroup.analytics.analysis.schedule.EveryDaySchedule;
 import org.fastcatgroup.analytics.analysis.schedule.FixedSchedule;
 import org.fastcatgroup.analytics.analysis.schedule.Schedule;
 import org.fastcatgroup.analytics.analysis.schedule.ScheduledTaskRunner;
@@ -74,8 +75,7 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.MILLISECOND, 0);
-
-		int periodInSeconds = 10;
+		
 		int delayInSeconds = 5;
 		
 		List<String> categoryIdList = new ArrayList<String>();
@@ -86,6 +86,7 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		 * 실시간 인기검색어.
 		 */
 		realtimeTaskRunner = new ScheduledTaskRunner<SearchLog>("rt-search-log-task-runner", JobService.getInstance(), environment);
+		int periodInSeconds = 300;
 		Schedule realtimeSchedule = new FixedSchedule(cal, periodInSeconds, delayInSeconds);
 		RealtimeSearchLogAnalysisTask realtimeTask = new RealtimeSearchLogAnalysisTask(siteId, categoryIdList, realtimeSchedule, 0, realtimeRawLogger);
 		realtimeTaskRunner.addTask(realtimeTask);
@@ -97,10 +98,12 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		dailyTaskRunner = new ScheduledTaskRunner<SearchLog>("daily-search-log-task-runner", JobService.getInstance(), environment);
 
 		// 일
-		Schedule dailySchedule = new FixedSchedule(cal, periodInSeconds, delayInSeconds);
+		Schedule dailySchedule = new EveryDaySchedule(0, delayInSeconds); //매일 0시.
 		
 		DailySearchLogAnalysisTask dailySearchLogAnalysisTask = new DailySearchLogAnalysisTask(siteId, categoryIdList, dailySchedule, 1);
 		dailyTaskRunner.addTask(dailySearchLogAnalysisTask);
+		
+		
 		// 주
 		// Schedule weeklySchedule = new FixedSchedule(cal, periodInSeconds, delayInSeconds);
 		// AnalysisTask<SearchLog> weeklyTask = makeAnalysisTask(weeklySchedule, realtimeKeywordBaseDir, logFileName, encoding);

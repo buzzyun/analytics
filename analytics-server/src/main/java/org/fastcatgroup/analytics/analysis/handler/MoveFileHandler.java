@@ -3,6 +3,7 @@ package org.fastcatgroup.analytics.analysis.handler;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
+import org.fastcatgroup.analytics.util.DumpFile;
 
 public class MoveFileHandler extends ProcessHandler {
 
@@ -23,9 +24,12 @@ public class MoveFileHandler extends ProcessHandler {
 		if (srcFile.exists()) {
 			if (destFile.exists()) {
 				destFile.delete();
-				Thread.sleep(100);
+//				Thread.sleep(100);
 			}
+//			logger.debug("Move file {} > {}({}) > {}({})", baseDir.getName(), srcFile.getName(), srcFile.length() ,destFile.getName(), destFile.length());
+//			DumpFile.dump(srcFile);
 			FileUtils.moveFile(srcFile, destFile);
+//			DumpFile.dump(destFile);
 		}
 
 		return null;

@@ -25,7 +25,16 @@ public class PostKeywordHitAction extends ServiceAction {
 
 		String type = request.getParameter("type");
 		String siteId = request.getParameter("siteId");
+		
+		if(type == null || type.trim().length() == 0 || siteId == null || siteId.trim().length() == 0 ){
+			
+			
+			return;
+		}
 		String categoryId = request.getParameter("categoryId");
+		if(categoryId == null){
+			categoryId = "";
+		}
 		String keyword = request.getParameter("keyword");
 		String prevKeyword = request.getParameter("prev");
 		String errorMessage = null;

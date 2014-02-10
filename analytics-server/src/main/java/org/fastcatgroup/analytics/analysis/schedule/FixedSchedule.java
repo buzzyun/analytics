@@ -1,7 +1,6 @@
 package org.fastcatgroup.analytics.analysis.schedule;
 
 import java.util.Calendar;
-import java.util.Date;
 
 public class FixedSchedule extends Schedule {
 	private int periodInSeconds;
@@ -11,7 +10,7 @@ public class FixedSchedule extends Schedule {
 		this.periodInSeconds = periodInSeconds;
 	}
 
-	public Date updateSchduleTime() {
+	public void updateSchduleTime() {
 		long now = System.currentTimeMillis();
 		if (scheduledTime < now) {
 			long nextStartTime = scheduledTime;
@@ -31,7 +30,5 @@ public class FixedSchedule extends Schedule {
 			// 현시간보다 크면 그대로 둔다.
 		}
 
-		// 실제시작시간은 delay이후 시작한다.
-		return new Date(scheduledTime + delayInSeconds);
 	}
 }

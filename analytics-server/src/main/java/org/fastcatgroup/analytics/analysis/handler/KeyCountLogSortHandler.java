@@ -57,9 +57,8 @@ public class KeyCountLogSortHandler extends ProcessHandler {
 
 		// LogSorter를 사용해 keyCountFile -> rankFile 로 저장한다.
 		File sortWorkDir = new File(baseDir, "tmp");
-		InputStream is = new FileInputStream(keyCountFile);
 		if (keyCountFile.exists() && keyCountFile.length() > 0) {
-
+			InputStream is = new FileInputStream(keyCountFile);
 			OutputStream os = new FileOutputStream(rankFile);
 			try {
 				LogSorter<KeyCountRunEntry> logSorter = new LogSorter<KeyCountRunEntry>(is, encoding, runKeySize);

@@ -9,8 +9,6 @@ import java.util.Set;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.calculator.Calculator;
 import org.fastcatgroup.analytics.analysis.calculator.DailyPopularKeywordCalculator;
-import org.fastcatgroup.analytics.analysis.log.FileLogReader;
-import org.fastcatgroup.analytics.analysis.log.LogData;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
 import org.fastcatgroup.analytics.analysis.log.SearchLogReader;
 import org.fastcatgroup.analytics.analysis.schedule.Schedule;

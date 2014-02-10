@@ -48,7 +48,7 @@ public class StatisticsService extends AbstractService {
 		
 		siteIdList = new ArrayList<String>();
 		siteIdList.add("total");
-		siteIdList.add("mobile");
+//		siteIdList.add("mobile");
 
 		for (String siteId : siteIdList) {
 			SiteSearchLogStatisticsModule module = new SiteSearchLogStatisticsModule(this, statisticsHome, siteId, environment, settings);

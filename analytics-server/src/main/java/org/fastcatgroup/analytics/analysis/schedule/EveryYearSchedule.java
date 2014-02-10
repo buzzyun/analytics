@@ -1,6 +1,5 @@
 package org.fastcatgroup.analytics.analysis.schedule;
 
-import java.util.Date;
 
 public class EveryYearSchedule extends Schedule {
 	private int monthOfYear;
@@ -18,10 +17,9 @@ public class EveryYearSchedule extends Schedule {
 	}
 
 	@Override
-	public Date updateSchduleTime() {
+	public void updateSchduleTime() {
 		//TODO scheduledTime 설정필요.
 				//scheduledTime =  
-		return null;
 	}
 
 }

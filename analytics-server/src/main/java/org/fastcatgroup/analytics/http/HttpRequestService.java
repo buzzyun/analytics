@@ -47,8 +47,8 @@ public class HttpRequestService extends AbstractService implements HttpServerAda
 		}
 
 		Map<String, HttpAction> actionMap = new HashMap<String, HttpAction>();
-
 		String[] actionBasePackageList = settings.getStringArray("action-base-package", ",");
+		logger.debug("actionBasePackageList >> {}", actionBasePackageList);
 		if (actionBasePackageList != null) {
 			scanActions(actionMap, actionBasePackageList);
 		}
@@ -83,10 +83,10 @@ public class HttpRequestService extends AbstractService implements HttpServerAda
 		try {
 			String findPath = path;// +"**/*.class";
 			Enumeration<URL> em = DynamicClassLoader.getResources(findPath);
-			// logger.debug("findPath >> {}, {}", findPath, em);
+			logger.debug("findPath >> {}, {}", findPath, em);
 			while (em.hasMoreElements()) {
 				String urlstr = em.nextElement().toString();
-				// logger.debug("urlstr >> {}", urlstr);
+				 logger.debug("urlstr >> {}", urlstr);
 				if (urlstr.startsWith("jar:file:")) {
 					String jpath = urlstr.substring(9);
 					int st = jpath.indexOf("!/");
@@ -149,7 +149,7 @@ public class HttpRequestService extends AbstractService implements HttpServerAda
 
 		try {
 			Class<?> actionClass = DynamicClassLoader.loadClass(className);
-			// logger.debug("className > {} => {}",className , actionClass);
+			 logger.debug("className > {} => {}",className , actionClass);
 			// actionClass 가 serviceAction을 상속받은 경우만 등록.
 			if (actionClass != null) {
 				if (ServiceAction.class.isAssignableFrom(actionClass)) {

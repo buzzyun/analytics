@@ -70,7 +70,7 @@ public class RealtimePopularKeywordCalculator extends Calculator<SearchLog> {
 		/* 4. count로 정렬하여 key-count-rank.log로 저장. */
 		ProcessHandler logSort = new KeyCountLogSortHandler(workingDir, KEY_COUNT_FILENAME, KEY_COUNT_RANK_FILENAME, encoding, runKeySize, entryParser).appendTo(backupKeyCountRank);
 		
-		/* 5. 이전일과 비교하여 key-count-diff.log */
+		/* 5. 이전일과 비교하여 diff생성. */
 		File rankLogFile = new File(workingDir, KEY_COUNT_RANK_FILENAME);
 		File compareRankLogFile = new File(workingDir, KEY_COUNT_RANK_PREV_FILENAME);
 		File popularKeywordLogFile = new File(workingDir, REALTIME_POPULAR_FILENAME);

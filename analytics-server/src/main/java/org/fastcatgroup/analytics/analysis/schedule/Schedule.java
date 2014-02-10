@@ -1,6 +1,5 @@
 package org.fastcatgroup.analytics.analysis.schedule;
 
-import java.util.Date;
 
 public abstract class Schedule {
 	public static final int LAST_DAY_OF_MONTH = Integer.MAX_VALUE;
@@ -13,7 +12,7 @@ public abstract class Schedule {
 		this.delayInSeconds = delayInSeconds;
 	}
 	
-	public abstract Date updateSchduleTime();
+	public abstract void updateSchduleTime();
 
 	public long scheduledTime() {
 		return scheduledTime;

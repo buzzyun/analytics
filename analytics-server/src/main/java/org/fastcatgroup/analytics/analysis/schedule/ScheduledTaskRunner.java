@@ -52,6 +52,10 @@ public class ScheduledTaskRunner<LogType extends LogData> extends Thread {
 		while (!isCanceled) {
 			try {
 				AnalysisTask<LogType> task = priorityJobQueue.poll();
+				if(task == null){
+					//작업이 없으면 끝난다.
+					break;
+				}
 				long timeToWait = task.getDelayedScheduledTime() - System.currentTimeMillis();
 				if (timeToWait < 0) {
 					// 이미 지났을 경우 바로실행한다. 스케쥴링된 모든 작업은 실행이 보장되어야한다.

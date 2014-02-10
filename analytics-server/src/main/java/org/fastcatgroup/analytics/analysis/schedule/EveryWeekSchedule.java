@@ -1,6 +1,5 @@
 package org.fastcatgroup.analytics.analysis.schedule;
 
-import java.util.Date;
 
 public class EveryWeekSchedule extends Schedule {
 	private int dayOfWeek;
@@ -16,10 +15,9 @@ public class EveryWeekSchedule extends Schedule {
 	}
 
 	@Override
-	public Date updateSchduleTime() {
+	public void updateSchduleTime() {
 		//TODO scheduledTime 설정필요.
 				//scheduledTime =  
-		return null;
 	}
 
 }

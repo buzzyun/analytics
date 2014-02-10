@@ -27,10 +27,10 @@ public class RollingLogProcessHandler extends ProcessHandler {
 		File lastFile = getLogFile(baseDir, fileLimitCount - 1);
 		if (lastFile.exists()) {
 			lastFile.delete();
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException ignore) {
-			}
+//			try {
+//				Thread.sleep(100);
+//			} catch (InterruptedException ignore) {
+//			}
 		}
 
 		for (int i = fileLimitCount - 1; i >= 0; i--) {

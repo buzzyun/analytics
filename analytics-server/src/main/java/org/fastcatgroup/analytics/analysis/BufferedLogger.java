@@ -63,10 +63,10 @@ public class BufferedLogger {
 		}else{
 			if(!append){
 				file.delete();
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e1) {
-				}
+//				try {
+//					Thread.sleep(100);
+//				} catch (InterruptedException e1) {
+//				}
 				try {
 					file.createNewFile();
 				} catch (IOException e) {

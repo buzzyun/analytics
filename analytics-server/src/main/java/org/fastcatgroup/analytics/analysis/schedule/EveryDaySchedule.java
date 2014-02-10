@@ -1,6 +1,6 @@
 package org.fastcatgroup.analytics.analysis.schedule;
 
-import java.util.Date;
+import java.util.Calendar;
 
 public class EveryDaySchedule extends Schedule {
 	private int timeInDay;
@@ -14,10 +14,18 @@ public class EveryDaySchedule extends Schedule {
 	}
 
 	@Override
-	public Date updateSchduleTime() {
-		//TODO scheduledTime 설정필요.
-		//scheduledTime =  
-		return null;
+	public void updateSchduleTime() {
+		Calendar calendar = Calendar.getInstance();
+		int hour = calendar.get(Calendar.HOUR);
+		calendar.set(Calendar.HOUR, timeInDay);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		if(timeInDay < hour){
+			//시간이 지났다면 다음날로 넘어간다.
+			calendar.add(Calendar.DATE, 1);
+		}
+		scheduledTime = calendar.getTimeInMillis();
 	}
 
 }

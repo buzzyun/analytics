@@ -22,14 +22,10 @@ SERVER_HOME=`pwd`;
 
 CONF=$SERVER_HOME/conf
 LIB=$SERVER_HOME/lib
-LOGS=$SERVER_HOME/logs
-OUTPUT_LOG=$LOGS/output.log
 
-HEAP_MEMORY_SIZE=512m
-JVM_OPTS="-Xms$HEAP_MEMORY_SIZE -Xmx$HEAP_MEMORY_SIZE -XX:+HeapDumpOnOutOfMemoryError"
-JAVA_OPTS="-server -Dfile.encoding=UTF-8 -Dlogback.configurationFile=$CONF/logback.xml -Dderby.stream.error.file=logs/db.log"
-ADDITIONAL_OPTS=
+trap '' 1 2
 
-trap '' 1 2 
-
-java -Dserver.home=$SERVER_HOME $JVM_OPTS $JAVA_OPTS $ADDITIONAL_OPTS -classpath $LIB/analytics-server-bootstrap.jar org.fastcatgroup.analytics.server.Bootstrap > $OUTPUT_LOG 2>&1 & 
+#for background service
+FASTCAT_CLASSPATH=".:bin"
+for jarfile in `find $LIB | grep [.]jar$`; do FASTCAT_CLASSPATH="$FASTCAT_CLASSPATH:$jarfile"; done
+java -Xmx512m -server -Dfile.encoding=UTF-8 -Dlogback.configurationFile=$CONF/logback.xml -Dderby.stream.error.file=logs/db.log -classpath $FASTCAT_CLASSPATH org.fastcatgroup.analytics.server.CatServer $SERVER_HOME 2>&1 >logs/output.log &

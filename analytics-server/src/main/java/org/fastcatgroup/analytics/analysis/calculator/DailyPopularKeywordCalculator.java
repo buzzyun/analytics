@@ -51,7 +51,7 @@ public class DailyPopularKeywordCalculator extends Calculator<SearchLog> {
 		/* 1. count로 정렬하여 key-count-rank.log로 저장. */
 		ProcessHandler logSort = new KeyCountLogSortHandler(workingDir, KEY_COUNT_FILENAME, KEY_COUNT_RANK_FILENAME, encoding, runKeySize, entryParser).attachProcessTo(categoryProcess);
 		
-		/* 2. 이전일과 비교하여 key-count-diff.log */
+		/* 2. 이전일과 비교하여 diff 생성. */
 		File rankLogFile = new File(workingDir, KEY_COUNT_RANK_FILENAME);
 		File compareRankLogFile = new File(prevWorkingDir, KEY_COUNT_RANK_FILENAME);
 		File popularKeywordLogFile = new File(workingDir, POPULAR_FILENAME);

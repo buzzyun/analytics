@@ -50,6 +50,9 @@ public abstract class AnalysisTask<LogType extends LogData> extends Job implemen
 	@Override
 	public JobResult doRun() {
 		try {
+			
+			calculatorList.clear();
+			
 			preProcess();
 			
 			prepare();

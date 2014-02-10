@@ -128,11 +128,15 @@ public class RollingRawLogger {
 			if(f.exists()){
 				f.delete();
 			}
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-			}
+//			try {
+//				Thread.sleep(100);
+//			} catch (InterruptedException e) {
+//			}
 			FileUtils.moveFile(prevFile, f);
+//			try {
+//				Thread.sleep(100);
+//			} catch (InterruptedException e) {
+//			}
 		} catch (IOException e) {
 			logger.error("", e);
 		}

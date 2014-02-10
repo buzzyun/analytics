@@ -53,7 +53,7 @@ public abstract class Calculator<LogType extends LogData> {
 	 * 순차적으로 프로세스를 진행한다.
 	 * */
 	public final void calculate() throws Exception {
-		logger.debug("## calculate > {}", this);
+//		logger.debug("## calculate > {}", this);
 
 		for (CategoryProcess<LogType> process : categoryProcessList) {
 			try {
@@ -97,10 +97,10 @@ public abstract class Calculator<LogType extends LogData> {
 	}
 
 	public final void offerLog(LogType logData) throws IOException {
-		logger.debug("### offerLog {} : {}", logData, categoryProcessList);
+//		logger.debug("### offerLog {} : {}", logData, categoryProcessList);
 		// category별로 모두 입력해준다.
 		for (CategoryProcess<LogType> process : categoryProcessList) {
-			logger.debug("# calculate process offerLog > {}", process.getClass().getSimpleName());
+//			logger.debug("# calculate process offerLog > {}", process.getClass().getSimpleName());
 			process.logHandler().handleLog(logData);
 		}
 	}

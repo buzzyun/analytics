@@ -28,11 +28,13 @@ public class PopularKeywordResultHandler extends ProcessHandler {
 			for (RankKeyword k : result) {
 				writer.append(k.getKeyword());
 				writer.append("\t");
-				writer.append(Integer.toString(k.getRankDiff()));
-				writer.append("\t");
 				writer.append(k.getRankDiffType().name());
 				writer.append("\t");
+				writer.append(Integer.toString(k.getRankDiff()));
+				writer.append("\t");
 				writer.append(Integer.toString(k.getCount()));
+				writer.append("\t");
+				writer.append(Integer.toString(k.getCountDiff()));
 				writer.append("\n");
 			}
 		} finally {

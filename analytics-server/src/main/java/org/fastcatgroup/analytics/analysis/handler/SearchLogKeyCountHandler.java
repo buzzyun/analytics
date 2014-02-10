@@ -24,7 +24,7 @@ public class SearchLogKeyCountHandler extends CategoryLogHandler<SearchLog> {
 
 	@Override
 	public void handleLog(SearchLog logData) throws IOException {
-		logger.debug("handleLog[{}] > {}", categoryId, logData);
+//		logger.debug("handleLog[{}] > {}", categoryId, logData);
 		String keyword = logData.keyword();
 		if (keyword != null && keyword.length() > 0) {
 			if(categoryId.equals(logData.categoryId())){

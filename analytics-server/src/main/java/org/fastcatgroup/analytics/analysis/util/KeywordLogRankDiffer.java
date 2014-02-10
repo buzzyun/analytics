@@ -65,8 +65,10 @@ public class KeywordLogRankDiffer {
 							String targetKeyword = keyword.getKeyword();
 							if (compareKeyword.equals(targetKeyword)) {
 								int rankDiff = prevRank - keyword.getRank();
+								int countDiff = keyword.getCount() - entry.getCount();
 //								logger.debug("{}:{} , {}:{} > {}", targetKeyword, keyword.getRank(), compareKeyword, prevRank, rankDiff);
 								keyword.setRankDiff(Math.abs(rankDiff));
+								keyword.setCountDiff(countDiff);
 								if (rankDiff == 0) {
 									keyword.setRankDiffType(RankDiffType.EQ);
 								} else if (rankDiff > 0) {

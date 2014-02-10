@@ -24,6 +24,10 @@ public class KeyCountRunEntry extends RunEntry {
 	public int getCount() {
 		return count;
 	}
+	
+	public void setCount(int count) {
+		this.count = count;
+	}
 
 	@Override
 	public int compareTo(Object o) {

@@ -2,7 +2,6 @@ package org.fastcatgroup.analytics.analysis.task;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -10,8 +9,8 @@ import org.fastcatgroup.analytics.analysis.RollingRawLogger;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.calculator.Calculator;
 import org.fastcatgroup.analytics.analysis.calculator.RealtimePopularKeywordCalculator;
-import org.fastcatgroup.analytics.analysis.log.FileSearchLogReader;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
+import org.fastcatgroup.analytics.analysis.log.SearchLogReader;
 import org.fastcatgroup.analytics.analysis.schedule.Schedule;
 
 /**
@@ -43,7 +42,7 @@ public class RealtimeSearchLogAnalysisTask extends AnalysisTask<SearchLog> {
 		File logFile = new File(baseDir, "raw.log");
 		String encoding = SearchStatisticsProperties.encoding;
 		try {
-			logReader = new FileSearchLogReader(logFile, encoding);
+			logReader = new SearchLogReader(logFile, encoding);
 		} catch (IOException e) {
 			logger.error("", e);
 		}

@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Comparator;
 
+import org.fastcatgroup.analytics.analysis.EntryParser;
 import org.fastcatgroup.analytics.analysis.util.KeyCountRunEntry;
 import org.fastcatgroup.analytics.analysis.util.LogSorter;
 
@@ -17,13 +18,15 @@ public class KeyCountLogSortHandler extends ProcessHandler {
 	String sortedFileName;
 	private String encoding;
 	private int runKeySize;
-
-	public KeyCountLogSortHandler(File baseDir, String inFileName, String sortedFileName, String encoding, int runKeySize) {
+	EntryParser<KeyCountRunEntry> entryParser;
+	
+	public KeyCountLogSortHandler(File baseDir, String inFileName, String sortedFileName, String encoding, int runKeySize, EntryParser<KeyCountRunEntry> entryParser) {
 		this.baseDir = baseDir;
 		this.inFileName = inFileName;
 		this.sortedFileName = sortedFileName;
 		this.encoding = encoding;
 		this.runKeySize = runKeySize;
+		this.entryParser = entryParser;
 	}
 
 	@Override
@@ -31,13 +34,6 @@ public class KeyCountLogSortHandler extends ProcessHandler {
 		logger.debug("process {} [{}]", getClass().getSimpleName(), parameter);
 		File keyCountFile = new File(baseDir, inFileName);
 		File rankFile = new File(baseDir, sortedFileName);
-//		File prevRankFile = new File(baseDir, prevSortedFileName);
-//		if (rankFile.exists()) {
-//			if (prevRankFile.exists()) {
-//				prevRankFile.delete();
-//			}
-//			FileUtils.copyFile(rankFile, prevRankFile);
-//		}
 
 		// count 내림차순정렬을 위한 comparator
 		Comparator<KeyCountRunEntry> comparator = new Comparator<KeyCountRunEntry>() {
@@ -63,8 +59,8 @@ public class KeyCountLogSortHandler extends ProcessHandler {
 		InputStream is = new FileInputStream(keyCountFile);
 		OutputStream os = new FileOutputStream(rankFile);
 		try {
-			LogSorter logSorter = new LogSorter(is, encoding, runKeySize);
-			logSorter.sort(os, comparator, sortWorkDir);
+			LogSorter<KeyCountRunEntry> logSorter = new LogSorter<KeyCountRunEntry>(is, encoding, runKeySize);
+			logSorter.sort(os, entryParser, comparator, sortWorkDir);
 		} finally {
 			if (is != null) {
 				is.close();

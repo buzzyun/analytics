@@ -7,23 +7,27 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import org.fastcatgroup.analytics.analysis.util.KeyCountRunEntry;
+import org.fastcatgroup.analytics.analysis.util.RunEntry;
 import org.fastcatgroup.analytics.analysis.util.RunEntryReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class KeyCountRunEntryReader extends RunEntryReader<KeyCountRunEntry> {
-	protected static Logger logger = LoggerFactory.getLogger(KeyCountRunEntryReader.class);
-	private BufferedReader reader;
+public class FileRunEntryReader<EntryType extends RunEntry> extends RunEntryReader<EntryType> {
+	protected static Logger logger = LoggerFactory.getLogger(FileRunEntryReader.class);
+	protected BufferedReader reader;
 
-	private KeyCountRunEntry entry;
+	protected EntryType entry;
 
-	public KeyCountRunEntryReader(InputStream is, String encoding) throws IOException {
+	protected EntryParser<EntryType> entryParser;
+	
+	public FileRunEntryReader(InputStream is, String encoding, EntryParser<EntryType> entryParser) throws IOException {
 		reader = new BufferedReader(new InputStreamReader(is, encoding));
+		this.entryParser = entryParser;
 	}
 
-	public KeyCountRunEntryReader(File file, String encoding) throws IOException {
+	public FileRunEntryReader(File file, String encoding, EntryParser<EntryType> entryParser) throws IOException {
 		reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), encoding));
+		this.entryParser = entryParser;
 	}
 
 	@Override
@@ -31,19 +35,12 @@ public class KeyCountRunEntryReader extends RunEntryReader<KeyCountRunEntry> {
 		String line = null;
 		try {
 			while ((line = reader.readLine()) != null) {
-				String[] el = line.split("\t");
-				if (el.length == 2) {
-					try {
-						entry = newKeyCountRunEntry(line, el[0], Integer.parseInt(el[1]));
-					} catch (Exception e) {
-						logger.error("", e);
-					}
-					return true;
-				} else {
+				
+				entry = entryParser.parse(line); //exception발생시 종료.
+				if(entry == null){
 					// 파싱실패시 다음 라인확인.
 					continue;
 				}
-
 			}
 		} catch (Exception e) {
 			logger.error("", e);
@@ -53,10 +50,6 @@ public class KeyCountRunEntryReader extends RunEntryReader<KeyCountRunEntry> {
 		return false;
 	}
 
-	protected KeyCountRunEntry newKeyCountRunEntry(String line, String keyword, int count){
-		 return new KeyCountRunEntry(line, keyword, count);
-	}
-	
 	@Override
 	public void close() {
 		if (reader != null) {
@@ -69,7 +62,7 @@ public class KeyCountRunEntryReader extends RunEntryReader<KeyCountRunEntry> {
 	}
 
 	@Override
-	public KeyCountRunEntry entry() {
+	public EntryType entry() {
 		return entry;
 	}
 

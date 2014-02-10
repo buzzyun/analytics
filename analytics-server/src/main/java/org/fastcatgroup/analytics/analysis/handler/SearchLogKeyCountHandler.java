@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.fastcatgroup.analytics.analysis.KeyCountLogAggregator;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
 
 /**
@@ -13,13 +14,13 @@ import org.fastcatgroup.analytics.analysis.log.SearchLog;
  * */
 public class SearchLogKeyCountHandler extends CategoryLogHandler<SearchLog> {
 	
-	private KeyCountLogAggregator aggregator;
+	private KeyCountLogAggregator<SearchLog> aggregator;
 	
-	public SearchLogKeyCountHandler(String categoryId, File baseDir, String targetFilename, Set<String> banWords, int minimumHitCount) {
+	public SearchLogKeyCountHandler(String categoryId, File baseDir, String targetFilename, Set<String> banWords, int minimumHitCount, KeyCountRunEntryParser entryParser) {
 		super(categoryId);
 		int runKeySize = SearchStatisticsProperties.runKeySize;
 		String encoding = SearchStatisticsProperties.encoding;
-		aggregator = new KeyCountLogAggregator(baseDir, targetFilename, runKeySize, encoding, banWords, minimumHitCount);
+		aggregator = new KeyCountLogAggregator<SearchLog>(baseDir, targetFilename, runKeySize, encoding, banWords, minimumHitCount, entryParser);
 	}
 
 	@Override

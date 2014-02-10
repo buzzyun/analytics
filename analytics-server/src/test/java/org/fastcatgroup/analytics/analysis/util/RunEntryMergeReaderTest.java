@@ -5,7 +5,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.List;
 
-import org.fastcatgroup.analytics.analysis.KeyCountRunEntryReader;
+import org.fastcatgroup.analytics.analysis.FileRunEntryReader;
 import org.fastcatgroup.analytics.analysis.util.KeyCountRunEntry;
 import org.fastcatgroup.analytics.analysis.util.RunEntryMergeReader;
 import org.junit.Test;
@@ -41,11 +41,11 @@ public class RunEntryMergeReaderTest {
 		}
 	}
 
-	private KeyCountRunEntryReader[] getReaderList(File[] fileList) throws IOException {
-		KeyCountRunEntryReader[] list = new KeyCountRunEntryReader[fileList.length];
+	private FileRunEntryReader[] getReaderList(File[] fileList) throws IOException {
+		FileRunEntryReader[] list = new FileRunEntryReader[fileList.length];
 		for (int i = 0; i < fileList.length; i++) {
 			File f = fileList[i];
-			list[i] = new KeyCountRunEntryReader(f, "utf-8");
+//			list[i] = new FileRunEntryReader(f, "utf-8", entryParser);
 			list[i].next();
 		}
 		return list;

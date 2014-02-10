@@ -14,6 +14,7 @@ import org.fastcatgroup.analytics.analysis.handler.PopularKeywordResultHandler;
 import org.fastcatgroup.analytics.analysis.handler.RealtimeSearchLogKeyCountHandler;
 import org.fastcatgroup.analytics.analysis.handler.SearchLogKeyCountHandler;
 import org.fastcatgroup.analytics.analysis.handler.UpdateRealtimePopularKeywordHandler;
+import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
 
 /**
@@ -50,25 +51,25 @@ public class RealtimePopularKeywordCalculator extends Calculator<SearchLog> {
 		int realtimeSearchLogLimit = SearchStatisticsProperties.realtimeSearchLogLimit;
 		
 		logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
-		
+		KeyCountRunEntryParser entryParser = new KeyCountRunEntryParser();
 		CategoryProcess<SearchLog> categoryProcess = new CategoryProcess<SearchLog>();
 		/* 1. store디렉토리에 기존 #.log를 shift하고 저장한다. */
-		new RealtimeSearchLogKeyCountHandler(categoryId, storeDir, tmpLogFilename, banWords, minimumHitCount, realtimeSearchLogLimit).attachLogHandlerTo(categoryProcess);
+		new RealtimeSearchLogKeyCountHandler(categoryId, storeDir, tmpLogFilename, banWords, minimumHitCount, realtimeSearchLogLimit, entryParser).attachLogHandlerTo(categoryProcess);
 		
 		/* 2. store/#.log파일들을 모아서 하나의 key-count.log로 저장한다. */
-		ProcessHandler mergeKeyCount = new MergeKeyCountProcessHandler(storeDir, workingDir, KEY_COUNT_FILENAME, encoding, realtimeSearchLogLimit).attachProcessTo(categoryProcess);
+		ProcessHandler mergeKeyCount = new MergeKeyCountProcessHandler(storeDir, workingDir, KEY_COUNT_FILENAME, encoding, realtimeSearchLogLimit, entryParser).attachProcessTo(categoryProcess);
 		
 		/* 3. 기존 key-count-rank.log 를 key-count-rank-rev 로 이동. */
 		ProcessHandler backupKeyCountRank = new MoveFileHandler(workingDir, KEY_COUNT_FILENAME, KEY_COUNT_RANK_PREV_FILENAME).appendTo(mergeKeyCount);
 		
 		/* 4. count로 정렬하여 key-count-rank.log로 저장. */
-		ProcessHandler logSort = new KeyCountLogSortHandler(workingDir, KEY_COUNT_FILENAME, KEY_COUNT_RANK_FILENAME, encoding, runKeySize).appendTo(backupKeyCountRank);
+		ProcessHandler logSort = new KeyCountLogSortHandler(workingDir, KEY_COUNT_FILENAME, KEY_COUNT_RANK_FILENAME, encoding, runKeySize, entryParser).appendTo(backupKeyCountRank);
 		
 		/* 5. 이전일과 비교하여 key-count-diff.log */
 		File rankLogFile = new File(workingDir, KEY_COUNT_RANK_FILENAME);
 		File compareRankLogFile = new File(workingDir, KEY_COUNT_RANK_PREV_FILENAME);
 		File popularKeywordLogFile = new File(workingDir, REALTIME_POPULAR_FILENAME);
-		ProcessHandler rankDiff = new KeywordRankDiffHandler(rankLogFile, compareRankLogFile, topCount, encoding).appendTo(logSort);
+		ProcessHandler rankDiff = new KeywordRankDiffHandler(rankLogFile, compareRankLogFile, topCount, encoding, entryParser).appendTo(logSort);
 		
 		/* 6. 구해진 인기키워드를 저장한다. */
 		ProcessHandler popularKeywordResultHandler = new PopularKeywordResultHandler(popularKeywordLogFile, encoding).appendTo(rankDiff);

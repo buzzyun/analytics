@@ -3,6 +3,7 @@ package org.fastcatgroup.analytics.analysis.handler;
 import java.io.File;
 import java.io.IOException;
 
+import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.util.AggregationResultFileWriter;
 import org.fastcatgroup.analytics.analysis.util.WeightedSortedRunFileMerger;
 
@@ -16,13 +17,15 @@ public class MergeKeyCountProcessHandler extends ProcessHandler {
 	String outFileName;
 	int fileLimitCount;
 	String encoding;
-
-	public MergeKeyCountProcessHandler(File baseDir, File resultDir, String outFileName, String encoding, int fileLimitCount) {
+	KeyCountRunEntryParser entryParser;
+	
+	public MergeKeyCountProcessHandler(File baseDir, File resultDir, String outFileName, String encoding, int fileLimitCount, KeyCountRunEntryParser entryParser) {
 		this.baseDir = baseDir;
 		this.resultDir = resultDir;
 		this.outFileName = outFileName;
 		this.fileLimitCount = fileLimitCount;
 		this.encoding = encoding;
+		this.entryParser = entryParser;
 	}
 
 	@Override
@@ -47,7 +50,7 @@ public class MergeKeyCountProcessHandler extends ProcessHandler {
 			}
 			
 			AggregationResultFileWriter writer = new AggregationResultFileWriter(keyCountFile, encoding);
-			WeightedSortedRunFileMerger merger = new WeightedSortedRunFileMerger(inFileList, weightList, encoding, writer);
+			WeightedSortedRunFileMerger merger = new WeightedSortedRunFileMerger(inFileList, weightList, encoding, writer, entryParser);
 			merger.merge();
 		} catch (IOException e) {
 			logger.error("", e);

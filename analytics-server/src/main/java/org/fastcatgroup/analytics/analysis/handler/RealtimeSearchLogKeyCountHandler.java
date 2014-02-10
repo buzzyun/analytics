@@ -7,6 +7,7 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.fastcatgroup.analytics.analysis.KeyCountLogAggregator;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
 
 /**
@@ -14,9 +15,9 @@ import org.fastcatgroup.analytics.analysis.log.SearchLog;
  * */
 public class RealtimeSearchLogKeyCountHandler extends CategoryLogHandler<SearchLog> {
 
-	private KeyCountLogAggregator aggregator;
+	private KeyCountLogAggregator<SearchLog> aggregator;
 
-	public RealtimeSearchLogKeyCountHandler(String categoryId, File storeDir, String targetFilename, Set<String> banWords, int minimumHitCount, int realtimeSearchLogLimit) {
+	public RealtimeSearchLogKeyCountHandler(String categoryId, File storeDir, String targetFilename, Set<String> banWords, int minimumHitCount, int realtimeSearchLogLimit, KeyCountRunEntryParser entryParser) {
 		super(categoryId);
 		if (!storeDir.exists()) {
 			storeDir.mkdirs();
@@ -24,7 +25,7 @@ public class RealtimeSearchLogKeyCountHandler extends CategoryLogHandler<SearchL
 		rollingStoredLogs(storeDir, realtimeSearchLogLimit);
 		int runKeySize = SearchStatisticsProperties.runKeySize;
 		String encoding = SearchStatisticsProperties.encoding;
-		aggregator = new KeyCountLogAggregator(storeDir, targetFilename, runKeySize, encoding, banWords, minimumHitCount);
+		aggregator = new KeyCountLogAggregator<SearchLog>(storeDir, targetFilename, runKeySize, encoding, banWords, minimumHitCount, entryParser);
 	}
 
 	@Override

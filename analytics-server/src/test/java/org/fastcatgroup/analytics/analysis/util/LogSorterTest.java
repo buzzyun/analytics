@@ -10,6 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Comparator;
 import java.util.Random;
 
+import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.util.KeyCountRunEntry;
 import org.fastcatgroup.analytics.analysis.util.LogSorter;
 import org.junit.Test;
@@ -49,7 +50,8 @@ public class LogSorterTest {
 		};
 
 		LogSorter logSorter = new LogSorter(is, encoding, runKeySize);
-		logSorter.sort(os, comparator, workDir);
+		KeyCountRunEntryParser entryParser = new KeyCountRunEntryParser();
+		logSorter.sort(os, entryParser, comparator, workDir);
 		
 		System.out.println("time : "+(System.currentTimeMillis() - st) / (float)(1000 * 60));
 	}

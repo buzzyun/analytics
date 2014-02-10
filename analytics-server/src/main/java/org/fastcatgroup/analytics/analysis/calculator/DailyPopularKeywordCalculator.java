@@ -7,11 +7,11 @@ import java.util.Set;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.handler.KeyCountLogSortHandler;
 import org.fastcatgroup.analytics.analysis.handler.KeywordRankDiffHandler;
-import org.fastcatgroup.analytics.analysis.handler.ProcessHandler;
 import org.fastcatgroup.analytics.analysis.handler.PopularKeywordResultHandler;
+import org.fastcatgroup.analytics.analysis.handler.ProcessHandler;
 import org.fastcatgroup.analytics.analysis.handler.SearchLogKeyCountHandler;
 import org.fastcatgroup.analytics.analysis.handler.UpdateDailyPopularKeywordHandler;
-import org.fastcatgroup.analytics.analysis.handler.UpdateRealtimePopularKeywordHandler;
+import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
 
 public class DailyPopularKeywordCalculator extends Calculator<SearchLog> {
@@ -42,17 +42,18 @@ public class DailyPopularKeywordCalculator extends Calculator<SearchLog> {
 		String POPULAR_FILENAME = "popular.log";
 		
 		logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
+		KeyCountRunEntryParser entryParser = new KeyCountRunEntryParser();
 		CategoryProcess<SearchLog> categoryProcess = new CategoryProcess<SearchLog>();
-		new SearchLogKeyCountHandler(categoryId, workingDir, KEY_COUNT_FILENAME, banWords, minimumHitCount).attachLogHandlerTo(categoryProcess);
+		new SearchLogKeyCountHandler(categoryId, workingDir, KEY_COUNT_FILENAME, banWords, minimumHitCount, entryParser).attachLogHandlerTo(categoryProcess);
 		
 		/* 1. count로 정렬하여 key-count-rank.log로 저장. */
-		ProcessHandler logSort = new KeyCountLogSortHandler(workingDir, KEY_COUNT_FILENAME, KEY_COUNT_RANK_FILENAME, encoding, runKeySize).attachProcessTo(categoryProcess);
+		ProcessHandler logSort = new KeyCountLogSortHandler(workingDir, KEY_COUNT_FILENAME, KEY_COUNT_RANK_FILENAME, encoding, runKeySize, entryParser).attachProcessTo(categoryProcess);
 		
 		/* 2. 이전일과 비교하여 key-count-diff.log */
 		File rankLogFile = new File(workingDir, KEY_COUNT_RANK_FILENAME);
 		File compareRankLogFile = new File(prevWorkingDir, KEY_COUNT_RANK_FILENAME);
 		File popularKeywordLogFile = new File(workingDir, POPULAR_FILENAME);
-		ProcessHandler rankDiff = new KeywordRankDiffHandler(rankLogFile, compareRankLogFile, topCount, encoding).appendTo(logSort);
+		ProcessHandler rankDiff = new KeywordRankDiffHandler(rankLogFile, compareRankLogFile, topCount, encoding, entryParser).appendTo(logSort);
 		
 		/* 3. 구해진 인기키워드를 저장한다. */
 		ProcessHandler popularKeywordResultHandler = new PopularKeywordResultHandler(popularKeywordLogFile, encoding).appendTo(rankDiff);

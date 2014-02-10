@@ -5,6 +5,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 
 import org.apache.commons.io.FilenameUtils;
+import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.util.AggregationResultFileWriter;
 import org.fastcatgroup.analytics.analysis.util.SortedRunFileMerger;
 import org.junit.Test;
@@ -35,7 +36,8 @@ public class SortedRunFileMergerTest {
 		File outputFile = new File(targetDir, "rank.log");
 		AggregationResultFileWriter writer = new AggregationResultFileWriter(outputFile, "utf-8");
 		logger.debug(">> {} {}", "", inFileList);
-		SortedRunFileMerger merger = new SortedRunFileMerger(inFileList, "utf-8", writer);
+		KeyCountRunEntryParser entryParser = new KeyCountRunEntryParser();
+		SortedRunFileMerger merger = new SortedRunFileMerger(inFileList, "utf-8", writer, entryParser);
 		merger.merge();
 	}
 

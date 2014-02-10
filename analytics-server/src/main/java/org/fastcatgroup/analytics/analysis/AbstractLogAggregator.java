@@ -29,7 +29,7 @@ public abstract class AbstractLogAggregator<LogType extends LogData> {
 	private Map<String, Counter> aggregateMap;
 	private int flushCount;
 	private String outputEncoding;
-	private Set<String> banWords;
+	protected Set<String> banWords;
 	protected int minimumHitCount;
 	
 	
@@ -48,19 +48,27 @@ public abstract class AbstractLogAggregator<LogType extends LogData> {
 	protected abstract RunMerger newFinalMerger(String encoding, int flushCount);
 
 	protected abstract void doDone();
+	
+	protected boolean checkLog(LogType log) {
+		if (banWords != null) {
+			for (String banWord : banWords) {
+				if (log.getKey().contains(banWord)) {
+					// 금지어의 경우 로그에 기록하지 않는다.
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 
 	public void handleLog(LogType log) throws IOException {
 //		logger.debug("{}: {}", getClass().getSimpleName(), log);
 		if (log != null) {
 
-			if (banWords != null) {
-				for (String banWord : banWords) {
-					if (log.getKey().contains(banWord)) {
-						// 금지어의 경우 로그에 기록하지 않는다.
-						return;
-					}
-				}
+			if(!checkLog(log)){
+				return;
 			}
+			
 			Counter counter = aggregateMap.get(log.getKey());
 			if (counter != null) {
 				counter.increment();
@@ -75,6 +83,7 @@ public abstract class AbstractLogAggregator<LogType extends LogData> {
 		}
 	}
 
+	
 	private void flushRun() throws IOException {
 		TreeMap<String, Counter> sortedMap = new TreeMap<String, Counter>();
 		sortedMap.putAll(aggregateMap);

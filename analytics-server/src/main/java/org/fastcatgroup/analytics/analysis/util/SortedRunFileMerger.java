@@ -5,7 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fastcatgroup.analytics.analysis.KeyCountRunEntryReader;
+import org.fastcatgroup.analytics.analysis.EntryParser;
+import org.fastcatgroup.analytics.analysis.FileRunEntryReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,11 +20,13 @@ public class SortedRunFileMerger implements RunMerger {
 	private File[] runFileList;
 	private AggregationResultWriter writer;
 	protected String encoding;
-
-	public SortedRunFileMerger(File[] runFileList, String encoding, AggregationResultWriter writer) {
+	EntryParser<KeyCountRunEntry> entryParser;
+	
+	public SortedRunFileMerger(File[] runFileList, String encoding, AggregationResultWriter writer, EntryParser<KeyCountRunEntry> entryParser) {
 		this.runFileList = runFileList;
 		this.encoding = encoding;
 		this.writer = writer;
+		this.entryParser = entryParser;
 	}
 
 	@Override
@@ -59,7 +62,7 @@ public class SortedRunFileMerger implements RunMerger {
 		for (int i = 0; i < fileList.length; i++) {
 			File f = fileList[i];
 			if (f.exists()) {
-				KeyCountRunEntryReader r = new KeyCountRunEntryReader(f, encoding);
+				FileRunEntryReader<KeyCountRunEntry> r = new FileRunEntryReader<KeyCountRunEntry>(f, encoding, entryParser);
 				r.next();
 				list.add(r);
 			}

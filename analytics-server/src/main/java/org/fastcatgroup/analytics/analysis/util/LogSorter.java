@@ -13,7 +13,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.fastcatgroup.analytics.analysis.KeyCountRunEntryReader;
+import org.fastcatgroup.analytics.analysis.EntryParser;
+import org.fastcatgroup.analytics.analysis.FileRunEntryReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +26,7 @@ import org.slf4j.LoggerFactory;
  * 
  * 메모리에서 정렬이 힘든 대용량 정렬을 위해 runKeysize만큼만 메모리에서 정렬하고 run파일로 만든후 최종적으로 run파일을 머징하여 정렬된 OutputStream을 내보낸다.
  * */
-public class LogSorter {
+public class LogSorter<EntryType extends RunEntry> {
 	protected static Logger logger = LoggerFactory.getLogger(LogSorter.class);
 
 	private int runKeySize;
@@ -38,75 +39,78 @@ public class LogSorter {
 		this.runKeySize = runKeySize;
 	}
 
-	public void sort(OutputStream os, Comparator<KeyCountRunEntry> comparator, File workDir) throws IOException {
+	public void sort(OutputStream os, EntryParser<EntryType> entryParser, Comparator<EntryType> comparator, File workDir) throws IOException {
 		if (!workDir.exists()) {
 			workDir.mkdir();
 		}
-		List<KeyCountRunEntry> list = new ArrayList<KeyCountRunEntry>(runKeySize);
-		int flushCount = 0;
-		KeyCountRunEntryReader entryReader = new KeyCountRunEntryReader(is, encoding);
-		try {
-			while (entryReader.next()) {
-				KeyCountRunEntry entry = entryReader.entry();
-				// logger.debug(">>> {}", entry);
-				if (entry != null) {
-					list.add(entry);
-
-					if (list.size() >= runKeySize) {
-						flush(workDir, flushCount++, list, comparator);
-
+		
+		try{
+			List<EntryType> list = new ArrayList<EntryType>(runKeySize);
+			int flushCount = 0;
+			FileRunEntryReader<EntryType> entryReader = new FileRunEntryReader<EntryType>(is, encoding, entryParser);
+			try {
+				while (entryReader.next()) {
+					EntryType entry = entryReader.entry();
+					// logger.debug(">>> {}", entry);
+					if (entry != null) {
+						list.add(entry);
+	
+						if (list.size() >= runKeySize) {
+							flush(workDir, flushCount++, list, comparator);
+	
+						}
 					}
 				}
+	
+			} catch (IOException e) {
+				entryReader.close();
 			}
-
-		} catch (IOException e) {
-			entryReader.close();
-		}
-
-		if (list.size() > 0) {
-			flush(workDir, flushCount++, list, comparator);
-		}
-
-		/*
-		 * 2. run들을 하나로 합친다.
-		 */
-		File[] runFileList = new File[flushCount];
-		for (int i = 0; i < flushCount; i++) {
-			runFileList[i] = getRunFile(workDir, i);
-		}
-		List<RunEntryReader<KeyCountRunEntry>> entryReaderList = getReaderList(runFileList);
-
-		if (entryReaderList.size() > 0) {
-			RunEntryMergeReader<KeyCountRunEntry> mergeReader = new RunEntryMergeReader<KeyCountRunEntry>(entryReaderList, comparator);
-
-			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, encoding));
-			try {
-				KeyCountRunEntry entry = null;
-
-				while ((entry = mergeReader.read()) != null) {
-					writer.write(entry.getRawLine());
-					writer.write("\n");
-				}
-
-			} finally {
-				for (RunEntryReader<KeyCountRunEntry> r : entryReaderList) {
-					r.close();
-				}
-
-				writer.close();
-
-				FileUtils.deleteQuietly(workDir);
+	
+			if (list.size() > 0) {
+				flush(workDir, flushCount++, list, comparator);
 			}
+	
+			/*
+			 * 2. run들을 하나로 합친다.
+			 */
+			File[] runFileList = new File[flushCount];
+			for (int i = 0; i < flushCount; i++) {
+				runFileList[i] = getRunFile(workDir, i);
+			}
+			List<RunEntryReader<EntryType>> entryReaderList = getReaderList(runFileList, entryParser);
+	
+			if (entryReaderList.size() > 0) {
+				RunEntryMergeReader<EntryType> mergeReader = new RunEntryMergeReader<EntryType>(entryReaderList, comparator);
+	
+				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, encoding));
+				try {
+					EntryType entry = null;
+	
+					while ((entry = mergeReader.read()) != null) {
+						writer.write(entry.getRawLine());
+						writer.write("\n");
+					}
+	
+				} finally {
+					for (RunEntryReader<EntryType> r : entryReaderList) {
+						r.close();
+					}
+	
+					writer.close();
+					
+				}
+			}
+		}finally{
+			FileUtils.deleteQuietly(workDir);			
 		}
-
 	}
 
-	private void flush(File workDir, int flushCount, List<KeyCountRunEntry> list, Comparator<KeyCountRunEntry> comparator) throws IOException {
+	private void flush(File workDir, int flushCount, List<EntryType> list, Comparator<EntryType> comparator) throws IOException {
 		File runFile = getRunFile(workDir, flushCount);
 		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(runFile), encoding));
 		try {
 			Collections.sort(list, comparator);
-			for (KeyCountRunEntry entry : list) {
+			for (EntryType entry : list) {
 				writer.write(entry.getRawLine());
 				writer.write("\n");
 			}
@@ -122,12 +126,12 @@ public class LogSorter {
 		return new File(workDir, Integer.valueOf(i) + ".run");
 	}
 
-	private List<RunEntryReader<KeyCountRunEntry>> getReaderList(File[] fileList) throws IOException {
-		List<RunEntryReader<KeyCountRunEntry>> list = new ArrayList<RunEntryReader<KeyCountRunEntry>>();
+	private List<RunEntryReader<EntryType>> getReaderList(File[] fileList, EntryParser<EntryType> entryParser) throws IOException {
+		List<RunEntryReader<EntryType>> list = new ArrayList<RunEntryReader<EntryType>>();
 		for (int i = 0; i < fileList.length; i++) {
 			File f = fileList[i];
 			if (f.exists()) {
-				KeyCountRunEntryReader r = new KeyCountRunEntryReader(f, encoding);
+				FileRunEntryReader<EntryType> r = new FileRunEntryReader<EntryType>(f, encoding, entryParser);
 				r.next();
 				list.add(r);
 			}

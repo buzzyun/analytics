@@ -5,7 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fastcatgroup.analytics.analysis.KeyCountRunEntryReader;
+import org.fastcatgroup.analytics.analysis.EntryParser;
+import org.fastcatgroup.analytics.analysis.FileRunEntryReader;
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
 import org.fastcatgroup.analytics.db.vo.PopularKeywordVO.RankDiffType;
 import org.slf4j.Logger;
@@ -19,19 +20,21 @@ public class KeywordLogRankDiffer {
 	private File compareFile;
 	private int topCount;
 	private String encoding;
-
-	public KeywordLogRankDiffer(File targetFile, File compareFile, int topCount, String encoding) {
+	EntryParser<KeyCountRunEntry> entryParser;
+	
+	public KeywordLogRankDiffer(File targetFile, File compareFile, int topCount, String encoding, EntryParser<KeyCountRunEntry> entryParser) {
 		this.targetFile = targetFile;
 		this.compareFile = compareFile;
 		this.topCount = topCount;
 		this.encoding = encoding;
+		this.entryParser = entryParser;
 	}
 
 	public List<RankKeyword> diff() {
 		List<RankKeyword> result = new ArrayList<RankKeyword>();
 		try {
 			// 1. target 파일에서 top N개를 뽑아낸다.
-			KeyCountRunEntryReader targetReader = new KeyCountRunEntryReader(targetFile, encoding);
+			FileRunEntryReader<KeyCountRunEntry> targetReader = new FileRunEntryReader<KeyCountRunEntry>(targetFile, encoding, entryParser);
 			try {
 				int rank = 1; // 1부터 시작한다.
 				while (targetReader.next()) {
@@ -53,7 +56,7 @@ public class KeywordLogRankDiffer {
 
 			// 2. compareFile를 순차로 읽으면서 해당 키워드가 있는지 확인한다.
 			if (compareFile.exists()) {
-				KeyCountRunEntryReader compareReader = new KeyCountRunEntryReader(compareFile, encoding);
+				FileRunEntryReader<KeyCountRunEntry> compareReader = new FileRunEntryReader<KeyCountRunEntry>(compareFile, encoding, entryParser);
 				try {
 					int foundCount = 0;
 					int prevRank = 1; // 이전 인기검색어의 순위. 1부터 시작한다.

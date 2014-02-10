@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fastcatgroup.analytics.analysis.KeyCountRunEntryReader;
+import org.fastcatgroup.analytics.analysis.EntryParser;
 import org.fastcatgroup.analytics.analysis.WeightedKeyCountRunEntryReader;
 
 /**
@@ -15,8 +15,8 @@ public class WeightedSortedRunFileMerger extends SortedRunFileMerger {
 
 	private float[] weightList;
 
-	public WeightedSortedRunFileMerger(File[] runFileList, float[] weightList, String encoding, AggregationResultWriter writer) {
-		super(runFileList, encoding, writer);
+	public WeightedSortedRunFileMerger(File[] runFileList, float[] weightList, String encoding, AggregationResultWriter writer, EntryParser<KeyCountRunEntry> entryParser) {
+		super(runFileList, encoding, writer, entryParser);
 		this.weightList = weightList;
 	}
 
@@ -26,7 +26,7 @@ public class WeightedSortedRunFileMerger extends SortedRunFileMerger {
 		for (int i = 0; i < fileList.length; i++) {
 			File f = fileList[i];
 			if (f.exists()) {
-				WeightedKeyCountRunEntryReader r = new WeightedKeyCountRunEntryReader(f, encoding, weightList[i]);
+				WeightedKeyCountRunEntryReader r = new WeightedKeyCountRunEntryReader(f, encoding, weightList[i], entryParser);
 				r.next();
 				list.add(r);
 			}

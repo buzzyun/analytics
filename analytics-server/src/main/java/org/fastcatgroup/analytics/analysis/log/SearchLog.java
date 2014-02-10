@@ -4,12 +4,10 @@ public class SearchLog extends LogData {
 
 	protected String categoryId;
 	protected String keyword;
-	protected String previousKeyword;
 	
-	public SearchLog(String categoryId, String keyword, String previousKeyword) {
+	public SearchLog(String categoryId, String keyword) {
 		this.categoryId = categoryId;
 		this.keyword = keyword;
-		this.previousKeyword = previousKeyword;
 	}
 
 	public String categoryId() {
@@ -20,9 +18,6 @@ public class SearchLog extends LogData {
 		return keyword;
 	}
 
-	public String previousKeyword() {
-		return previousKeyword;
-	}
 
 	@Override
 	public String getKey() {
@@ -31,6 +26,6 @@ public class SearchLog extends LogData {
 	
 	@Override
 	public String toString(){
-		return categoryId + "\t" + keyword + "\t" + previousKeyword;
+		return categoryId + "\t" + keyword;
 	}
 }

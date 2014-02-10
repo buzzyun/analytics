@@ -35,12 +35,15 @@ public class FileRunEntryReader<EntryType extends RunEntry> extends RunEntryRead
 		String line = null;
 		try {
 			while ((line = reader.readLine()) != null) {
-				
 				entry = entryParser.parse(line); //exception발생시 종료.
+				
+//				logger.debug("##FileRunEntryReader parse {} , {}", line, entry);
 				if(entry == null){
 					// 파싱실패시 다음 라인확인.
 					continue;
 				}
+				
+				return true;
 			}
 		} catch (Exception e) {
 			logger.error("", e);

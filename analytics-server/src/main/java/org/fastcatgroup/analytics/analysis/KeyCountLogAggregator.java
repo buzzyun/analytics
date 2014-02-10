@@ -21,8 +21,8 @@ public class KeyCountLogAggregator<LogType extends LogData> extends AbstractLogA
 	private File destFile;
 	EntryParser<KeyCountRunEntry> entryParser;
 	
-	public KeyCountLogAggregator(File targetDir, String targetFilename, int runKeySize, String outputEncoding, Set<String> banWords, int minimumHitCount, EntryParser<KeyCountRunEntry> entryParser) {
-		super(runKeySize, outputEncoding, banWords, minimumHitCount);
+	public KeyCountLogAggregator(File targetDir, String targetFilename, int runKeySize, String outputEncoding, int minimumHitCount, EntryParser<KeyCountRunEntry> entryParser) {
+		super(runKeySize, outputEncoding, minimumHitCount);
 		this.entryParser = entryParser;
 		this.runTmpDir = new File(targetDir, "_run");
 		this.destFile = new File(targetDir, targetFilename);
@@ -32,18 +32,6 @@ public class KeyCountLogAggregator<LogType extends LogData> extends AbstractLogA
 		}
 	}
 
-	@Override
-	protected boolean checkLog(LogType log) {
-		if (banWords != null) {
-			for (String banWord : banWords) {
-				if (log.getKey().contains(banWord)) {
-					// 금지어의 경우 로그에 기록하지 않는다.
-					return false;
-				}
-			}
-		}
-		return true;
-	}
 	
 	@Override
 	protected AggregationResultWriter newRunWriter(String encoding, int flushId) {

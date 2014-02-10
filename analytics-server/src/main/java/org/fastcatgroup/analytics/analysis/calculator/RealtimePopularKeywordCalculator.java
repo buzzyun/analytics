@@ -4,15 +4,16 @@ import java.io.File;
 import java.util.List;
 import java.util.Set;
 
+import org.fastcatgroup.analytics.analysis.SearchLogValidator;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
-import org.fastcatgroup.analytics.analysis.handler.MoveFileHandler;
+import org.fastcatgroup.analytics.analysis.handler.CheckFileEmptyHandler;
 import org.fastcatgroup.analytics.analysis.handler.KeyCountLogSortHandler;
 import org.fastcatgroup.analytics.analysis.handler.KeywordRankDiffHandler;
 import org.fastcatgroup.analytics.analysis.handler.MergeKeyCountProcessHandler;
-import org.fastcatgroup.analytics.analysis.handler.ProcessHandler;
+import org.fastcatgroup.analytics.analysis.handler.MoveFileHandler;
 import org.fastcatgroup.analytics.analysis.handler.PopularKeywordResultHandler;
+import org.fastcatgroup.analytics.analysis.handler.ProcessHandler;
 import org.fastcatgroup.analytics.analysis.handler.RealtimeSearchLogKeyCountHandler;
-import org.fastcatgroup.analytics.analysis.handler.SearchLogKeyCountHandler;
 import org.fastcatgroup.analytics.analysis.handler.UpdateRealtimePopularKeywordHandler;
 import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
@@ -52,15 +53,19 @@ public class RealtimePopularKeywordCalculator extends Calculator<SearchLog> {
 		
 		logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
 		KeyCountRunEntryParser entryParser = new KeyCountRunEntryParser();
-		CategoryProcess<SearchLog> categoryProcess = new CategoryProcess<SearchLog>();
+		CategoryProcess<SearchLog> categoryProcess = new CategoryProcess<SearchLog>(categoryId);
+		SearchLogValidator logValidator = new SearchLogValidator(banWords);
 		/* 1. store디렉토리에 기존 #.log를 shift하고 저장한다. */
-		new RealtimeSearchLogKeyCountHandler(categoryId, storeDir, tmpLogFilename, banWords, minimumHitCount, realtimeSearchLogLimit, entryParser).attachLogHandlerTo(categoryProcess);
+		new RealtimeSearchLogKeyCountHandler(categoryId, storeDir, tmpLogFilename, minimumHitCount, realtimeSearchLogLimit, logValidator, entryParser).attachLogHandlerTo(categoryProcess);
 		
 		/* 2. store/#.log파일들을 모아서 하나의 key-count.log로 저장한다. */
 		ProcessHandler mergeKeyCount = new MergeKeyCountProcessHandler(storeDir, workingDir, KEY_COUNT_FILENAME, encoding, realtimeSearchLogLimit, entryParser).attachProcessTo(categoryProcess);
 		
-		/* 3. 기존 key-count-rank.log 를 key-count-rank-rev 로 이동. */
-		ProcessHandler backupKeyCountRank = new MoveFileHandler(workingDir, KEY_COUNT_FILENAME, KEY_COUNT_RANK_PREV_FILENAME).appendTo(mergeKeyCount);
+		// key-count가 비어있으면 중지.
+		ProcessHandler checkKeyCountFile = new CheckFileEmptyHandler(new File(workingDir, KEY_COUNT_FILENAME)).appendTo(mergeKeyCount);
+		
+		/* 3. 기존 key-count-rank.log 를 key-count-rank-prev 로 이동. */
+		ProcessHandler backupKeyCountRank = new MoveFileHandler(workingDir, KEY_COUNT_RANK_FILENAME, KEY_COUNT_RANK_PREV_FILENAME).appendTo(checkKeyCountFile);
 		
 		/* 4. count로 정렬하여 key-count-rank.log로 저장. */
 		ProcessHandler logSort = new KeyCountLogSortHandler(workingDir, KEY_COUNT_FILENAME, KEY_COUNT_RANK_FILENAME, encoding, runKeySize, entryParser).appendTo(backupKeyCountRank);

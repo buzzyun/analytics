@@ -48,13 +48,15 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		/*
 		 * 실시간 인기검색어 서비스 로딩
 		 */
-		File resultDir = new File(realtimeKeywordBaseDir, "result");
-		if (resultDir.exists()) {
-			File[] categoryDirList = listCategoryDir(resultDir);
+		File siteDir = new File(realtimeKeywordBaseDir, siteId);
+		logger.debug("Search stat resultDir > {}", siteDir.getAbsolutePath());
+		if (siteDir.exists()) {
+			File[] categoryDirList = listCategoryDir(siteDir);
 			for (File categoryDir : categoryDirList) {
 				String categoryId = categoryDir.getName();
-
-				File f = new File(categoryDir, "rt-popular.txt");
+				logger.debug("Search stat categoryDir {}", categoryDir.getAbsolutePath() );
+				File f = new File(categoryDir, "popular.log");
+				logger.debug("Search stat popular keyword > {}, {}", f.exists(), f.getAbsolutePath());
 				if (f.exists()) {
 					// load keyword file to dictionary.
 					List<RankKeyword> keywordList = loadKeywordListFile(f);
@@ -137,68 +139,6 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		dailyRawLogger.log(data);
 	}
 
-//	private AnalysisTask<SearchLog> makeRealtimePopularKeywordAnalysisTask(Schedule schedule, File logDir, String fileName, String encoding) {
-//		FileSearchLogReaderFactory readerFactory = new FileSearchLogReaderFactory(new File(logDir, fileName), encoding);
-//
-//		AnalysisTask<SearchLog> task = new AnalysisTask<SearchLog>(schedule, 0, readerFactory);
-//
-//		File workingDir = new File(logDir, "working");
-//		File resultDir = new File(logDir, "result");
-//		if (!workingDir.exists()) {
-//			workingDir.mkdirs();
-//		}
-//		if (!resultDir.exists()) {
-//			resultDir.mkdirs();
-//		}
-//
-//		int topCount = 10;
-//		int fileLimitCount = 6;
-//		int runKeySize = 10 * 10000;
-//		String tempFileName = "tmp.log"; // 각 카테고리하위에 tempFileName이름으로 키워드로그가 만들어진다.
-//		String outFileName = "0.log";
-//		Calculator<SearchLog> calculator = new Calculator<SearchLog>("Realtime popular keyword calculator", new CategorySearchLogHandler(workingDir, tempFileName));
-//
-//		/* 1. 카테고리별로 키워드-갯수를 계산하여 0.log에 쓴다. */
-//		Set<String> banWords = null;
-//		int minimumHitCount = 1;
-//
-//		calculator.appendProcess(new RollingLogProcessHandler(workingDir, fileLimitCount));
-//		calculator.appendProcess(new KeyCountProcessHandler(workingDir, tempFileName, outFileName, runKeySize, banWords, minimumHitCount, encoding));
-//
-//		/* 2. 0.log, 1.log ..를 취합하여 key-count.log 로 통합한다. */
-//		calculator.appendProcess(new MergeKeyCountProcessHandler(workingDir, resultDir, fileLimitCount, encoding));
-//
-//		/* 3. count로 정렬하여 key-count-rank.log로 저장. */
-//		calculator.appendProcess(new KeyCountLogSortHandler(resultDir, encoding, runKeySize));
-//
-//		/* 4. 구해진 인기키워드를 저장한다. */
-//		calculator.appendProcess(new KeywordRankDiffHandler(topCount, encoding));
-//		calculator.appendProcess(new RealtimePopularKeywordResultHandler(resultDir, encoding));
-//		calculator.postProcess(new PostProcess() {
-//
-//			@Override
-//			public void handle(String categoryId, Object parameter) {
-//				if (parameter != null) {
-//					List<RankKeyword> keywordList = (List<RankKeyword>) parameter;
-//					statisticsService.updateRealtimePopularKeywordList(siteId, categoryId, keywordList);
-//				}
-//			}
-//		});
-//
-//		task.preProcess(new Runnable() {
-//
-//			@Override
-//			public void run() {
-//				logger.debug("Rolling log file. {}", realtimeRawLogger);
-//				realtimeRawLogger.rolling();
-//			}
-//		});
-//
-//		task.addCalculator(calculator);
-//
-//		return task;
-//	}
-
 	private File[] listCategoryDir(File dir) {
 		return dir.listFiles(new FileFilter() {
 			@Override
@@ -218,9 +158,11 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 			while ((line = reader.readLine()) != null) {
 				String[] el = line.split("\t");
 				int count = Integer.parseInt(el[3]);
+				int countDiff = Integer.parseInt(el[4]);
 				RankKeyword k = new RankKeyword(el[0], rank, count);
-				k.setRankDiff(Integer.parseInt(el[1]));
-				k.setRankDiffType(RankDiffType.valueOf(el[2]));
+				k.setRankDiffType(RankDiffType.valueOf(el[1]));
+				k.setRankDiff(Integer.parseInt(el[2]));
+				k.setCountDiff(countDiff);
 				list.add(k);
 				rank++;
 			}

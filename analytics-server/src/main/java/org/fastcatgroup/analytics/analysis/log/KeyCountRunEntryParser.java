@@ -9,8 +9,9 @@ public class KeyCountRunEntryParser implements EntryParser<KeyCountRunEntry> {
 	public KeyCountRunEntry parse(String line) {
 		
 		String[] el = line.split("\t");
-		if (el.length == 2) {
+		if (el.length >= 2) {
 			try {
+//				logger.debug("KeyCount parsed {}, {}", el[0], el[1]);
 				return new KeyCountRunEntry(line, el[0], Integer.parseInt(el[1]));
 			} catch (Exception e) {
 				logger.error("", e);

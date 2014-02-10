@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.List;
 import java.util.Set;
 
+import org.fastcatgroup.analytics.analysis.RelateSearchLogValidator;
+import org.fastcatgroup.analytics.analysis.SearchLogValidator;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.handler.KeyCountLogSortHandler;
 import org.fastcatgroup.analytics.analysis.handler.ProcessHandler;
@@ -42,8 +44,9 @@ public class DailyRelateKeywordCalculator extends Calculator<RelateSearchLog> {
 		
 		logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
 		RelateKeyCountRunEntryParser entryParser = new RelateKeyCountRunEntryParser();
-		CategoryProcess<RelateSearchLog> categoryProcess = new CategoryProcess<RelateSearchLog>();
-		new RelateSearchLogKeyCountHandler(categoryId, workingDir, RELATE_KEY_COUNT_FILENAME, banWords, minimumHitCount, entryParser).attachLogHandlerTo(categoryProcess);
+		RelateSearchLogValidator logValidator = new RelateSearchLogValidator(banWords);
+		CategoryProcess<RelateSearchLog> categoryProcess = new CategoryProcess<RelateSearchLog>(categoryId);
+		new RelateSearchLogKeyCountHandler(categoryId, workingDir, RELATE_KEY_COUNT_FILENAME, minimumHitCount, logValidator, entryParser).attachLogHandlerTo(categoryProcess);
 		
 		/* 1. count로 정렬하여 key-count-rank.log로 저장. */
 		ProcessHandler logSort = new KeyCountLogSortHandler(workingDir, RELATE_KEY_COUNT_FILENAME, RELATE_KEY_COUNT_RANK_FILENAME, encoding, runKeySize, entryParser).attachProcessTo(categoryProcess);

@@ -18,6 +18,7 @@ public class UpdateRealtimePopularKeywordHandler extends ProcessHandler {
 
 	@Override
 	public Object process(Object parameter) throws Exception {
+		logger.debug("UpdateRealtimePopularKeywordHandler > {}", parameter);
 		if (parameter != null) {
 			List<RankKeyword> keywordList = (List<RankKeyword>) parameter;
 			StatisticsService statisticsService = ServiceManager.getInstance().getService(StatisticsService.class);

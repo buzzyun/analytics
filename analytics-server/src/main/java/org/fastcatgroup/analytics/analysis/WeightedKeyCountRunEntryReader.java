@@ -35,6 +35,7 @@ public class WeightedKeyCountRunEntryReader extends FileRunEntryReader<KeyCountR
 					// 파싱실패시 다음 라인확인.
 					continue;
 				}
+				return true;
 			}
 		} catch (Exception e) {
 			logger.error("", e);

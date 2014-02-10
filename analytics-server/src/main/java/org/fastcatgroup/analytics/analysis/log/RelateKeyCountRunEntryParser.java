@@ -9,9 +9,10 @@ public class RelateKeyCountRunEntryParser implements EntryParser<KeyCountRunEntr
 	public KeyCountRunEntry parse(String line) {
 		
 		String[] el = line.split("\t");
-		if (el.length == 3) {
+		if (el.length >= 3) {
 			try {
 				//1,2컬럼은 검색어, 3컬럼이 count.
+				logger.debug("RelateKeyCount parsed {}-{}, {}", el[0], el[1], el[2]);
 				return new KeyCountRunEntry(line, el[0] + "\t" + el[1], Integer.parseInt(el[2]));
 			} catch (Exception e) {
 				logger.error("", e);

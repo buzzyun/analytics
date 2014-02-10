@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Comparator;
 
+import org.apache.commons.io.FileUtils;
 import org.fastcatgroup.analytics.analysis.EntryParser;
 import org.fastcatgroup.analytics.analysis.util.KeyCountRunEntry;
 import org.fastcatgroup.analytics.analysis.util.LogSorter;
@@ -19,7 +20,7 @@ public class KeyCountLogSortHandler extends ProcessHandler {
 	private String encoding;
 	private int runKeySize;
 	EntryParser<KeyCountRunEntry> entryParser;
-	
+
 	public KeyCountLogSortHandler(File baseDir, String inFileName, String sortedFileName, String encoding, int runKeySize, EntryParser<KeyCountRunEntry> entryParser) {
 		this.baseDir = baseDir;
 		this.inFileName = inFileName;
@@ -57,19 +58,27 @@ public class KeyCountLogSortHandler extends ProcessHandler {
 		// LogSorter를 사용해 keyCountFile -> rankFile 로 저장한다.
 		File sortWorkDir = new File(baseDir, "tmp");
 		InputStream is = new FileInputStream(keyCountFile);
-		OutputStream os = new FileOutputStream(rankFile);
-		try {
-			LogSorter<KeyCountRunEntry> logSorter = new LogSorter<KeyCountRunEntry>(is, encoding, runKeySize);
-			logSorter.sort(os, entryParser, comparator, sortWorkDir);
-		} finally {
-			if (is != null) {
-				is.close();
-			}
-			if (os != null) {
-				os.close();
-			}
-		}
+		if (keyCountFile.exists() && keyCountFile.length() > 0) {
 
+			OutputStream os = new FileOutputStream(rankFile);
+			try {
+				LogSorter<KeyCountRunEntry> logSorter = new LogSorter<KeyCountRunEntry>(is, encoding, runKeySize);
+				logSorter.sort(os, entryParser, comparator, sortWorkDir);
+			} finally {
+				if (is != null) {
+					is.close();
+				}
+				if (os != null) {
+					os.close();
+				}
+			}
+		} else {
+
+			if (rankFile.exists()) {
+				FileUtils.deleteQuietly(rankFile);
+			}
+			rankFile.createNewFile();
+		}
 		return null;
 	}
 

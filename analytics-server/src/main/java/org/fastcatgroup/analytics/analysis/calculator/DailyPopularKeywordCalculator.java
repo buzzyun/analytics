@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Set;
 
+import org.fastcatgroup.analytics.analysis.SearchLogValidator;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.handler.KeyCountLogSortHandler;
 import org.fastcatgroup.analytics.analysis.handler.KeywordRankDiffHandler;
@@ -43,8 +44,9 @@ public class DailyPopularKeywordCalculator extends Calculator<SearchLog> {
 		
 		logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
 		KeyCountRunEntryParser entryParser = new KeyCountRunEntryParser();
-		CategoryProcess<SearchLog> categoryProcess = new CategoryProcess<SearchLog>();
-		new SearchLogKeyCountHandler(categoryId, workingDir, KEY_COUNT_FILENAME, banWords, minimumHitCount, entryParser).attachLogHandlerTo(categoryProcess);
+		CategoryProcess<SearchLog> categoryProcess = new CategoryProcess<SearchLog>(categoryId);
+		SearchLogValidator logValidator = new SearchLogValidator(banWords);
+		new SearchLogKeyCountHandler(categoryId, workingDir, KEY_COUNT_FILENAME, minimumHitCount, logValidator, entryParser).attachLogHandlerTo(categoryProcess);
 		
 		/* 1. count로 정렬하여 key-count-rank.log로 저장. */
 		ProcessHandler logSort = new KeyCountLogSortHandler(workingDir, KEY_COUNT_FILENAME, KEY_COUNT_RANK_FILENAME, encoding, runKeySize, entryParser).attachProcessTo(categoryProcess);

@@ -63,7 +63,7 @@ public class StatisticsService extends AbstractService {
 	public List<RankKeyword> getRealtimePopularKeywordList(String siteId, String categoryId) {
 		Map<String, List<RankKeyword>> map = realtimePopularKeywordMap.get(siteId);
 		if (map != null) {
-			if(categoryId == null){
+			if(categoryId == null || categoryId.length() == 0){
 				categoryId = "_root";
 			}
 			return map.get(categoryId);
@@ -72,6 +72,8 @@ public class StatisticsService extends AbstractService {
 	}
 
 	public void updateRealtimePopularKeywordList(String siteId, String categoryId, List<RankKeyword> keywordList) {
+		
+		logger.debug("## updateRealtimePopularKeyword {}:{} > {}", siteId, categoryId, keywordList);
 		Map<String, List<RankKeyword>> map = realtimePopularKeywordMap.get(siteId);
 		if (map == null) {
 			map = new ConcurrentHashMap<String, List<RankKeyword>>();

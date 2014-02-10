@@ -33,11 +33,10 @@ public abstract class AbstractLogAggregator<LogType extends LogData> {
 	protected int minimumHitCount;
 	
 	
-	public AbstractLogAggregator(int runKeySize, String outputEncoding, Set<String> banWords, int minimumHitCount) {
+	public AbstractLogAggregator(int runKeySize, String outputEncoding, int minimumHitCount) {
 		this.runKeySize = runKeySize;
 		this.aggregateMap = new HashMap<String, Counter>(runKeySize);
 		this.outputEncoding = outputEncoding;
-		this.banWords = banWords;
 		this.minimumHitCount = minimumHitCount;
 	}
 
@@ -49,27 +48,11 @@ public abstract class AbstractLogAggregator<LogType extends LogData> {
 
 	protected abstract void doDone();
 	
-	protected boolean checkLog(LogType log) {
-		if (banWords != null) {
-			for (String banWord : banWords) {
-				if (log.getKey().contains(banWord)) {
-					// 금지어의 경우 로그에 기록하지 않는다.
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
 	public void handleLog(LogType log) throws IOException {
 //		logger.debug("{}: {}", getClass().getSimpleName(), log);
 		if (log != null) {
-
-			if(!checkLog(log)){
-				return;
-			}
-			
 			Counter counter = aggregateMap.get(log.getKey());
+//			logger.debug("##handle log {} > {}", log.getKey(), counter);
 			if (counter != null) {
 				counter.increment();
 			} else {

@@ -2,10 +2,10 @@ package org.fastcatgroup.analytics.analysis.handler;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.fastcatgroup.analytics.analysis.KeyCountLogAggregator;
+import org.fastcatgroup.analytics.analysis.LogValidator;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
@@ -16,8 +16,9 @@ import org.fastcatgroup.analytics.analysis.log.SearchLog;
 public class RealtimeSearchLogKeyCountHandler extends CategoryLogHandler<SearchLog> {
 
 	private KeyCountLogAggregator<SearchLog> aggregator;
-
-	public RealtimeSearchLogKeyCountHandler(String categoryId, File storeDir, String targetFilename, Set<String> banWords, int minimumHitCount, int realtimeSearchLogLimit, KeyCountRunEntryParser entryParser) {
+	LogValidator<SearchLog> logValidator;
+	
+	public RealtimeSearchLogKeyCountHandler(String categoryId, File storeDir, String targetFilename, int minimumHitCount, int realtimeSearchLogLimit, LogValidator<SearchLog> logValidator, KeyCountRunEntryParser entryParser) {
 		super(categoryId);
 		if (!storeDir.exists()) {
 			storeDir.mkdirs();
@@ -25,7 +26,8 @@ public class RealtimeSearchLogKeyCountHandler extends CategoryLogHandler<SearchL
 		rollingStoredLogs(storeDir, realtimeSearchLogLimit);
 		int runKeySize = SearchStatisticsProperties.runKeySize;
 		String encoding = SearchStatisticsProperties.encoding;
-		aggregator = new KeyCountLogAggregator<SearchLog>(storeDir, targetFilename, runKeySize, encoding, banWords, minimumHitCount, entryParser);
+		aggregator = new KeyCountLogAggregator<SearchLog>(storeDir, targetFilename, runKeySize, encoding, minimumHitCount, entryParser);
+		this.logValidator = logValidator;
 	}
 
 	@Override
@@ -35,10 +37,14 @@ public class RealtimeSearchLogKeyCountHandler extends CategoryLogHandler<SearchL
 		if (keyword != null && keyword.length() > 0) {
 			if (categoryId.equals(logData.categoryId())) {
 				// 해당 카테고리만
-				aggregator.handleLog(logData);
+				if(logValidator != null && logValidator.isValid(logData)){
+					aggregator.handleLog(logData);
+				}
 			} else if (categoryId.equals("_root")) {
 				// root는 모두다.
-				aggregator.handleLog(logData);
+				if(logValidator != null && logValidator.isValid(logData)){
+					aggregator.handleLog(logData);
+				}
 			}
 
 		}

@@ -7,6 +7,7 @@ import java.util.EmptyStackException;
 import java.util.List;
 import java.util.Stack;
 
+import org.fastcatgroup.analytics.analysis.ProcessDropException;
 import org.fastcatgroup.analytics.analysis.handler.CategoryLogHandler;
 import org.fastcatgroup.analytics.analysis.handler.ProcessHandler;
 import org.fastcatgroup.analytics.analysis.log.LogData;
@@ -60,12 +61,18 @@ public abstract class Calculator<LogType extends LogData> {
 				nextStack.clear();
 				
 				Object parameter = process.logHandler().done();
-//				logger.debug("# calculate process > {}", process.getClass().getSimpleName());
+				logger.debug("#### calculate category {} > {}:{}:{}", getClass().getSimpleName(), siteId, process.categoryId(), process.getClass().getSimpleName());
 				ProcessHandler next = process.processHandler();
 				while (next != null) {
 
-					parameter = next.process(parameter);
-
+					logger.debug("############### calculate process {} > {}:{}:{}", getClass().getSimpleName(), siteId, process.categoryId(), next.getClass().getSimpleName());
+					
+					try{
+						parameter = next.process(parameter);
+					}catch(ProcessDropException e){
+						logger.info("Process Drop. cause={}", e.getMessage());
+						break;
+					}
 					ProcessHandler[] nextList = next.next();
 
 					if (nextList == null) {
@@ -91,7 +98,8 @@ public abstract class Calculator<LogType extends LogData> {
 
 				}
 			} catch (Exception e) {
-				logger.error("{}", e.getMessage());
+//				logger.error("{}", e.getMessage());
+				logger.error("{}", e);
 			}
 		}
 	}
@@ -130,10 +138,12 @@ public abstract class Calculator<LogType extends LogData> {
 	}
 
 	public static class CategoryProcess<LogType extends LogData> {
+		private String categoryId;
 		private ProcessHandler processHandler;
 		private CategoryLogHandler<LogType> logHandler;
 
-		public CategoryProcess() {
+		public CategoryProcess(String categoryId) {
+			this.categoryId = categoryId;
 		}
 
 		public void setLogHandler(CategoryLogHandler<LogType> logHandler) {
@@ -150,6 +160,10 @@ public abstract class Calculator<LogType extends LogData> {
 
 		public CategoryLogHandler<LogType> logHandler() {
 			return logHandler;
+		}
+		
+		public String categoryId(){
+			return categoryId;
 		}
 	}
 

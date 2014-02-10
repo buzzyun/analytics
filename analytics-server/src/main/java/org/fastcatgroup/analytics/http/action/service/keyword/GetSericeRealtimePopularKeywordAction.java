@@ -40,11 +40,12 @@ public class GetSericeRealtimePopularKeywordAction extends ServiceAction {
 				
 				for (RankKeyword vo : list) {
 					responseWriter.object();
-					responseWriter.key("word").value(vo.getKeyword());
 					responseWriter.key("rank").value(vo.getRank());
+					responseWriter.key("word").value(vo.getKeyword());
 					responseWriter.key("diffType").value(vo.getRankDiffType().name());
 					responseWriter.key("diff").value(vo.getRankDiff());
 					responseWriter.key("count").value(vo.getCount());
+					responseWriter.key("countDiff").value(vo.getCountDiff());
 					responseWriter.endObject();
 				}
 			}

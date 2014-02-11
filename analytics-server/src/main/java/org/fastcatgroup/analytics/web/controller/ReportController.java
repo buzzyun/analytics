@@ -1,6 +1,5 @@
 package org.fastcatgroup.analytics.web.controller;
 
-import org.fastcatgroup.analytics.control.JobService;
 import org.fastcatgroup.analytics.service.ServiceManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,11 +26,27 @@ public class ReportController extends AbstractController {
 		return mav;
 	}
 	
+	@RequestMapping("/relateKeywordList")
+	public ModelAndView relateKeywordList() {
+
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("report/relateKeywordList");
+		return mav;
+	}
+	
 	@RequestMapping("/searchKeyword")
 	public ModelAndView searchKeyword() {
 
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/searchKeyword");
+		return mav;
+	}
+	
+	@RequestMapping("/realtimeSearchKeywordRank")
+	public ModelAndView realtimeSearchKeywordRank() {
+		
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("report/realtimeSearchKeywordRank");
 		return mav;
 	}
 	

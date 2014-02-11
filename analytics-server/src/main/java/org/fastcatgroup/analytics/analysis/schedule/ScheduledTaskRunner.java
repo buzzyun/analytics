@@ -1,5 +1,6 @@
 package org.fastcatgroup.analytics.analysis.schedule;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -15,45 +16,46 @@ import org.slf4j.LoggerFactory;
 /**
  * 스케줄링된 여러 task를 가지고 작업을 수행한다. 다음 스케줄에 실행될 작업을 리턴해준다.
  * */
-public class ScheduledTaskRunner<LogType extends LogData> extends Thread {
+public class ScheduledTaskRunner extends Thread {
 	protected static Logger logger = LoggerFactory.getLogger(ScheduledTaskRunner.class);
 
 	private JobExecutor jobExecutor;
 	private Environment environment;
-	private Queue<AnalysisTask<LogType>> priorityJobQueue;
+	private Queue<AnalysisTask> priorityJobQueue;
 	private boolean isCanceled;
 
 	public ScheduledTaskRunner(String name, JobExecutor jobExecutor, Environment environment) {
 		super(name);
 		this.jobExecutor = jobExecutor;
 		this.environment = environment;
-		this.priorityJobQueue = new PriorityQueue<AnalysisTask<LogType>>(5);
+		this.priorityJobQueue = new PriorityQueue<AnalysisTask>(5);
 	}
 
-	public void addTask(AnalysisTask<LogType> task) {
+	public void addTask(AnalysisTask task) {
 		task.setEnvironment(environment);
 		priorityJobQueue.add(task);
 	}
 
-	public void cancel(){
-		logger.info("[{}] cancel requested! > {}",  getClass().getSimpleName(), priorityJobQueue);
+	public void cancel() {
+		logger.info("[{}] cancel requested! > {}", getClass().getSimpleName(), priorityJobQueue);
 		this.interrupt();
 		isCanceled = true;
 	}
-	
+
 	@Override
 	public void run() {
-		Iterator<AnalysisTask<LogType>> iterator = priorityJobQueue.iterator();
-		while (iterator.hasNext()) {
-			AnalysisTask<LogType> e = iterator.next();
-			e.updateScheduleTimeByNow();
+		int size = priorityJobQueue.size();
+		for (int i = 0; i < size; i++) {
+			AnalysisTask task = priorityJobQueue.poll();
+			task.updateScheduleTimeByNow();
+			priorityJobQueue.offer(task);
 		}
 
 		while (!isCanceled) {
 			try {
-				AnalysisTask<LogType> task = priorityJobQueue.poll();
-				if(task == null){
-					//작업이 없으면 끝난다.
+				AnalysisTask task = priorityJobQueue.poll();
+				if (task == null) {
+					// 작업이 없으면 끝난다.
 					break;
 				}
 				long timeToWait = task.getDelayedScheduledTime() - System.currentTimeMillis();
@@ -62,7 +64,7 @@ public class ScheduledTaskRunner<LogType extends LogData> extends Thread {
 					timeToWait = 0;
 				}
 
-				logger.info("Next task {} will run after waiting {}ms", task, timeToWait);
+				logger.info("Next task {} will run after waiting {}ms at {}", task, timeToWait, new Date(task.getDelayedScheduledTime()));
 				if (timeToWait > 0) {
 					synchronized (this) {
 						wait(timeToWait);
@@ -76,7 +78,7 @@ public class ScheduledTaskRunner<LogType extends LogData> extends Thread {
 				try {
 					task.incrementExecution();
 					logger.debug("{} run!", task);
-					
+
 					ResultFuture resultFuture = jobExecutor.offer(task);
 					Object result = null;
 					if (resultFuture == null) {

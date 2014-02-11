@@ -48,7 +48,7 @@ public class DailyRelateKeywordCalculator extends Calculator<RelateSearchLog> {
 		CategoryProcess<RelateSearchLog> categoryProcess = new CategoryProcess<RelateSearchLog>(categoryId);
 		new RelateSearchLogKeyCountHandler(categoryId, workingDir, RELATE_KEY_COUNT_FILENAME, minimumHitCount, logValidator, entryParser).attachLogHandlerTo(categoryProcess);
 		
-		/* 1. count로 정렬하여 key-count-rank.log로 저장. */
+		/* 1. count로 정렬하여 relate-key-count-rank.log로 저장. */
 		ProcessHandler logSort = new KeyCountLogSortHandler(workingDir, RELATE_KEY_COUNT_FILENAME, RELATE_KEY_COUNT_RANK_FILENAME, encoding, runKeySize, entryParser).attachProcessTo(categoryProcess);
 		
 		/* 2. 구해진 연관검색어를 저장한다. */

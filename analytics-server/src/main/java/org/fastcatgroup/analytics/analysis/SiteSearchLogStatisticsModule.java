@@ -10,13 +10,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import org.fastcatgroup.analytics.analysis.log.SearchLog;
 import org.fastcatgroup.analytics.analysis.schedule.EveryDaySchedule;
+import org.fastcatgroup.analytics.analysis.schedule.EveryMonthSchedule;
+import org.fastcatgroup.analytics.analysis.schedule.EveryWeekSchedule;
+import org.fastcatgroup.analytics.analysis.schedule.EveryYearSchedule;
 import org.fastcatgroup.analytics.analysis.schedule.FixedSchedule;
 import org.fastcatgroup.analytics.analysis.schedule.Schedule;
 import org.fastcatgroup.analytics.analysis.schedule.ScheduledTaskRunner;
 import org.fastcatgroup.analytics.analysis.task.DailySearchLogAnalysisTask;
 import org.fastcatgroup.analytics.analysis.task.RealtimeSearchLogAnalysisTask;
+import org.fastcatgroup.analytics.analysis.task.RelateSearchLogAnalysisTask;
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
 import org.fastcatgroup.analytics.control.JobService;
 import org.fastcatgroup.analytics.db.vo.PopularKeywordVO.RankDiffType;
@@ -28,8 +31,9 @@ import org.fastcatgroup.analytics.module.ModuleException;
 public class SiteSearchLogStatisticsModule extends AbstractModule {
 	File fileHome;
 	String siteId;
-	ScheduledTaskRunner<SearchLog> realtimeTaskRunner;
-	ScheduledTaskRunner<SearchLog> dailyTaskRunner;
+	ScheduledTaskRunner realtimeTaskRunner;
+	ScheduledTaskRunner dailyTaskRunner;
+	ScheduledTaskRunner relateTaskRunner;
 	RollingRawLogger realtimeRawLogger;
 	DailyRawLogger dailyRawLogger;
 	StatisticsService statisticsService;
@@ -85,36 +89,45 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		/*
 		 * 실시간 인기검색어.
 		 */
-		realtimeTaskRunner = new ScheduledTaskRunner<SearchLog>("rt-search-log-task-runner", JobService.getInstance(), environment);
+		realtimeTaskRunner = new ScheduledTaskRunner("rt-search-log-task-runner", JobService.getInstance(), environment);
 		int periodInSeconds = 300;
+		periodInSeconds = 60;//1분.
 		Schedule realtimeSchedule = new FixedSchedule(cal, periodInSeconds, delayInSeconds);
 		RealtimeSearchLogAnalysisTask realtimeTask = new RealtimeSearchLogAnalysisTask(siteId, categoryIdList, realtimeSchedule, 0, realtimeRawLogger);
 		realtimeTaskRunner.addTask(realtimeTask);
 		realtimeTaskRunner.start();
 
+
+		/*
+		 * 연관검색어 
+		 * */
+		relateTaskRunner = new ScheduledTaskRunner("daily-search-log-task-runner", JobService.getInstance(), environment);
+//		Schedule relateSchedule = new EveryDaySchedule(0, delayInSeconds); //매일 0시.
+		Schedule relateSchedule = new FixedSchedule(cal, 10, delayInSeconds);
+		RelateSearchLogAnalysisTask relateSearchLogAnalysisTask = new RelateSearchLogAnalysisTask(siteId, categoryIdList, relateSchedule, 1);
+		relateTaskRunner.addTask(relateSearchLogAnalysisTask);
+		relateTaskRunner.start();
+		
 		/*
 		 * 일별 통계 인기검색어. 일,주,월,년
 		 */
-		dailyTaskRunner = new ScheduledTaskRunner<SearchLog>("daily-search-log-task-runner", JobService.getInstance(), environment);
-
+		dailyTaskRunner = new ScheduledTaskRunner("daily-search-log-task-runner", JobService.getInstance(), environment);
 		// 일
 		Schedule dailySchedule = new EveryDaySchedule(0, delayInSeconds); //매일 0시.
-		
 		DailySearchLogAnalysisTask dailySearchLogAnalysisTask = new DailySearchLogAnalysisTask(siteId, categoryIdList, dailySchedule, 1);
 		dailyTaskRunner.addTask(dailySearchLogAnalysisTask);
 		
-		
 		// 주
-		// Schedule weeklySchedule = new FixedSchedule(cal, periodInSeconds, delayInSeconds);
-		// AnalysisTask<SearchLog> weeklyTask = makeAnalysisTask(weeklySchedule, realtimeKeywordBaseDir, logFileName, encoding);
+		 Schedule weeklySchedule = new EveryWeekSchedule(0, 0, delayInSeconds);
+		// AnalysisTask<SearchLog> weeklyTask = WeeklySearchLogAnalysisTask(siteId, categoryIdList, weeklySchedule, 1);
 		// dailyTaskRunner.addTask(weeklyTask);
 		// 월
-		// Schedule monthlySchedule = new FixedSchedule(cal, periodInSeconds, delayInSeconds);
-		// AnalysisTask<SearchLog> monthlyTask = makeAnalysisTask(monthlySchedule, realtimeKeywordBaseDir, logFileName, encoding);
+		 Schedule monthlySchedule = new EveryMonthSchedule(0, 0, delayInSeconds);
+		// AnalysisTask<SearchLog> monthlyTask = MonthlySearchLogAnalysisTask(siteId, categoryIdList, monthlySchedule, 1);
 		// dailyTaskRunner.addTask(monthlyTask);
 		// 년
-		// Schedule yearlySchedule = new FixedSchedule(cal, periodInSeconds, delayInSeconds);
-		// AnalysisTask<SearchLog> yearlyTask = makeAnalysisTask(yearlySchedule, realtimeKeywordBaseDir, logFileName, encoding);
+		 Schedule yearlySchedule = new EveryYearSchedule(12, 0, 0, delayInSeconds);
+		// AnalysisTask<SearchLog> yearlyTask = YearlySearchLogAnalysisTask(siteId, categoryIdList, yearlySchedule, 1);
 		// dailyTaskRunner.addTask(yearlyTask);
 
 		dailyTaskRunner.start();
@@ -126,12 +139,17 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 	protected boolean doUnload() throws ModuleException {
 		realtimeTaskRunner.cancel();
 		dailyTaskRunner.cancel();
+		relateTaskRunner.cancel();
 		try {
 			realtimeTaskRunner.join();
 		} catch (InterruptedException e) {
 		}
 		try {
 			dailyTaskRunner.join();
+		} catch (InterruptedException e) {
+		}
+		try {
+			relateTaskRunner.join();
 		} catch (InterruptedException e) {
 		}
 		return true;

@@ -17,8 +17,9 @@ public class RealtimePopularKeywordTaskTest {
 	@Test
 	public void test() throws InterruptedException {
 
+		
 		String encoding = "utf-8";
-		ScheduledTaskRunner<SearchLog> taskRunner = new ScheduledTaskRunner<SearchLog>("test", new TestJobExecutor(), new Environment("."));
+		ScheduledTaskRunner taskRunner = new ScheduledTaskRunner("test", new TestJobExecutor(), new Environment("."));
 		File f = new File("/Users/swsong/tmp/test.log");
 		Schedule schedule = new FixedSchedule(Calendar.getInstance(), 3, 1);
 		AnalysisTask<SearchLog> task = null;

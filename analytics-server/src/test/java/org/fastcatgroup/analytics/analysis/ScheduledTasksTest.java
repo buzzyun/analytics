@@ -18,7 +18,7 @@ public class ScheduledTasksTest {
 	@Test
 	public void test() throws IOException, InterruptedException {
 		
-		ScheduledTaskRunner<SearchLog> taskRunner = new ScheduledTaskRunner<SearchLog>("test", new TestJobExecutor(), new Environment("."));
+		ScheduledTaskRunner taskRunner = new ScheduledTaskRunner("test", new TestJobExecutor(), new Environment("."));
 		File f = new File("/Users/swsong/tmp/test.log");
 		Schedule schedule = new FixedSchedule(Calendar.getInstance(), 2, 1);
 		AnalysisTask<SearchLog> task = null;
@@ -32,7 +32,7 @@ public class ScheduledTasksTest {
 	@Test
 	public void testWithCalculator() throws IOException, InterruptedException {
 		
-		ScheduledTaskRunner<SearchLog> taskRunner = new ScheduledTaskRunner<SearchLog>("test", new TestJobExecutor(), new Environment("."));
+		ScheduledTaskRunner taskRunner = new ScheduledTaskRunner("test", new TestJobExecutor(), new Environment("."));
 		File f = new File("/Users/swsong/tmp/test.log");
 		Schedule schedule = new FixedSchedule(Calendar.getInstance(), 2, 1);
 		AnalysisTask<SearchLog> task = null;

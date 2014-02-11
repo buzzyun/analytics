@@ -85,13 +85,13 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		List<String> categoryIdList = new ArrayList<String>();
 		categoryIdList.add("_root");
 		categoryIdList.add("cat1");
-		categoryIdList.add("cat2");
+//		categoryIdList.add("cat2");
 		/*
 		 * 실시간 인기검색어.
 		 */
 		realtimeTaskRunner = new ScheduledTaskRunner("rt-search-log-task-runner", JobService.getInstance(), environment);
 		int periodInSeconds = 300;
-		periodInSeconds = 60;//1분.
+//		periodInSeconds = 60;//1분.
 		Schedule realtimeSchedule = new FixedSchedule(cal, periodInSeconds, delayInSeconds);
 		RealtimeSearchLogAnalysisTask realtimeTask = new RealtimeSearchLogAnalysisTask(siteId, categoryIdList, realtimeSchedule, 0, realtimeRawLogger);
 		realtimeTaskRunner.addTask(realtimeTask);
@@ -102,8 +102,8 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		 * 연관검색어 
 		 * */
 		relateTaskRunner = new ScheduledTaskRunner("daily-search-log-task-runner", JobService.getInstance(), environment);
-//		Schedule relateSchedule = new EveryDaySchedule(0, delayInSeconds); //매일 0시.
-		Schedule relateSchedule = new FixedSchedule(cal, 10, delayInSeconds);
+		Schedule relateSchedule = new EveryDaySchedule(0, delayInSeconds); //매일 0시.
+//		Schedule relateSchedule = new FixedSchedule(cal, 10, delayInSeconds);
 		RelateSearchLogAnalysisTask relateSearchLogAnalysisTask = new RelateSearchLogAnalysisTask(siteId, categoryIdList, relateSchedule, 1);
 		relateTaskRunner.addTask(relateSearchLogAnalysisTask);
 		relateTaskRunner.start();

@@ -3,7 +3,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<c:set var="ROOT_PATH" value=".." />
+<c:set var="ROOT_PATH" value="../.." />
 
 <c:import url="${ROOT_PATH}/inc/common.jsp" />
 <html>
@@ -16,7 +16,10 @@
 	<c:import url="${ROOT_PATH}/inc/mainMenu.jsp" />
 
 	<div id="container">
-		<c:import url="${ROOT_PATH}/report/sideMenu.jsp" />
+		<c:import url="${ROOT_PATH}/report/sideMenu.jsp">
+			<c:param name="lcat" value="ctr" />
+			<c:param name="mcat" value="keyword" />
+		</c:import>
 		<div id="content">
 			<div class="container">
 				<!-- Breadcrumbs line -->

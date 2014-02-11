@@ -9,7 +9,7 @@ public class ScheduleTest {
 
 	@Test
 	public void dailyTest() {
-		int timeInDay = 1;
+		int timeInDay = 0;
 		int delayInSeconds = 5;
 		Schedule dailySchedule = new EveryDaySchedule(timeInDay, delayInSeconds); 
 		
@@ -28,10 +28,10 @@ public class ScheduleTest {
 		int timeInDay = 0;
 		int hour = 22;
 		Calendar now = Calendar.getInstance();
-		now.set(Calendar.HOUR, hour);
+		now.set(Calendar.HOUR_OF_DAY, hour);
 		
 		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.HOUR, timeInDay);
+		calendar.set(Calendar.HOUR_OF_DAY, timeInDay);
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);
 		calendar.set(Calendar.MILLISECOND, 0);

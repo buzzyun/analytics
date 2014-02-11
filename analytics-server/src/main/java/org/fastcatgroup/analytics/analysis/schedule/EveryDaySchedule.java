@@ -16,8 +16,8 @@ public class EveryDaySchedule extends Schedule {
 	@Override
 	public void updateSchduleTime() {
 		Calendar calendar = Calendar.getInstance();
-		int hour = calendar.get(Calendar.HOUR);
-		calendar.set(Calendar.HOUR, timeInDay);
+		int hour = calendar.get(Calendar.HOUR_OF_DAY);
+		calendar.set(Calendar.HOUR_OF_DAY, timeInDay);
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);
 		calendar.set(Calendar.MILLISECOND, 0);

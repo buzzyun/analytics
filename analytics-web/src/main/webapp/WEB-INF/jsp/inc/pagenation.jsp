@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 <%
 	int pageNo = Integer.parseInt(request.getParameter("pageNo"));
 	int totalSize = Integer.parseInt(request.getParameter("totalSize"));
@@ -9,7 +9,7 @@
 	String requestURI = request.getParameter("requestURI");
 %>
 
-    
+	
 <ul class="pagination">
 
 
@@ -28,16 +28,16 @@ if(totalSize > 0){
 	int nextPage = ((pageNo - 1) / width  + 1) * width + 1;
 	
 	if(pageNo > width){
-	    %><li><a href="javascript:<%=callback%>('<%=requestURI%>', 1)">&laquo;</a></li><%
+		%><li><a href="javascript:<%=callback%>('<%=requestURI%>', 1)">&laquo;</a></li><%
 	}else{
 		%><li class='disabled'><a>&laquo;</a></li><%
 	}
 	
-    if(prevStart > 0){
-    	%><li><a href="javascript:<%=callback%>('<%=requestURI%>', <%=prevStart %>)">&lsaquo;</a></li><%
-    }else{
-    	%><li class='disabled'><a>&lsaquo;</a></li><%
-    }
+	if(prevStart > 0){
+		%><li><a href="javascript:<%=callback%>('<%=requestURI%>', <%=prevStart %>)">&lsaquo;</a></li><%
+	}else{
+		%><li class='disabled'><a>&lsaquo;</a></li><%
+	}
 	
 	for(int c = counterStart; c < counterEnd; c++){
 		if(c <= maxPage){

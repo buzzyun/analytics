@@ -289,18 +289,18 @@ function stopPollingAllTaskStateForTaskBar(){
 
 
 
-/////////////////// dictionary
-function loadDictionaryTab(dictionaryType, dictionaryId, pageNo, keyword, searchColumn, exactMatch, isEditable, targetId, deleteIdList){
-	console.log("loadDictionaryTab", dictionaryType, dictionaryId, pageNo, escape(keyword), searchColumn, exactMatch, isEditable, targetId, deleteIdList);
-	loadToTab(dictionaryType + '/list.html', {dictionaryId: dictionaryId, pageNo: pageNo, keyword: keyword, searchColumn: searchColumn, exactMatch: exactMatch, isEditable: isEditable, targetId: targetId, deleteIdList: deleteIdList}, targetId);
+/////////////////// keyword
+function loadKeywordTab(keywordType, keywordId, pageNo, keyword, searchColumn, exactMatch, isEditable, targetId, deleteIdList){
+	console.log("loadKeywordTab", keywordType, keywordId, pageNo, escape(keyword), searchColumn, exactMatch, isEditable, targetId, deleteIdList);
+	loadToTab(keywordType + '/list.html', {keywordId: keywordId, pageNo: pageNo, keyword: keyword, searchColumn: searchColumn, exactMatch: exactMatch, isEditable: isEditable, targetId: targetId, deleteIdList: deleteIdList}, targetId);
 }
 
 
-function truncateDictionary(analysisId, dictionaryId, callback){
+function truncateKeyword(analysisId, keywordId, callback){
 	requestProxy("POST", { 
-		uri: '/management/dictionary/truncate.json',
+		uri: '/management/keyword/truncate.json',
 		pluginId: analysisId,
-		dictionaryId: dictionaryId
+		keywordId: keywordId
 	},
 	"json",
 	function(response) {
@@ -348,31 +348,31 @@ function checkableTable(tableId) {
 }
 
 
-function downloadDictionary(dictionaryType, dictionaryId){
-	//location.href = dictionaryType+"/download.html?dictionaryId="+dictionaryId;
-	console.log("dictionaryId" , dictionaryId);
-	submitGet(dictionaryType+"/download.html", {dictionaryId : dictionaryId});
+function downloadKeyword(keywordType, keywordId){
+	//location.href = keywordType+"/download.html?keywordId="+keywordId;
+	console.log("keywordId" , keywordId);
+	submitGet(keywordType+"/download.html", {keywordId : keywordId});
 }
 
 
-function applySelectDictionary(analysisId){
+function applySelectKeyword(analysisId){
 	var idList = new Array();
-	$("._table_dictionary_list").find('tr.checked').each(function() {
+	$("._table_keyword_list").find('tr.checked').each(function() {
 		var id = $(this).find("td input[name=ID]").val();
 		idList.push(id);
 	});
 	if(idList.length == 0){
-		alert("Please select dictionary.");
+		alert("Please select keyword.");
 		return;
 	}
 	
-	var dictionaryIdList = idList.join(",");
+	var keywordIdList = idList.join(",");
 	
-	if(!confirm("Apply selected ["+dictionaryIdList+"] "+idList.length+" dictionary?")){
+	if(!confirm("Apply selected ["+keywordIdList+"] "+idList.length+" keyword?")){
 		return;	
 	}
-	//applyDictionary("${analysisId }", dictionaryIdList);
-	console.log("apply dict ", analysisId, dictionaryIdList);
+	//applykeyword("${analysisId }", keywordIdList);
+	console.log("apply dict ", analysisId, keywordIdList);
 	
 	showModalSpinner();
 	
@@ -380,19 +380,19 @@ function applySelectDictionary(analysisId){
 		url : PROXY_REQUEST_URI,
 		type : "POST",
 		data : {
-			uri : "/management/dictionary/apply.json",
+			uri : "/management/keyword/apply.json",
 			pluginId : analysisId,
-			dictionaryId: dictionaryIdList
+			keywordId: keywordIdList
 		},
 		dataType : "json"
 
 	}).success(function(msg) {
 		console.log(msg);
-		noty({text: "Dictionary apply success", type: "success", layout:"topRight", timeout: 3000});
+		noty({text: "Keyword apply success", type: "success", layout:"topRight", timeout: 3000});
 	}).fail(function(jqXHR, textStatus, error) {
-		noty({text: "Dictionary apply error.", type: "error", layout:"topRight", timeout: 3000});
+		noty({text: "Keyword apply error.", type: "error", layout:"topRight", timeout: 3000});
 	}).done(function(){
-		loadToTab("overview.html", null, "#tab_dictionary_overview");
+		loadToTab("overview.html", null, "#tab_keyword_overview");
 		hideModalSpinner();
 	});
 }

@@ -16,7 +16,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.fastcatgroup.analytics.analysis.StatisticsService;
+import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig;
+import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.CategoryConfig;
+import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig;
 import org.fastcatgroup.analytics.db.mapper.AnalyticsMapper;
+import org.fastcatgroup.analytics.db.mapper.RelateKeywordMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchHitMapper;
 import org.fastcatgroup.analytics.env.Environment;
 import org.fastcatgroup.analytics.env.Settings;
@@ -27,7 +32,10 @@ public class AnalyticsDBService extends AbstractDBService {
 
 	protected static AnalyticsDBService instance;
 
-	private static Class<?>[] mapperList = new Class<?>[] { SearchHitMapper.class };
+	private static Class<?>[] mapperList = new Class<?>[] { 
+		SearchHitMapper.class
+		,RelateKeywordMapper.class
+		};
 
 	public AnalyticsDBService(Environment environment, Settings settings, ServiceManager serviceManager) {
 		super(environment, settings, serviceManager);
@@ -35,6 +43,7 @@ public class AnalyticsDBService extends AbstractDBService {
 
 	@Override
 	protected boolean doStart() throws AnalyticsException {
+
 		Properties driverProperties = null;
 		Map<String, Object> globalParam = null;
 		init(settings, mapperList, driverProperties, globalParam);
@@ -63,16 +72,18 @@ public class AnalyticsDBService extends AbstractDBService {
 	@Override
 	protected void initMapper(Class<?>[] mapperList) throws AnalyticsException {
 
-		List<String> siteList = new ArrayList<String>();
-		List<String> categoryList = new ArrayList<String>();
+		SiteCategoryListConfig config = ServiceManager.getInstance().getService(StatisticsService.class).getSiteCategoryListConfig();
+		List<SiteCategoryConfig> siteCategoryConfig = config.getList();
 
 		for (Class<?> mapperDAO : mapperList) {
 			Class<? extends AnalyticsMapper> clazz = (Class<? extends AnalyticsMapper>) mapperDAO;
 			MapperSession<? extends AnalyticsMapper> mapperSession = (MapperSession<? extends AnalyticsMapper>) getMapperSession(clazz);
 			AnalyticsMapper managedMapper = mapperSession.getMapper();
-
-			for (String site : siteList) {
-				for (String category : categoryList) {
+			for (SiteCategoryConfig siteConfig : siteCategoryConfig) {
+				List<CategoryConfig> categoryConfigList = siteConfig.getCategoryList();
+				for (CategoryConfig categoryConfig : categoryConfigList) {
+					String site = siteConfig.getSiteId();
+					String category = categoryConfig.getId();
 					try {
 						logger.debug("valiadte {}", clazz.getSimpleName());
 						managedMapper.validateTable(site, category);

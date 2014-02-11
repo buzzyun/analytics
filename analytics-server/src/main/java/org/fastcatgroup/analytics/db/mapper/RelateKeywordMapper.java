@@ -8,7 +8,7 @@ import org.fastcatgroup.analytics.db.vo.RelateKeywordVO;
 /*
  * 연관키워드 테이블.
  * */
-public interface RelateKeywordMapper extends ManagedMapper {
+public interface RelateKeywordMapper extends AnalyticsMapper {
 	
 	public RelateKeywordVO getEntry(@Param("category") String category, @Param("keyword") String keyword) throws Exception;
 	

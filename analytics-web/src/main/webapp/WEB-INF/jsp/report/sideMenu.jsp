@@ -25,14 +25,14 @@
 			</a>
 			</li>
 			<%
-				lcatCurrent = "management".equals(lcat);
+				lcatCurrent = "report".equals(lcat);
 			%>
 			<li class="<%=lcatCurrent ? "current" :"" %>"><a href="javascript:void(0);"> <i
 					class="icon-bar-chart"></i> 검색어관리
 			</a>
 				<ul class="sub-menu">
 					<li class="<%=(lcatCurrent && "relateKeyword".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/report/keyword/relateKeywordList.html"/>">
+						href="<c:url value="/report/keyword/relate/index.html"/>">
 							<i class="icon-angle-right"></i> 연관검색어
 					</a></li> 
 				</ul>

@@ -30,8 +30,6 @@ public class RelateSearchLogAnalysisTask extends AnalysisTask<RelateSearchLog> {
 		// baseDir : statistics/search/date/Y####/M##/D##/data/{siteId} 경로
 		File dir = environment.filePaths().getStatisticsRoot().file("search", "date");
 		Calendar calendar = Calendar.getInstance();
-		Calendar prevCalendar = Calendar.getInstance();
-		prevCalendar.add(Calendar.DAY_OF_MONTH, -1);
 		File baseDir = new File(SearchStatisticsProperties.getDayDataDir(dir, calendar), siteId);
 		Set<String> banWords = null;
 		int minimumHitCount = 1;

@@ -14,6 +14,14 @@ public class RelateKeywordVO {
 	public RelateKeywordVO(){
 	}
 
+	public RelateKeywordVO(String category, String keyword, String value, Timestamp updateTime){
+		this.category = category;
+		this.keyword = keyword;
+		this.value = value;
+		this.updateTime = updateTime;
+	}
+	
+	
 	public int getId() {
 		return id;
 	}

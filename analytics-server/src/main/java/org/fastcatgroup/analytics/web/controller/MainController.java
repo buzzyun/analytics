@@ -44,26 +44,7 @@ public class MainController extends AbstractController {
 			return mav;
 		}
 
-		ResponseHttpClient httpClient = new ResponseHttpClient(host);
-		JSONObject loginResult = httpClient.httpPost("/management/login").addParameter("id", userId).addParameter("password", password)
-				.requestJSON();
-		logger.debug("loginResult > {}", loginResult);
-		if (loginResult != null && loginResult.getInt("status") == 0) {
-			// 로그인이 올바를 경우 메인 화면으로 이동한다.
-			
-			ModelAndView mav = new ModelAndView();
-			if(redirect != null && redirect.length() > 0){
-				mav.setViewName("redirect:"+redirect);
-			}else{
-				// 로그인되었다면 바로 start.html로 간다.
-				mav.setViewName("redirect:main/start.html");	
-			}
-			
-			String userName = loginResult.getString("name");
-			session.setAttribute(USERNAME_ID, userName);
-			session.setAttribute(HTTPCLIENT_ID, httpClient);
-			return mav;
-		}
+		//TODO
 
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("login");
@@ -126,9 +107,9 @@ public class MainController extends AbstractController {
 		
 		AbstractMethod abstractMethod = null;
 		if (request.getMethod().equalsIgnoreCase("GET")) {
-			abstractMethod = httpGet(request.getSession(), uri);
+//			abstractMethod = httpGet(request.getSession(), uri);
 		}else if (request.getMethod().equalsIgnoreCase("POST")) {
-			abstractMethod = httpPost(request.getSession(), uri);
+//			abstractMethod = httpPost(request.getSession(), uri);
 		}else{
 			//error
 			logger.error("Unknown http method >> {}", request.getMethod());

@@ -1,10 +1,11 @@
 package org.fastcatgroup.analytics.web.controller;
 
-import javax.servlet.http.HttpSession;
+import java.util.List;
 
-import org.fastcatgroup.analytics.web.http.ResponseHttpClient;
-import org.fastcatgroup.analytics.web.http.ResponseHttpClient.GetMethod;
-import org.fastcatgroup.analytics.web.http.ResponseHttpClient.PostMethod;
+import org.fastcatgroup.analytics.analysis.StatisticsService;
+import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig;
+import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig;
+import org.fastcatgroup.analytics.service.ServiceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,8 +15,6 @@ public class AbstractController {
 	
 	protected static Logger logger = LoggerFactory.getLogger(AbstractController.class);
 	
-	protected static final String HTTPCLIENT_ID = "httpclient";
-	protected static final String USERNAME_ID = "_username";
 	/*
 	 * exception페이지로 이동한다.
 	 * */
@@ -28,13 +27,15 @@ public class AbstractController {
  
 	}
 	
-	protected PostMethod httpPost(HttpSession session, String uri) {
-		ResponseHttpClient httpClient = (ResponseHttpClient) session.getAttribute(HTTPCLIENT_ID);
-		return httpClient.httpPost(uri);
+	protected StatisticsService getStatisticsService(){
+		return ServiceManager.getInstance().getService(StatisticsService.class);
+	}
+	protected List<SiteCategoryConfig> getSiteCategoryListConfig(){
+		StatisticsService statisticsService = ServiceManager.getInstance().getService(StatisticsService.class);
+		SiteCategoryListConfig config = statisticsService.getSiteCategoryListConfig();
+		return config.getList();
 	}
 	
-	protected GetMethod httpGet(HttpSession session, String uri) {
-		ResponseHttpClient httpClient = (ResponseHttpClient) session.getAttribute(HTTPCLIENT_ID);
-		return httpClient.httpGet(uri);
-	}
+	
+	
 }

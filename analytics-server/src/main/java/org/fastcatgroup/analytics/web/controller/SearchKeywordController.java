@@ -41,11 +41,7 @@ public class SearchKeywordController extends AbstractController {
 //		logger.debug("deleteIdList >> {}", deleteIdList);
 		if(deleteIdList != null && deleteIdList.length() > 0){
 			String requestUrl = "/management/dictionary/delete.json";
-			jsonObj = httpPost(session, requestUrl)
-					.addParameter("pluginId", analysisId)
-					.addParameter("dictionaryId", dictionaryId)
-					.addParameter("deleteIdList", deleteIdList)
-					.requestJSON();
+			
 			
 			deletedSize = jsonObj.getInt("result");
 		}
@@ -72,14 +68,7 @@ public class SearchKeywordController extends AbstractController {
 		if(searchColumn.equals("_ALL")){
 			searchColumn = null;
 		}
-		jsonObj = httpPost(session, requestUrl)
-				.addParameter("pluginId", analysisId)
-				.addParameter("dictionaryId", dictionaryId)
-				.addParameter("start", String.valueOf(start))
-				.addParameter("length", String.valueOf(PAGE_SIZE))
-				.addParameter("search", searchKeyword)
-				.addParameter("searchColumns", searchColumn)
-				.requestJSON();
+		////
 		
 		ModelAndView mav = new ModelAndView();
 		dictionaryPrefix = dictionaryPrefix.toLowerCase();
@@ -136,19 +125,6 @@ public class SearchKeywordController extends AbstractController {
 					start = (pageNo - 1) * PAGE_SIZE + 1;
 				}
 				
-				try {
-					jsonObj = httpPost(session, requestUrl)
-							.addParameter("pluginId", analysisId)
-							.addParameter("dictionaryId", dictionaryId)
-							.addParameter("start", String.valueOf(start))
-							.addParameter("length", String.valueOf(PAGE_SIZE))
-							.addParameter("sortAsc", "true") //다운로드시에는 역순이 아닌 id 1번 부터 순서대로 파일에 기록해준다.
-							.requestJSON();
-				} catch (Exception e) {
-					logger.error("", e);
-					throw new IOException(e);
-				}
-			
 				JSONArray columnList = jsonObj.getJSONArray("columnList");
 				JSONArray array = jsonObj.getJSONArray(dictionaryId);
 				int readSize = array.length();
@@ -200,94 +176,7 @@ public class SearchKeywordController extends AbstractController {
 		String errorMessage = null;
 		int totalCount = 0;
 		
-		if(fileName != null){
-			
-			MultipartFile multipartFile = request.getFile(fileName);
-			logger.debug("uploaded {}", multipartFile.getOriginalFilename());
-			
-			BufferedReader reader = null;
-			
-			try {
-				// just temporary save file info into ufile
-				logger.debug("len {}", multipartFile.getBytes().length);
-				logger.debug("getBytes {}", new String(multipartFile.getBytes()));
-				logger.debug("getContentType {}", multipartFile.getContentType());
-				logger.debug("getOriginalFilename {}", multipartFile.getOriginalFilename());
-	
-				String contentType = multipartFile.getContentType();
-				
-				if(!contentType.contains("text")){
-					
-					isSuccess = false;
-					errorMessage = "File must be plain text.";
-				}else{
-			
-					String requestUrl = "/management/dictionary/bulkPut.json";
-					
-					int bulkSize = 100;
-					
-					reader = new BufferedReader(new InputStreamReader(multipartFile.getInputStream()));
-					
-					StringBuilder list = new StringBuilder();
-					int count = 0;
-					
-					String line = null;
-					do {
-						while((line = reader.readLine()) != null){
-							if(list.length() > 0){
-								list.append("\n");
-							}
-							list.append(line);
-							count++;
-							if(count == bulkSize){
-								break;
-							}
-						}
-						
-						if(count > 0){
-							try {
-								JSONObject jsonObj = httpPost(session, requestUrl)
-										.addParameter("pluginId", analysisId)
-										.addParameter("dictionaryId", dictionaryId)
-										.addParameter("entryList", list.toString())
-										.requestJSON();
-								
-								list = new StringBuilder();
-								
-								if(!jsonObj.getBoolean("success")){
-									throw new IOException(jsonObj.getString("errorMessage"));
-								}
-								
-								totalCount += jsonObj.getInt("count");
-								//초기화.
-								count = 0;
-							} catch (Exception e) {
-								throw new IOException(e);
-							}
-						}
-						
-					} while(line != null);
-					
-				}
-				
-				isSuccess = true;
-				
-			} catch (IOException e) {
-				isSuccess = false;
-				errorMessage = e.getMessage();
-			} finally {
-				if(reader != null){
-					try {
-						reader.close();
-					} catch (IOException ignore) {
-					}
-				}
-			}
-			
-		}else{
-			isSuccess = false;
-			errorMessage = "Filename is empty.";
-		}
+		
 		
 		try{
 			Writer writer = response.getWriter();

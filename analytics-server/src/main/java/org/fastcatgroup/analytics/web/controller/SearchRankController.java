@@ -16,15 +16,6 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/report/rank")
 public class SearchRankController extends AbstractController {
 
-	private StatisticsService getStatisticsService(){
-		return ServiceManager.getInstance().getService(StatisticsService.class);
-	}
-	private List<SiteCategoryConfig> getSiteCategoryListConfig(){
-		StatisticsService statisticsService = ServiceManager.getInstance().getService(StatisticsService.class);
-		SiteCategoryListConfig config = statisticsService.getSiteCategoryListConfig();
-		return config.getList();
-	}
-	
 	@RequestMapping("/realtimeSearchKeyword")
 	public ModelAndView realtimeSearchKeyword(@RequestParam(required=false) String siteId, @RequestParam(required=false) String categoryId) {
 		ModelAndView mav = new ModelAndView();

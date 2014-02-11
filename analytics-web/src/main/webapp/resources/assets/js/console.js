@@ -568,3 +568,75 @@ function operateCollection(collectionId, command){
 			});
 	}
 }
+
+
+
+///////////////////// category select list
+function triggerSiteCategoryList(siteObject, categoryOject, defaultSiteId, defaultCategoryId){
+	
+	$.ajax({
+		url : CONTEXT+"/report/siteList.html",
+		type: "POST",
+		dataType : "json",
+		success:function(data, textStatus, jqXHR) {
+			try {
+				siteObject.children().remove();
+				
+				siteObject.append("<option value='_root' "+(defaultSiteId == "_root" ? "selected" : "")+">전체</option>");
+				$.each(data, function() {
+			        $.each(this, function(k, v) {
+			        	siteObject.append("<option value='"+k+"' "+(defaultSiteId == k ? "selected" : "")+">"+v+"</option>");
+			        });
+			    });
+				fillCategoryList(defaultSiteId, categoryOject, defaultCategoryId);
+			} catch (e) { 
+				alert("error occured for update");
+			}
+			
+		}, error: function(jqXHR, textStatus, errorThrown) {
+			alert("ERROR" + textStatus + " : " + errorThrown);
+		}
+	});
+	
+	siteObject.on("change", function(){
+		var siteId = $(this).find(':selected').attr('value');
+		fillCategoryList(siteId, categoryOject, defaultCategoryId);
+	});
+
+
+}
+
+function fillCategoryList(siteId, categoryOject, defaultCategoryId){
+	
+	if(siteId == "_root"){
+		categoryOject.children().remove();
+		categoryOject.attr('disabled','disabled');
+		return;
+	}
+	$.ajax({
+		url : CONTEXT+"/report/categoryList.html",
+		type: "POST",
+		data: { siteId: siteId },
+		dataType : "json",
+		success:function(data, textStatus, jqXHR) {
+			try {
+				categoryOject.children().remove();
+				if(data.length > 0){
+					$.each(data, function() {
+				        $.each(this, function(k, v) {
+				        	categoryOject.append("<option value='"+k+"' "+(defaultCategoryId == k ? "selected" : "")+">"+v+"</option>");
+				        });
+				    });
+					categoryOject.attr('disabled', false);
+				}else{
+					categoryOject.attr('disabled', true);
+				}
+			} catch (e) { 
+				alert("error occured for update");
+			}
+			
+		}, error: function(jqXHR, textStatus, errorThrown) {
+			alert("ERROR" + textStatus + " : " + errorThrown);
+		}
+	});
+}

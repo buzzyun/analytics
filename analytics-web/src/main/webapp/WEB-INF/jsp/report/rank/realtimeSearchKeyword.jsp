@@ -7,6 +7,8 @@
 <%
 List<SiteCategoryConfig> siteCategoryList = (List<SiteCategoryConfig>) request.getAttribute("siteCategoryList");
 List<RankKeyword> rankList = (List<RankKeyword>) request.getAttribute("rankList");
+String siteId = request.getParameter("siteId");
+String categoryId = request.getParameter("categoryId");
 %>
 <c:set var="ROOT_PATH" value="../.." />
 
@@ -14,7 +16,14 @@ List<RankKeyword> rankList = (List<RankKeyword>) request.getAttribute("rankList"
 <html>
 <head>
 <c:import url="${ROOT_PATH}/inc/header.jsp" />
+<script>
+$(document).ready(function(){
+	
+	triggerSiteCategoryList($("#select_site"), $("#select_category"), '<%=siteId %>', '<%=categoryId %>');
+	
+});
 
+</script>
 </head>
 <body>
 	<c:import url="${ROOT_PATH}/inc/mainMenu.jsp" />
@@ -55,20 +64,11 @@ List<RankKeyword> rankList = (List<RankKeyword>) request.getAttribute("rankList"
 					<!-- .row-bg -->
 					
 					<div class="col-md-12">
-						<form class="form-inline" role="form">
-							<select class="select_flat select_flat-sm">
-								<option>:: SITE ::</option>
-								<%
-								for(SiteCategoryConfig siteCategoryConfig : siteCategoryList){
-								%>
-								<option value="<%=siteCategoryConfig.getSiteId() %>"><%=siteCategoryConfig.getSiteName() %></option>
-								<%
-								}
-								%>
-							</select> 
-							<select class="select_flat select_flat-sm fcol2">
-								<option>:: CATEGORY ::</option>
-							</select> 
+						<form class="form-inline" role="form" method="post" >
+							<select id="select_site" class="select_flat select_flat-sm" name="siteId"></select> 
+							<select id="select_category" class="select_flat select_flat-sm fcol2" name="categoryId"></select> 
+							
+							<input type="submit" class="btn btn-sm btn-primary" value="Submit">
 						</form>
 					</div>
 				</div>

@@ -10,6 +10,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.bind.JAXBException;
 
+import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig;
+import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.CategoryConfig;
+import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig;
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
 import org.fastcatgroup.analytics.env.Environment;
 import org.fastcatgroup.analytics.env.SettingFileNames;
@@ -18,7 +21,6 @@ import org.fastcatgroup.analytics.exception.AnalyticsException;
 import org.fastcatgroup.analytics.service.AbstractService;
 import org.fastcatgroup.analytics.service.ServiceManager;
 import org.fastcatgroup.analytics.settings.StatisticsSettings;
-import org.fastcatgroup.analytics.settings.StatisticsSettings.Category;
 import org.fastcatgroup.analytics.util.JAXBConfigs;
 
 /**
@@ -34,29 +36,48 @@ public class StatisticsService extends AbstractService {
 
 	private Map<String, SiteSearchLogStatisticsModule> siteStatisticsModuleMap;
 	
-	List<String> siteIdList;
-	
+	private SiteCategoryListConfig siteCategoryListConfig;
 	
 	public StatisticsService(Environment environment, Settings settings, ServiceManager serviceManager) {
 		super(environment, settings, serviceManager);
 		statisticsHome = environment.filePaths().getStatisticsRoot().file("search");
-		statisticsHome.mkdir();
+		if(!statisticsHome.exists()){
+			statisticsHome.mkdir();
+		}
 
 		realtimePopularKeywordMap = new ConcurrentHashMap<String, Map<String, List<RankKeyword>>>();
 
 		siteStatisticsModuleMap = new ConcurrentHashMap<String, SiteSearchLogStatisticsModule>();
 		
-		siteIdList = new ArrayList<String>();
-		siteIdList.add("total");
-//		siteIdList.add("mobile");
+		// 로드 siteCategoryConfig
+		File siteCategoryConfigFile = new File(statisticsHome, "site-category.xml");
+		try {
+			siteCategoryListConfig = JAXBConfigs.readConfig(siteCategoryConfigFile, SiteCategoryListConfig.class);
+		} catch (JAXBException e) {
+			logger.error("", e);
+		}
+		logger.debug("##siteCategoryConfig >> {}", siteCategoryListConfig);
+		List<SiteCategoryConfig> siteCategoryList = siteCategoryListConfig.getList();
 
-		for (String siteId : siteIdList) {
-			SiteSearchLogStatisticsModule module = new SiteSearchLogStatisticsModule(this, statisticsHome, siteId, environment, settings);
+		for (SiteCategoryConfig siteCategoryConfig : siteCategoryList) {
+			
+			String siteId = siteCategoryConfig.getSiteId();
+			List<CategoryConfig> categoryList = siteCategoryConfig.getCategoryList();
+			
+			List<String> categoryIdList = new ArrayList<String>();
+			for(CategoryConfig c : categoryList){
+				categoryIdList.add(c.getId());
+			}
+			
+			SiteSearchLogStatisticsModule module = new SiteSearchLogStatisticsModule(this, statisticsHome, siteId, categoryIdList, environment, settings);
 			siteStatisticsModuleMap.put(siteId, module);
 		}
 
 	}
 
+	public SiteCategoryListConfig getSiteCategoryListConfig(){
+		return siteCategoryListConfig;
+	}
 	/**
 	 * 실시간 인기검색어를 리턴한다.
 	 * */
@@ -102,20 +123,10 @@ public class StatisticsService extends AbstractService {
 		}
 
 		
-		for (String siteId : siteIdList) {
-			SiteSearchLogStatisticsModule module = siteStatisticsModuleMap.get(siteId);
+		for (SiteSearchLogStatisticsModule module : siteStatisticsModuleMap.values()) {
 			module.load();
 		}
 		
-		
-		List<Category> categoryList = statisticsSettings.getCategoryList();
-//		for (Category category : categoryList) {
-//			String categoryId = category.getId();
-//			CategoryStatistics categoryStatistics = new CategoryStatistics(category, statisticsHome);
-//			categoryStatisticsMap.put(categoryId, categoryStatistics);
-//			logger.debug("> {}", category);
-//		}
-
 		return true;
 	}
 
@@ -125,8 +136,7 @@ public class StatisticsService extends AbstractService {
 //			categoryStatistics.close();
 //		}
 		
-		for (String siteId : siteIdList) {
-			SiteSearchLogStatisticsModule module = siteStatisticsModuleMap.get(siteId);
+		for (SiteSearchLogStatisticsModule module : siteStatisticsModuleMap.values()) {
 			module.unload();
 		}
 		return true;

@@ -1,7 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
+<%@page import="org.fastcatgroup.analytics.analysis.vo.*"%>
+<%@page import="org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.*"%>
+<%@page import="java.util.*"%>
+<%
+List<SiteCategoryConfig> siteCategoryList = (List<SiteCategoryConfig>) request.getAttribute("siteCategoryList");
+List<RankKeyword> rankList = (List<RankKeyword>) request.getAttribute("rankList");
+%>
 <c:set var="ROOT_PATH" value="../.." />
 
 <c:import url="${ROOT_PATH}/inc/common.jsp" />
@@ -52,13 +58,16 @@
 						<form class="form-inline" role="form">
 							<select class="select_flat select_flat-sm">
 								<option>:: SITE ::</option>
-								<option>통합검색</option>
-								<option>모바일</option>
+								<%
+								for(SiteCategoryConfig siteCategoryConfig : siteCategoryList){
+								%>
+								<option value="<%=siteCategoryConfig.getSiteId() %>"><%=siteCategoryConfig.getSiteName() %></option>
+								<%
+								}
+								%>
 							</select> 
 							<select class="select_flat select_flat-sm fcol2">
 								<option>:: CATEGORY ::</option>
-								<option>PC</option>
-								<option>가전</option>
 							</select> 
 						</form>
 					</div>
@@ -97,16 +106,18 @@
 										</thead>
 										<tbody>
 											<%
-											for(int i =0;i < 15; i++){
-											%>
-											<tr>
-												<td><%=i+1 %></td>
-												<td>노트북<%=i %></td>
-												<td><%=1000+(50-i*3)%></td>
-												<td>&lt;UP&gt; <%=(20-i)*7 %></td>
-												<td>+100</td>
-											</tr>
-											<%
+											if(rankList != null){
+												for(RankKeyword rankKeyword : rankList){
+												%>
+												<tr>
+													<td><%=rankKeyword.getRank() %></td>
+													<td><%=rankKeyword.getKeyword() %></td>
+													<td><%=rankKeyword.getCount()%></td>
+													<td><%=rankKeyword.getRankDiffType()%> <%=rankKeyword.getRankDiff()%></td>
+													<td><%=rankKeyword.getCountDiff() %></td>
+												</tr>
+												<%
+												}
 											}
 											%>
 										</tbody>

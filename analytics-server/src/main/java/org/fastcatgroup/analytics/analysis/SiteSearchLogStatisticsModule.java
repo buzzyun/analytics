@@ -37,12 +37,14 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 	RollingRawLogger realtimeRawLogger;
 	DailyRawLogger dailyRawLogger;
 	StatisticsService statisticsService;
-
-	public SiteSearchLogStatisticsModule(StatisticsService statisticsService, File fileHome, String siteId, Environment environment, Settings settings) {
+	List<String> categoryIdList;
+	
+	public SiteSearchLogStatisticsModule(StatisticsService statisticsService, File fileHome, String siteId, List<String> categoryIdList, Environment environment, Settings settings) {
 		super(environment, settings);
 		this.statisticsService = statisticsService;
 		this.fileHome = fileHome;
 		this.siteId = siteId;
+		this.categoryIdList = categoryIdList;
 	}
 
 	@Override
@@ -82,16 +84,12 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		
 		int delayInSeconds = 5;
 		
-		List<String> categoryIdList = new ArrayList<String>();
-		categoryIdList.add("_root");
-		categoryIdList.add("cat1");
-//		categoryIdList.add("cat2");
 		/*
 		 * 실시간 인기검색어.
 		 */
 		realtimeTaskRunner = new ScheduledTaskRunner("rt-search-log-task-runner", JobService.getInstance(), environment);
 		int periodInSeconds = 300;
-//		periodInSeconds = 60;//1분.
+		periodInSeconds = 60;//1분.
 		Schedule realtimeSchedule = new FixedSchedule(cal, periodInSeconds, delayInSeconds);
 		RealtimeSearchLogAnalysisTask realtimeTask = new RealtimeSearchLogAnalysisTask(siteId, categoryIdList, realtimeSchedule, 0, realtimeRawLogger);
 		realtimeTaskRunner.addTask(realtimeTask);

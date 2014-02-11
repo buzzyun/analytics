@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<site-category-list>
+    <site-category siteName="통합검색" siteId="total">
+        <category name="카테고리1" id="cat1"/>
+        <category name="카테고리2" id="cat2"/>
+    </site-category>
+</site-category-list>

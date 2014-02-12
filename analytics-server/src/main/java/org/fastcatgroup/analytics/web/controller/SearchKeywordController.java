@@ -102,12 +102,7 @@ public class SearchKeywordController extends AbstractController {
 			.key(keywordId).array();
 			for (RelateKeywordVO vo : entryList) {
 				stringer.object().key("KEYWORD").value(vo.getKeyword()).
-				key("VALUE").array();
-				JSONArray jArray = new JSONArray(vo.getValue());
-				for(int ainx=0;ainx < jArray.length(); ainx++) {
-					stringer.value(jArray.optString(ainx));
-				}
-				stringer.endArray().endObject();
+				key("VALUE").value(vo.getValue()).endObject();
 			}
 			stringer.endArray().endObject();
 			mav.addObject("keywordId", keywordId);

@@ -127,7 +127,9 @@ function go<%=keywordId%>EditablePage(pageNo){
 				%>
 					<tr>
 						<td class="col-md-2"><%=obj.getString("KEYWORD") %></td>
-						<td><%=obj.getString("VALUE") %></td>
+						<td>
+						<%=obj.getString("VALUE") %>
+						</td>
 					</tr>
 					
 				<%

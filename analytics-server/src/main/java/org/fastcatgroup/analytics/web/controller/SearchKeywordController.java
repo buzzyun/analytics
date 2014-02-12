@@ -102,7 +102,6 @@ public class SearchKeywordController extends AbstractController {
 			.key(keywordId).array();
 			for (RelateKeywordVO vo : entryList) {
 				stringer.object().key("KEYWORD").value(vo.getKeyword()).
-				
 				key("VALUE").value(vo.getValue()).endObject();
 			}
 			stringer.endArray().endObject();

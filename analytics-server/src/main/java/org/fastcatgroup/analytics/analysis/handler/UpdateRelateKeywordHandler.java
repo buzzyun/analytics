@@ -47,10 +47,14 @@ public class UpdateRelateKeywordHandler extends ProcessHandler {
 					String[] el = line.split("\t");
 					String keyword = el[1];
 					String value = el[0];
-					RelateKeywordVO vo = new RelateKeywordVO(siteId, categoryId, keyword, timestamp);
-					mapper.putEntry(vo);
+					RelateKeywordVO vo = mapper.getEntry(categoryId, keyword);
+					
+					if(vo!=null || vo.getId() == 0) {
+						vo = new RelateKeywordVO(siteId, categoryId, keyword, timestamp);
+						mapper.putEntry(vo);
+					}
+					
 					int id = vo.getId();
-					vo = mapper.getEntry(categoryId, keyword);
 					logger.debug("put relate {} / {}", vo.getId(), value);
 					vmapper.putEntry(vo.getId(), value);
 				}

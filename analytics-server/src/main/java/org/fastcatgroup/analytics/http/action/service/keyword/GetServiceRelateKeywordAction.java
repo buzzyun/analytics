@@ -22,7 +22,6 @@ public class GetServiceRelateKeywordAction extends ServiceAction {
 
 	@Override
 	public void doAction(ActionRequest request, ActionResponse response) throws Exception {
-		KeywordService keywordService = ServiceManager.getInstance().getService(KeywordService.class);
 
 		writeHeader(response);
 		ResponseWriter responseWriter = getDefaultResponseWriter(response.getWriter());

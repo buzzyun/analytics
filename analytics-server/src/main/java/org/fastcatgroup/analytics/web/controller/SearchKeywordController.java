@@ -101,9 +101,9 @@ public class SearchKeywordController extends AbstractController {
 			for (RelateKeywordVO vo : entryList) {
 				stringer.object().key("KEYWORD").value(vo.getKeyword()).key("VALUE").value(vo.getValue()).endObject();
 			}
-			stringer.endArray();
+			stringer.endArray().endObject();
 			mav.addObject("keywordId", keywordId);
-			mav.addObject("list", stringer.toString());
+			mav.addObject("list", new JSONObject(stringer.toString()));
 			mav.addObject("start", 1);
 			mav.addObject("pageNo", pageNo);
 			mav.addObject("totalSize", totalSize);

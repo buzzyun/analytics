@@ -20,7 +20,7 @@
 	<select id="validateTable" parameterType="map" resultType="map">
 		select id, keyId, value
 		from RelateKeywordValue
-		fetch first 1 rows only
+		limit 1;
 	</select>
 	
 	<insert id="putEntry" parameterType="map">

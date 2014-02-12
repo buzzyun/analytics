@@ -50,7 +50,9 @@ public class UpdateRelateKeywordHandler extends ProcessHandler {
 					RelateKeywordVO vo = new RelateKeywordVO(siteId, categoryId, keyword, timestamp);
 					mapper.putEntry(vo);
 					int id = vo.getId();
-					vmapper.putEntry(id, value);
+					vo = mapper.getEntry(categoryId, keyword);
+					logger.debug("put relate {} / {}", vo.getId(), value);
+					vmapper.putEntry(vo.getId(), value);
 				}
 			} finally {
 				if (mapperSession != null) {

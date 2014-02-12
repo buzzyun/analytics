@@ -82,11 +82,13 @@ public class StatisticsService extends AbstractService {
 	 * 실시간 인기검색어를 리턴한다.
 	 * */
 	public List<RankKeyword> getRealtimePopularKeywordList(String siteId, String categoryId) {
+		logger.debug("get realtime keyword. siteId:{} / categoryId:{}", siteId, categoryId);
 		Map<String, List<RankKeyword>> map = realtimePopularKeywordMap.get(siteId);
 		if (map != null) {
 			if(categoryId == null || categoryId.length() == 0){
 				categoryId = "_root";
 			}
+			logger.debug("get realtime keyword map:{}", map);
 			return map.get(categoryId);
 		}
 		return null;
@@ -101,6 +103,7 @@ public class StatisticsService extends AbstractService {
 			realtimePopularKeywordMap.put(siteId, map);
 		}
 		map.put(categoryId, keywordList);
+		logger.debug("realtime keyword. map:{}", map);
 	}
 
 	public Collection<CategoryStatistics> getCategoryStatisticsList() {

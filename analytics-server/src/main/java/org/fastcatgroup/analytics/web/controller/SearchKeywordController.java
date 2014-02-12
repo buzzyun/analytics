@@ -65,9 +65,10 @@ public class SearchKeywordController extends AbstractController {
 
 	@RequestMapping("/{keywordId}/list")
 	public ModelAndView relateKeywordList(@PathVariable String keywordId, @RequestParam(defaultValue = "1") Integer pageNo
-			, @RequestParam(required = false) String category, @RequestParam(required = false) String keyword
-			, @RequestParam(required = false) Boolean exactMatch, @RequestParam(required = false) Boolean isEditable
-			, @RequestParam(required = false) String targetId) throws Exception {
+			, @RequestParam(required = false) String site, @RequestParam(required = false) String category
+			, @RequestParam(required = false) String keyword , @RequestParam(required = false) Boolean exactMatch
+			, @RequestParam(required = false) Boolean isEditable , @RequestParam(required = false) String targetId
+			) throws Exception {
 
 		JSONStringer stringer = null;
 		int PAGE_SIZE = 10;
@@ -80,6 +81,7 @@ public class SearchKeywordController extends AbstractController {
 			AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
 			mapperSession = dbService.getMapperSession(RelateKeywordMapper.class);
 			RelateKeywordMapper mapper = mapperSession.getMapper();
+			
 
 			int start = 0;
 			//int end = 0;
@@ -91,17 +93,19 @@ public class SearchKeywordController extends AbstractController {
 
 			String whereCondition = "";
 
-			int totalSize = mapper.getCount(category);
-			int filteredSize = mapper.getCountByWhereCondition(category, whereCondition);
-			List<RelateKeywordVO> entryList = mapper.getEntryListByWhereCondition(category, whereCondition, start, PAGE_SIZE);
+			int totalSize = mapper.getCount(site, category);
+			int filteredSize = mapper.getCountByWhereCondition(site, category, whereCondition);
+			List<RelateKeywordVO> entryList = mapper.getEntryListByWhereCondition(site, category, whereCondition, start, PAGE_SIZE);
 
 			stringer.object().key("totalSize").value(totalSize).key("filteredSize").value(filteredSize)
 			.key("searchableColumnList").array().endArray()
 			.key(keywordId).array();
 			for (RelateKeywordVO vo : entryList) {
+				String value = vo.getValue();
+				if(value==null) { value = ""; }
 				stringer.object().key("ID").value(vo.getId())
 				.key("KEYWORD").value(vo.getKeyword())
-				.key("VALUE").value(vo.getValue()).endObject();
+				.key("VALUE").value(value).endObject();
 			}
 			stringer.endArray().endObject();
 			mav.addObject("keywordId", keywordId);
@@ -129,8 +133,6 @@ public class SearchKeywordController extends AbstractController {
 			@RequestParam String keywordId, @RequestParam(required = false) Boolean forView) throws Exception {
 
 		JSONObject jsonObj = null;
-
-		String requestUrl = "/management/dictionary/list.json";
 
 		int totalReadSize = 0;
 		int PAGE_SIZE = 100;

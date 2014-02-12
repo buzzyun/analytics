@@ -54,7 +54,12 @@ public class UpdateRelateKeywordHandler extends ProcessHandler {
 					String[] el = line.split("\t");
 					String keyword = el[1];
 					String value = el[0];
-					RelateKeywordVO vo = mapper.getEntry(categoryId, keyword);
+					RelateKeywordVO vo = mapper.getEntry(siteId, categoryId, keyword);
+					
+					if (vo == null || vo.getId() == 0) {
+						vo = new RelateKeywordVO(siteId, categoryId, keyword, timestamp);
+						mapper.putEntry(vo);
+					}
 					
 					List<String>relate = keywordMap.get(vo.getKeyword());
 					if(relate == null) {
@@ -62,10 +67,6 @@ public class UpdateRelateKeywordHandler extends ProcessHandler {
 						keywordMap.put(vo.getKeyword(), relate);
 					}
 					
-					if(vo!=null || vo.getId() == 0) {
-						vo = new RelateKeywordVO(siteId, categoryId, keyword, timestamp);
-						mapper.putEntry(vo);
-					}
 					
 					if(!relate.contains(value)) {
 						relate.add(value);

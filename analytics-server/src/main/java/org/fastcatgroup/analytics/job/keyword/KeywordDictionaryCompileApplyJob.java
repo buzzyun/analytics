@@ -12,15 +12,12 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.db.mapper.PopularKeywordMapper;
-import org.fastcatgroup.analytics.db.mapper.RelateKeywordMapper;
 import org.fastcatgroup.analytics.db.vo.PopularKeywordVO;
-import org.fastcatgroup.analytics.db.vo.RelateKeywordVO;
 import org.fastcatgroup.analytics.exception.AnalyticsException;
 import org.fastcatgroup.analytics.job.Job;
 import org.fastcatgroup.analytics.keyword.KeywordDictionary.KeywordDictionaryType;
 import org.fastcatgroup.analytics.keyword.KeywordService;
 import org.fastcatgroup.analytics.keyword.PopularKeywordDictionary;
-import org.fastcatgroup.analytics.keyword.RelateKeywordDictionary;
 import org.fastcatgroup.analytics.service.ServiceManager;
 import org.fastcatgroup.analytics.settings.StatisticsSettings.Category;
 
@@ -89,9 +86,8 @@ public class KeywordDictionaryCompileApplyJob extends Job {
 
 				compilePopularKeyword(keywordService, categoryList, dictionaryType, interval, timeStr);
 
-			} else if (dictionaryType == KeywordDictionaryType.RELATE_KEYWORD) {
-
-				compileRelateKeyword(keywordService, categoryList, dictionaryType);
+//			} else if (dictionaryType == KeywordDictionaryType.RELATE_KEYWORD) {
+//				compileRelateKeyword(keywordService, categoryList, dictionaryType);
 			}
 
 		} catch (IllegalArgumentException e) {
@@ -142,44 +138,44 @@ public class KeywordDictionaryCompileApplyJob extends Job {
 		}
 	}
 
-	private void compileRelateKeyword(KeywordService keywordService, List<Category> categoryList, KeywordDictionaryType type) throws Exception {
-
-		RelateKeywordMapper mapper = keywordService.getMapperSession(RelateKeywordMapper.class).getMapper();
-
-		for (Category category : categoryList) {
-
-			List<RelateKeywordVO> keywordList = mapper.getEntryList(category.getId());
-
-			RelateKeywordDictionary dictionary = new RelateKeywordDictionary();
-
-			for (RelateKeywordVO keyword : keywordList) {
-				dictionary.putRelateKeyword(keyword.getKeyword(), keyword.getValue());
-			}
-
-			File writeFile = keywordService.getFile(category.getId(), type);
-
-			File parentDir = writeFile.getParentFile();
-
-			if (!parentDir.exists()) {
-				FileUtils.forceMkdir(parentDir);
-			}
-
-			OutputStream ostream = null;
-
-			try {
-
-				ostream = new FileOutputStream(writeFile);
-
-				dictionary.writeTo(ostream);
-
-			} finally {
-
-				if (ostream != null)
-					try {
-						ostream.close();
-					} catch (IOException e) {
-					}
-			}
-		}
-	}
+//	private void compileRelateKeyword(KeywordService keywordService, List<Category> categoryList, KeywordDictionaryType type) throws Exception {
+//
+//		RelateKeywordMapper mapper = keywordService.getMapperSession(RelateKeywordMapper.class).getMapper();
+//
+//		for (Category category : categoryList) {
+//
+//			List<RelateKeywordVO> keywordList = mapper.getEntryList(category.getId());
+//
+//			RelateKeywordDictionary dictionary = new RelateKeywordDictionary();
+//
+//			for (RelateKeywordVO keyword : keywordList) {
+//				dictionary.putRelateKeyword(keyword.getKeyword(), keyword.getValue());
+//			}
+//
+//			File writeFile = keywordService.getFile(category.getId(), type);
+//
+//			File parentDir = writeFile.getParentFile();
+//
+//			if (!parentDir.exists()) {
+//				FileUtils.forceMkdir(parentDir);
+//			}
+//
+//			OutputStream ostream = null;
+//
+//			try {
+//
+//				ostream = new FileOutputStream(writeFile);
+//
+//				dictionary.writeTo(ostream);
+//
+//			} finally {
+//
+//				if (ostream != null)
+//					try {
+//						ostream.close();
+//					} catch (IOException e) {
+//					}
+//			}
+//		}
+//	}
 }

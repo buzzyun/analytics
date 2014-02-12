@@ -31,7 +31,7 @@
 	
 	<select id="getEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.RelateKeywordVO">
 		select * 
-		from RelateKeyword where category = #{category} and keyword = #{keyword}
+		from RelateKeyword where site=#{site} and category = #{category} and keyword = #{keyword}
 	</select>
 	<!-- where a.category=#{category} -->
 	<select id="getEntryListByWhereCondition" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.RelateKeywordVO">
@@ -46,24 +46,24 @@
 		limit #{start}, #{end}
 	</select>
 	<select id="getCountByWhereCondition" parameterType="map" resultType="int">
-		select count(*) from RelateKeyword where category=#{category} 
+		select count(*) from RelateKeyword where site=#{site} and category=#{category} 
 		<if test="whereCondition != ''">
 		${whereCondition}
 		</if>
 	</select>
 	<select id="getEntryList" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.RelateKeywordVO">
-		select * from RelateKeyword where category=#{category}
+		select * from RelateKeyword where site=#{site} and category=#{category}
 	</select>
 	
 	<select id="getCount" parameterType="map" resultType="int">
-		select count(*) from RelateKeyword where category=#{category}
+		select count(*) from RelateKeyword where site=#{site} and category=#{category}
 	</select>
 	
 	<insert id="putEntry" parameterType="map" useGeneratedKeys="true" keyProperty="id">
 		insert into RelateKeyword 
-		(category,keyword,updateTime) 
-		select * from (select #{category},#{keyword},#{updateTime} ) a
-		where (select count(*) from RelateKeyword where category=#{category} and keyword=#{keyword} ) = 0
+		(site, category,keyword,updateTime) 
+		select * from (select #{site}, #{category},#{keyword},#{updateTime} ) a
+		where (select count(*) from RelateKeyword where site=#{site} and category=#{category} and keyword=#{keyword} ) = 0
 	</insert>
 	
 	<update id="updateEntry" parameterType="map">

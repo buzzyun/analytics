@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.fastcatgroup.analytics.analysis.StatisticsService;
+import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig;
+import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig;
 import org.fastcatgroup.analytics.http.ActionMapping;
 import org.fastcatgroup.analytics.http.action.ActionRequest;
 import org.fastcatgroup.analytics.http.action.ActionResponse;
@@ -32,8 +34,16 @@ public class GetServiceRelateKeywordAction extends ServiceAction {
 		
 		StatisticsService service = ServiceManager.getInstance().getService(StatisticsService.class);
 		
+		SiteCategoryListConfig siteConfig = service.getSiteCategoryListConfig();
+		
+		//siteid 가 지정되지 않았을 경우 자동으로 입력해 줌.
+		if (siteConfig.getList().size() == 1 && (siteId == null || "".equals(siteId))) {
+			SiteCategoryConfig cateConfig = siteConfig.getList().get(0);
+			siteId = cateConfig.getSiteId();
+		}
+		
 		Map<String, List<String>> relateKeywordMap = service.getRelateKeywordMap(siteId, categoryId);
-		logger.debug("relateKeywordMap:{}", relateKeywordMap);
+		logger.debug("relateKeywordMap:{}.{}.{}", siteId, categoryId, relateKeywordMap);
 		
 		//KeywordDictionaryType keywordDictionaryType = KeywordDictionaryType.RELATE_KEYWORD;
 

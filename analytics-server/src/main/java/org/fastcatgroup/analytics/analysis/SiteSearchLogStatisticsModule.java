@@ -100,8 +100,8 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		 * 연관검색어 
 		 * */
 		relateTaskRunner = new ScheduledTaskRunner("daily-search-log-task-runner", JobService.getInstance(), environment);
-		Schedule relateSchedule = new EveryDaySchedule(0, delayInSeconds); //매일 0시.
-//		Schedule relateSchedule = new FixedSchedule(cal, 10, delayInSeconds);
+//		Schedule relateSchedule = new EveryDaySchedule(0, delayInSeconds); //매일 0시.
+		Schedule relateSchedule = new FixedSchedule(cal, 10, delayInSeconds);
 		RelateSearchLogAnalysisTask relateSearchLogAnalysisTask = new RelateSearchLogAnalysisTask(siteId, categoryIdList, relateSchedule, 1);
 		relateTaskRunner.addTask(relateSearchLogAnalysisTask);
 		relateTaskRunner.start();

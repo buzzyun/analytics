@@ -1,6 +1,8 @@
 package org.fastcatgroup.analytics.http.action.service.keyword;
 
 import org.fastcatgroup.analytics.analysis.StatisticsService;
+import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig;
+import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig;
 import org.fastcatgroup.analytics.http.ActionMapping;
 import org.fastcatgroup.analytics.http.action.ActionRequest;
 import org.fastcatgroup.analytics.http.action.ActionResponse;
@@ -26,9 +28,16 @@ public class PostKeywordHitAction extends ServiceAction {
 		String type = request.getParameter("type");
 		String siteId = request.getParameter("siteId");
 		
+		StatisticsService service = ServiceManager.getInstance().getService(StatisticsService.class);
+		SiteCategoryListConfig siteConfig = service.getSiteCategoryListConfig();
+		
+		//siteid 가 지정되지 않았을 경우 자동으로 입력해 줌.
+		if (siteConfig.getList().size() == 1 && (siteId == null || "".equals(siteId))) {
+			SiteCategoryConfig cateConfig = siteConfig.getList().get(0);
+			siteId = cateConfig.getSiteId();
+		}
+		
 		if(type == null || type.trim().length() == 0 || siteId == null || siteId.trim().length() == 0 ){
-			
-			
 			return;
 		}
 		String categoryId = request.getParameter("categoryId");
@@ -40,10 +49,7 @@ public class PostKeywordHitAction extends ServiceAction {
 		String errorMessage = null;
 
 		try {
-
-			StatisticsService statisticsService = ServiceManager.getInstance().getService(StatisticsService.class);
-			
-			statisticsService.log(type, siteId, categoryId, keyword, prevKeyword);
+			service.log(type, siteId, categoryId, keyword, prevKeyword);
 
 		} catch (Exception e) {
 			errorMessage = e.getMessage();

@@ -52,12 +52,15 @@ public class GetServiceRelateKeywordAction extends ServiceAction {
 				responseWriter.key("keyword").value(keyword);
 				responseWriter.key("relate").array();
 				List<String> list = relateKeyword.get(keyword);
-				for(String value : list) {
-					responseWriter.value(value);
+				if(list!=null) {
+					for(String value : list) {
+						responseWriter.value(value);
+					}
 				}
 				responseWriter.endArray();
 			}
 		} catch (Exception e) {
+			logger.error("",e);
 			errorMessage = e.getMessage();
 		} finally {
 			if (errorMessage != null) {
@@ -67,5 +70,4 @@ public class GetServiceRelateKeywordAction extends ServiceAction {
 			responseWriter.done();
 		}
 	}
-
 }

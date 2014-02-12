@@ -9,10 +9,9 @@
 			id int not null auto_increment,
 			category varchar(64),
 			keyword varchar(64),
-			value varchar(1000),
 			updateTime timestamp,
 			primary key (id)
-		)
+		);
 	</update>
 	
 	<update id="createIndex" parameterType="map">
@@ -35,7 +34,7 @@
 	</select>
 	<select id="getEntryListByWhereCondition" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.RelateKeywordVO">
 		select * from (
-		select ROW_NUMBER() OVER () AS ROWNUM,a.* from RelateKeyword a where category=#{category} 
+		select @ROWNUM:=@ROWNUM+1 as ROWNUM, a.* from RelateKeyword a, (select @ROWNUM:=0) b	
 		<if test="whereCondition != ''">
 		${whereCondition}
 		</if>
@@ -54,11 +53,17 @@
 	<select id="getCount" parameterType="map" resultType="int">
 		select count(*) from RelateKeyword where category=#{category}
 	</select>
-	<update id="putEntry" parameterType="map">
+	<!-- 
+		insert ignore into RelateKeyword 
+		(category,keyword,updateTime) values
+		(#{category}, #{keyword}, #{updateTime})
+	 -->
+	<insert id="putEntry" parameterType="map" useGeneratedKeys="true" keyProperty="id">
 		insert into RelateKeyword 
-		(category,keyword,value,updateTime) values
-		(#{category}, #{keyword}, #{value}, #{updateTime})
-	</update>
+		(category,keyword,updateTime) 
+		select * from (select #{category},#{keyword},#{updateTime} ) a
+		where (select count(*) from RelateKeyword where category=#{category} and keyword=#{keyword} ) = 0
+	</insert>
 	
 	<update id="updateEntry" parameterType="map">
 		update RelateKeyword set 

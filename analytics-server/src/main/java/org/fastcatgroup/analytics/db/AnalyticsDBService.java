@@ -22,6 +22,7 @@ import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.Categor
 import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig;
 import org.fastcatgroup.analytics.db.mapper.AnalyticsMapper;
 import org.fastcatgroup.analytics.db.mapper.RelateKeywordMapper;
+import org.fastcatgroup.analytics.db.mapper.RelateKeywordValueMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchHitMapper;
 import org.fastcatgroup.analytics.env.Environment;
 import org.fastcatgroup.analytics.env.Settings;
@@ -35,6 +36,7 @@ public class AnalyticsDBService extends AbstractDBService {
 	private static Class<?>[] mapperList = new Class<?>[] { 
 		SearchHitMapper.class
 		,RelateKeywordMapper.class
+		,RelateKeywordValueMapper.class
 		};
 
 	public AnalyticsDBService(Environment environment, Settings settings, ServiceManager serviceManager) {

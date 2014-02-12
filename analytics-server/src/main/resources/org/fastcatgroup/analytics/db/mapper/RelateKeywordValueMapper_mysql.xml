@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.fastcatgroup.analytics.db.mapper.RelateKeywordValueMapper">
+
+	<update id="createTable" parameterType="map">
+		create table RelateKeywordValue (
+			id int not null auto_increment,
+			keyId int not null,
+			value varchar(64),
+			primary key(id)
+		);
+	</update>
+	
+	<update id="createIndex" parameterType="map">
+		create unique index key_value_index on RelateKeywordValue(keyId,value)
+	</update>
+	
+	<select id="validateTable" parameterType="map" resultType="map">
+		select id, keyId, value
+		from RelateKeywordValue
+		fetch first 1 rows only
+	</select>
+	
+	<insert id="putEntry" parameterType="map">
+		insert ignore into RelateKeywordValue (keyId, value) 
+		select * from (select #{keyId},#{value} ) a where 
+		(select count(*) from RelateKeywordValue 
+			where keyId=#{keyId} and value=#{value})=0 limit 1
+	</insert>
+
+	<update id="dropTable" parameterType="map">
+		drop table RelateKeywordValue
+	</update>
+	
+	<delete id="truncate" parameterType="map">
+		truncate table RelateKeywordValue
+	</delete>
+	
+</mapper>

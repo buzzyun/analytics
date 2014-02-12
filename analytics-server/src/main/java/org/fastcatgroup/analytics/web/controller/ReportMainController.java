@@ -9,6 +9,7 @@ import org.fastcatgroup.analytics.db.MapperSession;
 import org.fastcatgroup.analytics.db.mapper.RelateKeywordMapper;
 import org.fastcatgroup.analytics.db.vo.RelateKeywordVO;
 import org.fastcatgroup.analytics.service.ServiceManager;
+import org.json.JSONObject;
 import org.json.JSONStringer;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -69,5 +70,4 @@ public class ReportMainController extends AbstractController {
 		s.endArray();
 		return s.toString();
 	}
-	
 }

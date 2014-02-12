@@ -180,7 +180,7 @@ function <%=keywordId%>WordUpdate(id){
 	//console.log("update", id, trObj);
 	
 	var data = { 
-		uri: '/report/keyword/update.json',
+		uri: '/report/keyword/<%=keywordId%>/update.html',
 		pluginId: '${analysisId}',
 		keywordId: '${keywordId}'
 	};

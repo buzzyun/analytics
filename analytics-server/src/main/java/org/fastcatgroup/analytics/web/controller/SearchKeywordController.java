@@ -56,9 +56,7 @@ public class SearchKeywordController extends AbstractController {
 
 		boolean result = false;
 		// keyword 가 존재하지 않으면 검사하지 않고 key,value 모두 insert
-		
 		// keyword가 존재하면, value하나씩 검사하여 없는것만 insert.
-		
 		
 		JSONStringer s = new JSONStringer();
 		s.object().key("result").value(result).endObject();
@@ -101,8 +99,9 @@ public class SearchKeywordController extends AbstractController {
 			.key("searchableColumnList").array().endArray()
 			.key(keywordId).array();
 			for (RelateKeywordVO vo : entryList) {
-				stringer.object().key("KEYWORD").value(vo.getKeyword()).
-				key("VALUE").value(vo.getValue()).endObject();
+				stringer.object().key("ID").value(vo.getId())
+				.key("KEYWORD").value(vo.getKeyword())
+				.key("VALUE").value(vo.getValue()).endObject();
 			}
 			stringer.endArray().endObject();
 			mav.addObject("keywordId", keywordId);

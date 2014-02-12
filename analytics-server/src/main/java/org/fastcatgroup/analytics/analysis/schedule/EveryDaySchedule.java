@@ -15,13 +15,13 @@ public class EveryDaySchedule extends Schedule {
 
 	@Override
 	public void updateSchduleTime() {
+		Calendar now = Calendar.getInstance();
 		Calendar calendar = Calendar.getInstance();
-		int hour = calendar.get(Calendar.HOUR_OF_DAY);
 		calendar.set(Calendar.HOUR_OF_DAY, timeInDay);
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);
 		calendar.set(Calendar.MILLISECOND, 0);
-		if(timeInDay < hour){
+		if(calendar.before(now)){
 			//시간이 지났다면 다음날로 넘어간다.
 			calendar.add(Calendar.DATE, 1);
 		}

@@ -26,16 +26,17 @@ public class ScheduleTest {
 	@Test
 	public void testNextDaytime(){
 		int timeInDay = 0;
-		int hour = 22;
+		int hour = 1;
 		Calendar now = Calendar.getInstance();
 		now.set(Calendar.HOUR_OF_DAY, hour);
-		
+		System.out.println("now > " + new Date(now.getTimeInMillis()));
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.HOUR_OF_DAY, timeInDay);
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);
 		calendar.set(Calendar.MILLISECOND, 0);
-		if(timeInDay < hour){
+		System.out.println("tobe > " + new Date(calendar.getTimeInMillis()));
+		if(calendar.before(now)){
 			//시간이 지났다면 다음날로 넘어간다.
 			calendar.add(Calendar.DATE, 1);
 		}

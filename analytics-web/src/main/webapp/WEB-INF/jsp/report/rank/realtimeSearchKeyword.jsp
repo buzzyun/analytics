@@ -18,11 +18,8 @@ String categoryId = request.getParameter("categoryId");
 <c:import url="${ROOT_PATH}/inc/header.jsp" />
 <script>
 $(document).ready(function(){
-	
 	triggerSiteCategoryList($("#select_site"), $("#select_category"), '<%=siteId %>', '<%=categoryId %>');
-	
 });
-
 </script>
 </head>
 <body>

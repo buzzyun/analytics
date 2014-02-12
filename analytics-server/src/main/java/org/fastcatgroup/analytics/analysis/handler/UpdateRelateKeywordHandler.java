@@ -45,12 +45,12 @@ public class UpdateRelateKeywordHandler extends ProcessHandler {
 				while ((line = reader.readLine()) != null) {
 					// value 파싱.
 					String[] el = line.split("\t");
-					String keyword = el[0];
-					String values = el[1];
-					RelateKeywordVO vo = new RelateKeywordVO(categoryId, keyword, values, timestamp);
+					String keyword = el[1];
+					String value = el[0];
+					RelateKeywordVO vo = new RelateKeywordVO(siteId, categoryId, keyword, timestamp);
 					mapper.putEntry(vo);
 					int id = vo.getId();
-					vmapper.putEntry(id, vo.getValue());
+					vmapper.putEntry(id, value);
 				}
 			} finally {
 				if (mapperSession != null) {
@@ -63,7 +63,6 @@ public class UpdateRelateKeywordHandler extends ProcessHandler {
 					reader.close();
 				}
 			}
-
 		}
 		return null;
 	}

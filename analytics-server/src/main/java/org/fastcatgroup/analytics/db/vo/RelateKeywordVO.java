@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 public class RelateKeywordVO {
 	
 	private int id;
+	private String site;
 	private String category;
 	private String keyword;
 	private String value;
@@ -14,13 +15,20 @@ public class RelateKeywordVO {
 	public RelateKeywordVO(){
 	}
 
-	public RelateKeywordVO(String category, String keyword, String value, Timestamp updateTime){
+	public RelateKeywordVO(String site, String category, String keyword, Timestamp updateTime){
+		this.setSiteId(site);
 		this.category = category;
 		this.keyword = keyword;
-		this.value = value;
 		this.updateTime = updateTime;
 	}
 	
+	public String getSiteId() {
+		return site;
+	}
+
+	public void setSiteId(String site) {
+		this.site = site;
+	}
 	
 	public int getId() {
 		return id;
@@ -46,14 +54,6 @@ public class RelateKeywordVO {
 		this.keyword = keyword;
 	}
 
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-
 	public Timestamp getUpdateTime() {
 		return updateTime;
 	}
@@ -61,6 +61,12 @@ public class RelateKeywordVO {
 	public void setUpdateTime(Timestamp updateTime) {
 		this.updateTime = updateTime;
 	}
-	
-	
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
 }

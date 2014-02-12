@@ -27,7 +27,7 @@ $(document).ready(function(){
 	searchInputObj.keydown(function (e) {
 		if(e.keyCode == 13){
 			var keyword = toSafeString($(this).val());
-			loadKeywordTab("map", '<%=keywordId %>', 1, keyword, searchColumnObj.val(), exactMatchObj.is(":checked"), false, '<%=targetId%>');
+			loadKeywordTab('<%=keywordId %>', 1, keyword, searchColumnObj.val(), exactMatchObj.is(":checked"), false, '<%=targetId%>');
 			return;
 		}
 	});
@@ -36,22 +36,22 @@ $(document).ready(function(){
 	searchColumnObj.on("change", function(){
 		var keyword = toSafeString(searchInputObj.val());
 		if(keyword != ""){
-			loadKeywordTab("map", '<%=keywordId %>', 1, keyword, searchColumnObj.val(), exactMatchObj.is(":checked"), false, '<%=targetId%>');
+			loadKeywordTab('<%=keywordId %>', 1, keyword, searchColumnObj.val(), exactMatchObj.is(":checked"), false, '<%=targetId%>');
 		}
 	});
 	exactMatchObj.on("change", function(){
 		var keyword = toSafeString(searchInputObj.val());
 		if(keyword != ""){
-			loadKeywordTab("map", '<%=keywordId %>', 1, keyword, searchColumnObj.val(), exactMatchObj.is(":checked"), false, '<%=targetId%>');
+			loadKeywordTab('<%=keywordId %>', 1, keyword, searchColumnObj.val(), exactMatchObj.is(":checked"), false, '<%=targetId%>');
 		}
 	});
 });
 
 function go<%=keywordId%>KeywordPage(uri, pageNo){
-	loadKeywordTab("map", '<%=keywordId %>', pageNo, '${keyword}', searchColumnObj.val(), exactMatchObj.is(":checked"), false, '<%=targetId%>');	
+	loadKeywordTab('<%=keywordId %>', pageNo, '${keyword}', searchColumnObj.val(), exactMatchObj.is(":checked"), false, '<%=targetId%>');	
 }
 function go<%=keywordId%>EditablePage(pageNo){
-	loadKeywordTab("map", '<%=keywordId %>', pageNo, '${keyword}', searchColumnObj.val(), exactMatchObj.is(":checked"), true, '<%=targetId%>');	
+	loadKeywordTab('<%=keywordId %>', pageNo, '${keyword}', searchColumnObj.val(), exactMatchObj.is(":checked"), true, '<%=targetId%>');	
 }
 </script>
 

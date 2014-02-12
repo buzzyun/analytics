@@ -28,7 +28,7 @@ $(document).ready(function(){
 		}
 	});
 	
-	loadToTab("list.html", null, "#tab_keyword_overview");
+	loadToTab("list.html", {targetId:"#tab_keyword_overview"}, "#tab_keyword_overview");
 });
 
 </script>
@@ -61,17 +61,7 @@ $(document).ready(function(){
 				</div>
 				<!-- /Page Header -->
 				<div class="tabbable tabbable-custom tabbable-full-width">
-					<ul id="keyword_tab" class="nav nav-tabs">
-						<li class="active"><a href="#tab_keyword_overview" data-toggle="tab">Overview</a></li>
-					</ul>
-					<div class="tab-content row">
-
-						<!--=== Overview ===-->
-						<div class="tab-pane active" id="tab_keyword_overview"></div>
-						<div class="tab-pane" id="tab_keyword_relate"></div>
-						<!-- //tab field -->
-					</div>
-					<!-- /.tab-content -->
+					<div id="tab_keyword_overview"></div>
 				</div>
 						
 				<!-- /Page Content -->

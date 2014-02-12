@@ -68,8 +68,8 @@ public class SearchKeywordController extends AbstractController {
 	@RequestMapping("/{keywordId}/list")
 	public ModelAndView relateKeywordList(@PathVariable String keywordId, @RequestParam(defaultValue = "1") Integer pageNo
 			, @RequestParam(required = false) String category, @RequestParam(required = false) String keyword
-			, @RequestParam(required = false) Boolean exactMatch, @RequestParam(required = false) Boolean isEditable)
-			throws Exception {
+			, @RequestParam(required = false) Boolean exactMatch, @RequestParam(required = false) Boolean isEditable
+			, @RequestParam(required = false) String targetId) throws Exception {
 
 		JSONStringer stringer = null;
 		int PAGE_SIZE = 10;
@@ -84,22 +84,27 @@ public class SearchKeywordController extends AbstractController {
 			RelateKeywordMapper mapper = mapperSession.getMapper();
 
 			int start = 0;
-			int end = 0;
+			//int end = 0;
 
 			if (pageNo > 0) {
 				start = (pageNo - 1) * PAGE_SIZE + 1;
 			}
-			end = start + PAGE_SIZE;
+			//end = start + PAGE_SIZE;
 
 			String whereCondition = "";
 
 			int totalSize = mapper.getCount(category);
 			int filteredSize = mapper.getCountByWhereCondition(category, whereCondition);
-			List<RelateKeywordVO> entryList = mapper.getEntryListByWhereCondition(category, whereCondition, start, end);
+			List<RelateKeywordVO> entryList = mapper.getEntryListByWhereCondition(category, whereCondition, start, PAGE_SIZE);
 
-			stringer.object().key("totalSize").value(totalSize).key("filteredSize").value(filteredSize).key(keywordId).array();
+			stringer.object().key("totalSize").value(totalSize).key("filteredSize").value(filteredSize)
+			.key("searchableColumnList").array().endArray()
+			.key(keywordId).array();
 			for (RelateKeywordVO vo : entryList) {
-				stringer.object().key("KEYWORD").value(vo.getKeyword()).key("VALUE").value(vo.getValue()).endObject();
+				stringer.object().key("KEYWORD").value(vo.getKeyword()).
+				
+				
+				key("VALUE").value("").endObject();
 			}
 			stringer.endArray().endObject();
 			mav.addObject("keywordId", keywordId);
@@ -108,7 +113,12 @@ public class SearchKeywordController extends AbstractController {
 			mav.addObject("pageNo", pageNo);
 			mav.addObject("totalSize", totalSize);
 			mav.addObject("pageSize", PAGE_SIZE);
-			mav.setViewName("report/keyword/" + keywordId + "Keyword");
+			mav.addObject("targetId", targetId);
+			if(isEditable != null && isEditable.booleanValue()) {
+				mav.setViewName("report/keyword/" + keywordId + "KeywordEdit");
+			} else {
+				mav.setViewName("report/keyword/" + keywordId + "Keyword");
+			}
 		} finally {
 			if (mapperSession != null) {
 				mapperSession.closeSession();

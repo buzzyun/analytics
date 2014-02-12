@@ -52,12 +52,12 @@ public class GetRelateKeyWordListAction extends AuthAction {
 			
 			if(totalSize > 0) {
 			
-				List<RelateKeywordVO> list = relateKeywordMapper.getEntryListByWhereCondition(categoryId, whereCondition, start, start+length);
+				List<RelateKeywordVO> list = relateKeywordMapper.getEntryListByWhereCondition(categoryId, whereCondition, start, length);
 				for(RelateKeywordVO vo : list) {
 					
 					resultWriter.object().key("ID").value(vo.getId())
 						.key("KEYWORD").value(vo.getKeyword())
-						.key("VALUE").value(vo.getValue()).endObject();
+						.key("VALUE").value(vo.getValues()).endObject();
 				}
 			}
 		}

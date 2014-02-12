@@ -87,7 +87,7 @@ public class SearchKeywordController extends AbstractController {
 			//int end = 0;
 
 			if (pageNo > 0) {
-				start = (pageNo - 1) * PAGE_SIZE + 1;
+				start = (pageNo - 1) * PAGE_SIZE;
 			}
 			//end = start + PAGE_SIZE;
 
@@ -103,8 +103,7 @@ public class SearchKeywordController extends AbstractController {
 			for (RelateKeywordVO vo : entryList) {
 				stringer.object().key("KEYWORD").value(vo.getKeyword()).
 				
-				
-				key("VALUE").value("").endObject();
+				key("VALUE").value(vo.getValue()).endObject();
 			}
 			stringer.endArray().endObject();
 			mav.addObject("keywordId", keywordId);

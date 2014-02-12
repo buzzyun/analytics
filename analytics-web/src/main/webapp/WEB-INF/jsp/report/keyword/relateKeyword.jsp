@@ -11,6 +11,9 @@
 	JSONArray entryList = (JSONArray) list.getJSONArray(keywordId);
 	int start = (Integer) request.getAttribute("start");
 	String targetId = (String) request.getAttribute("targetId");
+	
+	String siteId = request.getParameter("siteId");
+	String categoryId = request.getParameter("categoryId");
 %>
 <script>
 
@@ -45,6 +48,8 @@ $(document).ready(function(){
 			loadKeywordTab('<%=keywordId %>', 1, keyword, searchColumnObj.val(), exactMatchObj.is(":checked"), false, '<%=targetId%>');
 		}
 	});
+	
+	triggerSiteCategoryList($("#select_site"), $("#select_category"), '<%=siteId %>', '<%=categoryId %>');
 });
 
 function go<%=keywordId%>KeywordPage(uri, pageNo){
@@ -59,7 +64,31 @@ function go<%=keywordId%>EditablePage(pageNo){
 <div class="widget box">
 	<div class="widget-content no-padding">
 		<div class="dataTables_header clearfix">
-			<div class="form-inline col-md-6">
+		
+			<div class="form-inline col-md-12">
+				<div class="form-group">
+					<select id="select_site" class="select_flat select_flat-sm" name="siteId"></select> 
+					<select id="select_category" class="select_flat select_flat-sm fcol2" name="categoryId"></select>
+					<input type="submit" class="btn btn-sm btn-primary" value="Submit">
+				</div>
+				
+				<div class="pull-right">
+					<a href="javascript:downloadKeyword('map', '<%=keywordId%>')"  class="btn btn-default btn-sm">
+						<span class="icon icon-download"></span> Download
+					</a>
+					&nbsp;
+					<div class="btn-group">
+						<a href="javascript:go<%=keywordId%>KeywordPage('', '${pageNo}');" class="btn btn-sm" rel="tooltip"><i class="icon-refresh"></i></a>
+					</div>
+					&nbsp;
+					<a href="javascript:go<%=keywordId%>EditablePage('${pageNo}');"  class="btn btn-default btn-sm">
+						<span class="glyphicon glyphicon-edit"></span> Edit
+					</a>
+				</div>
+			</div>
+			<div class="bottom-space"></div>
+			<div class="form-inline col-md-12">
+			
 				<div class="form-group " style="width:240px">
 					<div class="input-group" >
 						<span class="input-group-addon"><i class="icon-search"></i></span>
@@ -76,21 +105,6 @@ function go<%=keywordId%>EditablePage(pageNo){
 				</div>
 			</div>
 				
-			<div class="col-md-6">
-				<div class="pull-right">
-					<a href="javascript:downloadKeyword('map', '<%=keywordId%>')"  class="btn btn-default btn-sm">
-						<span class="icon icon-download"></span> Download
-					</a>
-					&nbsp;
-					<div class="btn-group">
-						<a href="javascript:go<%=keywordId%>KeywordPage('', '${pageNo}');" class="btn btn-sm" rel="tooltip"><i class="icon-refresh"></i></a>
-					</div>
-					&nbsp;
-					<a href="javascript:go<%=keywordId%>EditablePage('${pageNo}');"  class="btn btn-default btn-sm">
-						<span class="glyphicon glyphicon-edit"></span> Edit
-					</a>
-				</div>
-			</div>
 		</div>
 		
 		<%

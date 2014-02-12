@@ -9,6 +9,16 @@
 		<artifactId>analytics</artifactId>
 		<version>1.14.2</version>
 	</parent>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.fastcatgroup.analytics</groupId>
+			<artifactId>analytics-server</artifactId>
+			<version>1.14.2</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+	
 	<build>
 		<plugins>
 			<plugin>
@@ -40,14 +50,7 @@
 		</plugins>
 	</build>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.fastcatgroup.analytics</groupId>
-			<artifactId>analytics-server</artifactId>
-			<version>1.14.1</version>
-			<scope>compile</scope>
-		</dependency>
-	</dependencies>
+	
 
 </project>
 

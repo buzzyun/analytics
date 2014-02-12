@@ -24,7 +24,6 @@ import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.env.Environment;
 import org.fastcatgroup.analytics.exception.AnalyticsException;
 import org.fastcatgroup.analytics.http.HttpRequestService;
-import org.fastcatgroup.analytics.keyword.KeywordService;
 import org.fastcatgroup.analytics.manager.WebAdminService;
 import org.fastcatgroup.analytics.service.AbstractService;
 import org.fastcatgroup.analytics.service.ServiceManager;

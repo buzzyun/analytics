@@ -1,104 +1,112 @@
 package org.fastcatgroup.analytics.web.controller;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.fastcatgroup.analytics.db.AnalyticsDBService;
+import org.fastcatgroup.analytics.db.MapperSession;
+import org.fastcatgroup.analytics.db.mapper.RelateKeywordMapper;
+import org.fastcatgroup.analytics.db.vo.RelateKeywordVO;
+import org.fastcatgroup.analytics.service.ServiceManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONStringer;
 import org.json.JSONWriter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/keyword")
+@RequestMapping("/report/keyword")
 public class SearchKeywordController extends AbstractController {
 	
+	@RequestMapping("/{keywordId}/index")
+	public ModelAndView keywordIndex(@PathVariable String keywordId) {
+		ModelAndView mav = new ModelAndView();
+		
+		mav.setViewName("report/keyword/index");
+		mav.addObject("keywordId", keywordId);
+		return mav;
+		
+	}
 	
-	@RequestMapping("/{dictionaryType}/list")
-	public ModelAndView listDictionary(HttpSession session, @PathVariable String analysisId, @PathVariable String dictionaryType
-			, @RequestParam String dictionaryId
+	@RequestMapping("/{keywordId}/list")
+	public ModelAndView relateKeywordList(@PathVariable String keywordId
 			, @RequestParam(defaultValue = "1") Integer pageNo
+			, @RequestParam(required = false) String category 
 			, @RequestParam(required = false) String keyword
 			, @RequestParam(required = false) String searchColumn
 			, @RequestParam(required = false) Boolean exactMatch
 			, @RequestParam(required = false) Boolean isEditable
-			, @RequestParam String targetId, @RequestParam(required = false) String deleteIdList) throws Exception {
+			, @RequestParam(required = false) String deleteIdList) throws Exception {
 		
-		JSONObject jsonObj = null;
-		Integer deletedSize = 0; 
-//		logger.debug("deleteIdList >> {}", deleteIdList);
-		if(deleteIdList != null && deleteIdList.length() > 0){
-			String requestUrl = "/management/dictionary/delete.json";
-			
-			
-			deletedSize = jsonObj.getInt("result");
-		}
-		
-		
-		String requestUrl = "/keyword/list.json";
-		String dictionaryPrefix = dictionaryType;
-		String dictionaryOption = null;
+		JSONStringer stringer = null;
 		int PAGE_SIZE = 10;
-		int start = 0;
-		
-		if(pageNo > 0){
-			start = (pageNo - 1) * PAGE_SIZE + 1;
-		}
-		
-		String searchKeyword = null;
-		if(exactMatch){
-			searchKeyword = keyword;
-		}else{
-			if(keyword != null && keyword.length() > 0){
-				searchKeyword = "%" + keyword + "%";
-			}
-		}
-		if(searchColumn.equals("_ALL")){
-			searchColumn = null;
-		}
-		////
 		
 		ModelAndView mav = new ModelAndView();
-		dictionaryPrefix = dictionaryPrefix.toLowerCase();
-		if(isEditable != null && isEditable.booleanValue()){
-			mav.setViewName("manager/dictionary/" + dictionaryPrefix + "DictionaryEdit");
-		}else{
-			mav.setViewName("manager/dictionary/" + dictionaryPrefix + "Dictionary");
-		}
-		mav.addObject("analysisId", analysisId);
-		mav.addObject("dictionaryId", dictionaryId);
-		mav.addObject("dictionaryType", dictionaryType);
-		mav.addObject("dictionaryOption", dictionaryOption);
-		mav.addObject("list", jsonObj);
-		mav.addObject("start", start);
-		mav.addObject("pageNo", pageNo);
-		mav.addObject("pageSize", PAGE_SIZE);
-		mav.addObject("keyword", keyword);
-		mav.addObject("searchColumn", searchColumn);
-		mav.addObject("exactMatch", exactMatch);
-		mav.addObject("targetId", targetId);
-		mav.addObject("deletedSize", deletedSize);
+		MapperSession<RelateKeywordMapper> mapperSession = null;
 		
+		try {
+			stringer = new JSONStringer();
+			AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
+			mapperSession = dbService.getMapperSession(RelateKeywordMapper.class);
+			RelateKeywordMapper mapper = mapperSession.getMapper();
+			
+			int start = 0;
+			int end = 0;
+			
+			if(pageNo > 0){
+				start = (pageNo - 1) * PAGE_SIZE + 1;
+			}
+			end = start + PAGE_SIZE;
+			
+			String whereCondition = "";
+			
+			int totalSize = mapper.getCount(category);
+			int filteredSize = mapper.getCountByWhereCondition(category, whereCondition);
+			List<RelateKeywordVO> entryList = mapper
+				.getEntryListByWhereCondition(category, whereCondition
+				, start, end);
+			
+			stringer.object()
+				.key("totalSize").value(totalSize)
+				.key("filteredSize").value(filteredSize)
+				.key(keywordId).array();
+			for(RelateKeywordVO vo : entryList) {
+				stringer.object()
+				.key("KEYWORD").value(vo.getKeyword())
+				.key("VALUE").value(vo.getValue()).endObject();
+			}
+			stringer.endArray();
+			mav.addObject("keywordId",keywordId);
+			mav.addObject("list",stringer.toString());
+			mav.addObject("start",1);
+			mav.addObject("pageNo",pageNo);
+			mav.addObject("totalSize",totalSize);
+			mav.addObject("pageSize",PAGE_SIZE);
+			mav.setViewName("report/keyword/"+keywordId+"Keyword");
+		} finally {
+			if (mapperSession != null) {
+				mapperSession.closeSession();
+			}
+		}
 		return mav;
 	}
 	
 	
 	
-	@RequestMapping("/{dictionaryType}/download")
+	@RequestMapping("/{keywordId}/download")
 	public void downloadDictionary(HttpSession session, HttpServletResponse response, @PathVariable String analysisId, @PathVariable String dictionaryType
-			, @RequestParam String dictionaryId, @RequestParam(required = false) Boolean forView) throws Exception {
+			, @RequestParam String keywordId, @RequestParam(required = false) Boolean forView) throws Exception {
 		
 		JSONObject jsonObj = null;
 		
@@ -112,8 +120,8 @@ public class SearchKeywordController extends AbstractController {
 		if(forView != null && forView.booleanValue()){
 			//다운로드 하지 않고 웹페이지에서 보여준다.
 		}else{
-			logger.debug("dictionaryId > {}", dictionaryId);
-			response.setHeader("Content-disposition", "attachment; filename=\""+dictionaryId+".txt\"");
+			logger.debug("dictionaryId > {}", keywordId);
+			response.setHeader("Content-disposition", "attachment; filename=\""+keywordId+".txt\"");
 		}
 		PrintWriter writer = null;
 		try{
@@ -126,7 +134,7 @@ public class SearchKeywordController extends AbstractController {
 				}
 				
 				JSONArray columnList = jsonObj.getJSONArray("columnList");
-				JSONArray array = jsonObj.getJSONArray(dictionaryId);
+				JSONArray array = jsonObj.getJSONArray(keywordId);
 				int readSize = array.length();
 				totalReadSize += readSize;
 				
@@ -160,9 +168,9 @@ public class SearchKeywordController extends AbstractController {
 		}
 	}
 	
-	@RequestMapping("/{dictionaryType}/upload")
+	@RequestMapping("/{keywordId}/upload")
 	public void uploadDictionary(HttpSession session, MultipartHttpServletRequest request, HttpServletResponse response, @PathVariable String analysisId, @PathVariable String dictionaryType
-			, @RequestParam String dictionaryId) throws Exception {
+			, @RequestParam String keywordId) throws Exception {
 		
 		Iterator<String> itr = request.getFileNames();
 		String fileName = null;

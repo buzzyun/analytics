@@ -5,7 +5,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
 import org.fastcatgroup.analytics.db.mapper.RelateKeywordMapper;
@@ -33,6 +38,8 @@ public class UpdateRelateKeywordHandler extends ProcessHandler {
 			MapperSession<RelateKeywordMapper> mapperSession = dbService.getMapperSession(RelateKeywordMapper.class);
 			MapperSession<RelateKeywordValueMapper> vmapperSession = dbService.getMapperSession(RelateKeywordValueMapper.class);
 			BufferedReader reader = null;
+			
+			Map<String, List<String>> keywordMap = new HashMap<String, List<String>>();
 			try {
 				RelateKeywordMapper mapper = mapperSession.getMapper();
 				RelateKeywordValueMapper vmapper = vmapperSession.getMapper();
@@ -49,15 +56,28 @@ public class UpdateRelateKeywordHandler extends ProcessHandler {
 					String value = el[0];
 					RelateKeywordVO vo = mapper.getEntry(categoryId, keyword);
 					
+					List<String>relate = keywordMap.get(vo.getKeyword());
+					if(relate == null) {
+						relate = new ArrayList<String>();
+						keywordMap.put(vo.getKeyword(), relate);
+					}
+					
 					if(vo!=null || vo.getId() == 0) {
 						vo = new RelateKeywordVO(siteId, categoryId, keyword, timestamp);
 						mapper.putEntry(vo);
 					}
 					
-					int id = vo.getId();
-					logger.debug("put relate {} / {}", vo.getId(), value);
+					if(!relate.contains(value)) {
+						relate.add(value);
+					}
+					
+					logger.debug("put relate {} / {} / {} / {}", siteId, categoryId, vo.getId(), value);
 					vmapper.putEntry(vo.getId(), value);
 				}
+				
+				StatisticsService service = ServiceManager.getInstance().getService(StatisticsService.class);
+				service.updateRelativeKeywordMap(siteId, categoryId, keywordMap);
+				
 			} finally {
 				if (mapperSession != null) {
 					mapperSession.closeSession();
@@ -72,5 +92,4 @@ public class UpdateRelateKeywordHandler extends ProcessHandler {
 		}
 		return null;
 	}
-
 }

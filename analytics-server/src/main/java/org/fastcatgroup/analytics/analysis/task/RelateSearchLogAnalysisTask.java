@@ -50,7 +50,7 @@ public class RelateSearchLogAnalysisTask extends AnalysisTask<RelateSearchLog> {
 			logger.error("", e.getMessage());
 		}
 
-		Calculator<RelateSearchLog> relateKeywordCalculator = new DailyRelateKeywordCalculator("Daily relate keyword calculator", baseDir, encoding, categoryIdList, banWords, minimumHitCount, topCount);
+		Calculator<RelateSearchLog> relateKeywordCalculator = new DailyRelateKeywordCalculator("Daily relate keyword calculator", baseDir, siteId, categoryIdList, banWords, minimumHitCount, topCount);
 		addCalculator(relateKeywordCalculator);
 	}
 

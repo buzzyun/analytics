@@ -36,6 +36,8 @@ public class StatisticsService extends AbstractService {
 
 	private Map<String, SiteSearchLogStatisticsModule> siteStatisticsModuleMap;
 	
+	private Map<String, Map<String, Map<String, List<String>>>> relateKeywordMap;
+	
 	private SiteCategoryListConfig siteCategoryListConfig;
 	
 	public StatisticsService(Environment environment, Settings settings, ServiceManager serviceManager) {
@@ -48,6 +50,8 @@ public class StatisticsService extends AbstractService {
 		realtimePopularKeywordMap = new ConcurrentHashMap<String, Map<String, List<RankKeyword>>>();
 
 		siteStatisticsModuleMap = new ConcurrentHashMap<String, SiteSearchLogStatisticsModule>();
+		
+		relateKeywordMap = new ConcurrentHashMap<String, Map<String, Map<String, List<String>>>>();
 		
 		// 로드 siteCategoryConfig
 		File siteCategoryConfigFile = new File(statisticsHome, "site-category.xml");
@@ -93,7 +97,7 @@ public class StatisticsService extends AbstractService {
 		}
 		return null;
 	}
-
+	
 	public void updateRealtimePopularKeywordList(String siteId, String categoryId, List<RankKeyword> keywordList) {
 		
 		logger.debug("## updateRealtimePopularKeyword {}:{} > {}", siteId, categoryId, keywordList);
@@ -104,6 +108,31 @@ public class StatisticsService extends AbstractService {
 		}
 		map.put(categoryId, keywordList);
 		logger.debug("realtime keyword. map:{}", map);
+	}
+	
+	public Map<String,List<String>> getRelateKeywordMap(String siteId, String categoryId) {
+		logger.debug("relateKeywordMap:{}",relateKeywordMap);
+		Map<String, Map<String, List<String>>> map = relateKeywordMap.get(siteId);
+		if (map != null) {
+			if(categoryId == null || categoryId.length() == 0) {
+				categoryId = "_root";
+			}
+			logger.debug("get relative keyword map:{} [{}]", map, categoryId);
+			return map.get(categoryId);
+		}
+		return null;
+	}
+	
+	public void updateRelativeKeywordMap(String siteId, String categoryId, Map<String, List<String>> keywordMap) {
+		
+		logger.debug("## updateRelativeKeyword {}:{} > {}", siteId, categoryId, keywordMap);
+		Map<String, Map<String, List<String>>> map = relateKeywordMap.get(siteId);
+		if(map == null) {
+			map = new ConcurrentHashMap<String, Map<String, List<String>>>();
+			relateKeywordMap.put(siteId, map);
+		}
+		map.put(categoryId, keywordMap);
+		logger.debug("relative keyword. map:{}", map);
 	}
 
 	public Collection<CategoryStatistics> getCategoryStatisticsList() {

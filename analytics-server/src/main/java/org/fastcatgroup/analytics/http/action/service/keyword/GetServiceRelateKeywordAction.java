@@ -3,6 +3,7 @@ package org.fastcatgroup.analytics.http.action.service.keyword;
 import java.util.List;
 import java.util.Map;
 
+import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.http.ActionMapping;
 import org.fastcatgroup.analytics.http.action.ActionRequest;
 import org.fastcatgroup.analytics.http.action.ActionResponse;
@@ -17,8 +18,6 @@ import org.fastcatgroup.analytics.util.ResponseWriter;
 
 @ActionMapping("/service/keyword/relate")
 public class GetServiceRelateKeywordAction extends ServiceAction {
-	
-	Map<String, List<String>> relateKeyword;
 
 	@Override
 	public void doAction(ActionRequest request, ActionResponse response) throws Exception {
@@ -27,13 +26,14 @@ public class GetServiceRelateKeywordAction extends ServiceAction {
 		ResponseWriter responseWriter = getDefaultResponseWriter(response.getWriter());
 
 		String keyword = request.getParameter("keyword");
+		String siteId = request.getParameter("siteId");
 		String categoryId = request.getParameter("category");
 		String errorMessage = null;
 		
-		if(relateKeyword == null) {
-			relateKeyword = RelateKeywordDictionaryCompiler.compile(environment);
-		}
+		StatisticsService service = ServiceManager.getInstance().getService(StatisticsService.class);
 		
+		Map<String, List<String>> relateKeywordMap = service.getRelateKeywordMap(siteId, categoryId);
+		logger.debug("relateKeywordMap:{}", relateKeywordMap);
 		
 		//KeywordDictionaryType keywordDictionaryType = KeywordDictionaryType.RELATE_KEYWORD;
 
@@ -41,16 +41,15 @@ public class GetServiceRelateKeywordAction extends ServiceAction {
 		responseWriter.key("category").value(categoryId);
 		responseWriter.key("type").value(KeywordDictionaryType.RELATE_KEYWORD.name());
 		
-		
 		try {
 			//KeywordDictionary keywordDictionary = keywordService.getKeywordDictionary(categoryId, keywordDictionaryType);
 			//RelateKeywordDictionary relateKeywordDictionary = (RelateKeywordDictionary) keywordDictionary;
 			
-			if(keyword != null){
+			if (keyword != null && relateKeywordMap != null) {
 				//String relateValue = relateKeywordDictionary.getRelateKeyword(keyword);
 				responseWriter.key("keyword").value(keyword);
 				responseWriter.key("relate").array();
-				List<String> list = relateKeyword.get(keyword);
+				List<String> list = relateKeywordMap.get(keyword);
 				if(list!=null) {
 					for(String value : list) {
 						responseWriter.value(value);

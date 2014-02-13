@@ -14,7 +14,6 @@ import org.json.JSONStringer;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -45,23 +44,9 @@ public class ReportMainController extends AbstractController {
 		return mav;
 	}
 	
-	
-	@RequestMapping("/siteList")
-	@ResponseBody
-	public String getSiteList(@PathVariable String siteId) {
-		List<SiteCategoryConfig> siteCategoryList = getSiteCategoryListConfig();
-		JSONStringer s = new JSONStringer();
-		s.array();
-		for(SiteCategoryConfig config : siteCategoryList){
-			s.object().key(config.getSiteId()).value(config.getSiteName()).endObject();
-		}
-		s.endArray();
-		return s.toString();
-	}
-	
 	@RequestMapping("/categoryList")
 	@ResponseBody
-	public String getCategoryList(@RequestParam String siteId) {
+	public String getCategoryList(@PathVariable String siteId) {
 		List<SiteCategoryConfig> siteCategoryList = getSiteCategoryListConfig();
 		JSONStringer s = new JSONStringer();
 		s.array();

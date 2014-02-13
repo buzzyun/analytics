@@ -32,8 +32,7 @@ public class RelateSearchLogAnalysisTask extends AnalysisTask<RelateSearchLog> {
 		Calendar calendar = Calendar.getInstance();
 		File baseDir = new File(SearchStatisticsProperties.getDayDataDir(dir, calendar), siteId);
 		Set<String> banWords = null;
-		int minimumHitCount = 1;
-		int topCount = 10;
+		int minimumHitCount = 5;
 
 		File logFile = new File(baseDir, "raw.log");
 		String encoding = SearchStatisticsProperties.encoding;
@@ -50,7 +49,7 @@ public class RelateSearchLogAnalysisTask extends AnalysisTask<RelateSearchLog> {
 			logger.error("", e.getMessage());
 		}
 
-		Calculator<RelateSearchLog> relateKeywordCalculator = new DailyRelateKeywordCalculator("Daily relate keyword calculator", baseDir, siteId, categoryIdList, banWords, minimumHitCount, topCount);
+		Calculator<RelateSearchLog> relateKeywordCalculator = new DailyRelateKeywordCalculator("Daily relate keyword calculator", baseDir, siteId, categoryIdList, banWords, minimumHitCount);
 		addCalculator(relateKeywordCalculator);
 	}
 

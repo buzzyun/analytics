@@ -5,13 +5,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.fastcatgroup.analytics.analysis.RelateSearchLogValidator;
-import org.fastcatgroup.analytics.analysis.SearchLogValidator;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.handler.KeyCountLogSortHandler;
 import org.fastcatgroup.analytics.analysis.handler.ProcessHandler;
 import org.fastcatgroup.analytics.analysis.handler.RelateSearchLogKeyCountHandler;
 import org.fastcatgroup.analytics.analysis.handler.UpdateRelateKeywordHandler;
-import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.log.RelateKeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.log.RelateSearchLog;
 
@@ -23,13 +21,11 @@ public class DailyRelateKeywordCalculator extends Calculator<RelateSearchLog> {
 	private Set<String> banWords;
 	//minimumHitCount번 이상 출현해야 연관어로 인정.
 	private int minimumHitCount;
-	private int topCount;
 	
-	public DailyRelateKeywordCalculator(String name, File baseDir, String siteId, List<String> categoryIdList, Set<String> banWords, int minimumHitCount, int topCount) {
+	public DailyRelateKeywordCalculator(String name, File baseDir, String siteId, List<String> categoryIdList, Set<String> banWords, int minimumHitCount) {
 		super(name, baseDir, siteId, categoryIdList);
 		this.banWords = banWords;
 		this.minimumHitCount = minimumHitCount;
-		this.topCount = topCount;
 	}
 	
 	@Override
@@ -42,7 +38,7 @@ public class DailyRelateKeywordCalculator extends Calculator<RelateSearchLog> {
 		String RELATE_KEY_COUNT_FILENAME = "relate-key-count.log";
 		String RELATE_KEY_COUNT_RANK_FILENAME = "relate-key-count-rank.log";
 		
-		logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
+		logger.debug("Process Dir = {}", workingDir.getAbsolutePath());
 		RelateKeyCountRunEntryParser entryParser = new RelateKeyCountRunEntryParser();
 		RelateSearchLogValidator logValidator = new RelateSearchLogValidator(banWords);
 		CategoryProcess<RelateSearchLog> categoryProcess = new CategoryProcess<RelateSearchLog>(categoryId);

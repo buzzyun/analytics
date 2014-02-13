@@ -7,7 +7,6 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -21,8 +20,6 @@ import org.fastcatgroup.analytics.db.mapper.RelateKeywordMapper;
 import org.fastcatgroup.analytics.db.mapper.RelateKeywordValueMapper;
 import org.fastcatgroup.analytics.db.vo.RelateKeywordVO;
 import org.fastcatgroup.analytics.service.ServiceManager;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.json.JSONStringer;
 import org.json.JSONWriter;
 import org.springframework.stereotype.Controller;
@@ -45,13 +42,12 @@ public class SearchKeywordController extends AbstractController {
 		StatisticsService statisticsService = serviceManager.getService(StatisticsService.class);
 		mav.addObject("siteConfig", statisticsService.getSiteCategoryListConfig().getList());
 		mav.setViewName("report/keyword/index");
-//		mav.addObject("siteId", siteId);
 		mav.addObject("keywordType", keywordType);
 		return mav;
 
 	}
 	
-	private void deleteRelateKeyword(String siteId, String deleteIdList) throws Exception {
+	private void deleteRelateKeyword(@PathVariable String siteId, String deleteIdList) throws Exception {
 		//value 를 먼저 지운 후 keyword 를 지우도록 한다.
 		AnalyticsDBService service = ServiceManager.getInstance().getService(AnalyticsDBService.class);
 		MapperSession<RelateKeywordMapper> relateMapperSession = null;
@@ -226,8 +222,8 @@ public class SearchKeywordController extends AbstractController {
 			}
 
 			String whereCondition = "";
-			//TODO whereCondition에 start, end와 검색 keyword 처리.
 			
+			//whereCondition에 start, end와 검색 keyword 처리.
 			if(keyword!=null && !"".equals(keyword)) {
 				if(exactMatch) {
 					whereCondition += "AND (a.keyword='"+keyword+"' OR b.value='"+keyword+"') ";
@@ -268,7 +264,7 @@ public class SearchKeywordController extends AbstractController {
 	}
 
 	@RequestMapping("/relate/download")
-	public void downloadDictionary(HttpServletResponse response, @PathVariable String siteId, 
+	public void downloadRelateKeyword(HttpServletResponse response, @PathVariable String siteId, 
 			@RequestParam(required = false) Boolean forView) throws Exception {
 
 		int PAGE_SIZE = 100;
@@ -332,7 +328,7 @@ public class SearchKeywordController extends AbstractController {
 	}
 
 	@RequestMapping("/relate/upload")
-	public void uploadDictionary(HttpSession session, MultipartHttpServletRequest request, HttpServletResponse response
+	public void uploadRelateKeyword(HttpSession session, MultipartHttpServletRequest request, HttpServletResponse response
 			, @PathVariable String siteId) throws Exception {
 
 		Iterator<String> itr = request.getFileNames();

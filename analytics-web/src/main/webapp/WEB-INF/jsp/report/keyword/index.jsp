@@ -47,7 +47,7 @@ $(document).ready(function(){
 					<ul id="breadcrumbs" class="breadcrumb">
 						<li><i class="icon-home"></i> Manager</li>
 						<li class="current"> Keyword</li>
-						<li class="current"> ${keywordId}</li>
+						<li class="current"> ${keywordType}</li>
 					</ul>
 
 				</div>
@@ -56,13 +56,11 @@ $(document).ready(function(){
 				<!--=== Page Header ===-->
 				<div class="page-header">
 					<div class="page-title">
-						<h3>${keywordId }</h3>
+						<h3>${keywordType }</h3>
 					</div>
 				</div>
 				<!-- /Page Header -->
-				<div class="tabbable tabbable-custom tabbable-full-width">
-					<div id="tab_keyword_overview"></div>
-				</div>
+				<div id="tab_keyword_overview"></div>
 						
 				<!-- /Page Content -->
 			</div>

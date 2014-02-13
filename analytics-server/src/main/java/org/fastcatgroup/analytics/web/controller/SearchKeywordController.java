@@ -27,22 +27,23 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/report/keyword")
+@RequestMapping("/{siteId}/report/keyword")
 public class SearchKeywordController extends AbstractController {
 
-	@RequestMapping("/{keywordId}/index")
-	public ModelAndView keywordIndex(@PathVariable String keywordId) {
+	@RequestMapping("/{keywordType}/index")
+	public ModelAndView keywordIndex(@PathVariable String siteId, @PathVariable String keywordType) {
 		ModelAndView mav = new ModelAndView();
 
 		mav.setViewName("report/keyword/index");
-		mav.addObject("keywordId", keywordId);
+		mav.addObject("siteId", siteId);
+		mav.addObject("keywordType", keywordType);
 		return mav;
 
 	}
 
-	@RequestMapping("/{keywordId}/delete")
+	@RequestMapping("/relate/delete")
 	@ResponseBody
-	public String deleteRelateKeyword(@PathVariable String keywordId, @RequestParam(required = false) String deleteIdList) throws Exception {
+	public String deleteRelateKeyword(@PathVariable String siteId, @RequestParam(required = false) String deleteIdList) throws Exception {
 		boolean result = false;
 		
 		JSONStringer s = new JSONStringer();
@@ -50,10 +51,10 @@ public class SearchKeywordController extends AbstractController {
 		return s.toString();
 	}
 
-	@RequestMapping("/{keywordId}/update")
+	@RequestMapping("/relate/update")
 	@ResponseBody
 	public String addUpdateRelateKeyword(
-			@PathVariable String keywordId, 
+			@PathVariable String siteId, 
 			@RequestParam String site,
 			@RequestParam String category,
 			@RequestParam("ID") String id,
@@ -64,8 +65,8 @@ public class SearchKeywordController extends AbstractController {
 		// keyword 가 존재하지 않으면 검사하지 않고 key,value 모두 insert
 		// keyword가 존재하면, value하나씩 검사하여 없는것만 insert.
 		
-		logger.debug("keywordId:{} / siteId:{} / categoryId:{} / id:{} / keyword:{} / value:{}",
-				keywordId, site, category, id, keyword, value);
+		logger.debug("keywordType:{} / siteId:{} / categoryId:{} / id:{} / keyword:{} / value:{}",
+				"relate", site, category, id, keyword, value);
 		
 		
 		
@@ -75,21 +76,19 @@ public class SearchKeywordController extends AbstractController {
 		return s.toString();
 	}
 
-	@RequestMapping("/{keywordId}/list")
-	public ModelAndView relateKeywordList(@PathVariable String keywordId, @RequestParam(defaultValue = "1") Integer pageNo
-			, @RequestParam(required = false) String site, @RequestParam(required = false) String category
+	@RequestMapping("/relate/list")
+	public ModelAndView relateKeywordList(@PathVariable String siteId
+			, @RequestParam(required = false) String categoryId, @RequestParam(defaultValue = "1") Integer pageNo 
 			, @RequestParam(required = false) String keyword , @RequestParam(required = false) Boolean exactMatch
 			, @RequestParam(required = false) Boolean isEditable , @RequestParam(required = false) String targetId
 			) throws Exception {
 
-		JSONStringer stringer = null;
 		int PAGE_SIZE = 10;
 
 		ModelAndView mav = new ModelAndView();
 		MapperSession<RelateKeywordMapper> mapperSession = null;
 
 		try {
-			stringer = new JSONStringer();
 			AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
 			mapperSession = dbService.getMapperSession(RelateKeywordMapper.class);
 			RelateKeywordMapper mapper = mapperSession.getMapper();
@@ -104,35 +103,29 @@ public class SearchKeywordController extends AbstractController {
 			//end = start + PAGE_SIZE;
 
 			String whereCondition = "";
+			//TODO whereCondition에 start, end와 검색 keyword 처리.
+			
+			
+			
+			
+			
+			int totalSize = mapper.getCount(siteId);
+			int filteredSize = mapper.getCountByWhereCondition(siteId, whereCondition);
+			List<RelateKeywordVO> entryList = mapper.getEntryListByWhereCondition(siteId, whereCondition, start, PAGE_SIZE);
 
-			int totalSize = mapper.getCount(site);
-			int filteredSize = mapper.getCountByWhereCondition(site, whereCondition);
-			List<RelateKeywordVO> entryList = mapper.getEntryListByWhereCondition(site, whereCondition, start, PAGE_SIZE);
-
-			stringer.object().key("totalSize").value(totalSize).key("filteredSize").value(filteredSize)
-			.key("searchableColumnList").array().endArray()
-			.key(keywordId).array();
-			for (RelateKeywordVO vo : entryList) {
-				String value = vo.getValue();
-				if(value==null) { value = ""; }
-				stringer.object().key("ID").value(vo.getId())
-				.key("KEYWORD").value(vo.getKeyword())
-				.key("VALUE").value(value).endObject();
-			}
-			stringer.endArray().endObject();
-			mav.addObject("siteId", site);
-			mav.addObject("categoryId", category);
-			mav.addObject("keywordId", keywordId);
-			mav.addObject("list", new JSONObject(stringer.toString()));
+			mav.addObject("siteId", siteId);
+			mav.addObject("categoryId", categoryId);
+			mav.addObject("entryList", entryList);
 			mav.addObject("start", 1);
 			mav.addObject("pageNo", pageNo);
 			mav.addObject("totalSize", totalSize);
+			mav.addObject("filteredSize", filteredSize);
 			mav.addObject("pageSize", PAGE_SIZE);
 			mav.addObject("targetId", targetId);
 			if(isEditable != null && isEditable.booleanValue()) {
-				mav.setViewName("report/keyword/" + keywordId + "KeywordEdit");
+				mav.setViewName("report/keyword/relateKeywordEdit");
 			} else {
-				mav.setViewName("report/keyword/" + keywordId + "Keyword");
+				mav.setViewName("report/keyword/relateKeyword");
 			}
 		} finally {
 			if (mapperSession != null) {
@@ -142,9 +135,9 @@ public class SearchKeywordController extends AbstractController {
 		return mav;
 	}
 
-	@RequestMapping("/{keywordId}/download")
-	public void downloadDictionary(HttpSession session, HttpServletResponse response, @PathVariable String analysisId, @PathVariable String dictionaryType,
-			@RequestParam String keywordId, @RequestParam(required = false) Boolean forView) throws Exception {
+	@RequestMapping("/relate/download")
+	public void downloadDictionary(HttpServletResponse response, @PathVariable String siteId, 
+			@RequestParam(required = false) Boolean forView) throws Exception {
 
 		JSONObject jsonObj = null;
 
@@ -156,8 +149,7 @@ public class SearchKeywordController extends AbstractController {
 		if (forView != null && forView.booleanValue()) {
 			// 다운로드 하지 않고 웹페이지에서 보여준다.
 		} else {
-			logger.debug("dictionaryId > {}", keywordId);
-			response.setHeader("Content-disposition", "attachment; filename=\"" + keywordId + ".txt\"");
+			response.setHeader("Content-disposition", "attachment; filename=\"" + siteId+"_relate" + ".txt\"");
 		}
 		PrintWriter writer = null;
 		try {
@@ -170,7 +162,7 @@ public class SearchKeywordController extends AbstractController {
 				}
 
 				JSONArray columnList = jsonObj.getJSONArray("columnList");
-				JSONArray array = jsonObj.getJSONArray(keywordId);
+				JSONArray array = jsonObj.getJSONArray("item");
 				int readSize = array.length();
 				totalReadSize += readSize;
 
@@ -204,9 +196,9 @@ public class SearchKeywordController extends AbstractController {
 		}
 	}
 
-	@RequestMapping("/{keywordId}/upload")
-	public void uploadDictionary(HttpSession session, MultipartHttpServletRequest request, HttpServletResponse response, @PathVariable String analysisId,
-			@PathVariable String dictionaryType, @RequestParam String keywordId) throws Exception {
+	@RequestMapping("/relate/upload")
+	public void uploadDictionary(HttpSession session, MultipartHttpServletRequest request, HttpServletResponse response
+			, @PathVariable String siteId) throws Exception {
 
 		Iterator<String> itr = request.getFileNames();
 		String fileName = null;

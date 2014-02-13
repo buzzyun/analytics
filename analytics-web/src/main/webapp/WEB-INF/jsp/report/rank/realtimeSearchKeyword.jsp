@@ -18,7 +18,7 @@ String categoryId = request.getParameter("categoryId");
 <c:import url="${ROOT_PATH}/inc/header.jsp" />
 <script>
 $(document).ready(function(){
-	triggerSiteCategoryList($("#select_site"), $("#select_category"), '<%=siteId %>', '<%=categoryId %>');
+	//triggerSiteCategoryList($("#select_site"), $("#select_category"), '<%=siteId %>', '<%=categoryId %>');
 });
 </script>
 </head>
@@ -62,7 +62,6 @@ $(document).ready(function(){
 					
 					<div class="col-md-12">
 						<form class="form-inline" role="form" method="post" >
-							<select id="select_site" class="select_flat select_flat-sm" name="siteId"></select> 
 							<select id="select_category" class="select_flat select_flat-sm fcol2" name="categoryId"></select> 
 							
 							<input type="submit" class="btn btn-sm btn-primary" value="Submit">

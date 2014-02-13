@@ -51,7 +51,6 @@ $(document).ready(function(){
 		}
 	});
 	
-	triggerSiteCategoryList($("#select_site"), $("#select_category"), '<%=siteId %>', '');
 });
 
 function gorelateKeywordPage(uri, pageNo){

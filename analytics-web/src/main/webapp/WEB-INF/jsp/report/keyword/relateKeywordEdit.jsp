@@ -1,17 +1,22 @@
+<%@page import="org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig"%>
+<%@page import="org.fastcatgroup.analytics.db.vo.RelateKeywordVO"%>
+<%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <%@page import="org.json.*"%>
 <%
-	String keywordId = (String) request.getAttribute("keywordId");
-	JSONObject list = (JSONObject) request.getAttribute("list");
-	int totalSize = list.getInt("totalSize");
-	int filteredSize = list.getInt("filteredSize");
-	JSONArray entryList = (JSONArray) list.getJSONArray(keywordId);
+	List<RelateKeywordVO> entryList = (List<RelateKeywordVO>)request.getAttribute("entryList");
+	int totalSize = (Integer) request.getAttribute("totalSize");
+	int filteredSize = (Integer) request.getAttribute("filteredSize");
 	int start = (Integer) request.getAttribute("start");
 	String targetId = (String) request.getAttribute("targetId");
-	JSONArray searchableColumnList = (JSONArray) list.getJSONArray("searchableColumnList");
+	
+	String siteId = request.getParameter("siteId");
+	
+	//JSONArray searchableColumnList = (JSONArray) list.getJSONArray("searchableColumnList");
+	JSONArray searchableColumnList = new JSONArray();
 	String searchColumn = (String) request.getAttribute("searchColumn");
 %>
 <script>
@@ -25,12 +30,12 @@ var exactMatchObj;
 
 $(document).ready(function(){
 	
-	wordInputObj = $("#word_input_${keywordId}");
-	valueInputObj = $("#value_input_${keywordId}");
-	wordInputResultObj = $("#word_input_result_${keywordId}");
-	searchInputObj = $("#search_input_${keywordId}");
-	searchColumnObj = $("#${keywordId}SearchColumn");
-	exactMatchObj = $("#${keywordId}ExactMatch");
+	wordInputObj = $("#word_input_relate");
+	valueInputObj = $("#value_input_relate");
+	wordInputResultObj = $("#word_input_result_relate");
+	searchInputObj = $("#search_input_relate");
+	searchColumnObj = $("#relateSearchColumn");
+	exactMatchObj = $("#relateExactMatch");
 	
 	searchInputObj.keydown(function (e) {
 		if(e.keyCode == 13){
@@ -55,27 +60,27 @@ $(document).ready(function(){
 	});
 	
 	//단어추가상자PUT버튼.
-	$("#word_input_button_${keywordId}").on("click", function(e){
-		<%=keywordId%>ValueInsert();
+	$("#word_input_button_relate").on("click", function(e){
+		relateValueInsert();
 	});
 	//단어추가상자 엔터키. 
 	wordInputObj.keydown(function (e) {
 		if(e.keyCode == 13){
-			<%=keywordId%>ValueInsert();
+			relateValueInsert();
 		}
 	});
 	valueInputObj.keydown(function (e) {
 		if(e.keyCode == 13){
-			<%=keywordId%>ValueInsert();
+			relateValueInsert();
 		}
 	});
 	
-	$("#<%=keywordId%>WordInsertModal").on("hidden.bs.modal", function(){
-		<%=keywordId%>LoadList();
+	$("#relateWordInsertModal").on("hidden.bs.modal", function(){
+		relateLoadList();
 		searchInputObj.focus();
 	});
 	
-	$("#<%=keywordId%>WordInsertModal").on("shown.bs.modal", function(){
+	$("#relateWordInsertModal").on("shown.bs.modal", function(){
 		wordInputObj.focus();
 	});
 	
@@ -95,7 +100,7 @@ $(document).ready(function(){
 					console.log("upload response ", resp);
 					if(resp.success){
 						noty({text: "File upload success", type: "success", layout:"topRight", timeout: 3000});
-						$("#<%=keywordId%>WordInsertModal").modal("hide");
+						$("#relateWordInsertModal").modal("hide");
 					}else{
 						noty({text: "File upload fail. "+resp.errorMessage, type: "error", layout:"topRight", timeout: 5000});
 					}
@@ -111,16 +116,16 @@ $(document).ready(function(){
 		}
 	});
 });
-function <%=keywordId%>Truncate(){
+function relateTruncate(){
 	if(confirm("Clean all data including invisible entries.")){
-		truncateKeyword('${analysisId}', '${keywordId}', <%=keywordId%>LoadList);
+		truncateKeyword('${analysisId}', 'relate', relateLoadList);
 	}
 }
-function <%=keywordId%>LoadList(){
+function relateLoadList(){
 	var keyword = toSafeString(searchInputObj.val());
 	loadKeywordTab('<%=keywordId %>', 1, keyword, searchColumnObj.val(), exactMatchObj.is(":checked"), true, '<%=targetId%>');
 }
-function <%=keywordId%>ValueInsert(){
+function relateValueInsert(){
 	var keyword = toSafeString(wordInputObj.val());
 	wordInputObj.val(keyword);
 	var value = toSafeString(valueInputObj.val());
@@ -138,7 +143,7 @@ function <%=keywordId%>ValueInsert(){
 	requestProxy("POST", {
 			uri: '/report/keyword/put.json',
 			pluginId: '${analysisId}',
-			keywordId: '${keywordId}',
+			keywordId: 'relate',
 			KEYWORD: keyword,
 			VALUE: value
 		},
@@ -174,14 +179,14 @@ function <%=keywordId%>ValueInsert(){
 	);
 }
 
-function <%=keywordId%>WordUpdate(id){
+function relateWordUpdate(id){
 	
-	var trObj = $("#_${keywordId}-"+id);
+	var trObj = $("#_relate-"+id);
 	//console.log("update", id, trObj);
 	
 	var data = { 
 		site: '${siteId}',
-		keywordId: '${keywordId}'
+		keywordId: 'relate'
 	};
 	
 	trObj.find("input[type=text],input[type=hidden]").each(function() {
@@ -220,20 +225,20 @@ function <%=keywordId%>WordUpdate(id){
 		}
 	});
 }
-function go<%=keywordId%>KeywordPage(uri, pageNo){
+function gorelateKeywordPage(uri, pageNo){
 	loadKeywordTab('<%=keywordId %>', pageNo, '${keyword}', searchColumnObj.val(), exactMatchObj.is(":checked"), true, '<%=targetId%>');
 }
-function go<%=keywordId%>ViewablePage(pageNo){
+function gorelateViewablePage(pageNo){
 	loadKeywordTab('<%=keywordId %>', pageNo, '${keyword}', searchColumnObj.val(), exactMatchObj.is(":checked"), false, '<%=targetId%>');	
 }
-function <%=keywordId%>deleteOneWord(deleteId){
+function relatedeleteOneWord(deleteId){
 	if(confirm("Are you sure to delete?")){
 		loadKeywordTab('<%=keywordId %>', '${pageNo}', '${keyword}', searchColumnObj.val(), exactMatchObj.is(":checked"), true, '<%=targetId%>', deleteId);
 	}
 }
-function <%=keywordId%>deleteSelectWord(){
+function relatedeleteSelectWord(){
 	var idList = new Array();
-	$("._table_${keywordId}").find('tr.checked').each(function() {
+	$("._table_relate").find('tr.checked').each(function() {
 		var id = $(this).find("td input[name=ID]").val();
 		idList.push(id);
 	});
@@ -271,7 +276,7 @@ function <%=keywordId%>deleteSelectWord(){
 				<div class="form-group" style="width:240px">
 					<div class="input-group" >
 						<span class="input-group-addon"><i class="icon-search"></i></span>
-						<input type="text" class="form-control" placeholder="Search" id="search_input_<%=keywordId%>" value="${keyword}">
+						<input type="text" class="form-control" placeholder="Search" id="search_input_relate" value="${keyword}">
 					</div>
 				</div>
 				<div class="form-group">
@@ -286,17 +291,17 @@ function <%=keywordId%>deleteSelectWord(){
 			
 			<div class="col-md-5">
 				<div class="pull-right">
-					<a href="javascript:<%=keywordId%>Truncate();"  class="btn btn-danger btn-sm">
+					<a href="javascript:relateTruncate();"  class="btn btn-danger btn-sm">
 						<span class="glyphicon glyphicon-ban-circle"></span> Clean
 					</a>
 					&nbsp;
 					<div class="btn-group">
-						<a href="#<%=keywordId%>WordInsertModal" role="button" data-toggle="modal" class="btn btn-sm" rel="tooltip"><i class="icon-plus"></i></a>
-						<a href="javascript:<%=keywordId%>deleteSelectWord()" class="btn btn-sm" rel="tooltip"><i class="icon-minus"></i></a>
-						<a href="javascript:go<%=keywordId%>KeywordPage('', '${pageNo}');" class="btn btn-sm" rel="tooltip"><i class="icon-refresh"></i></a>
+						<a href="#relateWordInsertModal" role="button" data-toggle="modal" class="btn btn-sm" rel="tooltip"><i class="icon-plus"></i></a>
+						<a href="javascript:relatedeleteSelectWord()" class="btn btn-sm" rel="tooltip"><i class="icon-minus"></i></a>
+						<a href="javascript:gorelateKeywordPage('', '${pageNo}');" class="btn btn-sm" rel="tooltip"><i class="icon-refresh"></i></a>
 					</div>
 					&nbsp;
-					<a href="javascript:go<%=keywordId%>ViewablePage('${pageNo}');"  class="btn btn-default btn-sm">
+					<a href="javascript:gorelateViewablePage('${pageNo}');"  class="btn btn-default btn-sm">
 						<span class="glyphicon glyphicon-eye-open"></span> View
 					</a>
 				</div>
@@ -304,7 +309,7 @@ function <%=keywordId%>deleteSelectWord(){
 		</div>
 		
 		<%
-		if(entryList.length() > 0){
+		if(entryList.size() > 0){
 		%>
 		<div class="col-md-12" style="overflow:auto">
 		
@@ -321,20 +326,20 @@ function <%=keywordId%>deleteSelectWord(){
 				</thead>
 				<tbody>
 				<%
-				for(int i=0; i < entryList.length(); i++){
-					JSONObject obj = entryList.getJSONObject(i);
+				for(int i=0; i < entryList.size(); i++){
+					 RelateKeywordVO relateKeyword = entryList.get(i);//.getJSONrelateKeywordect(i);
 				%>
-					<tr id="_<%=keywordId %>-<%=obj.getInt("ID") %>">
+					<tr id="_<%=keywordId %>-<%=relateKeyword.getId() %>">
 						<td class="checkbox-column">
 							<input type="checkbox" class="edit">
-							<input type="hidden" name="ID" value="<%=obj.getInt("ID") %>"/>
+							<input type="hidden" name="ID" value="<%=relateKeyword.getId() %>"/>
 						</td>
 						<td class="col-md-2">
-							<input type="text" name="KEYWORD" value="<%=obj.getString("KEYWORD") %>" class="form-control"/>
+							<input type="text" name="KEYWORD" value="<%=relateKeyword.getKeyword() %>" class="form-control"/>
 						</td>
-						<td><input type="text" name="VALUE" value="<%=obj.getString("VALUE") %>" class="form-control"/></td>
-						<td class="col-md-2"><a href="javascript:<%=keywordId%>WordUpdate(<%=obj.getInt("ID") %>);" class="btn btn-sm"><i class="glyphicon glyphicon-saved"></i></a>
-						<a href="javascript:<%=keywordId%>deleteOneWord(<%=obj.getInt("ID") %>);" class="btn btn-sm"><i class="glyphicon glyphicon-remove"></i></a></td>
+						<td><input type="text" name="VALUE" value="<%=relateKeyword.getValue() %>" class="form-control"/></td>
+						<td class="col-md-2"><a href="javascript:relateWordUpdate(<%=relateKeyword.getId() %>);" class="btn btn-sm"><i class="glyphicon glyphicon-saved"></i></a>
+						<a href="javascript:relatedeleteOneWord(<%=relateKeyword.getId() %>);" class="btn btn-sm"><i class="glyphicon glyphicon-remove"></i></a></td>
 					</tr>
 				<%
 				}
@@ -348,8 +353,8 @@ function <%=keywordId%>deleteSelectWord(){
 		<div class="table-footer">
 			<div class="col-md-12">
 			Rows 
-			<% if(entryList.length() > 0) { %>
-			<%=start %> - <%=start + entryList.length() - 1 %> of <%=filteredSize %> <% if(filteredSize != totalSize) {%> (filtered from <%=totalSize %> total entries)<% } %>
+			<% if(entryList.size() > 0) { %>
+			<%=start %> - <%=start + entryList.size() - 1 %> of <%=filteredSize %> <% if(filteredSize != totalSize) {%> (filtered from <%=totalSize %> total entries)<% } %>
 			<% } else { %>
 			Empty
 			<% } %>
@@ -368,7 +373,7 @@ function <%=keywordId%>deleteSelectWord(){
 </div>
 </div>
 
-<div class="modal" id="<%=keywordId%>WordInsertModal" role="dialog">
+<div class="modal" id="relateWordInsertModal" role="dialog">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -378,23 +383,23 @@ function <%=keywordId%>deleteSelectWord(){
 			<div class="modal-body">
 				<div class="form-inline">
 					<div class="form-group">
-						<input type="text" id="word_input_${keywordId}" class="form-control" placeholder="Keyword">
+						<input type="text" id="word_input_relate" class="form-control" placeholder="Keyword">
 					</div>
 					<div class="form-group" style="width:370px">
 						<div class="input-group" >
-							<input type="text" id="value_input_${keywordId}" class="form-control" placeholder="Value">
+							<input type="text" id="value_input_relate" class="form-control" placeholder="Value">
 							<span class="input-group-btn">
-								<button class="btn btn-default" type="button" id="word_input_button_${keywordId}">Put</button>
+								<button class="btn btn-default" type="button" id="word_input_button_relate">Put</button>
 							</span>
 						</div>
 					</div>
 				</div>
-				<label id="word_input_result_${keywordId}" for="word_input" class="help-block" style="word-wrap: break-word;"></label>
+				<label id="word_input_result_relate" for="word_input" class="help-block" style="word-wrap: break-word;"></label>
 			</div>
 			<div class="modal-footer">
 				<form action="synonym/upload.html" method="POST" enctype="multipart/form-data" style="display: inline;">
-					<input type="hidden" name="keywordId" value="${keywordId}"/>
-					<span class="fileContainer btn btn-primary"><span class="icon icon-upload"></span> File Upload ...<input type="file" name="filename" id="${keywordId}_file_upload"></span>
+					<input type="hidden" name="keywordId" value="relate"/>
+					<span class="fileContainer btn btn-primary"><span class="icon icon-upload"></span> File Upload ...<input type="file" name="filename" id="relate_file_upload"></span>
 				</form>
 				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 		  	</div>

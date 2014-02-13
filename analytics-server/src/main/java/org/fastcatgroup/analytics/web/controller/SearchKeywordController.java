@@ -111,9 +111,6 @@ public class SearchKeywordController extends AbstractController {
 			//TODO whereCondition에 start, end와 검색 keyword 처리.
 			
 			
-			
-			
-			
 			int totalSize = mapper.getCount(siteId);
 			int filteredSize = mapper.getCountByWhereCondition(siteId, whereCondition);
 			List<RelateKeywordVO> entryList = mapper.getEntryListByWhereCondition(siteId, whereCondition, start, PAGE_SIZE);

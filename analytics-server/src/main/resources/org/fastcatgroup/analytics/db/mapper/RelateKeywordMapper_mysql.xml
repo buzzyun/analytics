@@ -58,7 +58,7 @@
 	</select>
 	
 	<select id="getKeywordList" parameterType="map" resultType="String">
-		select * from RelateKeyword a left join RelateKeywordValue b on b.keyId = a.id
+		select concat(group_concat(b.value)) value from RelateKeyword a left join RelateKeywordValue b on b.keyId = a.id
 		
 	</select>
 	

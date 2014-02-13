@@ -82,8 +82,6 @@ public class StatisticsService extends AbstractService {
 			siteStatisticsModuleMap.put(siteId, module);
 		}
 		
-		
-		loadRelateKeyword();
 
 	}
 
@@ -103,11 +101,11 @@ public class StatisticsService extends AbstractService {
 				
 				String siteId = siteCategoryConfig.getSiteId();
 				
-					List<RelateKeywordVO> list = mapper.getEntryList(siteId);
-					if(list != null){
-						Map<String, List<String>> keywordMap = new HashMap<String, List<String>>();
-						relateKeywordMap.put(siteId, keywordMap);
-					}
+//					List<String> list = mapper.getKeywordList(siteId);
+//					if(list != null){
+//						Map<String, List<String>> keywordMap = new HashMap<String, List<String>>();
+//						relateKeywordMap.put(siteId, keywordMap);
+//					}
 			}
 			
 		} catch (Exception e) {
@@ -190,6 +188,8 @@ public class StatisticsService extends AbstractService {
 		for (SiteSearchLogStatisticsModule module : siteStatisticsModuleMap.values()) {
 			module.load();
 		}
+		
+		loadRelateKeyword();
 		
 		return true;
 	}

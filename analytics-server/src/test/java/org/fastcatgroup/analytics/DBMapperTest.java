@@ -105,9 +105,9 @@ public class DBMapperTest {
 					SearchHitVO vo;
 					List<SearchHitVO> list;
 					try {
-						mapper.createTable(site, category);
-						mapper.createIndex(site, category);
-						mapper.validateTable(site, category);
+						mapper.createTable(site);
+						mapper.createIndex(site);
+						mapper.validateTable(site);
 						//입력자료 설정
 						mapper.putEntry(site, category, "m201311", 200);
 						mapper.putEntry(site, category, "d20131225", 1);
@@ -152,7 +152,7 @@ public class DBMapperTest {
 						assertEquals(sum,2+3+4+5+6+7);
 						
 					} finally {
-						mapper.dropTable(site, category);
+						mapper.dropTable(site);
 						session.commit();
 					}
 				} else if(obj instanceof SearchKeywordHitMapper) {
@@ -161,9 +161,9 @@ public class DBMapperTest {
 					List<SearchKeywordHitVO> list;
 					List<String> keywordList;
 					try {
-						mapper.createTable(site, category);
-						mapper.createIndex(site, category);
-						mapper.validateTable(site, category);
+						mapper.createTable(site);
+						mapper.createIndex(site);
+						mapper.validateTable(site);
 						
 						mapper.putEntry(site, category, "d20131101", "조아라", 5);
 						mapper.putEntry(site, category, "d20131101", "테스트", 5);
@@ -229,7 +229,7 @@ public class DBMapperTest {
 						assertEquals(sum, 15);
 						
 					} finally {
-						mapper.dropTable(site, category);
+						mapper.dropTable(site);
 						session.commit();
 					}
 				} else if(obj instanceof SearchTypeRatioMapper) {

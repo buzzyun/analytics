@@ -5,69 +5,71 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.fastcatgroup.analytics.db.vo.SearchKeywordHitVO;
 
-public interface SearchKeywordHitMapper {
+public interface SearchKeywordHitMapper extends AnalyticsMapper {
 	
-	public void createTable(@Param("site") String site,
-			@Param("category") String category);
+	@Override
+	public void createTable(@Param("siteId") String siteId);
 
-	public void createIndex(@Param("site") String site,
-			@Param("category") String category) throws Exception;
+	@Override
+	public void createIndex(@Param("siteId") String siteId) throws Exception;
 
-	public void validateTable(@Param("site") String site,
-			@Param("category") String category) throws Exception;
+	@Override
+	public void validateTable(@Param("siteId") String siteId) throws Exception;
 
-	public void dropTable(@Param("site") String site,
-			@Param("category") String category) throws Exception;
+	@Override
+	public void dropTable(@Param("siteId") String siteId) throws Exception;
 	
-	public SearchKeywordHitVO getEntry(@Param("site") String site,
-			@Param("category") String category, @Param("timeId") String timeId,
+	@Override
+	public int truncate(@Param("siteId") String siteId) throws Exception;
+	
+	public SearchKeywordHitVO getEntry(@Param("siteId") String siteId,
+			@Param("categoryId") String categoryId, @Param("timeId") String timeId,
 			@Param("keyword") String keyword) throws Exception;
 	
-	public SearchKeywordHitVO getMinEntry(@Param("site") String site,
-			@Param("category") String category, @Param("dFilter") String dFilter, 
+	public SearchKeywordHitVO getMinEntry(@Param("siteId") String siteId,
+			@Param("categoryId") String categoryId, @Param("dFilter") String dFilter, 
 			@Param("keyword") String keyword) throws Exception;
 	
-	public SearchKeywordHitVO getMaxEntry(@Param("site") String site,
-			@Param("category") String category, @Param("dFilter") String dFilter,
+	public SearchKeywordHitVO getMaxEntry(@Param("siteId") String siteId,
+			@Param("categoryId") String categoryId, @Param("dFilter") String dFilter,
 			@Param("keyword") String keyword) throws Exception;
 
-	public List<String> searchKeyword(@Param("site") String site,
-			@Param("category") String category, @Param("search") String search,
+	public List<String> searchKeyword(@Param("siteId") String siteId,
+			@Param("categoryId") String categoryId, @Param("search") String search,
 			@Param("from") String from, @Param("to") String to);
 	
 	public List<SearchKeywordHitVO> getEntryListBetween(
-			@Param("site") String site, @Param("category") String category,
+			@Param("siteId") String siteId, @Param("categoryId") String categoryId,
 			@Param("dFilter") String dFilter, @Param("keyword") String keyword,
 			@Param("from") String from, @Param("to") String to,
 			@Param("isGroup") boolean isGroup);
 	
-	public int getCountBetween(@Param("site") String site,
-			@Param("category") String category, @Param("dFilter") String dFilter,
+	public int getCountBetween(@Param("siteId") String siteId,
+			@Param("categoryId") String categoryId, @Param("dFilter") String dFilter,
 			@Param("keyword") String keyword, @Param("from") String from,
 			@Param("to") String to);
 	
-	public int getSumBetween(@Param("site") String site,
-			@Param("category") String category,
+	public int getSumBetween(@Param("siteId") String siteId,
+			@Param("categoryId") String categoryId,
 			@Param("keyword") String keyword, @Param("from") String from,
 			@Param("to") String to);
 	
-	public int putEntry(@Param("site") String site,
-			@Param("category") String category, @Param("timeId") String timeId,
+	public int putEntry(@Param("siteId") String siteId,
+			@Param("categoryId") String categoryId, @Param("timeId") String timeId,
 			@Param("keyword") String keyword, @Param("hit") int hit);
 	
-	public int updateEntry(@Param("site") String site,
-			@Param("category") String category, @Param("timeId") String timeId,
+	public int updateEntry(@Param("siteId") String siteId,
+			@Param("categoryId") String categoryId, @Param("timeId") String timeId,
 			@Param("keyword") String keyword, @Param("hit") int hit);
 	
-	public int deleteEntry(@Param("site") String site,
-			@Param("category") String category, @Param("timeId") String timeId,
+	public int deleteEntry(@Param("siteId") String siteId,
+			@Param("categoryId") String categoryId, @Param("timeId") String timeId,
 			@Param("keyword") String keyword);
 	
-	public int deleteEntryBetween(@Param("site") String site,
-			@Param("category") String category,
+	public int deleteEntryBetween(@Param("siteId") String siteId,
+			@Param("categoryId") String categoryId,
 			@Param("keyword") String keyword, @Param("from") String from,
 			@Param("to") String to);
 	
-	public int truncate(@Param("site") String site,
-			@Param("category") String category);
+	
 }

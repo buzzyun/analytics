@@ -82,26 +82,23 @@ public class AnalyticsDBService extends AbstractDBService {
 			MapperSession<? extends AnalyticsMapper> mapperSession = (MapperSession<? extends AnalyticsMapper>) getMapperSession(clazz);
 			AnalyticsMapper managedMapper = mapperSession.getMapper();
 			for (SiteCategoryConfig siteConfig : siteCategoryConfig) {
-				List<CategoryConfig> categoryConfigList = siteConfig.getCategoryList();
-				for (CategoryConfig categoryConfig : categoryConfigList) {
 					String site = siteConfig.getSiteId();
-					String category = categoryConfig.getId();
 					try {
 						logger.debug("valiadte {}", clazz.getSimpleName());
-						managedMapper.validateTable(site, category);
+						managedMapper.validateTable(site);
 					} catch (Exception e) {
 						try {
 							logger.debug("drop {}", clazz.getSimpleName());
-							managedMapper.dropTable(site, category);
+							managedMapper.dropTable(site);
 							mapperSession.commit();
 						} catch (Exception ignore) {
 						}
 						try {
 							logger.debug("create table {}", clazz.getSimpleName());
-							managedMapper.createTable(site, category);
+							managedMapper.createTable(site);
 							mapperSession.commit();
 							logger.debug("create index {}", clazz.getSimpleName());
-							managedMapper.createIndex(site, category);
+							managedMapper.createIndex(site);
 							mapperSession.commit();
 
 						} catch (Exception e2) {
@@ -109,7 +106,6 @@ public class AnalyticsDBService extends AbstractDBService {
 						}
 					}
 
-				}
 			}
 
 			mapperSession.closeSession();

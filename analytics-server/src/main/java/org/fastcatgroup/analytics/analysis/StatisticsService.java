@@ -41,7 +41,7 @@ public class StatisticsService extends AbstractService {
 
 	private Map<String, SiteSearchLogStatisticsModule> siteStatisticsModuleMap;
 	
-	private Map<String, Map<String, Map<String, List<String>>>> relateKeywordMap;
+	private Map<String, Map<String, List<String>>> relateKeywordMap;
 	
 	private SiteCategoryListConfig siteCategoryListConfig;
 	
@@ -56,7 +56,7 @@ public class StatisticsService extends AbstractService {
 
 		siteStatisticsModuleMap = new ConcurrentHashMap<String, SiteSearchLogStatisticsModule>();
 		
-		relateKeywordMap = new ConcurrentHashMap<String, Map<String, Map<String, List<String>>>>();
+		relateKeywordMap = new ConcurrentHashMap<String, Map<String, List<String>>>();
 		
 		// 로드 siteCategoryConfig
 		File siteCategoryConfigFile = new File(statisticsHome, "site-category.xml");
@@ -102,21 +102,12 @@ public class StatisticsService extends AbstractService {
 			for (SiteCategoryConfig siteCategoryConfig : siteCategoryList) {
 				
 				String siteId = siteCategoryConfig.getSiteId();
-				List<CategoryConfig> categoryList = siteCategoryConfig.getCategoryList();
 				
-				List<String> categoryIdList = new ArrayList<String>();
-				for(CategoryConfig c : categoryList){
-					String categoryId = c.getId();
-				
-					List<RelateKeywordVO> list = mapper.getEntryList(siteId, categoryId);
+					List<RelateKeywordVO> list = mapper.getEntryList(siteId);
 					if(list != null){
-						Map<String, Map<String, List<String>>> categoryKeywordMap = new HashMap<String, Map<String, List<String>>>();
 						Map<String, List<String>> keywordMap = new HashMap<String, List<String>>();
-						
-						
-						relateKeywordMap.put(siteId, categoryKeywordMap);
+						relateKeywordMap.put(siteId, keywordMap);
 					}
-				}
 			}
 			
 		} catch (Exception e) {
@@ -159,29 +150,21 @@ public class StatisticsService extends AbstractService {
 		logger.debug("realtime keyword. map:{}", map);
 	}
 	
-	public Map<String,List<String>> getRelateKeywordMap(String siteId, String categoryId) {
+	public Map<String,List<String>> getRelateKeywordMap(String siteId) {
 		logger.debug("relateKeywordMap:{}",relateKeywordMap);
-		Map<String, Map<String, List<String>>> map = relateKeywordMap.get(siteId);
+		Map<String, List<String>> map = relateKeywordMap.get(siteId);
 		if (map != null) {
-			if(categoryId == null || categoryId.length() == 0) {
-				categoryId = "_root";
-			}
-			logger.debug("get relative keyword map:{} [{}]", map, categoryId);
-			return map.get(categoryId);
+			logger.debug("get relative keyword map:{} [{}]", map);
+			return map;
 		}
 		return null;
 	}
 	
-	public void updateRelativeKeywordMap(String siteId, String categoryId, Map<String, List<String>> keywordMap) {
+	public void updateRelativeKeywordMap(String siteId, Map<String, List<String>> keywordMap) {
 		
-		logger.debug("## updateRelativeKeyword {}:{} > {}", siteId, categoryId, keywordMap);
-		Map<String, Map<String, List<String>>> map = relateKeywordMap.get(siteId);
-		if(map == null) {
-			map = new ConcurrentHashMap<String, Map<String, List<String>>>();
-			relateKeywordMap.put(siteId, map);
-		}
-		map.put(categoryId, keywordMap);
-		logger.debug("relative keyword. map:{}", map);
+		logger.debug("## updateRelativeKeyword {}:{} > {}", siteId, keywordMap);
+		relateKeywordMap.put(siteId, keywordMap);
+		logger.debug("relative keyword. map:{}", keywordMap);
 	}
 
 	public Collection<CategoryStatistics> getCategoryStatisticsList() {

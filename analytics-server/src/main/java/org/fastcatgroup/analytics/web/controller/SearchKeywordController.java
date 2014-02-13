@@ -105,9 +105,9 @@ public class SearchKeywordController extends AbstractController {
 
 			String whereCondition = "";
 
-			int totalSize = mapper.getCount(site, category);
-			int filteredSize = mapper.getCountByWhereCondition(site, category, whereCondition);
-			List<RelateKeywordVO> entryList = mapper.getEntryListByWhereCondition(site, category, whereCondition, start, PAGE_SIZE);
+			int totalSize = mapper.getCount(site);
+			int filteredSize = mapper.getCountByWhereCondition(site, whereCondition);
+			List<RelateKeywordVO> entryList = mapper.getEntryListByWhereCondition(site, whereCondition, start, PAGE_SIZE);
 
 			stringer.object().key("totalSize").value(totalSize).key("filteredSize").value(filteredSize)
 			.key("searchableColumnList").array().endArray()

@@ -21,12 +21,10 @@ import org.fastcatgroup.analytics.service.ServiceManager;
 public class UpdateRelateKeywordHandler extends ProcessHandler {
 
 	String siteId;
-	String categoryId;
 	File file;
 
-	public UpdateRelateKeywordHandler(String siteId, String categoryId, File file) {
+	public UpdateRelateKeywordHandler(String siteId, File file) {
 		this.siteId = siteId;
-		this.categoryId = categoryId;
 		this.file = file;
 	}
 
@@ -54,10 +52,10 @@ public class UpdateRelateKeywordHandler extends ProcessHandler {
 					String[] el = line.split("\t");
 					String keyword = el[1];
 					String value = el[0];
-					RelateKeywordVO vo = mapper.getEntry(siteId, categoryId, keyword);
+					RelateKeywordVO vo = mapper.getEntry(siteId, keyword);
 					
 					if (vo == null || vo.getId() == 0) {
-						vo = new RelateKeywordVO(siteId, categoryId, keyword, timestamp);
+						vo = new RelateKeywordVO(siteId, keyword, timestamp);
 						mapper.putEntry(vo);
 					}
 					
@@ -72,12 +70,12 @@ public class UpdateRelateKeywordHandler extends ProcessHandler {
 						relate.add(value);
 					}
 					
-					logger.debug("put relate {} / {} / {} / {}", siteId, categoryId, vo.getId(), value);
+					logger.debug("put relate {} / {} / {}", siteId, vo.getId(), value);
 					vmapper.putEntry(vo.getId(), value);
 				}
 				
 				StatisticsService service = ServiceManager.getInstance().getService(StatisticsService.class);
-				service.updateRelativeKeywordMap(siteId, categoryId, keywordMap);
+				service.updateRelativeKeywordMap(siteId, keywordMap);
 				
 			} finally {
 				if (mapperSession != null) {

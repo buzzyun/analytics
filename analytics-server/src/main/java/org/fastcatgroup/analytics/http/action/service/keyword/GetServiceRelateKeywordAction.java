@@ -38,7 +38,7 @@ public class GetServiceRelateKeywordAction extends ServiceAction {
 			siteId = cateConfig.getSiteId();
 		}
 		
-		Map<String, List<String>> relateKeywordMap = service.getRelateKeywordMap(siteId, categoryId);
+		Map<String, List<String>> relateKeywordMap = service.getRelateKeywordMap(siteId);
 		logger.debug("relateKeywordMap:{}.{}.{}", siteId, categoryId, relateKeywordMap);
 		
 		//KeywordDictionaryType keywordDictionaryType = KeywordDictionaryType.RELATE_KEYWORD;

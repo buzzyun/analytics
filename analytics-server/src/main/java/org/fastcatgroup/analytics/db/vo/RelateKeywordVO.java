@@ -7,7 +7,6 @@ public class RelateKeywordVO {
 	
 	private int id;
 	private String site;
-	private String category;
 	private String keyword;
 	private String value;
 	private Timestamp updateTime;
@@ -15,9 +14,8 @@ public class RelateKeywordVO {
 	public RelateKeywordVO(){
 	}
 
-	public RelateKeywordVO(String site, String category, String keyword, Timestamp updateTime){
+	public RelateKeywordVO(String site, String keyword, Timestamp updateTime){
 		this.setSiteId(site);
-		this.category = category;
 		this.keyword = keyword;
 		this.updateTime = updateTime;
 	}
@@ -38,14 +36,6 @@ public class RelateKeywordVO {
 		this.id = id;
 	}
 	
-	public String getCategory() {
-		return category;
-	}
-
-	public void setCategory(String category) {
-		this.category = category;
-	}
-
 	public String getKeyword() {
 		return keyword;
 	}

@@ -348,10 +348,9 @@ function checkableTable(tableId) {
 }
 
 
-function downloadKeyword(keywordType, keywordId){
-	//location.href = keywordType+"/download.html?keywordId="+keywordId;
+function downloadKeyword(keywordId){
 	console.log("keywordId" , keywordId);
-	submitGet(keywordType+"/download.html", {keywordId : keywordId});
+	submitGet("download.html", {keywordId : keywordId});
 }
 
 

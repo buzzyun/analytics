@@ -33,22 +33,34 @@
 		a.updateTime
 		from ${siteId}_relate_keyword a left join ${siteId}_relate_keyword_value b on b.keyId = a.id
 		where keyword = #{keyword}
+		group by a.id
 	</select>
+	
+	<select id="getEntryById" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.RelateKeywordVO">
+		select a.id, a.keyword, 
+		concat(group_concat(b.value)) value, 
+		a.updateTime
+		from ${siteId}_relate_keyword a left join ${siteId}_relate_keyword_value b on b.keyId = a.id
+		where a.id=#{id}
+		group by a.id
+	</select>
+	
 	<select id="getEntryListByWhereCondition" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.RelateKeywordVO">
 		select a.id, a.keyword, 
 		concat(group_concat(b.value)) value, 
 		a.updateTime
 		from ${siteId}_relate_keyword a left join ${siteId}_relate_keyword_value b on b.keyId = a.id
 		<if test="whereCondition != ''">
-		${whereCondition}
+		where ${whereCondition}
 		</if>
 		group by a.id
 		limit #{start}, #{end}
 	</select>
 	<select id="getCountByWhereCondition" parameterType="map" resultType="int">
-		select count(*) from ${siteId}_relate_keyword
+		select count(*) from ${siteId}_relate_keyword a left join 
+		${siteId}_relate_keyword_value b on b.keyId = a.id
 		<if test="whereCondition != ''">
-		${whereCondition}
+		where ${whereCondition}
 		</if>
 	</select>
 	<select id="getEntryList" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.RelateKeywordVO">
@@ -56,6 +68,7 @@
 		concat(group_concat(b.value)) value, 
 		a.updateTime
 		from ${siteId}_relate_keyword a left join ${siteId}_relate_keyword_value b on b.keyId = a.id
+		group by a.id
 	</select>
 	
 	
@@ -64,6 +77,7 @@
 	
 	<select id="getKeywordList" parameterType="map" resultType="String">
 		select concat(group_concat(b.value)) value from ${siteId}_relate_keyword a left join ${siteId}_relate_keyword_value b on b.keyId = a.id
+		group by a.id
 	</select>
 	
 	<select id="getCount" parameterType="map" resultType="int">
@@ -79,9 +93,9 @@
 	
 	<update id="updateEntry" parameterType="map">
 		update ${siteId}_relate_keyword set 
-		keyword = #{keyword},
-		updateTime = #{updateTime},
-		where id = #{id}
+		keyword = #{entry.keyword},
+		updateTime = #{entry.updateTime}
+		where id = #{entry.id}
 	</update>
 	
 	<delete id="deleteEntry" parameterType="int">

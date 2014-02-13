@@ -31,6 +31,15 @@ public class MainInterceptor extends HandlerInterceptorAdapter {
 
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+		
+		String uri = request.getRequestURI();
+		if(uri.contains("/report/")){
+			modelAndView.addObject("_menuType", "report");
+		}else if(uri.contains("/configuration/")){
+			modelAndView.addObject("_menuType", "configuration");
+		}
+		
+		
 		Map<String, Object> pathVariables = (Map<String, Object>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
 		String currentSiteId = (String) pathVariables.get("siteId");
 

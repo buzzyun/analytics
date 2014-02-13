@@ -14,7 +14,7 @@
 		<!--=== Navigation ===-->
 		<ul id="nav">
 			<%
-				lcatCurrent = "report".equals(lcat);
+			boolean  lcatCurrent = "report".equals(lcat);
 			%>
 			<li class="<%=lcatCurrent ? "current" :"" %>"><a href="javascript:void(0);"> <i
 					class="icon-bar-chart"></i> 검색어관리

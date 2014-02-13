@@ -10,7 +10,7 @@
 			keyword varchar(64),
 			updateTime timestamp,
 			primary key (id)
-		);
+		) ENGINE=InnoDB;
 	</update>
 	
 	<update id="createIndex" parameterType="map">

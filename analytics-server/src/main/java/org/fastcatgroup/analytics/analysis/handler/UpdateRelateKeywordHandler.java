@@ -71,7 +71,7 @@ public class UpdateRelateKeywordHandler extends ProcessHandler {
 					}
 					
 					logger.debug("put relate {} / {} / {}", siteId, vo.getId(), value);
-					vmapper.putEntry(vo.getId(), value);
+					vmapper.putEntry(siteId, vo.getId(), value);
 				}
 				
 				StatisticsService service = ServiceManager.getInstance().getService(StatisticsService.class);

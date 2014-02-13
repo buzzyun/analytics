@@ -77,7 +77,7 @@ public class SearchKeywordController extends AbstractController {
 
 	@RequestMapping("/{keywordId}/list")
 	public ModelAndView relateKeywordList(@PathVariable String keywordId, @RequestParam(defaultValue = "1") Integer pageNo
-			, @RequestParam(required = false) String site, @RequestParam(required = false) String category
+			, @RequestParam(required = false) String siteId, @RequestParam(required = false) String categoryId
 			, @RequestParam(required = false) String keyword , @RequestParam(required = false) Boolean exactMatch
 			, @RequestParam(required = false) Boolean isEditable , @RequestParam(required = false) String targetId
 			) throws Exception {
@@ -105,9 +105,9 @@ public class SearchKeywordController extends AbstractController {
 
 			String whereCondition = "";
 
-			int totalSize = mapper.getCount(site);
-			int filteredSize = mapper.getCountByWhereCondition(site, whereCondition);
-			List<RelateKeywordVO> entryList = mapper.getEntryListByWhereCondition(site, whereCondition, start, PAGE_SIZE);
+			int totalSize = mapper.getCount(siteId);
+			int filteredSize = mapper.getCountByWhereCondition(siteId, whereCondition);
+			List<RelateKeywordVO> entryList = mapper.getEntryListByWhereCondition(siteId, whereCondition, start, PAGE_SIZE);
 
 			stringer.object().key("totalSize").value(totalSize).key("filteredSize").value(filteredSize)
 			.key("searchableColumnList").array().endArray()
@@ -120,8 +120,8 @@ public class SearchKeywordController extends AbstractController {
 				.key("VALUE").value(value).endObject();
 			}
 			stringer.endArray().endObject();
-			mav.addObject("siteId", site);
-			mav.addObject("categoryId", category);
+			mav.addObject("siteId", siteId);
+			mav.addObject("categoryId", categoryId);
 			mav.addObject("keywordId", keywordId);
 			mav.addObject("list", new JSONObject(stringer.toString()));
 			mav.addObject("start", 1);

@@ -25,14 +25,14 @@ var exactMatchObj;
 
 $(document).ready(function(){
 	
-	searchInputObj = $("#search_input_${keywordId}");
-	searchColumnObj = $("#${keywordId}SearchColumn");
-	exactMatchObj = $("#${keywordId}ExactMatch");
-	
+	searchInputObj = $("#search_input_relate");
+	searchColumnObj = $("#relateSearchColumn");
+	exactMatchObj = $("#relateExactMatch");
+
 	searchInputObj.keydown(function (e) {
 		if(e.keyCode == 13){
 			var keyword = toSafeString($(this).val());
-			loadKeywordTab('<%=keywordId %>', 1, keyword, searchColumnObj.val(), exactMatchObj.is(":checked"), false, '<%=targetId%>');
+			loadKeywordTab('relate', 1, keyword, searchColumnObj.val(), exactMatchObj.is(":checked"), false, '<%=targetId%>');
 			return;
 		}
 	});
@@ -41,24 +41,24 @@ $(document).ready(function(){
 	searchColumnObj.on("change", function(){
 		var keyword = toSafeString(searchInputObj.val());
 		if(keyword != ""){
-			loadKeywordTab('<%=keywordId %>', 1, keyword, searchColumnObj.val(), exactMatchObj.is(":checked"), false, '<%=targetId%>');
+			loadKeywordTab('relate', 1, keyword, searchColumnObj.val(), exactMatchObj.is(":checked"), false, '<%=targetId%>');
 		}
 	});
 	exactMatchObj.on("change", function(){
 		var keyword = toSafeString(searchInputObj.val());
 		if(keyword != ""){
-			loadKeywordTab('<%=keywordId %>', 1, keyword, searchColumnObj.val(), exactMatchObj.is(":checked"), false, '<%=targetId%>');
+			loadKeywordTab('relate', 1, keyword, searchColumnObj.val(), exactMatchObj.is(":checked"), false, '<%=targetId%>');
 		}
 	});
 	
 	triggerSiteCategoryList($("#select_site"), $("#select_category"), '<%=siteId %>', '');
 });
 
-function go<%=keywordId%>KeywordPage(uri, pageNo){
-	loadKeywordTab('<%=keywordId %>', pageNo, '${keyword}', searchColumnObj.val(), exactMatchObj.is(":checked"), false, '<%=targetId%>');	
+function gorelateKeywordPage(uri, pageNo){
+	loadKeywordTab('relate', pageNo, '${keyword}', searchColumnObj.val(), exactMatchObj.is(":checked"), false, '<%=targetId%>');	
 }
-function go<%=keywordId%>EditablePage(pageNo){
-	loadKeywordTab('<%=keywordId %>', pageNo, '${keyword}', searchColumnObj.val(), exactMatchObj.is(":checked"), true, '<%=targetId%>');	
+function gorelateEditablePage(pageNo){
+	loadKeywordTab('relate', pageNo, '${keyword}', searchColumnObj.val(), exactMatchObj.is(":checked"), true, '<%=targetId%>');	
 }
 </script>
 
@@ -67,37 +67,37 @@ function go<%=keywordId%>EditablePage(pageNo){
 	<div class="widget-content no-padding">
 		<div class="dataTables_header clearfix">
 		
-			<div class="form-inline col-md-12">
-				<div class="pull-right">
-					<a href="javascript:downloadKeyword('map', '<%=keywordId%>')"  class="btn btn-default btn-sm">
-						<span class="icon icon-download"></span> Download
-					</a>
-					&nbsp;
-					<div class="btn-group">
-						<a href="javascript:go<%=keywordId%>KeywordPage('', '${pageNo}');" class="btn btn-sm" rel="tooltip"><i class="icon-refresh"></i></a>
-					</div>
-					&nbsp;
-					<a href="javascript:go<%=keywordId%>EditablePage('${pageNo}');"  class="btn btn-default btn-sm">
-						<span class="glyphicon glyphicon-edit"></span> Edit
-					</a>
-				</div>
-			</div>
-			<div class="bottom-space"></div>
-			<div class="form-inline col-md-12">
+			<div class="form-inline col-md-7">
 			
 				<div class="form-group " style="width:240px">
 					<div class="input-group" >
 						<span class="input-group-addon"><i class="icon-search"></i></span>
-						<input type="text" class="form-control" placeholder="Search" id="search_input_<%=keywordId%>" value="${keyword}">
+						<input type="text" class="form-control" placeholder="Search" id="search_input_relate" value="${keyword}">
 					</div>
 				</div>
 				<div class="form-group">
 					&nbsp;
 					<div class="checkbox">
 					<label>
-						<input type="checkbox" id="<%=keywordId %>ExactMatch" <c:if test="${exactMatch}">checked</c:if>> Exact Match
+						<input type="checkbox" id="relateExactMatch" <c:if test="${exactMatch}">checked</c:if>> Exact Match
 					</label>
 					</div>
+				</div>
+			</div>
+			
+			<div class="col-md-5">
+				<div class="pull-right">
+					<a href="javascript:downloadKeyword('relate')"  class="btn btn-default btn-sm">
+						<span class="icon icon-download"></span> Download
+					</a>
+					&nbsp;
+					<div class="btn-group">
+						<a href="javascript:gorelateKeywordPage('', '${pageNo}');" class="btn btn-sm" rel="tooltip"><i class="icon-refresh"></i></a>
+					</div>
+					&nbsp;
+					<a href="javascript:gorelateEditablePage('${pageNo}');"  class="btn btn-default btn-sm">
+						<span class="glyphicon glyphicon-edit"></span> Edit
+					</a>
 				</div>
 			</div>
 				
@@ -151,7 +151,7 @@ function go<%=keywordId%>EditablePage(pageNo){
 			 	<jsp:param name="totalSize" value="<%=filteredSize %>" />
 				<jsp:param name="pageSize" value="${pageSize }" />
 				<jsp:param name="width" value="5" />
-				<jsp:param name="callback" value="go${keywordId }KeywordPage" />
+				<jsp:param name="callback" value="gorelateKeywordPage" />
 				<jsp:param name="requestURI" value="" />
 			 </jsp:include>
 			</div>

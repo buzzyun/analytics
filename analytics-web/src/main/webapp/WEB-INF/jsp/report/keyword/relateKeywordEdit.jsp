@@ -13,9 +13,12 @@
 	int start = (Integer) request.getAttribute("start");
 	String targetId = (String) request.getAttribute("targetId");
 	
+	boolean exactMatch = (Boolean) request.getAttribute("exactMatch");
+	
+	String keyword = (String) request.getAttribute("keyword");
+	
 	String siteId = request.getParameter("siteId");
 	
-	//JSONArray searchableColumnList = (JSONArray) list.getJSONArray("searchableColumnList");
 	JSONArray searchableColumnList = new JSONArray();
 	String searchColumn = (String) request.getAttribute("searchColumn");
 %>
@@ -259,19 +262,6 @@ function relatedeleteSelectWord(){
 		<div class="dataTables_header clearfix">
 			
 			<div class="form-inline col-md-7">
-				<div class="form-group">
-					<select id="relateSearchColumn" class="select_flat form-control">
-						<option value="_ALL">ALL</option>
-						<%
-						for(int i=0; i < searchableColumnList.length(); i++){
-							String columnName = searchableColumnList.getString(i);
-						%>
-						<option value="<%=columnName %>" <%=(columnName.equals(searchColumn)) ? "selected" : "" %>><%=columnName %></option>
-						<%
-						}
-						 %>
-					</select>
-				</div>
 				<div class="form-group" style="width:240px">
 					<div class="input-group" >
 						<span class="input-group-addon"><i class="icon-search"></i></span>
@@ -326,7 +316,7 @@ function relatedeleteSelectWord(){
 				<tbody>
 				<%
 				for(int i=0; i < entryList.size(); i++){
-					 RelateKeywordVO relateKeyword = entryList.get(i);//.getJSONrelateKeywordect(i);
+					 RelateKeywordVO relateKeyword = entryList.get(i);
 				%>
 					<tr id="_relate-<%=relateKeyword.getId() %>">
 						<td class="checkbox-column">
@@ -396,7 +386,7 @@ function relatedeleteSelectWord(){
 				<label id="word_input_result_relate" for="word_input" class="help-block" style="word-wrap: break-word;"></label>
 			</div>
 			<div class="modal-footer">
-				<form action="synonym/upload.html" method="POST" enctype="multipart/form-data" style="display: inline;">
+				<form action="upload.html" method="POST" enctype="multipart/form-data" style="display: inline;">
 					<input type="hidden" name="keywordId" value="relate"/>
 					<span class="fileContainer btn btn-primary"><span class="icon icon-upload"></span> File Upload ...<input type="file" name="filename" id="relate_file_upload"></span>
 				</form>

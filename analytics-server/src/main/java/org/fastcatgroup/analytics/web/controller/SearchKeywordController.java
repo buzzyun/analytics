@@ -1,6 +1,8 @@
 package org.fastcatgroup.analytics.web.controller;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.sql.Timestamp;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -48,7 +51,7 @@ public class SearchKeywordController extends AbstractController {
 
 	}
 	
-	private void deleteRelateKeyword(String siteId, String deleteIdList) {
+	private void deleteRelateKeyword(String siteId, String deleteIdList) throws Exception {
 		//value 를 먼저 지운 후 keyword 를 지우도록 한다.
 		AnalyticsDBService service = ServiceManager.getInstance().getService(AnalyticsDBService.class);
 		MapperSession<RelateKeywordMapper> relateMapperSession = null;
@@ -59,17 +62,10 @@ public class SearchKeywordController extends AbstractController {
 			relateMapperSession = service.getMapperSession(RelateKeywordMapper.class);
 			relateValueMapperSession = service.getMapperSession(RelateKeywordValueMapper.class);
 			
-			RelateKeywordMapper relateMaapper = relateMapperSession.getMapper();
+			RelateKeywordMapper relateMapper = relateMapperSession.getMapper();
 			RelateKeywordValueMapper relateValueMapper = relateValueMapperSession.getMapper();
 			
-			String[] idArray = deleteIdList.split(",");
-			
-			for(String idString : idArray) {
-				int id = 0;
-				id = Integer.parseInt(idString.trim());
-				relateValueMapper.deleteValues(siteId, id);
-				relateMaapper.deleteEntry(siteId, id);
-			}
+			relateMapper.deleteEntryList(siteId, deleteIdList);
 			
 			relateMapperSession.commit();
 			relateValueMapperSession.commit();
@@ -92,9 +88,6 @@ public class SearchKeywordController extends AbstractController {
 			@RequestParam("VALUE") String value) throws Exception {
 
 		boolean result = false;
-		// keyword 가 존재하지 않으면 검사하지 않고 key,value 모두 insert
-		// keyword가 존재하면, value하나씩 검사하여 없는것만 insert.
-		
 		logger.debug("keywordType:{} / siteId:{} / id:{} / keyword:{} / value:{}",
 				"relate", siteId, id, keyword, value);
 		
@@ -109,9 +102,44 @@ public class SearchKeywordController extends AbstractController {
 			RelateKeywordMapper relateMapper = relateMapperSession.getMapper();
 			RelateKeywordValueMapper relateValueMapper = relateValueMapperSession.getMapper();
 			
+			result = addKeywordData(siteId, id, keyword, value, relateMapper, relateValueMapper);
+		
+			relateMapperSession.commit();
+			relateValueMapperSession.commit();
+			result = true;
+		} catch (Exception e) {
+			logger.error("",e);
+		} finally {
+			if(relateValueMapperSession!=null) {
+				relateValueMapperSession.closeSession();
+			}
+			if(relateMapperSession!=null) {
+				relateMapperSession.closeSession();
+			}
+		}
+		JSONStringer s = new JSONStringer();
+		s.object().key("success").value(result).endObject();
+		return s.toString();
+	}
+
+	private boolean addKeywordData( String siteId, String id, String keyword, String value
+			,RelateKeywordMapper relateMapper ,RelateKeywordValueMapper relateValueMapper 
+			) throws Exception {
+
+		boolean result = false;
+		// keyword 가 존재하지 않으면 검사하지 않고 key,value 모두 insert
+		// keyword가 존재하면, value하나씩 검사하여 없는것만 insert.
+		
+		try {
 			keyword = keyword.trim();
 			
-			RelateKeywordVO relateEntry = relateMapper.getEntry(siteId, keyword);
+			RelateKeywordVO relateEntry = null;
+			
+			if(id!=null && !"".equals(id)) {
+				relateEntry = relateMapper.getEntryById(siteId, id);
+			} else {
+				relateEntry = relateMapper.getEntry(siteId, keyword);
+			}
 			
 			List<String> valuesList = new ArrayList<String>();
 			if(value!=null) {
@@ -121,6 +149,11 @@ public class SearchKeywordController extends AbstractController {
 				}
 			}
 			if(relateEntry!=null && relateEntry.getId()!=0) {
+				
+				relateEntry.setKeyword(keyword);
+				relateEntry.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+				
+				relateMapper.updateEntry(siteId, relateEntry);
 				
 				if (id != null && !"".equals(id) && id.equals(String.valueOf(relateEntry.getId()))) {
 					//기존값의 수정 이라면, 기존의 값들을 모두 지워 주어야 한다.
@@ -154,22 +187,13 @@ public class SearchKeywordController extends AbstractController {
 				}
 			}
 		
-			relateMapperSession.commit();
-			relateValueMapperSession.commit();
 			result = true;
+		} catch (Exception e) {
+			logger.error("",e);
 		} finally {
-			if(relateValueMapperSession!=null) {
-				relateValueMapperSession.closeSession();
-			}
-			if(relateMapperSession!=null) {
-				relateMapperSession.closeSession();
-			}
 		}
-		JSONStringer s = new JSONStringer();
-		s.object().key("success").value(result).endObject();
-		return s.toString();
+		return result;
 	}
-
 
 	@RequestMapping("/relate/list")
 	public ModelAndView relateKeywordList(@PathVariable String siteId
@@ -204,6 +228,17 @@ public class SearchKeywordController extends AbstractController {
 			String whereCondition = "";
 			//TODO whereCondition에 start, end와 검색 keyword 처리.
 			
+			if(keyword!=null && !"".equals(keyword)) {
+				if(exactMatch) {
+					whereCondition += "AND (a.keyword='"+keyword+"' OR b.value='"+keyword+"') ";
+				} else {
+					whereCondition += "AND (a.keyword like '%"+keyword+"%' OR b.value like '%"+keyword+"%') ";
+				}
+				
+				if(!"".equals(whereCondition)) {
+					whereCondition = whereCondition.substring(3);
+				}
+			}
 			
 			
 			int totalSize = mapper.getCount(siteId);
@@ -211,12 +246,14 @@ public class SearchKeywordController extends AbstractController {
 			List<RelateKeywordVO> entryList = mapper.getEntryListByWhereCondition(siteId, whereCondition, start, PAGE_SIZE);
 
 			mav.addObject("entryList", entryList);
-			mav.addObject("start", 1);
+			mav.addObject("start", start);
 			mav.addObject("pageNo", pageNo);
 			mav.addObject("totalSize", totalSize);
 			mav.addObject("filteredSize", filteredSize);
 			mav.addObject("pageSize", PAGE_SIZE);
 			mav.addObject("targetId", targetId);
+			mav.addObject("keyword", keyword);
+			mav.addObject("exactMatch", exactMatch);
 			if(isEditable != null && isEditable.booleanValue()) {
 				mav.setViewName("report/keyword/relateKeywordEdit");
 			} else {
@@ -234,9 +271,6 @@ public class SearchKeywordController extends AbstractController {
 	public void downloadDictionary(HttpServletResponse response, @PathVariable String siteId, 
 			@RequestParam(required = false) Boolean forView) throws Exception {
 
-		JSONObject jsonObj = null;
-
-		int totalReadSize = 0;
 		int PAGE_SIZE = 100;
 
 		response.setContentType("text/plain");
@@ -247,46 +281,52 @@ public class SearchKeywordController extends AbstractController {
 			response.setHeader("Content-disposition", "attachment; filename=\"" + siteId+"_relate" + ".txt\"");
 		}
 		PrintWriter writer = null;
+		
+		MapperSession<RelateKeywordMapper> mapperSession = null;
+		
+		int start = 0;
+		
 		try {
+			
+			ServiceManager serviceManager = ServiceManager.getInstance();
+			AnalyticsDBService dbService = serviceManager.getService(AnalyticsDBService.class);
+			mapperSession = dbService.getMapperSession(RelateKeywordMapper.class);
+			
+			RelateKeywordMapper mapper = mapperSession.getMapper();
+			
+			int totalSize = mapper.getCountByWhereCondition(siteId, "");
+			
+			List<RelateKeywordVO> entryList = mapper.getEntryListByWhereCondition(siteId, "", start, PAGE_SIZE - 1);
+			
 			writer = response.getWriter();
-			int pageNo = 1;
-			while (true) {
-				int start = 0;
-				if (pageNo > 0) {
-					start = (pageNo - 1) * PAGE_SIZE + 1;
-				}
-
-				JSONArray columnList = jsonObj.getJSONArray("columnList");
-				JSONArray array = jsonObj.getJSONArray("item");
-				int readSize = array.length();
-				totalReadSize += readSize;
-
-				for (int i = 0; i < array.length(); i++) {
-					JSONObject obj = array.getJSONObject(i);
-					for (int j = 0; j < columnList.length(); j++) {
-						String columnName = columnList.getString(j);
-						String value = String.valueOf(obj.get(columnName));
-						writer.append(value);
-						if (j < columnList.length() - 1) {
-							// 컬럼끼리 구분자는 탭이다.
-							writer.append("\t");
-						}
-					}
-					writer.append("\n");
-
-				}
-
-				int totalSize = jsonObj.getInt("totalSize");
-				if (totalReadSize >= totalSize) {
+			for (int rsize=0;rsize<totalSize;) {
+				
+				int readSize = entryList.size();
+				if(readSize == 0) {
 					break;
 				}
-				pageNo++;
+				rsize += readSize;
+				for (int i = 0; i < entryList.size(); i++) {
+					RelateKeywordVO entry = entryList.get(i);
+					
+					writer.append(String.valueOf(entry.getKeyword())).append("\t");
+					writer.append(String.valueOf(entry.getValue()));
+					
+					writer.append("\n");
+				}
+				
+				start+=PAGE_SIZE;
+				entryList = mapper.getEntryListByWhereCondition(siteId, "", start, PAGE_SIZE);
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			logger.error("download error", e);
 		} finally {
 			if (writer != null) {
 				writer.close();
+			}
+			
+			if(mapperSession != null) {
+				mapperSession.closeSession();
 			}
 		}
 	}
@@ -302,10 +342,93 @@ public class SearchKeywordController extends AbstractController {
 		} catch (Exception ignore) {
 		}
 		logger.debug("fileName {}", fileName);
-
 		boolean isSuccess = false;
 		String errorMessage = null;
 		int totalCount = 0;
+
+		
+		if (fileName != null) {
+			MultipartFile multipartFile = request.getFile(fileName);
+			logger.debug("uploaded {}", multipartFile.getOriginalFilename());
+			
+			BufferedReader reader = null;
+			
+			AnalyticsDBService service = ServiceManager.getInstance().getService(AnalyticsDBService.class);
+			MapperSession<RelateKeywordMapper> relateMapperSession = null;
+			MapperSession<RelateKeywordValueMapper> relateValueMapperSession = null;
+			
+			try {
+				// just temporary save file info into ufile
+				logger.debug("len {}", multipartFile.getBytes().length);
+				logger.debug("getBytes {}", new String(multipartFile.getBytes()));
+				logger.debug("getContentType {}", multipartFile.getContentType());
+				logger.debug("getOriginalFilename {}", multipartFile.getOriginalFilename());
+				
+				relateMapperSession = service.getMapperSession(RelateKeywordMapper.class);
+				relateValueMapperSession = service.getMapperSession(RelateKeywordValueMapper.class);
+				
+				RelateKeywordMapper relateMapper = relateMapperSession.getMapper();
+				RelateKeywordValueMapper relateValueMapper = relateValueMapperSession.getMapper();
+			
+	
+				String contentType = multipartFile.getContentType();
+				
+				if(!contentType.contains("text")){
+					
+					isSuccess = false;
+					errorMessage = "File must be plain text.";
+				}else{
+					
+					int bulkSize = 100;
+					
+					reader = new BufferedReader(new InputStreamReader(multipartFile.getInputStream()));
+					int count = 0;
+					
+					String line = null;
+					do {
+						while((line = reader.readLine()) != null){
+							
+							String[] rawLine = line.split("\t");
+							
+							String keyword = rawLine[0];
+							String value = rawLine[1];
+							
+							boolean ret = addKeywordData(siteId, "", keyword, value, relateMapper, relateValueMapper);
+							
+							if(!ret) {
+								throw new IOException("file 구조가 다릅니다.");
+							}
+							
+							count++;
+							if(count == bulkSize){
+								break;
+							}
+						}
+					} while(line != null);
+						
+				}
+				
+				isSuccess = true;
+			} catch (IOException e) {
+				isSuccess = false;
+				errorMessage = e.getMessage();
+			} finally {
+				if(reader != null){
+					try {
+						reader.close();
+					} catch (IOException ignore) {
+					}
+				}
+				
+				if (relateMapperSession != null) {
+					relateMapperSession.closeSession();
+				}
+				
+				if (relateValueMapperSession != null) {
+					relateValueMapperSession.closeSession();
+				}
+			}
+		}
 
 		try {
 			Writer writer = response.getWriter();

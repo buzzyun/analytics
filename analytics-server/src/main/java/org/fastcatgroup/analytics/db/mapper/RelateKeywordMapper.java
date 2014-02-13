@@ -23,7 +23,7 @@ public interface RelateKeywordMapper extends AnalyticsMapper {
 	
 	public void updateEntry(@Param("siteId") String siteId, @Param("keyword") String keyword, @Param("value") String value, @Param("updateTime") Date updateTime, @Param("id") int id );
 	
-	public void putEntry(@Param("siteId") String siteId, RelateKeywordVO vo) throws Exception;
+	public void putEntry(@Param("siteId") String siteId, @Param("entry") RelateKeywordVO vo) throws Exception;
 	
 	public void deleteEntry(@Param("siteId") String siteId, @Param("id") int id);
 	

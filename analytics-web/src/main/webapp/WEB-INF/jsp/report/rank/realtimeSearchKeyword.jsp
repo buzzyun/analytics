@@ -7,7 +7,6 @@
 <%
 List<SiteCategoryConfig> siteCategoryList = (List<SiteCategoryConfig>) request.getAttribute("siteCategoryList");
 List<RankKeyword> rankList = (List<RankKeyword>) request.getAttribute("rankList");
-String siteId = request.getParameter("siteId");
 String categoryId = request.getParameter("categoryId");
 %>
 <c:set var="ROOT_PATH" value="../.." />
@@ -18,7 +17,7 @@ String categoryId = request.getParameter("categoryId");
 <c:import url="${ROOT_PATH}/inc/header.jsp" />
 <script>
 $(document).ready(function(){
-	//triggerSiteCategoryList($("#select_site"), $("#select_category"), '<%=siteId %>', '<%=categoryId %>');
+	fillCategoryList('${siteId}', $("#select_category"), '<%=categoryId %>');
 });
 </script>
 </head>

@@ -29,7 +29,7 @@
 		<!--=== Page Header ===-->
 		<div class="page-header">
 			<div class="page-title">
-				<h3>Report112222444444777</h3>
+				<h3>Report</h3>
 			</div>
 		</div>
 		<!-- /Page Header -->

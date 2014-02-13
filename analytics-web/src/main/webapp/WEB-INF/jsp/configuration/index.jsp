@@ -19,8 +19,8 @@
 		<!-- Breadcrumbs line -->
 		<div class="crumbs">
 			<ul id="breadcrumbs" class="breadcrumb">
-				<li><i class="icon-home"></i> <a href="javascript:void(0);">Report</a>
-				</li>
+				<li><i class="icon-home"></i> <a href="javascript:void(0);">Report</a></li>
+				<li><a href="#">Configuration</a></li>
 			</ul>
 
 		</div>

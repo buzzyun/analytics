@@ -12,13 +12,12 @@ $(document).ready(function(){
 	<div class="container">
 
 		<!-- Only visible on smartphones, menu toggle -->
-		<!-- <ul class="nav navbar-nav">
-			<li class="nav-toggle"><a href="javascript:void();" title=""><i
-					class="icon-reorder"></i></a></li>
-		</ul> -->
+		<ul class="nav navbar-nav">
+			<li class="nav-toggle"><a href="javascript:void();" title=""><i class="icon-reorder"></i></a></li>
+		</ul>
 
 		<!-- Logo -->
-		<a class="navbar-brand" href="<c:url value="/start.html" />"> <strong>Fastcat</strong> Analytics
+		<a class="navbar-brand" href="<c:url value="/main/start.html" />"> <strong>Fastcat</strong> Analytics
 		</a>
 		<!-- /logo -->
 
@@ -29,9 +28,17 @@ $(document).ready(function(){
 		<!-- /Sidebar Toggler -->
 
 		<!-- Top Left Menu -->
+		<%
+		String menuType = (String) request.getAttribute("_menuType");
+		%>
 		<ul class="nav navbar-nav navbar-left">
-			<li class="active"><a href="<c:url value="/${siteId}/report/index.html"/>"> Report </a></li>
-			<li><a href="<c:url value="/${siteId}/configuration/index.html"/>"> Configuration </a></li>
+			<c:if test="${not empty siteId}">
+				<li class="<%="report".equals(menuType) ? "active" : ""%>"><a href="<c:url value="/${siteId}/report/index.html"/>"> Report </a></li>
+				<li class="<%="configuration".equals(menuType) ? "active" : ""%>"><a href="<c:url value="/${siteId}/configuration/index.html"/>"> Configuration </a></li>
+		    </c:if>
+					
+					
+			
 		</ul>
 		<!-- /Top Left Menu -->
 
@@ -40,9 +47,16 @@ $(document).ready(function(){
 		<ul class="nav navbar-nav navbar-right">
 		
 			<li class="dropdown user"><a href="#" class="dropdown-toggle"
-				data-toggle="dropdown"> <!--<img alt="" src="assets/img/avatar1_small.jpg" />-->
-					<i class="icon-globe"></i> <span class="username">${_siteName}</span> <i
-					class="icon-caret-down small"></i>
+				data-toggle="dropdown">
+					<c:choose>
+					    <c:when test="${empty siteId}">
+					        Choose Site 
+					    </c:when>
+					    <c:otherwise>
+					       <i class="icon-globe"></i> <span class="username">${_siteName}</span> 
+					    </c:otherwise>
+					</c:choose>
+					<i class="icon-caret-down small"></i>
 			</a>
 				<ul class="dropdown-menu">
 					<%
@@ -50,7 +64,7 @@ $(document).ready(function(){
 					if(siteList != null){
 						for(String[] siteIdName : siteList){
 						%>
-						<li><a href="<c:url value="/"/>/<%=siteIdName[0] %>/report/index.html"><i class="icon-globe"></i><%=siteIdName[1] %></a></li>
+						<li><a href="<c:url value="/"/><%=siteIdName[0] %>/report/index.html"><i class="icon-globe"></i><%=siteIdName[1] %></a></li>
 						<%
 						}
 					}

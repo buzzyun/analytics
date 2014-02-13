@@ -25,7 +25,7 @@
 			<div class="page-header">
 				<div class="page-title">
 					<h3>Start</h3>
-					<p>Start from here with basic operations like setting up collections.</p>
+					<p></p>
 				</div>
 			</div>
 			<!-- /Page Header -->

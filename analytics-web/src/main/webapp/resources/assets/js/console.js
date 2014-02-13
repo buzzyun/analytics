@@ -607,13 +607,8 @@ function triggerSiteCategoryList(siteObject, categoryOject, defaultSiteId, defau
 
 function fillCategoryList(siteId, categoryOject, defaultCategoryId){
 	
-	if(siteId == "_root"){
-		categoryOject.children().remove();
-		categoryOject.attr('disabled','disabled');
-		return;
-	}
 	$.ajax({
-		url : CONTEXT+"/report/categoryList.html",
+		url : CONTEXT+"/"+siteId+"/report/categoryList.html",
 		type: "POST",
 		data: { siteId: siteId },
 		dataType : "json",

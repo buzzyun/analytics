@@ -1,7 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
+<%
+String categoryId = request.getParameter("categoryId");
+%>
 <c:set var="ROOT_PATH" value="../.." />
 
 <c:import url="${ROOT_PATH}/inc/common.jsp" />
@@ -9,8 +11,9 @@
 <head>
 <c:import url="${ROOT_PATH}/inc/header.jsp" />
 <script>
-	$(document).ready(
-		function() {
+	$(document).ready(function() {
+		
+		fillCategoryList('${siteId}', $("#select_category"), '<%=categoryId %>');
 
 			// Sample Data
 			var d1 = [ [ 1262304000000, 2000 ], [ 1264982400000, 500 ],
@@ -111,16 +114,7 @@
 					
 					<div class="col-md-12">
 						<form class="form-inline" role="form">
-							<select class="select_flat select_flat-sm">
-								<option>:: SITE ::</option>
-								<option>통합검색</option>
-								<option>모바일</option>
-							</select> 
-							<select class="select_flat select_flat-sm fcol2">
-								<option>:: CATEGORY ::</option>
-								<option>PC</option>
-								<option>가전</option>
-							</select>
+							<select id="select_category" class="select_flat select_flat-sm fcol2"></select>
 							<input type="button" class="btn btn-sm btn-warning" value="TIME">  
 							<input type="button" class="btn btn-sm btn-default" value="DAY"> 
 							<input type="button" class="btn btn-sm btn-default" value="WEEK">

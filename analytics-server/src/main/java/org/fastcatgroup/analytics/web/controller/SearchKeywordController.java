@@ -52,11 +52,23 @@ public class SearchKeywordController extends AbstractController {
 
 	@RequestMapping("/{keywordId}/update")
 	@ResponseBody
-	public String addUpdateRelateKeyword(@PathVariable String keywordId, String keyword, @RequestParam List<String> valueList) throws Exception {
+	public String addUpdateRelateKeyword(
+			@PathVariable String keywordId, 
+			@RequestParam String site,
+			@RequestParam String category,
+			@RequestParam("ID") String id,
+			@RequestParam("KEYWORD") String keyword, 
+			@RequestParam("VALUE") String value) throws Exception {
 
 		boolean result = false;
 		// keyword 가 존재하지 않으면 검사하지 않고 key,value 모두 insert
 		// keyword가 존재하면, value하나씩 검사하여 없는것만 insert.
+		
+		logger.debug("keywordId:{} / siteId:{} / categoryId:{} / id:{} / keyword:{} / value:{}",
+				keywordId, site, category, id, keyword, value);
+		
+		
+		
 		
 		JSONStringer s = new JSONStringer();
 		s.object().key("result").value(result).endObject();
@@ -108,6 +120,8 @@ public class SearchKeywordController extends AbstractController {
 				.key("VALUE").value(value).endObject();
 			}
 			stringer.endArray().endObject();
+			mav.addObject("siteId", site);
+			mav.addObject("categoryId", category);
 			mav.addObject("keywordId", keywordId);
 			mav.addObject("list", new JSONObject(stringer.toString()));
 			mav.addObject("start", 1);

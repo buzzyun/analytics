@@ -180,8 +180,8 @@ function <%=keywordId%>WordUpdate(id){
 	//console.log("update", id, trObj);
 	
 	var data = { 
-		uri: '/report/keyword/<%=keywordId%>/update.html',
-		pluginId: '${analysisId}',
+		site: '${siteId}',
+		category: '${categoryId}' ,
 		keywordId: '${keywordId}'
 	};
 	
@@ -204,21 +204,22 @@ function <%=keywordId%>WordUpdate(id){
 		return;
 	}
 	
-	requestProxy("POST", 
-		data,
-		"json",
-		function(response) {
+	$.ajax({
+		url:'update.html',
+		type:"POST",
+		data:data,
+		dataType:"json",
+		success:function(response) {
 			
 			if(response.success){
 				noty({text: "Update Success", type: "success", layout:"topRight", timeout: 1000});
 			}else{
 				noty({text: "Update Fail", type: "error", layout:"topRight", timeout: 2000});
 			}
-		},
-		function(response){
+		}, fail:function(response){
 			noty({text: "Update Error", type: "error", layout:"topRight", timeout: 2000});
 		}
-	);
+	});
 }
 function go<%=keywordId%>KeywordPage(uri, pageNo){
 	loadKeywordTab('<%=keywordId %>', pageNo, '${keyword}', searchColumnObj.val(), exactMatchObj.is(":checked"), true, '<%=targetId%>');
@@ -256,6 +257,11 @@ function <%=keywordId%>deleteSelectWord(){
 			
 			<div class="form-inline col-md-7">
 				<div class="form-group">
+					<select id="select_site" class="select_flat select_flat-sm" name="siteId"></select> 
+					<select id="select_category" class="select_flat select_flat-sm fcol2" name="categoryId"></select>
+					<input type="submit" class="btn btn-sm btn-primary" value="Submit">
+				</div>
+				<div class="form-group">
 					<select id="<%=keywordId %>SearchColumn" class="select_flat form-control">
 						<option value="_ALL">ALL</option>
 						<%
@@ -269,19 +275,19 @@ function <%=keywordId%>deleteSelectWord(){
 					</select>
 				</div>
 				<div class="form-group" style="width:240px">
-			        <div class="input-group" >
-			            <span class="input-group-addon"><i class="icon-search"></i></span>
-			            <input type="text" class="form-control" placeholder="Search" id="search_input_<%=keywordId%>" value="${keyword}">
-			        </div>
-			    </div>
-			    <div class="form-group">
-			    	&nbsp;
-			    	<div class="checkbox">
-			    	<label>
-			    		<input type="checkbox" id="<%=keywordId %>ExactMatch" <c:if test="${exactMatch}">checked</c:if>> Exact Match
-			    	</label>
-			    	</div>
-			    </div>
+					<div class="input-group" >
+						<span class="input-group-addon"><i class="icon-search"></i></span>
+						<input type="text" class="form-control" placeholder="Search" id="search_input_<%=keywordId%>" value="${keyword}">
+					</div>
+				</div>
+				<div class="form-group">
+					&nbsp;
+					<div class="checkbox">
+					<label>
+						<input type="checkbox" id="<%=keywordId %>ExactMatch" <c:if test="${exactMatch}">checked</c:if>> Exact Match
+					</label>
+					</div>
+				</div>
 			</div>
 			
 			<div class="col-md-5">
@@ -385,8 +391,8 @@ function <%=keywordId%>deleteSelectWord(){
 							<input type="text" id="value_input_${keywordId}" class="form-control" placeholder="Value">
 							<span class="input-group-btn">
 								<button class="btn btn-default" type="button" id="word_input_button_${keywordId}">Put</button>
-				            </span>
-			            </div>
+							</span>
+						</div>
 					</div>
 				</div>
 				<label id="word_input_result_${keywordId}" for="word_input" class="help-block" style="word-wrap: break-word;"></label>
@@ -396,8 +402,8 @@ function <%=keywordId%>deleteSelectWord(){
 					<input type="hidden" name="keywordId" value="${keywordId}"/>
 					<span class="fileContainer btn btn-primary"><span class="icon icon-upload"></span> File Upload ...<input type="file" name="filename" id="${keywordId}_file_upload"></span>
 				</form>
-		        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-	      	</div>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		  	</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->
 </div>

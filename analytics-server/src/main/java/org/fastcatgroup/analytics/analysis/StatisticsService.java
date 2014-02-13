@@ -81,8 +81,6 @@ public class StatisticsService extends AbstractService {
 			SiteSearchLogStatisticsModule module = new SiteSearchLogStatisticsModule(this, statisticsHome, siteId, categoryIdList, environment, settings);
 			siteStatisticsModuleMap.put(siteId, module);
 		}
-		
-
 	}
 
 	//초기 서비스시작시 DB에서 연관어 읽어서 올림.

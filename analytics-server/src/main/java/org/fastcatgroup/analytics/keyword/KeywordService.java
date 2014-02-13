@@ -14,7 +14,6 @@ import org.fastcatgroup.analytics.control.JobService;
 import org.fastcatgroup.analytics.db.AbstractDBService;
 import org.fastcatgroup.analytics.db.mapper.ADKeywordMapper;
 import org.fastcatgroup.analytics.db.mapper.KeywordSuggestionMapper;
-import org.fastcatgroup.analytics.db.mapper.ManagedMapper;
 import org.fastcatgroup.analytics.db.mapper.PopularKeywordMapper;
 import org.fastcatgroup.analytics.db.mapper.RelateKeywordMapper;
 import org.fastcatgroup.analytics.env.Environment;

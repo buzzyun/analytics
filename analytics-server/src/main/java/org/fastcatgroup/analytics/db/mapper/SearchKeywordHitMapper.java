@@ -7,21 +7,6 @@ import org.fastcatgroup.analytics.db.vo.SearchKeywordHitVO;
 
 public interface SearchKeywordHitMapper extends AnalyticsMapper {
 	
-	@Override
-	public void createTable(@Param("siteId") String siteId);
-
-	@Override
-	public void createIndex(@Param("siteId") String siteId) throws Exception;
-
-	@Override
-	public void validateTable(@Param("siteId") String siteId) throws Exception;
-
-	@Override
-	public void dropTable(@Param("siteId") String siteId) throws Exception;
-	
-	@Override
-	public int truncate(@Param("siteId") String siteId) throws Exception;
-	
 	public SearchKeywordHitVO getEntry(@Param("siteId") String siteId,
 			@Param("categoryId") String categoryId, @Param("timeId") String timeId,
 			@Param("keyword") String keyword) throws Exception;

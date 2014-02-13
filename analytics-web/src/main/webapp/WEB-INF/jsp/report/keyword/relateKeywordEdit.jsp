@@ -181,7 +181,6 @@ function <%=keywordId%>WordUpdate(id){
 	
 	var data = { 
 		site: '${siteId}',
-		category: '${categoryId}' ,
 		keywordId: '${keywordId}'
 	};
 	
@@ -256,11 +255,6 @@ function <%=keywordId%>deleteSelectWord(){
 		<div class="dataTables_header clearfix">
 			
 			<div class="form-inline col-md-7">
-				<div class="form-group">
-					<select id="select_site" class="select_flat select_flat-sm" name="siteId"></select> 
-					<select id="select_category" class="select_flat select_flat-sm fcol2" name="categoryId"></select>
-					<input type="submit" class="btn btn-sm btn-primary" value="Submit">
-				</div>
 				<div class="form-group">
 					<select id="<%=keywordId %>SearchColumn" class="select_flat form-control">
 						<option value="_ALL">ALL</option>

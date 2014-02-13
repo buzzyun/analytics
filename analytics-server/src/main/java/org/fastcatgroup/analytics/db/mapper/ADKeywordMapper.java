@@ -6,7 +6,7 @@ import org.fastcatgroup.analytics.db.vo.ADKeywordVO;
 /*
  * 광고키워드 테이블.
  * */
-public interface ADKeywordMapper extends ManagedMapper {
+public interface ADKeywordMapper extends AnalyticsMapper {
 	
 	public ADKeywordVO getEntryList(@Param("keyword") String keyword) throws Exception;
 	

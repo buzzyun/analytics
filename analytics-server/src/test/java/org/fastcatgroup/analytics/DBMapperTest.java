@@ -238,9 +238,9 @@ public class DBMapperTest {
 					List<SearchTypeRatioVO> list;
 					List<String> typeList;
 					try {
-						mapper.createTable(site, category, stype);
-						mapper.createIndex(site, category, stype);
-						mapper.validateTable(site, category, stype);
+						mapper.createTable(site);
+						mapper.createIndex(site);
+						mapper.validateTable(site);
 						
 						mapper.putEntry(site, category, stype, "prod_main", "d20131201", 100);
 						mapper.putEntry(site, category, stype, "prod_list", "d20131201", 100);
@@ -281,7 +281,7 @@ public class DBMapperTest {
 						assertEquals(sum,180);
 						
 					} finally {
-						mapper.dropTable(site, category, stype);
+						mapper.dropTable(site);
 						session.commit();
 					}
 				}

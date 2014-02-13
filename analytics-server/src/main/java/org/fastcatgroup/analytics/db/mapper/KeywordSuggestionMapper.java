@@ -8,7 +8,7 @@ import org.fastcatgroup.analytics.db.vo.KeywordSuggestionVO;
 /*
  * 키워드추천(자동완성) 데이터 테이블.
  * */
-public interface KeywordSuggestionMapper extends ManagedMapper {
+public interface KeywordSuggestionMapper extends AnalyticsMapper {
 	
 	//like검색을 수행한다. %keyword%
 	public List<KeywordSuggestionVO> getEntryList(@Param("start") int start, @Param("end") int end, @Param("search") String search) throws Exception;

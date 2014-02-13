@@ -6,7 +6,6 @@ import java.sql.Timestamp;
 public class RelateKeywordVO {
 	
 	private int id;
-	private String site;
 	private String keyword;
 	private String value;
 	private Timestamp updateTime;
@@ -14,18 +13,9 @@ public class RelateKeywordVO {
 	public RelateKeywordVO(){
 	}
 
-	public RelateKeywordVO(String site, String keyword, Timestamp updateTime){
-		this.setSiteId(site);
+	public RelateKeywordVO(String keyword, Timestamp updateTime){
 		this.keyword = keyword;
 		this.updateTime = updateTime;
-	}
-	
-	public String getSiteId() {
-		return site;
-	}
-
-	public void setSiteId(String site) {
-		this.site = site;
 	}
 	
 	public int getId() {

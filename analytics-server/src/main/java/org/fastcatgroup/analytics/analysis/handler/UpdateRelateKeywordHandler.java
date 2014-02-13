@@ -55,8 +55,8 @@ public class UpdateRelateKeywordHandler extends ProcessHandler {
 					RelateKeywordVO vo = mapper.getEntry(siteId, keyword);
 					
 					if (vo == null || vo.getId() == 0) {
-						vo = new RelateKeywordVO(siteId, keyword, timestamp);
-						mapper.putEntry(vo);
+						vo = new RelateKeywordVO(keyword, timestamp);
+						mapper.putEntry(siteId, vo);
 					}
 					
 					List<String>relate = keywordMap.get(vo.getKeyword());

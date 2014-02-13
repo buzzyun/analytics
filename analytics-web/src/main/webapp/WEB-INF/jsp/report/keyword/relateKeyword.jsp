@@ -13,7 +13,6 @@
 	String targetId = (String) request.getAttribute("targetId");
 	
 	String siteId = request.getParameter("siteId");
-	String categoryId = request.getParameter("categoryId");
 %>
 <script>
 
@@ -49,7 +48,7 @@ $(document).ready(function(){
 		}
 	});
 	
-	triggerSiteCategoryList($("#select_site"), $("#select_category"), '<%=siteId %>', '<%=categoryId %>');
+	triggerSiteCategoryList($("#select_site"), $("#select_category"), '<%=siteId %>', '');
 });
 
 function go<%=keywordId%>KeywordPage(uri, pageNo){
@@ -66,12 +65,6 @@ function go<%=keywordId%>EditablePage(pageNo){
 		<div class="dataTables_header clearfix">
 		
 			<div class="form-inline col-md-12">
-				<div class="form-group">
-					<select id="select_site" class="select_flat select_flat-sm" name="siteId"></select> 
-					<select id="select_category" class="select_flat select_flat-sm fcol2" name="categoryId"></select>
-					<input type="submit" class="btn btn-sm btn-primary" value="Submit">
-				</div>
-				
 				<div class="pull-right">
 					<a href="javascript:downloadKeyword('map', '<%=keywordId%>')"  class="btn btn-default btn-sm">
 						<span class="icon icon-download"></span> Download

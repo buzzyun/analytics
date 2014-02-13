@@ -7,18 +7,6 @@ import org.fastcatgroup.analytics.db.vo.SearchHitVO;
 
 public interface SearchHitMapper extends AnalyticsMapper {
 	
-	@Override
-	public void createTable(@Param("siteId") String siteId) throws Exception;
-
-	@Override
-	public void createIndex(@Param("siteId") String siteId) throws Exception;
-	
-	@Override
-	public void validateTable(@Param("siteId") String siteId) throws Exception;
-	
-	@Override
-	public void dropTable(@Param("siteId") String siteId) throws Exception;
-	
 	public SearchHitVO getEntry(@Param("siteId") String siteId,
 			@Param("categoryId") String categoryId, @Param("timeId") String timeId)
 			throws Exception;
@@ -57,6 +45,4 @@ public interface SearchHitMapper extends AnalyticsMapper {
 	public int deleteEntryBetween(@Param("siteId") String siteId,
 			@Param("categoryId") String categoryId, @Param("from") String from,
 			@Param("to") String to);
-	
-	public int truncate(@Param("siteId") String siteId);
 }

@@ -1,5 +1,6 @@
 package org.fastcatgroup.analytics.db.mapper;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -10,20 +11,26 @@ import org.fastcatgroup.analytics.db.vo.RelateKeywordVO;
  * */
 public interface RelateKeywordMapper extends AnalyticsMapper {
 	
-	public RelateKeywordVO getEntry(@Param("site") String site, @Param("keyword") String keyword) throws Exception;
+	public RelateKeywordVO getEntry(@Param("siteId") String siteId, @Param("keyword") String keyword) throws Exception;
 	
-	public List<RelateKeywordVO> getEntryList(@Param("site") String site) throws Exception;
+	public List<RelateKeywordVO> getEntryList(@Param("siteId") String siteId) throws Exception;
 	
-	public List<RelateKeywordVO> getEntryListByWhereCondition(@Param("site") String site, @Param("whereCondition") String whereCondition ,@Param("start")int start, @Param("end")int end) throws Exception; 
+	public List<RelateKeywordVO> getEntryListByWhereCondition(@Param("siteId") String siteId, @Param("whereCondition") String whereCondition ,@Param("start")int start, @Param("end")int end) throws Exception; 
 	
-	public List<String> getKeywordList(@Param("site") String site, @Param("keyword") String keyword);
+	public List<String> getKeywordList(@Param("siteId") String siteId, @Param("keyword") String keyword);
 	
-	public void putEntry(RelateKeywordVO vo) throws Exception;
+	public List<String> getKeywordListByWhereCondition(@Param("siteId") String siteId, @Param("keyword") String keyword, @Param("whereCondition") String whereCondition);
 	
-	public void deleteEntry(@Param("id") int id);
+	public void updateEntry(@Param("siteId") String siteId, @Param("keyword") String keyword, @Param("value") String value, @Param("updateTime") Date updateTime, @Param("id") int id );
 	
-	public int getCount(@Param("site") String site) throws Exception;
+	public void putEntry(@Param("siteId") String siteId, RelateKeywordVO vo) throws Exception;
 	
-	public int getCountByWhereCondition(@Param("site") String site, @Param("whereCondition") String whereCondition) throws Exception;
+	public void deleteEntry(@Param("siteId") String siteId, @Param("id") int id);
+	
+	public void deleteEntryList(@Param("siteId") String siteId, @Param("idList") String idList);
+	
+	public int getCount(@Param("siteId") String siteId) throws Exception;
+	
+	public int getCountByWhereCondition(@Param("siteId") String siteId, @Param("whereCondition") String whereCondition) throws Exception;
 	
 }

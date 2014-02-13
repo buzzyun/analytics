@@ -14,6 +14,11 @@ import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig;
 import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.CategoryConfig;
 import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig;
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
+import org.fastcatgroup.analytics.db.AnalyticsDBService;
+import org.fastcatgroup.analytics.db.MapperSession;
+import org.fastcatgroup.analytics.db.mapper.RelateKeywordMapper;
+import org.fastcatgroup.analytics.db.mapper.RelateKeywordValueMapper;
+import org.fastcatgroup.analytics.db.vo.RelateKeywordVO;
 import org.fastcatgroup.analytics.env.Environment;
 import org.fastcatgroup.analytics.env.SettingFileNames;
 import org.fastcatgroup.analytics.env.Settings;
@@ -76,7 +81,51 @@ public class StatisticsService extends AbstractService {
 			SiteSearchLogStatisticsModule module = new SiteSearchLogStatisticsModule(this, statisticsHome, siteId, categoryIdList, environment, settings);
 			siteStatisticsModuleMap.put(siteId, module);
 		}
+		
+		
+		loadRelateKeyword();
 
+	}
+
+	//초기 서비스시작시 DB에서 연관어 읽어서 올림.
+	private void loadRelateKeyword() {
+		relateKeywordMap.clear();
+		
+		List<SiteCategoryConfig> siteCategoryList = siteCategoryListConfig.getList();
+		
+		AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
+		MapperSession<RelateKeywordMapper> mapperSession = dbService.getMapperSession(RelateKeywordMapper.class);
+		
+		try {
+			RelateKeywordMapper mapper = mapperSession.getMapper();
+			
+			for (SiteCategoryConfig siteCategoryConfig : siteCategoryList) {
+				
+				String siteId = siteCategoryConfig.getSiteId();
+				List<CategoryConfig> categoryList = siteCategoryConfig.getCategoryList();
+				
+				List<String> categoryIdList = new ArrayList<String>();
+				for(CategoryConfig c : categoryList){
+					String categoryId = c.getId();
+				
+					List<RelateKeywordVO> list = mapper.getEntryList(siteId, categoryId);
+					if(list != null){
+						Map<String, Map<String, List<String>>> categoryKeywordMap = new HashMap<String, Map<String, List<String>>>();
+						Map<String, List<String>> keywordMap = new HashMap<String, List<String>>();
+						
+						
+						relateKeywordMap.put(siteId, categoryKeywordMap);
+					}
+				}
+			}
+			
+		} catch (Exception e) {
+			logger.error("", e);
+		} finally {
+			if (mapperSession != null) {
+				mapperSession.closeSession();
+			}
+		}
 	}
 
 	public SiteCategoryListConfig getSiteCategoryListConfig(){

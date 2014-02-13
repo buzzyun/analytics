@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +36,10 @@ public class UpdateRelateKeywordHandler extends ProcessHandler {
 			MapperSession<RelateKeywordValueMapper> vmapperSession = dbService.getMapperSession(RelateKeywordValueMapper.class);
 			BufferedReader reader = null;
 			
-			Map<String, List<String>> keywordMap = new HashMap<String, List<String>>();
+			StatisticsService service = ServiceManager.getInstance().getService(StatisticsService.class);
+			//map은 기존 데이터와 머징이 되어야 한다.
+			Map<String, List<String>> relateKeywordMap = service.getRelateKeywordMap(siteId);
+			
 			try {
 				RelateKeywordMapper mapper = mapperSession.getMapper();
 				RelateKeywordValueMapper vmapper = vmapperSession.getMapper();
@@ -52,30 +54,51 @@ public class UpdateRelateKeywordHandler extends ProcessHandler {
 					String[] el = line.split("\t");
 					String keyword = el[1];
 					String value = el[0];
-					RelateKeywordVO vo = mapper.getEntry(siteId, keyword);
 					
-					if (vo == null || vo.getId() == 0) {
-						vo = new RelateKeywordVO(keyword, timestamp);
-						mapper.putEntry(siteId, vo);
+					
+					List<String> list = relateKeywordMap.get(keyword);
+					
+					//서비스 키워드에 없으면 입력해야함. 서비스 키워드는 db와 동일하기 때문.
+					boolean needToInsert = false;
+					if(list == null){
+						list = new ArrayList<String>();
+						relateKeywordMap.put(keyword, list);
+						list.add(value);
+						needToInsert = true;
+					}else{
+						//없으면 입력.
+						if(!list.contains(value)){
+							list.add(value);
+							needToInsert = true;
+						}
 					}
 					
-					List<String>relate = keywordMap.get(vo.getKeyword());
-					if(relate == null) {
-						relate = new ArrayList<String>();
-						keywordMap.put(vo.getKeyword(), relate);
+					if(needToInsert){
+						RelateKeywordVO vo = mapper.getEntry(siteId, keyword);
+						
+						if (vo == null || vo.getId() == 0) {
+							//keyword 새로입력.
+							vo = new RelateKeywordVO(keyword, timestamp);
+
+							String valueList = vo.getValue();
+							valueList = valueList + ", " + value;
+							
+							mapper.putEntry(siteId, vo);
+							vmapper.putEntry(siteId, vo.getId(), valueList);
+							logger.debug("##Put relate {} / {} / {}", siteId, vo.getId(), value);
+						}else{
+							//업데이트..
+//							mapper.updateEntry(line, keyword, value, updateTime, id)Entry;
+							
+							logger.debug("##Update relate {} / {} / {}", siteId, vo.getId(), value);
+						}
+					
 					}
 					
-					
-					if(!relate.contains(value)) {
-						relate.add(value);
-					}
-					
-					logger.debug("put relate {} / {} / {}", siteId, vo.getId(), value);
-					vmapper.putEntry(siteId, vo.getId(), value);
 				}
 				
-				StatisticsService service = ServiceManager.getInstance().getService(StatisticsService.class);
-				service.updateRelativeKeywordMap(siteId, keywordMap);
+				
+//				service.updateRelativeKeywordMap(siteId, keywordMap);
 				
 			} finally {
 				if (mapperSession != null) {

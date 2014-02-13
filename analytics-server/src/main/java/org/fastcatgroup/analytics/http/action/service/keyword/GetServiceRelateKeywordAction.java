@@ -25,7 +25,6 @@ public class GetServiceRelateKeywordAction extends ServiceAction {
 
 		String keyword = request.getParameter("keyword");
 		String siteId = request.getParameter("siteId");
-		String categoryId = request.getParameter("categoryId");
 		String errorMessage = null;
 		
 		StatisticsService service = ServiceManager.getInstance().getService(StatisticsService.class);
@@ -39,12 +38,12 @@ public class GetServiceRelateKeywordAction extends ServiceAction {
 		}
 		
 		Map<String, List<String>> relateKeywordMap = service.getRelateKeywordMap(siteId);
-		logger.debug("relateKeywordMap:{}.{}.{}", siteId, categoryId, relateKeywordMap);
+		logger.debug("relateKeywordMap:{}.{}.{}", siteId, relateKeywordMap);
 		
 		//KeywordDictionaryType keywordDictionaryType = KeywordDictionaryType.RELATE_KEYWORD;
 
 		responseWriter.object();
-		responseWriter.key("categoryId").value(categoryId);
+		responseWriter.key("siteId").value(siteId);
 		responseWriter.key("service").value(KeywordDictionaryType.RELATE_KEYWORD.name());
 		
 		try {

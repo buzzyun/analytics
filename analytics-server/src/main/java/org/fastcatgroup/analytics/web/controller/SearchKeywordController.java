@@ -3,6 +3,9 @@ package org.fastcatgroup.analytics.web.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -13,6 +16,7 @@ import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
 import org.fastcatgroup.analytics.db.mapper.RelateKeywordMapper;
+import org.fastcatgroup.analytics.db.mapper.RelateKeywordValueMapper;
 import org.fastcatgroup.analytics.db.vo.RelateKeywordVO;
 import org.fastcatgroup.analytics.service.ServiceManager;
 import org.json.JSONArray;
@@ -43,23 +47,46 @@ public class SearchKeywordController extends AbstractController {
 		return mav;
 
 	}
-
-	@RequestMapping("/relate/delete")
-	@ResponseBody
-	public String deleteRelateKeyword(@PathVariable String siteId, @RequestParam(required = false) String deleteIdList) throws Exception {
-		boolean result = false;
+	
+	private void deleteRelateKeyword(String siteId, String deleteIdList) {
+		//value 를 먼저 지운 후 keyword 를 지우도록 한다.
+		AnalyticsDBService service = ServiceManager.getInstance().getService(AnalyticsDBService.class);
+		MapperSession<RelateKeywordMapper> relateMapperSession = null;
+		MapperSession<RelateKeywordValueMapper> relateValueMapperSession = null;
 		
-		JSONStringer s = new JSONStringer();
-		s.object().key("result").value(result).endObject();
-		return s.toString();
+		try {
+			
+			relateMapperSession = service.getMapperSession(RelateKeywordMapper.class);
+			relateValueMapperSession = service.getMapperSession(RelateKeywordValueMapper.class);
+			
+			RelateKeywordMapper relateMaapper = relateMapperSession.getMapper();
+			RelateKeywordValueMapper relateValueMapper = relateValueMapperSession.getMapper();
+			
+			String[] idArray = deleteIdList.split(",");
+			
+			for(String idString : idArray) {
+				int id = 0;
+				id = Integer.parseInt(idString.trim());
+				relateValueMapper.deleteValues(siteId, id);
+				relateMaapper.deleteEntry(siteId, id);
+			}
+			
+			relateMapperSession.commit();
+			relateValueMapperSession.commit();
+		} finally {
+			if(relateValueMapperSession!=null) {
+				relateValueMapperSession.closeSession();
+			}
+			if(relateMapperSession!=null) {
+				relateMapperSession.closeSession();
+			}
+		}
 	}
 
 	@RequestMapping("/relate/update")
 	@ResponseBody
 	public String addUpdateRelateKeyword(
 			@PathVariable String siteId, 
-			@RequestParam String site,
-			@RequestParam String category,
 			@RequestParam("ID") String id,
 			@RequestParam("KEYWORD") String keyword, 
 			@RequestParam("VALUE") String value) throws Exception {
@@ -68,14 +95,78 @@ public class SearchKeywordController extends AbstractController {
 		// keyword 가 존재하지 않으면 검사하지 않고 key,value 모두 insert
 		// keyword가 존재하면, value하나씩 검사하여 없는것만 insert.
 		
-		logger.debug("keywordType:{} / siteId:{} / categoryId:{} / id:{} / keyword:{} / value:{}",
-				"relate", site, category, id, keyword, value);
+		logger.debug("keywordType:{} / siteId:{} / id:{} / keyword:{} / value:{}",
+				"relate", siteId, id, keyword, value);
 		
+		AnalyticsDBService service = ServiceManager.getInstance().getService(AnalyticsDBService.class);
+		MapperSession<RelateKeywordMapper> relateMapperSession = null;
+		MapperSession<RelateKeywordValueMapper> relateValueMapperSession = null;
 		
+		try {
+			relateMapperSession = service.getMapperSession(RelateKeywordMapper.class);
+			relateValueMapperSession = service.getMapperSession(RelateKeywordValueMapper.class);
+			
+			RelateKeywordMapper relateMapper = relateMapperSession.getMapper();
+			RelateKeywordValueMapper relateValueMapper = relateValueMapperSession.getMapper();
+			
+			keyword = keyword.trim();
+			
+			RelateKeywordVO relateEntry = relateMapper.getEntry(siteId, keyword);
+			
+			List<String> valuesList = new ArrayList<String>();
+			if(value!=null) {
+				String[] valueArray = value.split(",");
+				for(String valueString : valueArray) {
+					valuesList.add(valueString.trim());
+				}
+			}
+			if(relateEntry!=null && relateEntry.getId()!=0) {
+				
+				if (id != null && !"".equals(id) && id.equals(String.valueOf(relateEntry.getId()))) {
+					//기존값의 수정 이라면, 기존의 값들을 모두 지워 주어야 한다.
+					relateValueMapper.deleteValues(siteId, relateEntry.getId());
+				} else {
+					//그렇지 않다면 같지 않은것들만 입력 하도록 한다.(수동입력 시 입력된 키값이 종전에 있는 값일 경우)
+					String entryValue = relateEntry.getValue();
+					if (entryValue == null) {
+						entryValue = "";
+					}
+					String[] entryValueArray = entryValue.split(",");
+					for (int vinx = 0; vinx < entryValueArray.length; vinx++) {
+						String entryValueString = entryValueArray[vinx].trim();
+						if(valuesList.contains(entryValueString)) {
+							valuesList.remove(entryValueString);
+						}
+					}
+				}
+				for(String valueString : valuesList) {
+					valueString = valueString.trim();
+					relateValueMapper.putEntry(siteId, relateEntry.getId(), valueString);
+				}
+			} else {
+				//아무것도 없다면 둘 다 입력하도록 한다.
+				relateEntry = new RelateKeywordVO (keyword, new Timestamp(System.currentTimeMillis()));
+				relateMapper.putEntry(siteId, relateEntry);
+				
+				for(String valueString : valuesList) {
+					valueString = valueString.trim();
+					relateValueMapper.putEntry(siteId, relateEntry.getId(), valueString);
+				}
+			}
 		
-		
+			relateMapperSession.commit();
+			relateValueMapperSession.commit();
+			result = true;
+		} finally {
+			if(relateValueMapperSession!=null) {
+				relateValueMapperSession.closeSession();
+			}
+			if(relateMapperSession!=null) {
+				relateMapperSession.closeSession();
+			}
+		}
 		JSONStringer s = new JSONStringer();
-		s.object().key("result").value(result).endObject();
+		s.object().key("success").value(result).endObject();
 		return s.toString();
 	}
 
@@ -85,6 +176,7 @@ public class SearchKeywordController extends AbstractController {
 			, @RequestParam(required = false) String categoryId, @RequestParam(defaultValue = "1") Integer pageNo 
 			, @RequestParam(required = false) String keyword , @RequestParam(required = false) Boolean exactMatch
 			, @RequestParam(required = false) Boolean isEditable , @RequestParam(required = false) String targetId
+			, @RequestParam(required = false) String deleteIdList
 			) throws Exception {
 
 		int PAGE_SIZE = 10;
@@ -92,23 +184,26 @@ public class SearchKeywordController extends AbstractController {
 		ModelAndView mav = new ModelAndView();
 		MapperSession<RelateKeywordMapper> mapperSession = null;
 
+		//삭제할 것이 있다면 삭제한다.
+		if(deleteIdList!=null && !"".equals(deleteIdList)) {
+			deleteRelateKeyword(siteId, deleteIdList);
+		}
+		
 		try {
 			ServiceManager serviceManager = ServiceManager.getInstance();
 			AnalyticsDBService dbService = serviceManager.getService(AnalyticsDBService.class);
-			StatisticsService statisticsService = serviceManager.getService(StatisticsService.class);
 			mapperSession = dbService.getMapperSession(RelateKeywordMapper.class);
 			RelateKeywordMapper mapper = mapperSession.getMapper();
 			
 			int start = 0;
-			//int end = 0;
 
 			if (pageNo > 0) {
 				start = (pageNo - 1) * PAGE_SIZE;
 			}
-			//end = start + PAGE_SIZE;
 
 			String whereCondition = "";
 			//TODO whereCondition에 start, end와 검색 keyword 처리.
+			
 			
 			
 			int totalSize = mapper.getCount(siteId);

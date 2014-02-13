@@ -8,4 +8,5 @@ import org.apache.ibatis.annotations.Param;
 public interface RelateKeywordValueMapper extends AnalyticsMapper {
 	
 	public void putEntry(@Param("siteId")String siteId, @Param("keyId") int keyId, @Param("value") String value) throws Exception;
+	public void deleteValues(@Param("siteId")String siteId, @Param("keyId")int id);
 }

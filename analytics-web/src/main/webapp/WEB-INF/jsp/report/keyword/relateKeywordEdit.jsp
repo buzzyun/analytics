@@ -40,7 +40,7 @@ $(document).ready(function(){
 	searchInputObj.keydown(function (e) {
 		if(e.keyCode == 13){
 			var keyword = toSafeString($(this).val());
-			loadKeywordTab('<%=keywordId %>', 1, keyword, searchColumnObj.val(), exactMatchObj.is(":checked"), true, '<%=targetId%>');
+			loadKeywordTab('relate', 1, keyword, searchColumnObj.val(), exactMatchObj.is(":checked"), true, '<%=targetId%>');
 			return;
 		}
 	});
@@ -49,13 +49,13 @@ $(document).ready(function(){
 	searchColumnObj.on("change", function(){
 		var keyword = toSafeString(searchInputObj.val());
 		if(keyword != ""){
-			loadKeywordTab('<%=keywordId %>', 1, keyword, searchColumnObj.val(), exactMatchObj.is(":checked"), true, '<%=targetId%>');
+			loadKeywordTab('relate', 1, keyword, searchColumnObj.val(), exactMatchObj.is(":checked"), true, '<%=targetId%>');
 		}
 	});
 	exactMatchObj.on("change", function(){
 		var keyword = toSafeString(searchInputObj.val());
 		if(keyword != ""){
-			loadKeywordTab('<%=keywordId %>', 1, keyword, searchColumnObj.val(), exactMatchObj.is(":checked"), true, '<%=targetId%>');
+			loadKeywordTab('relate', 1, keyword, searchColumnObj.val(), exactMatchObj.is(":checked"), true, '<%=targetId%>');
 		}
 	});
 	
@@ -84,12 +84,12 @@ $(document).ready(function(){
 		wordInputObj.focus();
 	});
 	
-	if($("._table_<%=keywordId %>")){
-		checkableTable("._table_<%=keywordId %>");
+	if($("._table_relate")){
+		checkableTable("._table_relate");
 	}
 	
 	//사전 업로드.
-	var fileInputObj = $("#<%=keywordId %>_file_upload");
+	var fileInputObj = $("#relate_file_upload");
 	
 	fileInputObj.on("change", function(){
 		console.log("val=","["+$(this).val()+"]");
@@ -110,7 +110,7 @@ $(document).ready(function(){
 				}
 				, complete: function(){
 					//지워준다.
-					$("#<%=keywordId %>_file_upload").val("");
+					$("#relate_file_upload").val("");
 				}
 			});
 		}
@@ -123,7 +123,7 @@ function relateTruncate(){
 }
 function relateLoadList(){
 	var keyword = toSafeString(searchInputObj.val());
-	loadKeywordTab('<%=keywordId %>', 1, keyword, searchColumnObj.val(), exactMatchObj.is(":checked"), true, '<%=targetId%>');
+	loadKeywordTab('relate', 1, keyword, searchColumnObj.val(), exactMatchObj.is(":checked"), true, '<%=targetId%>');
 }
 function relateValueInsert(){
 	var keyword = toSafeString(wordInputObj.val());
@@ -140,16 +140,17 @@ function relateValueInsert(){
 		return;
 	}
 	
-	requestProxy("POST", {
-			uri: '/report/keyword/put.json',
-			pluginId: '${analysisId}',
+	$.ajax({
+		url:'update.html',
+		type:"POST",
+		data:{
+			siteId: '${siteId}',
 			keywordId: 'relate',
+			ID:"",
 			KEYWORD: keyword,
-			VALUE: value
-		},
-		"json",
-		function(response) {
-			
+			VALUE: value },
+		dataType:"json",
+		success:function(response) {
 			if(response.success){
 				wordInputObj.val("");
 				valueInputObj.val("");
@@ -169,14 +170,13 @@ function relateValueInsert(){
 				wordInputResultObj.text(message);
 				wordInputResultObj.addClass("text-danger-imp");
 				wordInputResultObj.removeClass("text-success-imp");
-			}
-		},
-		function(response){
+			} },
+		fail:function(response){
 			wordInputResultObj.text("\""+keyword+"\" Insert error.");
 			wordInputResultObj.addClass("text-danger-imp");
 			wordInputResultObj.removeClass("text-success-imp");
-		}
-	);
+		} 
+	});
 }
 
 function relateWordUpdate(id){
@@ -214,7 +214,6 @@ function relateWordUpdate(id){
 		data:data,
 		dataType:"json",
 		success:function(response) {
-			
 			if(response.success){
 				noty({text: "Update Success", type: "success", layout:"topRight", timeout: 1000});
 			}else{
@@ -226,14 +225,14 @@ function relateWordUpdate(id){
 	});
 }
 function gorelateKeywordPage(uri, pageNo){
-	loadKeywordTab('<%=keywordId %>', pageNo, '${keyword}', searchColumnObj.val(), exactMatchObj.is(":checked"), true, '<%=targetId%>');
+	loadKeywordTab('relate', pageNo, '${keyword}', searchColumnObj.val(), exactMatchObj.is(":checked"), true, '<%=targetId%>');
 }
 function gorelateViewablePage(pageNo){
-	loadKeywordTab('<%=keywordId %>', pageNo, '${keyword}', searchColumnObj.val(), exactMatchObj.is(":checked"), false, '<%=targetId%>');	
+	loadKeywordTab('relate', pageNo, '${keyword}', searchColumnObj.val(), exactMatchObj.is(":checked"), false, '<%=targetId%>');	
 }
 function relatedeleteOneWord(deleteId){
 	if(confirm("Are you sure to delete?")){
-		loadKeywordTab('<%=keywordId %>', '${pageNo}', '${keyword}', searchColumnObj.val(), exactMatchObj.is(":checked"), true, '<%=targetId%>', deleteId);
+		loadKeywordTab('relate', '${pageNo}', '${keyword}', searchColumnObj.val(), exactMatchObj.is(":checked"), true, '<%=targetId%>', deleteId);
 	}
 }
 function relatedeleteSelectWord(){
@@ -250,7 +249,7 @@ function relatedeleteSelectWord(){
 		return;
 	}
 	var deleteIdList = idList.join(",");
-	loadKeywordTab('<%=keywordId %>', '${pageNo}', '${keyword}', searchColumnObj.val(), exactMatchObj.is(":checked"), true, '<%=targetId%>', deleteIdList);	
+	loadKeywordTab('relate', '${pageNo}', '${keyword}', searchColumnObj.val(), exactMatchObj.is(":checked"), true, '<%=targetId%>', deleteIdList);	
 }
 </script>
 
@@ -261,7 +260,7 @@ function relatedeleteSelectWord(){
 			
 			<div class="form-inline col-md-7">
 				<div class="form-group">
-					<select id="<%=keywordId %>SearchColumn" class="select_flat form-control">
+					<select id="relateSearchColumn" class="select_flat form-control">
 						<option value="_ALL">ALL</option>
 						<%
 						for(int i=0; i < searchableColumnList.length(); i++){
@@ -283,7 +282,7 @@ function relatedeleteSelectWord(){
 					&nbsp;
 					<div class="checkbox">
 					<label>
-						<input type="checkbox" id="<%=keywordId %>ExactMatch" <c:if test="${exactMatch}">checked</c:if>> Exact Match
+						<input type="checkbox" id="relateExactMatch" <c:if test="${exactMatch}">checked</c:if>> Exact Match
 					</label>
 					</div>
 				</div>
@@ -313,7 +312,7 @@ function relatedeleteSelectWord(){
 		%>
 		<div class="col-md-12" style="overflow:auto">
 		
-			<table class="_table_<%=keywordId %> table table-hover table-bordered table-checkable table-condensed">
+			<table class="_table_relate table table-hover table-bordered table-checkable table-condensed">
 				<thead>
 					<tr>
 						<th class="checkbox-column">
@@ -329,7 +328,7 @@ function relatedeleteSelectWord(){
 				for(int i=0; i < entryList.size(); i++){
 					 RelateKeywordVO relateKeyword = entryList.get(i);//.getJSONrelateKeywordect(i);
 				%>
-					<tr id="_<%=keywordId %>-<%=relateKeyword.getId() %>">
+					<tr id="_relate-<%=relateKeyword.getId() %>">
 						<td class="checkbox-column">
 							<input type="checkbox" class="edit">
 							<input type="hidden" name="ID" value="<%=relateKeyword.getId() %>"/>
@@ -364,7 +363,7 @@ function relatedeleteSelectWord(){
 			 	<jsp:param name="totalSize" value="<%=filteredSize %>" />
 				<jsp:param name="pageSize" value="${pageSize }" />
 				<jsp:param name="width" value="5" />
-				<jsp:param name="callback" value="go${keywordId }KeywordPage" />
+				<jsp:param name="callback" value="gorelateKeywordPage" />
 				<jsp:param name="requestURI" value="" />
 			 </jsp:include>
 			</div>
@@ -378,7 +377,7 @@ function relatedeleteSelectWord(){
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title"><%=keywordId.toUpperCase() %> Word Insert</h4>
+				<h4 class="modal-title">Relate Word Insert</h4>
 			</div>
 			<div class="modal-body">
 				<div class="form-inline">

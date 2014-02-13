@@ -23,16 +23,21 @@
 		limit 1;
 	</select>
 	
+	<select id="valueList" parameterType="int" resultType="int">
+		select id from ${siteId}_relate_keyword_value where keyId=#{keyId}
+	</select>
+	
 	<insert id="putEntry" parameterType="map">
 		insert ignore into ${siteId}_relate_keyword_value (keyId, value) 
 		select * from (select #{keyId},#{value} ) a where 
 		(select count(*) from ${siteId}_relate_keyword_value 
 			where keyId=#{keyId} and value=#{value})=0 limit 1
 	</insert>
-
-	<update id="dropTable" parameterType="map">
-		drop table ${siteId}_relate_keyword_value
-	</update>
+	
+	<delete id="deleteValues" parameterType="map">
+		delete from ${siteId}_relate_keyword_value
+		where keyId = #{keyId}
+	</delete>
 	
 	<delete id="truncate" parameterType="map">
 		truncate table ${siteId}_relate_keyword_value

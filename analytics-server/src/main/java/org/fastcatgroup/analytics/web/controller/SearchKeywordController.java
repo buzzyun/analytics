@@ -9,6 +9,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
 import org.fastcatgroup.analytics.db.mapper.RelateKeywordMapper;
@@ -33,7 +34,9 @@ public class SearchKeywordController extends AbstractController {
 	@RequestMapping("/{keywordType}/index")
 	public ModelAndView keywordIndex(@PathVariable String siteId, @PathVariable String keywordType) {
 		ModelAndView mav = new ModelAndView();
-
+		ServiceManager serviceManager = ServiceManager.getInstance();
+		StatisticsService statisticsService = serviceManager.getService(StatisticsService.class);
+		mav.addObject("siteConfig", statisticsService.getSiteCategoryListConfig().getList());
 		mav.setViewName("report/keyword/index");
 		mav.addObject("siteId", siteId);
 		mav.addObject("keywordType", keywordType);
@@ -90,11 +93,12 @@ public class SearchKeywordController extends AbstractController {
 		MapperSession<RelateKeywordMapper> mapperSession = null;
 
 		try {
-			AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
+			ServiceManager serviceManager = ServiceManager.getInstance();
+			AnalyticsDBService dbService = serviceManager.getService(AnalyticsDBService.class);
+			StatisticsService statisticsService = serviceManager.getService(StatisticsService.class);
 			mapperSession = dbService.getMapperSession(RelateKeywordMapper.class);
 			RelateKeywordMapper mapper = mapperSession.getMapper();
 			
-
 			int start = 0;
 			//int end = 0;
 

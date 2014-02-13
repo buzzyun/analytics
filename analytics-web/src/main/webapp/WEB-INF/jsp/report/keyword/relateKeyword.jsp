@@ -1,3 +1,6 @@
+<%@page import="org.fastcatgroup.analytics.db.vo.RelateKeywordVO"%>
+<%@page import="java.util.List"%>
+<%@page import="org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -5,10 +8,10 @@
 <%@page import="org.json.*"%>
 <%
 	String keywordId = (String) request.getAttribute("keywordId");
-	JSONObject list = (JSONObject) request.getAttribute("list");
-	int totalSize = list.getInt("totalSize");
-	int filteredSize = list.getInt("filteredSize");
-	JSONArray entryList = (JSONArray) list.getJSONArray(keywordId);
+	List<RelateKeywordVO> entryList = (List<RelateKeywordVO>)request.getAttribute("entryList");
+	int totalSize = (Integer) request.getAttribute("totalSize");
+	int filteredSize = (Integer) request.getAttribute("filteredSize");
+	
 	int start = (Integer) request.getAttribute("start");
 	String targetId = (String) request.getAttribute("targetId");
 	
@@ -101,7 +104,7 @@ function go<%=keywordId%>EditablePage(pageNo){
 		</div>
 		
 		<%
-		if(entryList.length() > 0){
+		if(entryList.size() > 0){
 		%>
 		<div class="col-md-12" style="overflow:auto">
 		
@@ -115,13 +118,13 @@ function go<%=keywordId%>EditablePage(pageNo){
 				<tbody>
 					
 				<%
-				for(int i=0; i < entryList.length(); i++){
-					JSONObject obj = entryList.getJSONObject(i);
+				for(int i=0; i < entryList.size(); i++){
+					RelateKeywordVO relateKeyword = entryList.get(i);
 				%>
 					<tr>
-						<td class="col-md-2"><%=obj.getString("KEYWORD") %></td>
+						<td class="col-md-2"><%=relateKeyword.getKeyword() %></td>
 						<td>
-						<%=obj.getString("VALUE") %>
+						<%=relateKeyword.getValue() %>
 						</td>
 					</tr>
 					
@@ -137,8 +140,8 @@ function go<%=keywordId%>EditablePage(pageNo){
 		<div class="table-footer">
 			<div class="col-md-12">
 			Rows 
-			<% if(entryList.length() > 0) { %>
-			<%=start %> - <%=start + entryList.length() - 1 %> of <%=filteredSize %> <% if(filteredSize != totalSize) {%> (filtered from <%=totalSize %> total entries)<% } %>
+			<% if(entryList.size() > 0) { %>
+			<%=start %> - <%=start + entryList.size() - 1 %> of <%=filteredSize %> <% if(filteredSize != totalSize) {%> (filtered from <%=totalSize %> total entries)<% } %>
 			<% } else { %>
 			Empty
 			<% } %>

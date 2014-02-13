@@ -8,16 +8,17 @@ import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCat
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
 import org.fastcatgroup.analytics.service.ServiceManager;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/report/rank")
+@RequestMapping("/{siteId}/report/rank")
 public class SearchRankController extends AbstractController {
 
 	@RequestMapping("/realtimeSearchKeyword")
-	public ModelAndView realtimeSearchKeyword(@RequestParam(required=false) String siteId, @RequestParam(required=false) String categoryId) {
+	public ModelAndView realtimeSearchKeyword(@PathVariable String siteId, @RequestParam(required=false) String categoryId) {
 		ModelAndView mav = new ModelAndView();
 		
 		List<SiteCategoryConfig> siteCategoryList = getSiteCategoryListConfig();
@@ -32,7 +33,7 @@ public class SearchRankController extends AbstractController {
 	}
 	
 	@RequestMapping("/searchKeyword")
-	public ModelAndView searchKeyword() {
+	public ModelAndView searchKeyword(@PathVariable String siteId) {
 
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/rank/searchKeyword");
@@ -42,7 +43,7 @@ public class SearchRankController extends AbstractController {
 	
 	//관심어순위
 	@RequestMapping("/myKeyword")
-	public ModelAndView myKeyword() {
+	public ModelAndView myKeyword(@PathVariable String siteId) {
 
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/rank/myKeyword");
@@ -51,7 +52,7 @@ public class SearchRankController extends AbstractController {
 	
 	//급상승검색어순위
 	@RequestMapping("/hotKeyword")
-	public ModelAndView hotKeyword() {
+	public ModelAndView hotKeyword(@PathVariable String siteId) {
 
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/rank/hotKeyword");
@@ -60,7 +61,7 @@ public class SearchRankController extends AbstractController {
 	
 	//신규검색어순위
 	@RequestMapping("/newKeyword")
-	public ModelAndView newKeyword() {
+	public ModelAndView newKeyword(@PathVariable String siteId) {
 
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/rank/newKeyword");

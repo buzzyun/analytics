@@ -54,7 +54,7 @@ body {
   height: 100%;
 }
 #container.fixed-header {
-  margin-top: 52px;
+  margin-top: 48px;
 }
 #container > #content > .container {
   float: left;
@@ -503,7 +503,7 @@ span.red {
 /* # Dropdowns
 ================================================== */
 .navbar .dropdown-menu {
-  margin-top: 3px !important;
+  /*margin-top: 3px !important;*/
   position: absolute !important;
   float: left !important;
   background-color: #fff !important;
@@ -513,7 +513,7 @@ span.red {
   -moz-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175) !important;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175) !important;
   right: 0;
-  left: auto;
+  /*left: auto;*/
 }
 .navbar .dropdown-toggle i.small {
   font-size: 10px;
@@ -820,7 +820,7 @@ span.red {
   border-top: 1px solid #ebebeb;
 }
 #sidebar ul#nav > li.current > a {
-  border-right: 3px solid #668eb0;
+  border-right: 3px solid #eb8544;
 }
 #sidebar ul#nav > li.current > a > .arrow {
   right: 7px !important;
@@ -2625,7 +2625,7 @@ label > span.required {
 .pagination > .active > a:focus,
 .pagination > .active > span:focus {
   background-color: #eb8544;
-  border-color: #3c5a74;
+  border-color: #ca6e35;
 }
 /* * * * * * * * * * * *
  * Checkable Table

@@ -153,3 +153,8 @@ td.analysis-tools-detail div {line-height: 200%;}
 .input-sm {height: 27px; }
 
 .hide2 {display:none;}
+
+.navbar-left li.active a {
+	border-bottom: 3px solid #fbb450;
+	padding-bottom: 11px;
+}

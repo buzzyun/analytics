@@ -13,19 +13,14 @@
 
 	<context:component-scan base-package="org.fastcatgroup.analytics.web.controller" />
 
-	<!-- <bean id="authMainInterceptor" class="org.fastcatsearch.console.web.AuthMainInterceptor" />
-	<bean id="authManagerInterceptor" class="org.fastcatsearch.console.web.AuthManagerInterceptor" />
+	<bean id="MainInterceptor" class="org.fastcatgroup.analytics.web.MainInterceptor" />
 
 	<mvc:interceptors>
 		<mvc:interceptor>
-			<mvc:mapping path="/main/**/*.html" />
-			<ref bean="authMainInterceptor" />
+			<mvc:mapping path="/**/*.html" />
+			<ref bean="MainInterceptor" />
 		</mvc:interceptor>
-		<mvc:interceptor>
-			<mvc:mapping path="/manager/**/*.html" />
-			<ref bean="authManagerInterceptor" />
-		</mvc:interceptor>
-	</mvc:interceptors> -->
+	</mvc:interceptors>
 
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">

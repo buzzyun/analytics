@@ -19,19 +19,26 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/report")
+@RequestMapping("/{siteId}/report")
 public class ReportMainController extends AbstractController {
 
 	@RequestMapping("/index")
-	public ModelAndView index() {
-		logger.debug("ServiceManager111222 > {}", ServiceManager.getInstance());
+	public ModelAndView index(@PathVariable String siteId) {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/index");
 		return mav;
 	}
 	
+	@RequestMapping("/configuration")
+	public ModelAndView configuration(@PathVariable String siteId) {
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("report/configuration");
+		return mav;
+	}
+	
+	
 	@RequestMapping("/dashboard")
-	public ModelAndView dashboard() {
+	public ModelAndView dashboard(@PathVariable String siteId) {
 
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/dashboard");
@@ -41,7 +48,7 @@ public class ReportMainController extends AbstractController {
 	
 	@RequestMapping("/siteList")
 	@ResponseBody
-	public String getSiteList() {
+	public String getSiteList(@PathVariable String siteId) {
 		List<SiteCategoryConfig> siteCategoryList = getSiteCategoryListConfig();
 		JSONStringer s = new JSONStringer();
 		s.array();

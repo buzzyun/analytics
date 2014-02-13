@@ -1,15 +1,16 @@
 package org.fastcatgroup.analytics.web.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/report/ctr")
+@RequestMapping("/{siteId}/report/ctr")
 public class CTRController extends AbstractController {
 
 	@RequestMapping("/view")
-	public ModelAndView view() {
+	public ModelAndView view(@PathVariable String siteId) {
 
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/ctr/view");
@@ -17,7 +18,7 @@ public class CTRController extends AbstractController {
 	}
 	
 	@RequestMapping("/keyword")
-	public ModelAndView keyword() {
+	public ModelAndView keyword(@PathVariable String siteId) {
 
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/ctr/keyword");
@@ -25,7 +26,7 @@ public class CTRController extends AbstractController {
 	}
 	
 	@RequestMapping("/searchKeyword")
-	public ModelAndView searchKeyword() {
+	public ModelAndView searchKeyword(@PathVariable String siteId) {
 
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/ctr/searchKeyword");

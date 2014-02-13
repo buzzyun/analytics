@@ -42,7 +42,7 @@ public class SearchKeywordController extends AbstractController {
 		StatisticsService statisticsService = serviceManager.getService(StatisticsService.class);
 		mav.addObject("siteConfig", statisticsService.getSiteCategoryListConfig().getList());
 		mav.setViewName("report/keyword/index");
-		mav.addObject("siteId", siteId);
+//		mav.addObject("siteId", siteId);
 		mav.addObject("keywordType", keywordType);
 		return mav;
 
@@ -173,7 +173,7 @@ public class SearchKeywordController extends AbstractController {
 
 	@RequestMapping("/relate/list")
 	public ModelAndView relateKeywordList(@PathVariable String siteId
-			, @RequestParam(required = false) String categoryId, @RequestParam(defaultValue = "1") Integer pageNo 
+			, @RequestParam(defaultValue = "1") Integer pageNo 
 			, @RequestParam(required = false) String keyword , @RequestParam(required = false) Boolean exactMatch
 			, @RequestParam(required = false) Boolean isEditable , @RequestParam(required = false) String targetId
 			, @RequestParam(required = false) String deleteIdList
@@ -210,9 +210,6 @@ public class SearchKeywordController extends AbstractController {
 			int filteredSize = mapper.getCountByWhereCondition(siteId, whereCondition);
 			List<RelateKeywordVO> entryList = mapper.getEntryListByWhereCondition(siteId, whereCondition, start, PAGE_SIZE);
 
-
-			mav.addObject("siteId", siteId);
-			mav.addObject("categoryId", categoryId);
 			mav.addObject("entryList", entryList);
 			mav.addObject("start", 1);
 			mav.addObject("pageNo", pageNo);

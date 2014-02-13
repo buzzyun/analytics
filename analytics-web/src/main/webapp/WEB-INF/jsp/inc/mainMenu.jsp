@@ -1,22 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page import="java.util.*" %>
 <script>
 $(document).ready(function(){
-	/* $('#indexing_tab a[href!="#tab_indexing_run"]').click(function() {
-		stopPollingIndexTaskState();
-		console.log("stop polling ${collectionId}");
-	});
-	$('#indexing_tab a[href="#tab_indexing_run"]').click(function() {
-		startPollingIndexTaskState('${collectionId}');
-		console.log("start polling ${collectionId}");
-	}); */
 	
-	$('#running_tasks_dropdown').on('show.bs.dropdown', function () {
-		startPollingAllTaskStateForTaskBar();
-	});
-	$('#running_tasks_dropdown').on('hide.bs.dropdown', function () {
-		stopPollingAllTaskStateForTaskBar();
-	});
 });
 </script>
 <!-- Header -->
@@ -36,22 +23,41 @@ $(document).ready(function(){
 		<!-- /logo -->
 
 		<!-- Sidebar Toggler -->
-		<!-- <a href="#" class="toggle-sidebar bs-tooltip" data-placement="bottom"
+		<a href="#" class="toggle-sidebar bs-tooltip" data-placement="bottom"
 				data-original-title="Toggle navigation"> <i class="icon-reorder"></i>
-			</a> -->
+			</a> 
 		<!-- /Sidebar Toggler -->
 
 		<!-- Top Left Menu -->
 		<ul class="nav navbar-nav navbar-left">
-				<li class="active"><a href="<c:url value="/report/index.html"/>"> Report </a></li>
-				<li><a href="<c:url value="/configuration/index.html"/>"> Configuration </a></li>
-			</ul>
+			<li class="active"><a href="<c:url value="/${siteId}/report/index.html"/>"> Report </a></li>
+			<li><a href="<c:url value="/${siteId}/configuration/index.html"/>"> Configuration </a></li>
+		</ul>
 		<!-- /Top Left Menu -->
 
 
 		<!-- Top Right Menu -->
 		<ul class="nav navbar-nav navbar-right">
-			<!-- .row .row-bg Toggler -->
+		
+			<li class="dropdown user"><a href="#" class="dropdown-toggle"
+				data-toggle="dropdown"> <!--<img alt="" src="assets/img/avatar1_small.jpg" />-->
+					<i class="icon-globe"></i> <span class="username">${_siteName}</span> <i
+					class="icon-caret-down small"></i>
+			</a>
+				<ul class="dropdown-menu">
+					<%
+					List<String[]> siteList = (List<String[]>) request.getAttribute("_siteList");
+					if(siteList != null){
+						for(String[] siteIdName : siteList){
+						%>
+						<li><a href="<c:url value="/"/>/<%=siteIdName[0] %>/report/index.html"><i class="icon-globe"></i><%=siteIdName[1] %></a></li>
+						<%
+						}
+					}
+					%>
+				</ul>
+			</li>
+			
 			<li><a href="<c:url value="/account/index.html"/>" class="dropdown-toggle"> <i class="icon-cog"></i>
 			</a></li>
 

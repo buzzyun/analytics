@@ -55,6 +55,15 @@
 		select * from RelateKeyword where site=#{site} and category=#{category}
 	</select>
 	
+	
+	<select id="getKeywordListByWhereCondition" parameterType="map" resultType="String">
+	</select>
+	
+	<select id="getKeywordList" parameterType="map" resultType="String">
+	</select>
+	
+	
+	
 	<select id="getCount" parameterType="map" resultType="int">
 		select count(*) from RelateKeyword where site=#{site} and category=#{category}
 	</select>

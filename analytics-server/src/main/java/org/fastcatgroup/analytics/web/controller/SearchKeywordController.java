@@ -7,8 +7,11 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -113,6 +116,67 @@ public class SearchKeywordController extends AbstractController {
 				relateMapperSession.closeSession();
 			}
 		}
+		JSONStringer s = new JSONStringer();
+		s.object().key("success").value(result).endObject();
+		return s.toString();
+	}
+	
+	@RequestMapping("/relate/apply")
+	@ResponseBody
+	public String applyRelateKeyword( 
+			@PathVariable String siteId
+			) {
+		boolean result = false;
+		
+		ServiceManager serviceManager = ServiceManager.getInstance();
+		StatisticsService statisticsService = serviceManager.getService(StatisticsService.class);
+		AnalyticsDBService service = serviceManager.getService(AnalyticsDBService.class);
+		MapperSession<RelateKeywordMapper> relateMapperSession = null;
+		
+		int PAGE_SIZE=100;
+		
+		int start = 0;
+		
+		try {
+			
+			relateMapperSession = service.getMapperSession(RelateKeywordMapper.class);
+			
+			RelateKeywordMapper relateMapper = relateMapperSession.getMapper();
+			
+			int totalSize = relateMapper.getCountByWhereCondition(siteId, "");
+			
+			List<RelateKeywordVO> entryList = relateMapper.getEntryListByWhereCondition(siteId, "", start, PAGE_SIZE - 1);
+			Map<String, List<String>>keywordMap = new HashMap<String, List<String>>();
+			
+			for (int rsize=0;rsize<totalSize;) {
+				
+				int readSize = entryList.size();
+				if(readSize == 0) {
+					break;
+				}
+				rsize += readSize;
+				for (int i = 0; i < entryList.size(); i++) {
+					RelateKeywordVO entry = entryList.get(i);
+					String valueString = entry.getValue();
+					if(valueString==null) {
+						valueString = "";
+					}
+					List<String> keywordList = Arrays.asList(valueString.split(","));
+					keywordMap.put(entry.getKeyword(), keywordList);
+				}
+				
+				start+=PAGE_SIZE;
+			}
+			statisticsService.updateRelativeKeywordMap(siteId, keywordMap);
+			result = true;
+		} catch (Exception e) {
+			logger.error("",e);
+		} finally {
+			if(relateMapperSession!=null) {
+				relateMapperSession.closeSession();
+			}
+		}
+		
 		JSONStringer s = new JSONStringer();
 		s.object().key("success").value(result).endObject();
 		return s.toString();

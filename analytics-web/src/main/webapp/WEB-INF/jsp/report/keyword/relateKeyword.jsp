@@ -59,6 +59,24 @@ function gorelateKeywordPage(uri, pageNo){
 function gorelateEditablePage(pageNo){
 	loadKeywordTab('relate', pageNo, '${keyword}', searchColumnObj.val(), exactMatchObj.is(":checked"), true, '<%=targetId%>');	
 }
+
+function gorelateApplyPage(pageNo){
+	$.ajax({
+		url:'apply.html',
+		type:"POST",
+		data:{ siteId: '${siteId}' },
+		dataType:"json",
+		success:function(response) {
+			if(response.success){
+				noty({text: "Apply Success", type: "success", layout:"topRight", timeout: 1000});
+			}else{
+				noty({text: "Apply Fail", type: "error", layout:"topRight", timeout: 2000});
+			} },
+		fail:function(response){
+			noty({text: "Apply Fail", type: "error", layout:"topRight", timeout: 2000});
+		} 
+	});
+}
 </script>
 
 <div class="col-md-12">
@@ -96,6 +114,10 @@ function gorelateEditablePage(pageNo){
 					&nbsp;
 					<a href="javascript:gorelateEditablePage('${pageNo}');"  class="btn btn-default btn-sm">
 						<span class="glyphicon glyphicon-edit"></span> Edit
+					</a>
+					&nbsp;
+					<a href="javascript:gorelateApplyPage('${pageNo}');"  class="btn btn-default btn-sm">
+						<span class="glyphicon glyphicon-ok"></span> Apply
 					</a>
 				</div>
 			</div>

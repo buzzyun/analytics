@@ -88,7 +88,6 @@ public class UpdateRelateKeywordHandler extends ProcessHandler {
 							logger.debug("##Put relate {} / {} / {}", siteId, vo.getId(), value);
 						}else{
 							//업데이트..
-//							mapper.updateEntry(line, keyword, value, updateTime, id)Entry;
 							
 							logger.debug("##Update relate {} / {} / {}", siteId, vo.getId(), value);
 						}
@@ -96,9 +95,6 @@ public class UpdateRelateKeywordHandler extends ProcessHandler {
 					}
 					
 				}
-				
-				
-//				service.updateRelativeKeywordMap(siteId, keywordMap);
 				
 			} finally {
 				if (mapperSession != null) {

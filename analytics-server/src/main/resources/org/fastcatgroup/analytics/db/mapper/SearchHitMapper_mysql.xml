@@ -11,7 +11,7 @@
 			timeId varchar(11),
 			hit int,
 			primary key (timeId)
-		)
+		) ENGINE=InnoDB;
 	</update>
 	
 	<update id="createIndex" parameterType="map" >

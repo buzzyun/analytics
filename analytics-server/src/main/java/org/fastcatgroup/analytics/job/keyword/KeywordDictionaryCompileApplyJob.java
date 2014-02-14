@@ -11,8 +11,8 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.fastcatgroup.analytics.analysis.StatisticsService;
-import org.fastcatgroup.analytics.db.mapper.PopularKeywordMapper;
-import org.fastcatgroup.analytics.db.vo.PopularKeywordVO;
+import org.fastcatgroup.analytics.db.mapper.SearchKeywordRankMapper;
+import org.fastcatgroup.analytics.db.vo.RankKeywordVO;
 import org.fastcatgroup.analytics.exception.AnalyticsException;
 import org.fastcatgroup.analytics.job.Job;
 import org.fastcatgroup.analytics.keyword.KeywordDictionary.KeywordDictionaryType;
@@ -103,11 +103,11 @@ public class KeywordDictionaryCompileApplyJob extends Job {
 
 	private void compilePopularKeyword(KeywordService keywordService, List<Category> categoryList, KeywordDictionaryType type, int interval, String time) throws Exception {
 
-		PopularKeywordMapper mapper = keywordService.getMapperSession(PopularKeywordMapper.class).getMapper();
+		SearchKeywordRankMapper mapper = keywordService.getMapperSession(SearchKeywordRankMapper.class).getMapper();
 
 		for (Category category : categoryList) {
 
-			List<PopularKeywordVO> keywordList = mapper.getEntryList(category.getId(), time);
+			List<RankKeywordVO> keywordList = mapper.getEntryList("", "", category.getId(), time);
 
 			PopularKeywordDictionary dictionary = new PopularKeywordDictionary(keywordList);
 

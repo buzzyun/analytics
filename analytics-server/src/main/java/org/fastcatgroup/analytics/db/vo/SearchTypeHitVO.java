@@ -2,6 +2,8 @@ package org.fastcatgroup.analytics.db.vo;
 
 public class SearchTypeHitVO {
 	
+	private String categoryId;
+	
 	private String timeId;
 	
 	private String dtype;
@@ -14,6 +16,14 @@ public class SearchTypeHitVO {
 	public void setTimeId(String timeId) {
 		this.timeId = timeId;
 	}
+
+	public String getCategoryId() {
+		return categoryId;
+	}
+	public void setCategoryId(String categoryId) {
+		this.categoryId = categoryId;
+	}
+	
 	public String getDtype() {
 		return dtype;
 	}

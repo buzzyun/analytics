@@ -2,34 +2,27 @@ package org.fastcatgroup.analytics.keyword;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import javax.xml.bind.JAXBException;
 
-import org.fastcatgroup.analytics.control.JobService;
 import org.fastcatgroup.analytics.db.AbstractDBService;
 import org.fastcatgroup.analytics.db.mapper.ADKeywordMapper;
 import org.fastcatgroup.analytics.db.mapper.KeywordSuggestionMapper;
-import org.fastcatgroup.analytics.db.mapper.PopularKeywordMapper;
 import org.fastcatgroup.analytics.db.mapper.RelateKeywordMapper;
+import org.fastcatgroup.analytics.db.mapper.SearchKeywordRankMapper;
 import org.fastcatgroup.analytics.env.Environment;
 import org.fastcatgroup.analytics.env.SettingFileNames;
 import org.fastcatgroup.analytics.env.Settings;
 import org.fastcatgroup.analytics.exception.AnalyticsException;
-import org.fastcatgroup.analytics.job.analysis.MakePopularKeywordJob;
-import org.fastcatgroup.analytics.job.analysis.MakeRealtimePopularKeywordJob;
-import org.fastcatgroup.analytics.job.analysis.MakeRelateKeywordJob;
 import org.fastcatgroup.analytics.keyword.KeywordDictionary.KeywordDictionaryType;
 import org.fastcatgroup.analytics.keyword.module.PopularKeywordModule;
 import org.fastcatgroup.analytics.keyword.module.RelateKeywordModule;
 import org.fastcatgroup.analytics.service.ServiceManager;
 import org.fastcatgroup.analytics.settings.KeywordServiceSettings;
 import org.fastcatgroup.analytics.settings.KeywordServiceSettings.KeywordServiceCategory;
-import org.fastcatgroup.analytics.util.DateUtils;
 import org.fastcatgroup.analytics.util.JAXBConfigs;
 
 /**
@@ -44,7 +37,7 @@ public class KeywordService extends AbstractDBService {
 
 	private File moduleHome;
 
-	private static Class<?>[] mapperList = new Class<?>[] { PopularKeywordMapper.class, RelateKeywordMapper.class, KeywordSuggestionMapper.class, ADKeywordMapper.class };
+	private static Class<?>[] mapperList = new Class<?>[] { SearchKeywordRankMapper.class, RelateKeywordMapper.class, KeywordSuggestionMapper.class, ADKeywordMapper.class };
 
 	public KeywordService(Environment environment, Settings settings, ServiceManager serviceManager) {
 		super(environment, settings, serviceManager);

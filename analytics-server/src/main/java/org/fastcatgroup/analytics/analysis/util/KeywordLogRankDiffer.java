@@ -8,7 +8,7 @@ import java.util.List;
 import org.fastcatgroup.analytics.analysis.EntryParser;
 import org.fastcatgroup.analytics.analysis.FileRunEntryReader;
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
-import org.fastcatgroup.analytics.db.vo.PopularKeywordVO.RankDiffType;
+import org.fastcatgroup.analytics.db.vo.RankKeywordVO.RankDiffType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

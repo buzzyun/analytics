@@ -100,7 +100,9 @@ public class StatisticsService extends AbstractService {
 				String siteId = siteCategoryConfig.getSiteId();
 				Map<String, List<String>> siteRelateKeywordMap = new HashMap<String, List<String>>();
 				relateKeywordMap.put(siteId, siteRelateKeywordMap);
-				
+				logger.debug("### Load relate keyword site {} > {}", siteId, mapper);
+				int count = mapper.getCount(siteId);
+				logger.debug("### Load relate keyword site count {}", count);
 				List<RelateKeywordVO> list = mapper.getEntryList(siteId);
 				if (list != null) {
 					for (RelateKeywordVO vo : list) {

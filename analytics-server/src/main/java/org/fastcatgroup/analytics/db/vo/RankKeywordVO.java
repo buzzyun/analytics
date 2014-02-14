@@ -1,28 +1,26 @@
 package org.fastcatgroup.analytics.db.vo;
 
 
-
-public class PopularKeywordVO {
+public class RankKeywordVO {
 	public enum RankDiffType {UP, DN, NEW, EQ }
 
-	private int id;
-	private String category;
-	private String time;
+	private String categoryId;
+	private String timeId;
 	private int rank;
 	
-	private String word;
+	private String keyword;
 	private int count;
 	private int countDiff;
 	private RankDiffType rankDiffType;
 	private int rankDiff;
 	
-	public PopularKeywordVO(){
+	public RankKeywordVO(){
 	}
 	
-	public PopularKeywordVO(String category, String time, String word, int count, int rank, int countDiff, RankDiffType rankDiffType, int rankDiff) {
-		this.category = category;
-		this.time = time;
-		this.word = word;
+	public RankKeywordVO(String categoryId, String timeId, String keyword, int count, int rank, int countDiff, RankDiffType rankDiffType, int rankDiff) {
+		this.categoryId = categoryId;
+		this.timeId = timeId;
+		this.keyword = keyword;
 		this.count = count;
 		this.countDiff = countDiff;
 		this.rank = rank;
@@ -30,31 +28,23 @@ public class PopularKeywordVO {
 		this.rankDiff = rankDiff;
 	}
 	
-	public int getId() {
-		return id;
+	public String getCategorIdy() {
+		return categoryId;
 	}
-
-	public void setId(int id) {
-		this.id = id;
+	public void setCategoryId(String categoryId) {
+		this.categoryId = categoryId;
 	}
-	
-	public String getCategory() {
-		return category;
+	public String getTimeId() {
+		return timeId;
 	}
-	public void setCategory(String category) {
-		this.category = category;
+	public void setTimeId(String timeId) {
+		this.timeId = timeId;
 	}
-	public String getTime() {
-		return time;
+	public String getKeyword() {
+		return keyword;
 	}
-	public void setTime(String time) {
-		this.time = time;
-	}
-	public String getWord() {
-		return word;
-	}
-	public void setWord(String word) {
-		this.word = word;
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
 	}
 	public int getCount() {
 		return count;

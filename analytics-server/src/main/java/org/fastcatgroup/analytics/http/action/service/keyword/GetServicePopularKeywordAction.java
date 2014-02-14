@@ -3,7 +3,7 @@ package org.fastcatgroup.analytics.http.action.service.keyword;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import org.fastcatgroup.analytics.db.vo.PopularKeywordVO;
+import org.fastcatgroup.analytics.db.vo.RankKeywordVO;
 import org.fastcatgroup.analytics.http.ActionMapping;
 import org.fastcatgroup.analytics.http.action.ActionRequest;
 import org.fastcatgroup.analytics.http.action.ActionResponse;
@@ -56,14 +56,14 @@ public class GetServicePopularKeywordAction extends ServiceAction {
 				
 				
 				
-				List<PopularKeywordVO> keywordList = null;// popularKeywordDictionary.getKeywordList();
+				List<RankKeywordVO> keywordList = null;// popularKeywordDictionary.getKeywordList();
 				if (popularKeywordDictionary.getCreateTime() != null) {
 					responseWriter.key("time").value(new SimpleDateFormat("yyyy.MM.dd HH:mm").format(popularKeywordDictionary.getCreateTime()));
 				}
 				responseWriter.key("list").array();
-				for (PopularKeywordVO vo : keywordList) {
+				for (RankKeywordVO vo : keywordList) {
 					responseWriter.object();
-					responseWriter.key("word").value(vo.getWord());
+					responseWriter.key("word").value(vo.getKeyword());
 					responseWriter.key("rank").value(vo.getRank());
 					responseWriter.key("diffType").value(vo.getRankDiffType().name());
 					responseWriter.key("diff").value(vo.getRankDiff());

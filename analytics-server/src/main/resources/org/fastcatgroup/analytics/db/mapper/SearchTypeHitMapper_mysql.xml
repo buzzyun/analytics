@@ -7,19 +7,20 @@
 
 	<update id="createTable" parameterType="map" >
 		create table ${siteId}_type_hit_${typeId} (
+			categoryId varchar(64),
 			timeId varchar(11),
-			dtype varchar(128),
+			dtype varchar(32),
 			hit int,
-			primary key (timeId, dtype)
-		)
+			primary key (categoryId, timeId, dtype)
+		) ENGINE=InnoDB;
 	</update>
 	
 	<update id="createIndex" parameterType="map" >
-		create index typeid_${siteId}_type_hit_${typeId} on ${siteId}_type_hit_${typeId}(dtype)
+		create index dtype_${siteId}_type_hit_${typeId} on ${siteId}_type_hit_${typeId}(dtype)
 	</update>
 	
 	<select id="validateTable" parameterType="map" resultType="map">
-		select timeId, dtype, hit
+		select categoryId, timeId, dtype, hit
 		from ${siteId}_type_hit_${typeId}
 		limit 1
 	</select>
@@ -28,108 +29,36 @@
 		drop table ${siteId}_type_hit_${typeId}
 	</update>
 
+	<delete id="truncate" parameterType="map">
+		truncate table ${siteId}_type_hit_${typeId} 
+	</delete>
+	
 	<select id="getEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchTypeHitVO">
-		select * from ${siteId}_type_hit_${typeId} where timeId=#{timeId} and dtype=#{dtype}
+		select * from ${siteId}_type_hit_${typeId} 
+		where categoryId = #{categoryId}
+		and timeId=#{timeId}
+		and dtype=#{dtype}
 	</select>
 	
-	<select id="getMinEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchTypeHitVO">
-		select * from ${siteId}_type_hit_${typeId} where 
-		timeId=(
-			select min(timeId) from ${siteId}_type_hit_${typeId} where timeId like '${dFilter}%'
-			<if test="dtype !=null and dtype !=''">
-			and dtype=#{dtype}
-			</if>
-		) 
-		limit 1
-	</select>
-	
-	<select id="getMaxEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchTypeHitVO">
-		select * from ${siteId}_type_hit_${typeId} where 
-		timeId=(
-			select max(timeId) from ${siteId}_type_hit_${typeId} where timeId like '${dFilter}%'
-			<if test="dtype !=null and dtype !=''">
-			and dtype=#{dtype}
-			</if>
-		) 
-		limit 1
-	</select>
-	
-	<select id="listTypes" parameterType="map" resultType="string">
-		select distinct dtype from ${siteId}_type_hit_${typeId}
-		<where>
-			<if test="from != null and from != '' and to != null and to !=''">
-			and timeId between #{from} and #{to}
-			</if>
-		</where>
-	</select>
-	
-	<select id="getEntryListBetween" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchTypeHitVO">
-		select a.* from (
-		select * from ${siteId}_type_hit_${typeId}
-		<where>
-			<if test="dtype != null and dtype !=''">
-				and dtype = #{dtype}
-			</if>
-			<if test="from != null and from != '' and to != null and to !=''">
-				and timeId between #{from} and #{to}
-			</if>
-			and timeId like '${dFilter}%'
-		</where>
-		<if test="isGroup == true">
-		group by dtype
-		</if>
-		) a
-	</select>
-	
-	<select id="getCountBetween" parameterType="map" resultType="int">
-		select count(*) from ${siteId}_type_hit_${typeId} 
-		<where>
-			<if test="dtype != null and dtype !=''">
-				and dtype = #{dtype}
-			</if>
-			<if test="from != null and from != '' and to != null and to !=''">
-				and timeId between #{from} and #{to}
-			</if>
-			and timeId like '${dFilter}%'
-		</where>
-	</select>
-	
-	<select id="getSumBetween" parameterType="map" resultType="int">
-		select sum(hit) from ${siteId}_type_hit_${typeId} 
-		<where>
-			<if test="dtype != null and dtype !=''">
-			and dtype = #{dtype} 
-			</if>
-			and timeId between #{from} and #{to}
-		</where>
+	<select id="getEntryList" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchTypeHitVO">
+		select * from ${siteId}_type_hit_${typeId} 
+		where categoryId = #{categoryId}
+		and timeId=#{timeId}
 	</select>
 	
 	<insert id="putEntry" parameterType="map" useGeneratedKeys="true" >
 		insert into ${siteId}_type_hit_${typeId} 
-		(timeId, dtype, hit) values (#{timeId}, #{dtype}, #{hit})
+		(categoryId, timeId, dtype, hit) 
+		values 
+		(#{categoryId}, #{timeId}, #{dtype}, #{hit})
 	</insert>
 	
 	<update id="updateEntry" parameterType="map">
-		update ${siteId}_type_hit_${typeId} set hit = #{hit} 
-		where timeId = #{timeId} and dtype = #{dtype}
+		update ${siteId}_type_hit_${typeId} 
+		set hit = #{hit} 
+		where categoryId = #{categoryId}
+		and timeId=#{timeId}
+		and dtype=#{dtype}
 	</update>
 	
-	<delete id="deleteEntry" parameterType="map">
-		delete ${siteId}_type_hit_${typeId} set hit = #{hit} where timeId = #{timeId}
-		and dtype = #{dtype}
-	</delete>
-	
-	<delete id="deleteEntryBetween" parameterType="map">
-		delete ${siteId}_type_hit_${typeId} set hit = #{hit}
-		<where>
-			<if test="dtype != null and dtype != '' ">
-				and dtype=#{dtype}
-			</if>
-			and timeId between #{from} and #{to} 
-		</where>
-	</delete>
-	
-	<delete id="truncate" parameterType="map">
-		truncate table ${siteId}_type_hit_${typeId} 
-	</delete>
 </mapper>

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.fastcatgroup.analytics.db.vo.PopularKeywordVO;
+import org.fastcatgroup.analytics.db.vo.RankKeywordVO;
 import org.fastcatgroup.analytics.io.DataInput;
 import org.fastcatgroup.analytics.io.DataOutput;
 import org.fastcatgroup.analytics.io.InputStreamDataInput;
@@ -24,21 +24,21 @@ public class PopularKeywordDictionary implements KeywordDictionary {
 	public static final String yearlyFileName = "yearlyPopularKeyword";
 	
 	private Date createTime;
-	private List<PopularKeywordVO> keywordList;
+	private List<RankKeywordVO> keywordList;
 	
 	public PopularKeywordDictionary(){
-		keywordList = new ArrayList<PopularKeywordVO>(0);
+		keywordList = new ArrayList<RankKeywordVO>(0);
 		this.createTime = new Date();
 	}
 	
-	public PopularKeywordDictionary(List<PopularKeywordVO> keywordList){
+	public PopularKeywordDictionary(List<RankKeywordVO> keywordList){
 		this.keywordList = keywordList;
 		this.createTime = new Date();
 	}
 	
 	public PopularKeywordDictionary(File dictionaryFile) throws IOException {
 		if (!dictionaryFile.exists()) {
-			keywordList = new ArrayList<PopularKeywordVO>();
+			keywordList = new ArrayList<RankKeywordVO>();
 			throw new IOException("dictionary file not found: " + dictionaryFile.getAbsolutePath());
 		}
 		InputStream istream = null;
@@ -60,10 +60,10 @@ public class PopularKeywordDictionary implements KeywordDictionary {
 		this.createTime = createTime;
 	}
 
-	public List<PopularKeywordVO> getKeywordList() {
+	public List<RankKeywordVO> getKeywordList() {
 		return keywordList;
 	}
-	public void setKeywordList(List<PopularKeywordVO> keywordList) {
+	public void setKeywordList(List<RankKeywordVO> keywordList) {
 		this.keywordList = keywordList;
 	}
 
@@ -71,11 +71,11 @@ public class PopularKeywordDictionary implements KeywordDictionary {
 	public void readFrom(InputStream in) throws IOException {
 		DataInput input = new InputStreamDataInput(in);
 		this.createTime = new Date(input.readLong());
-		keywordList = new ArrayList<PopularKeywordVO>();
+		keywordList = new ArrayList<RankKeywordVO>();
 
 		int size = input.readVInt();
 		for (int i = 0; i < size; i++) {
-			PopularKeywordVO vo = new PopularKeywordVO();
+			RankKeywordVO vo = new RankKeywordVO();
 //			vo.readFrom(input);
 			keywordList.add(vo);
 		}
@@ -90,7 +90,7 @@ public class PopularKeywordDictionary implements KeywordDictionary {
 		output.writeVInt(size);
 		
 		if(size > 0){
-			for(PopularKeywordVO vo : keywordList){
+			for(RankKeywordVO vo : keywordList){
 //				vo.writeTo(output);
 			}
 		}

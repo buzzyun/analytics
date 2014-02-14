@@ -7,7 +7,7 @@ import java.io.OutputStream;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.fastcatgroup.analytics.db.vo.PopularKeywordVO;
+import org.fastcatgroup.analytics.db.vo.RankKeywordVO;
 import org.fastcatgroup.analytics.db.vo.RelateKeywordVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 public class KeywordDictionaryCompiler {
 	protected static final Logger logger = LoggerFactory.getLogger(KeywordDictionaryCompiler.class);
 
-	public static void compilePopularKeyword(List<PopularKeywordVO> keywordList, File writeFile)
+	public static void compilePopularKeyword(List<RankKeywordVO> keywordList, File writeFile)
 			throws Exception {
 
 		PopularKeywordDictionary dictionary = new PopularKeywordDictionary(keywordList);

@@ -22,7 +22,7 @@ import org.fastcatgroup.analytics.analysis.task.RealtimeSearchLogAnalysisTask;
 import org.fastcatgroup.analytics.analysis.task.RelateSearchLogAnalysisTask;
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
 import org.fastcatgroup.analytics.control.JobService;
-import org.fastcatgroup.analytics.db.vo.PopularKeywordVO.RankDiffType;
+import org.fastcatgroup.analytics.db.vo.RankKeywordVO.RankDiffType;
 import org.fastcatgroup.analytics.env.Environment;
 import org.fastcatgroup.analytics.env.Settings;
 import org.fastcatgroup.analytics.module.AbstractModule;

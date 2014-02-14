@@ -1,6 +1,5 @@
 package org.fastcatgroup.analytics.db.mapper;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -18,10 +17,6 @@ public interface RelateKeywordMapper extends AnalyticsMapper {
 	public List<RelateKeywordVO> getEntryList(@Param("siteId") String siteId) throws Exception;
 	
 	public List<RelateKeywordVO> getEntryListByWhereCondition(@Param("siteId") String siteId, @Param("whereCondition") String whereCondition ,@Param("start")int start, @Param("end")int end) throws Exception; 
-	
-	public List<String> getKeywordList(@Param("siteId") String siteId, @Param("keyword") String keyword) throws Exception;
-	
-	public List<String> getKeywordListByWhereCondition(@Param("siteId") String siteId, @Param("keyword") String keyword, @Param("whereCondition") String whereCondition) throws Exception;
 	
 	public void updateEntry(@Param("siteId") String siteId, @Param("entry") RelateKeywordVO vo) throws Exception;
 	

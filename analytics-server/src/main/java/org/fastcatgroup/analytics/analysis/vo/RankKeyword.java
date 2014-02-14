@@ -1,6 +1,6 @@
 package org.fastcatgroup.analytics.analysis.vo;
 
-import org.fastcatgroup.analytics.db.vo.PopularKeywordVO.RankDiffType;
+import org.fastcatgroup.analytics.db.vo.RankKeywordVO.RankDiffType;
 
 /**
  * 로그취합결과로 얻어진 인기키워드.

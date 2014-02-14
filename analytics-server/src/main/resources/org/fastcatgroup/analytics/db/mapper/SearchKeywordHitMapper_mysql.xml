@@ -6,7 +6,7 @@
 <mapper namespace="org.fastcatgroup.analytics.db.mapper.SearchKeywordHitMapper">
 
 	<update id="createTable" parameterType="map" >
-		create table ${siteId}_keyword_hit (
+		create table ${siteId}_hit_keyword (
 			categoryId varchar(30), 
 			timeid varchar(11),
 			keyword varchar(128),
@@ -16,21 +16,21 @@
 	</update>
 	
 	<update id="createIndex" parameterType="map" >
-		create index keywordid_${siteId}_keyword_hit on ${siteId}_keyword_hit(keyword)
+		create index keywordid_${siteId}_hit_keyword on ${siteId}_hit_keyword(keyword)
 	</update>
 	
 	<select id="validateTable" parameterType="map" resultType="map">
 		select categoryId, timeid, keyword, hit
-		from ${siteId}_keyword_hit
+		from ${siteId}_hit_keyword
 		limit 1
 	</select>
 
 	<update id="dropTable" parameterType="map">
-		drop table ${siteId}_keyword_hit
+		drop table ${siteId}_hit_keyword
 	</update>
 	
 	<select id="getEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchKeywordHitVO">
-		select * from ${siteId}_keyword_hit 
+		select * from ${siteId}_hit_keyword 
 		where 
 		categoryId=#{categoryId} 
 		and timeId=#{timeId}
@@ -38,11 +38,11 @@
 	</select>
 	
 	<select id="getMinEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchKeywordHitVO">
-		select * from ${siteId}_keyword_hit 
+		select * from ${siteId}_hit_keyword 
 		where
 		categoryId=#{categoryId} 
 		and timeId=(
-			select min(timeId) from ${siteId}_keyword_hit 
+			select min(timeId) from ${siteId}_hit_keyword 
 			where timeId like '${dFilter}%'
 			<if test="keyword != null and keyword != ''">
 			and keyword=#{keyword}
@@ -52,9 +52,9 @@
 	</select>
 	
 	<select id="getMaxEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchKeywordHitVO">
-		select * from ${siteId}_keyword_hit where 
+		select * from ${siteId}_hit_keyword where 
 		timeId=(
-			select max(timeId) from ${siteId}_keyword_hit where timeId like '${dFilter}%'
+			select max(timeId) from ${siteId}_hit_keyword where timeId like '${dFilter}%'
 			<if test="keyword != null and keyword != ''">
 			and keyword=#{keyword}
 			</if>
@@ -63,7 +63,7 @@
 	</select>
 	
 	<select id="searchKeyword" parameterType="map" resultType="string">
-		select distinct keyword from ${siteId}_keyword_hit
+		select distinct keyword from ${siteId}_hit_keyword
 		<where>
 			categoryId=#{categoryId}
 			<if test="search != null and search != ''">
@@ -77,7 +77,7 @@
 	
 	<select id="getEntryListBetween" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchKeywordHitVO">
 		select a.* from (
-		select * from ${siteId}_keyword_hit
+		select * from ${siteId}_hit_keyword
 		<where>
 			categoryId=#{categoryId}
 			<if test="keyword != null and keyword !=''">
@@ -95,7 +95,7 @@
 	</select>
 	
 	<select id="getCountBetween" parameterType="map" resultType="int">
-		select count(*) from ${siteId}_keyword_hit 
+		select count(*) from ${siteId}_hit_keyword 
 		<where>
 			categoryId=#{categoryId}
 			<if test="keyword != null and keyword !=''">
@@ -109,7 +109,7 @@
 	</select>
 	
 	<select id="getSumBetween" parameterType="map" resultType="int">
-		select sum(hit) from ${siteId}_keyword_hit 
+		select sum(hit) from ${siteId}_hit_keyword 
 		<where>
 			categoryId=#{categoryId}
 			<if test="keyword != null and keyword !=''">
@@ -120,12 +120,12 @@
 	</select>
 	
 	<insert id="putEntry" parameterType="map" useGeneratedKeys="true" >
-		insert into ${siteId}_keyword_hit 
+		insert into ${siteId}_hit_keyword 
 		(categoryId, timeId, keyword, hit) values (#{categoryId}, #{timeId},#{keyword}, #{hit})
 	</insert>
 	
 	<update id="updateEntry" parameterType="map">
-		update ${siteId}_keyword_hit set hit = #{hit} 
+		update ${siteId}_hit_keyword set hit = #{hit} 
 		where 
 		categoryId=#{categoryId} 
 		and timeId = #{timeId} 
@@ -133,7 +133,7 @@
 	</update>
 	
 	<delete id="deleteEntry" parameterType="map">
-		delete ${siteId}_keyword_hit set hit = #{hit} 
+		delete ${siteId}_hit_keyword set hit = #{hit} 
 		where 
 		categoryId=#{categoryId}
 		and timeId = #{timeId}
@@ -141,7 +141,7 @@
 	</delete>
 	
 	<delete id="deleteEntryBetween" parameterType="map">
-		delete ${siteId}_keyword_hit set hit = #{hit}
+		delete ${siteId}_hit_keyword set hit = #{hit}
 		<where>
 			categoryId=#{categoryId}
 			<if test="keyword != null and keyword != '' ">
@@ -152,7 +152,7 @@
 	</delete>
 	
 	<delete id="truncate" parameterType="map">
-		truncate table ${siteId}_keyword_hit 
+		truncate table ${siteId}_hit_keyword 
 	</delete>
 
 </mapper>

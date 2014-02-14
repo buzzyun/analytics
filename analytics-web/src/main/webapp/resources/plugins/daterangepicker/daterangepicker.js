@@ -164,6 +164,7 @@
                 for (var range in this.ranges) {
                     list += '<li>' + range + '</li>';
                 }
+                list += '<li>Year <select><option>2013</option><option>2014</option></select></li>';
                 list += '<li>' + this.locale.customRangeLabel + '</li>';
                 list += '</ul>';
                 this.container.find('.ranges').prepend(list);
@@ -301,6 +302,9 @@
 
         this.element.on('keyup', $.proxy(this.updateFromControl, this));
 
+        this.container.find('.week').on('click', function(){alert(1);});
+        console.log("WEEK",  this.container, this.container.find('.week'));
+        
         this.updateView();
         this.updateCalendars();
 
@@ -447,8 +451,8 @@
                 if (this.element.is('input'))
                     this.element.val(this.startDate.format(this.format) + this.separator + this.endDate.format(this.format));
 
-                this.container.find('.calendar').hide();
-                this.hide();
+                //this.container.find('.calendar').hide();
+                //this.hide();
             }
         },
 
@@ -699,6 +703,13 @@
             return monthHtml + yearHtml;
         },
 
+        selectWeek: function(e){
+        	console.log("selectWeek", e);
+//        	this.leftCalendar.month.subtract('month', 1);
+//            this.rightCalendar.month.subtract('month', 1);
+//            this.updateCalendars();
+        },
+        
         renderCalendar: function (calendar, selected, minDate, maxDate) {
 
             var html = '<div class="calendar-date">';
@@ -722,7 +733,8 @@
                 dateHtml = this.renderDropdowns(calendar[1][1], minDate, maxDate);
             }
 
-            html += '<th colspan="5" style="width: auto">' + dateHtml + '</th>';
+            var m = calendar[1][1].year() + "-" + calendar[1][1].month();
+            html += '<th colspan="5" style="width: auto"><a href="javascript:_selectMonth(\''+m+'\')">' + dateHtml + '</a></th>';
             if (!maxDate || maxDate.isAfter(calendar[1][1])) {
                 html += '<th class="next available"><i class="icon-arrow-right"></i></th>';
             } else {
@@ -748,9 +760,11 @@
                 html += '<tr>';
 
                 // add week number
-                if (this.showWeekNumbers)
+                if (this.showWeekNumbers){
+                	
+                	var a = calendar[row][0].startOf('week')+'-'+calendar[row][0].endOf('week');
                     html += '<td class="week">' + calendar[row][0].week() + '</td>';
-
+            	}
                 for (var col = 0; col < 7; col++) {
                     var cname = 'available ';
                     cname += (calendar[row][col].month() == calendar[1][1].month()) ? '' : 'off';

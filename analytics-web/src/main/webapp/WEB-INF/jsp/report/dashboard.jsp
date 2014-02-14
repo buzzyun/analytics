@@ -239,7 +239,9 @@
 	<c:import url="${ROOT_PATH}/inc/mainMenu.jsp" />
 
 	<div id="container">
-		<c:import url="${ROOT_PATH}/report/sideMenu.jsp" />
+		<c:import url="${ROOT_PATH}/report/sideMenu.jsp" >
+			<c:param name="lcat" value="dashboard" />
+		</c:import>
 		<div id="content">
 			<div class="container">
 				<!-- Breadcrumbs line -->
@@ -274,11 +276,10 @@
 								<option>ALL</option>
 								<option>통합검색</option>
 								<option>모바일</option>
-							</select> <input type="button" class="btn btn-sm btn-warning"
-								value="Today"> <input type="button"
-								class="btn btn-sm btn-default" value="Yesterday"> <input
-								type="button" class="btn btn-sm btn-default" value="Week">
-							<input type="button" class="btn btn-sm btn-default" value="Month">
+							</select> 
+							<input type="button" class="btn btn-sm btn-warning"	value="Today"> 
+							<input type="button" class="btn btn-sm btn-default" value="This Week">
+							<input type="button" class="btn btn-sm btn-default" value="This Month">
 						</form>
 					</div>
 
@@ -300,7 +301,7 @@
 					<div class="col-md-12">
 						<div class="widget box">
 							<div class="widget-header">
-								<h4>검색횟수</h4>
+								<h4>Hit Progress</h4>
 							</div>
 							<div class="widget-content">
 								<div id="chart_dashboard_main" class="chart"></div>
@@ -325,7 +326,7 @@
 					<div class="col-md-4">
 						<div class="widget box">
 							<div class="widget-header">
-								<h4>검색어 TOP10</h4>
+								<h4>Popular Keyword TOP10</h4>
 							</div>
 							<div class="widget-content">
 								<table class="table table-condensed">
@@ -405,7 +406,7 @@
 					<div class="col-md-4">
 						<div class="widget box">
 							<div class="widget-header">
-								<h4>관심어 TOP10</h4>
+								<h4>Hot Keyword TOP10</h4>
 							</div>
 							<div class="widget-content">
 								<table class="table table-condensed">
@@ -484,7 +485,7 @@
 					<div class="col-md-4">
 						<div class="widget box">
 							<div class="widget-header">
-								<h4>급상승키워드 TOP10</h4>
+								<h4>New Keyword TOP10</h4>
 							</div>
 							<div class="widget-content">
 								<table class="table table-condensed">
@@ -569,7 +570,7 @@
 					<div class="col-md-4">
 						<div class="widget box">
 							<div class="widget-header">
-								<h4>카테고리별 비율</h4>
+								<h4>Category Ratio</h4>
 							</div>
 							<div class="widget-content">
 								<div id="chart_category_rate" class="chart"></div>
@@ -580,7 +581,7 @@
 					<div class="col-md-4">
 						<div class="widget box">
 							<div class="widget-header">
-								<h4>로그인별 비율</h4>
+								<h4>Login Ratio</h4>
 							</div>
 							<div class="widget-content">
 								<div id="chart_login_rate" class="chart"></div>
@@ -591,7 +592,7 @@
 					<div class="col-md-4">
 						<div class="widget box">
 							<div class="widget-header">
-								<h4>연령별 비율</h4>
+								<h4>Age Ratio</h4>
 							</div>
 							<div class="widget-content">
 								<div id="chart_age_rate" class="chart"></div>
@@ -609,7 +610,7 @@
 					<div class="col-md-12">
 						<div class="widget box">
 							<div class="widget-header">
-								<h4>클릭유입률</h4>
+								<h4>Click Through Rate</h4>
 							</div>
 							<div class="widget-content">
 								<div id="chart_dashboard_ctr" class="chart"></div>

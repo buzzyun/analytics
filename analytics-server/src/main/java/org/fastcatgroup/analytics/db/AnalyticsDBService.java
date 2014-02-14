@@ -24,6 +24,8 @@ import org.fastcatgroup.analytics.db.mapper.AnalyticsMapper;
 import org.fastcatgroup.analytics.db.mapper.RelateKeywordMapper;
 import org.fastcatgroup.analytics.db.mapper.RelateKeywordValueMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchHitMapper;
+import org.fastcatgroup.analytics.db.mapper.SearchKeywordHitMapper;
+import org.fastcatgroup.analytics.db.mapper.SearchTypeHitMapper;
 import org.fastcatgroup.analytics.env.Environment;
 import org.fastcatgroup.analytics.env.Settings;
 import org.fastcatgroup.analytics.exception.AnalyticsException;
@@ -33,11 +35,8 @@ public class AnalyticsDBService extends AbstractDBService {
 
 	protected static AnalyticsDBService instance;
 
-	private static Class<?>[] mapperList = new Class<?>[] { 
-		SearchHitMapper.class
-		,RelateKeywordMapper.class
-		,RelateKeywordValueMapper.class
-		};
+	private static Class<?>[] mapperList = new Class<?>[] { SearchHitMapper.class, RelateKeywordMapper.class, RelateKeywordValueMapper.class, SearchKeywordHitMapper.class,
+			SearchHitMapper.class, SearchTypeHitMapper.class };
 
 	public AnalyticsDBService(Environment environment, Settings settings, ServiceManager serviceManager) {
 		super(environment, settings, serviceManager);
@@ -45,6 +44,9 @@ public class AnalyticsDBService extends AbstractDBService {
 
 	@Override
 	protected boolean doStart() throws AnalyticsException {
+		String[] rankList = settings.getStringArray("rankList", ",");
+		String[] progressList = settings.getStringArray("progressList", ",");
+		String[] typeList = settings.getStringArray("typeList", ",");
 
 		Properties driverProperties = null;
 		Map<String, Object> globalParam = null;
@@ -78,10 +80,11 @@ public class AnalyticsDBService extends AbstractDBService {
 		List<SiteCategoryConfig> siteCategoryConfig = config.getList();
 
 		for (Class<?> mapperDAO : mapperList) {
-			Class<? extends AnalyticsMapper> clazz = (Class<? extends AnalyticsMapper>) mapperDAO;
-			MapperSession<? extends AnalyticsMapper> mapperSession = (MapperSession<? extends AnalyticsMapper>) getMapperSession(clazz);
-			AnalyticsMapper managedMapper = mapperSession.getMapper();
-			for (SiteCategoryConfig siteConfig : siteCategoryConfig) {
+			if (mapperDAO.isAssignableFrom(AnalyticsMapper.class)) {
+				Class<? extends AnalyticsMapper> clazz = (Class<? extends AnalyticsMapper>) mapperDAO;
+				MapperSession<? extends AnalyticsMapper> mapperSession = (MapperSession<? extends AnalyticsMapper>) getMapperSession(clazz);
+				AnalyticsMapper managedMapper = mapperSession.getMapper();
+				for (SiteCategoryConfig siteConfig : siteCategoryConfig) {
 					String site = siteConfig.getSiteId();
 					try {
 						logger.debug("valiadte {}", clazz.getSimpleName());
@@ -106,9 +109,9 @@ public class AnalyticsDBService extends AbstractDBService {
 						}
 					}
 
+				}
+				mapperSession.closeSession();
 			}
-
-			mapperSession.closeSession();
 
 		}
 

@@ -87,7 +87,7 @@ $(document).ready(function(){
 							<div class="widget-header">
 								<h4>TOP 10</h4>
 							</div>
-							<div class="widget-content">
+							<div class="widget-content no-padding">
 								<div>
 									<table class="table table-striped table-bordered table-condensed">
 										<thead>

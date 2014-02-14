@@ -3,39 +3,39 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
-<mapper namespace="org.fastcatgroup.analytics.db.mapper.SearchTypeRatioMapper">
+<mapper namespace="org.fastcatgroup.analytics.db.mapper.SearchTypeHitMapper">
 
 	<update id="createTable" parameterType="map" >
-		create table ${site}_${category}_${stype} (
-			timeid varchar(11),
+		create table ${siteId}_type_hit_${typeId} (
+			timeId varchar(11),
 			dtype varchar(128),
 			hit int,
-			primary key (timeid, dtype)
+			primary key (timeId, dtype)
 		)
 	</update>
 	
 	<update id="createIndex" parameterType="map" >
-		create index typeid_${site}_${category}_${stype} on ${site}_${category}_${stype}(dtype)
+		create index typeid_${siteId}_type_hit_${typeId} on ${siteId}_type_hit_${typeId}(dtype)
 	</update>
 	
 	<select id="validateTable" parameterType="map" resultType="map">
-		select timeid, dtype, hit
-		from ${site}_${category}_${stype}
+		select timeId, dtype, hit
+		from ${siteId}_type_hit_${typeId}
 		limit 1
 	</select>
 
 	<update id="dropTable" parameterType="map">
-		drop table ${site}_${category}_${stype}
+		drop table ${siteId}_type_hit_${typeId}
 	</update>
 
-	<select id="getEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchTypeRatioVO">
-		select * from ${site}_${category}_${stype} where timeId=#{timeId} and dtype=#{dtype}
+	<select id="getEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchTypeHitVO">
+		select * from ${siteId}_type_hit_${typeId} where timeId=#{timeId} and dtype=#{dtype}
 	</select>
 	
-	<select id="getMinEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchTypeRatioVO">
-		select * from ${site}_${category}_${stype} where 
+	<select id="getMinEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchTypeHitVO">
+		select * from ${siteId}_type_hit_${typeId} where 
 		timeId=(
-			select min(timeId) from ${site}_${category}_${stype} where timeId like '${dFilter}%'
+			select min(timeId) from ${siteId}_type_hit_${typeId} where timeId like '${dFilter}%'
 			<if test="dtype !=null and dtype !=''">
 			and dtype=#{dtype}
 			</if>
@@ -43,10 +43,10 @@
 		limit 1
 	</select>
 	
-	<select id="getMaxEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchTypeRatioVO">
-		select * from ${site}_${category}_${stype} where 
+	<select id="getMaxEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchTypeHitVO">
+		select * from ${siteId}_type_hit_${typeId} where 
 		timeId=(
-			select max(timeId) from ${site}_${category}_${stype} where timeId like '${dFilter}%'
+			select max(timeId) from ${siteId}_type_hit_${typeId} where timeId like '${dFilter}%'
 			<if test="dtype !=null and dtype !=''">
 			and dtype=#{dtype}
 			</if>
@@ -55,7 +55,7 @@
 	</select>
 	
 	<select id="listTypes" parameterType="map" resultType="string">
-		select distinct dtype from ${site}_${category}_${stype}
+		select distinct dtype from ${siteId}_type_hit_${typeId}
 		<where>
 			<if test="from != null and from != '' and to != null and to !=''">
 			and timeId between #{from} and #{to}
@@ -63,9 +63,9 @@
 		</where>
 	</select>
 	
-	<select id="getEntryListBetween" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchTypeRatioVO">
+	<select id="getEntryListBetween" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchTypeHitVO">
 		select a.* from (
-		select * from ${site}_${category}_${stype}
+		select * from ${siteId}_type_hit_${typeId}
 		<where>
 			<if test="dtype != null and dtype !=''">
 				and dtype = #{dtype}
@@ -82,7 +82,7 @@
 	</select>
 	
 	<select id="getCountBetween" parameterType="map" resultType="int">
-		select count(*) from ${site}_${category}_${stype} 
+		select count(*) from ${siteId}_type_hit_${typeId} 
 		<where>
 			<if test="dtype != null and dtype !=''">
 				and dtype = #{dtype}
@@ -95,7 +95,7 @@
 	</select>
 	
 	<select id="getSumBetween" parameterType="map" resultType="int">
-		select sum(hit) from ${site}_${category}_${stype} 
+		select sum(hit) from ${siteId}_type_hit_${typeId} 
 		<where>
 			<if test="dtype != null and dtype !=''">
 			and dtype = #{dtype} 
@@ -105,22 +105,22 @@
 	</select>
 	
 	<insert id="putEntry" parameterType="map" useGeneratedKeys="true" >
-		insert into ${site}_${category}_${stype} 
+		insert into ${siteId}_type_hit_${typeId} 
 		(timeId, dtype, hit) values (#{timeId}, #{dtype}, #{hit})
 	</insert>
 	
 	<update id="updateEntry" parameterType="map">
-		update ${site}_${category}_${stype} set hit = #{hit} 
+		update ${siteId}_type_hit_${typeId} set hit = #{hit} 
 		where timeId = #{timeId} and dtype = #{dtype}
 	</update>
 	
 	<delete id="deleteEntry" parameterType="map">
-		delete ${site}_${category}_${stype} set hit = #{hit} where timeId = #{timeId}
+		delete ${siteId}_type_hit_${typeId} set hit = #{hit} where timeId = #{timeId}
 		and dtype = #{dtype}
 	</delete>
 	
 	<delete id="deleteEntryBetween" parameterType="map">
-		delete ${site}_${category}_${stype} set hit = #{hit}
+		delete ${siteId}_type_hit_${typeId} set hit = #{hit}
 		<where>
 			<if test="dtype != null and dtype != '' ">
 				and dtype=#{dtype}
@@ -130,6 +130,6 @@
 	</delete>
 	
 	<delete id="truncate" parameterType="map">
-		truncate table ${site}_${category}_${stype} 
+		truncate table ${siteId}_type_hit_${typeId} 
 	</delete>
 </mapper>

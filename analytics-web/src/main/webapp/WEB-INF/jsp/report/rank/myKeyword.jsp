@@ -66,7 +66,15 @@ $(document).ready(function(){
 			}
 			
 		}));
+		
+		
 });
+function _selectMonth(yearMonth){
+	alert(yearMonth);
+}
+function _selectWeek(yearWeek){
+	alert(yearWeek);
+}
 </script>
 </head>
 <body>

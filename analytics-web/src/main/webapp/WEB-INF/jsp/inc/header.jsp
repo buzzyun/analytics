@@ -94,14 +94,14 @@
 <script type="text/javascript" src="${contextPath}/resources/plugins/flot/jquery.flot.pie.min.js"></script>
 <script type="text/javascript" src="${contextPath}/resources/plugins/flot/jquery.flot.orderBars.min.js"></script>
 
+
 <script type="text/javascript" src="${contextPath}/resources/plugins/daterangepicker/moment.min.js"></script>
 <script type="text/javascript" src="${contextPath}/resources/plugins/daterangepicker/daterangepicker.js"></script>
+<!-- 
 <script type="text/javascript" src="${contextPath}/resources/plugins/pickadate/picker.js"></script>
 <script type="text/javascript" src="${contextPath}/resources/plugins/pickadate/picker.date.js"></script>
+-->
 <script type="text/javascript" src="${contextPath}/resources/plugins/blockui/jquery.blockUI.min.js"></script>
-
-<script type="text/javascript"
-	src="${contextPath}/resources/plugins/fullcalendar/fullcalendar.min.js"></script>
 
 <!-- Noty -->
 <script type="text/javascript" src="${contextPath}/resources/plugins/noty/jquery.noty.js"></script>
@@ -125,9 +125,10 @@
 <script type="text/javascript" src="${contextPath}/resources/plugins/bootstrap-datepicker/bootstrap-datepicker.js"></script>
 
 <!-- Demo JS -->
+<!-- 
 <script type="text/javascript" src="${contextPath}/resources/assets/js/custom.js"></script>
 <script type="text/javascript" src="${contextPath}/resources/assets/js/demo/pages_calendar.js"></script>
-
+ -->
 <script type="text/javascript" src="${contextPath}/resources/assets/js/console.js"></script>
 
 <script>

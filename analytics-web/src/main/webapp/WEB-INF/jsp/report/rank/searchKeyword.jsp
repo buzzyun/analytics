@@ -154,8 +154,7 @@ $(document).ready(function(){
 							<select id="select_category" class="select_flat select_flat-sm fcol2"></select>
 							<input type="button" class="btn btn-sm btn-warning" value="DAY"> 
 							<input type="button" class="btn btn-sm btn-default" value="WEEK">
-							<input
-								type="button" class="btn btn-sm btn-default" value="MONTH">
+							<input type="button" class="btn btn-sm btn-default" value="MONTH">
 							<input type="button" class="btn btn-sm btn-default" value="YEAR">
 							
 							<!-- <button class="btn btn-sm range">

@@ -38,14 +38,13 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/{siteId}/report/keyword")
 public class SearchKeywordController extends AbstractController {
 
-	@RequestMapping("/{keywordType}/index")
-	public ModelAndView keywordIndex(@PathVariable String siteId, @PathVariable String keywordType) {
+	@RequestMapping("/relate/index")
+	public ModelAndView keywordIndex(@PathVariable String siteId) {
 		ModelAndView mav = new ModelAndView();
 		ServiceManager serviceManager = ServiceManager.getInstance();
 		StatisticsService statisticsService = serviceManager.getService(StatisticsService.class);
 		mav.addObject("siteConfig", statisticsService.getSiteCategoryListConfig().getList());
-		mav.setViewName("report/keyword/index");
-		mav.addObject("keywordType", keywordType);
+		mav.setViewName("report/keyword/relateKeyword");
 		return mav;
 
 	}
@@ -317,7 +316,7 @@ public class SearchKeywordController extends AbstractController {
 			if(isEditable != null && isEditable.booleanValue()) {
 				mav.setViewName("report/keyword/relateKeywordEdit");
 			} else {
-				mav.setViewName("report/keyword/relateKeyword");
+				mav.setViewName("report/keyword/relateKeywordList");
 			}
 		} finally {
 			if (mapperSession != null) {

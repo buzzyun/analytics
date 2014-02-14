@@ -89,8 +89,7 @@ String categoryId = request.getParameter("categoryId");
 				<div class="crumbs">
 					<ul id="breadcrumbs" class="breadcrumb">
 						<li><i class="icon-home"></i> <a href="javascript:void(0);">Report</a></li>
-						<li><a href="#">검색추이</a></li>
-						<li><a href="#">검색어</a></li>
+						<li><a href="#">Hit Progress</a></li>
 					</ul>
 					<!-- <ul class="crumb-buttons">
 						<li class="range">
@@ -105,7 +104,7 @@ String categoryId = request.getParameter("categoryId");
 				<!--=== Page Header ===-->
 				<div class="page-header">
 					<div class="page-title page-title-sm">
-						<h3>검색어추이</h3>
+						<h3>Hit Progress</h3>
 					</div>
 				</div>
 				<!-- /Page Header -->
@@ -129,7 +128,7 @@ String categoryId = request.getParameter("categoryId");
 					</div>
 					<div class="col-md-12">
 						<form class="form-inline" role="form">
-						<input type="text" class="form-control fcol3" placeholder="Keyword..">
+						<input type="text" class="form-control fcol3" placeholder="Keyword.." value="노트북">
 						<input type="button" class="btn btn-primary" value="Submit">
 						</form>
 					</div>

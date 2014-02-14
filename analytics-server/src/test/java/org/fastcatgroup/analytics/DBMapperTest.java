@@ -13,10 +13,10 @@ import org.apache.ibatis.session.SqlSession;
 import org.fastcatgroup.analytics.db.CommonDBHandler;
 import org.fastcatgroup.analytics.db.mapper.SearchHitMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchKeywordHitMapper;
-import org.fastcatgroup.analytics.db.mapper.SearchTypeRatioMapper;
+import org.fastcatgroup.analytics.db.mapper.SearchTypeHitMapper;
 import org.fastcatgroup.analytics.db.vo.SearchHitVO;
 import org.fastcatgroup.analytics.db.vo.SearchKeywordHitVO;
-import org.fastcatgroup.analytics.db.vo.SearchTypeRatioVO;
+import org.fastcatgroup.analytics.db.vo.SearchTypeHitVO;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -86,7 +86,7 @@ public class DBMapperTest {
 		Class[] classList = new Class[] {
 			SearchHitMapper.class,
 			SearchKeywordHitMapper.class,
-			SearchTypeRatioMapper.class
+			SearchTypeHitMapper.class
 			};
 		
 		CommonDBHandler dbModule = null;
@@ -232,10 +232,10 @@ public class DBMapperTest {
 						mapper.dropTable(site);
 						session.commit();
 					}
-				} else if(obj instanceof SearchTypeRatioMapper) {
-					SearchTypeRatioMapper mapper = (SearchTypeRatioMapper)obj;
-					SearchTypeRatioVO vo;
-					List<SearchTypeRatioVO> list;
+				} else if(obj instanceof SearchTypeHitMapper) {
+					SearchTypeHitMapper mapper = (SearchTypeHitMapper)obj;
+					SearchTypeHitVO vo;
+					List<SearchTypeHitVO> list;
 					List<String> typeList;
 					try {
 						mapper.createTable(site);
@@ -265,12 +265,12 @@ public class DBMapperTest {
 						}
 						
 						list = mapper.getEntryListBetween(site, category, stype, "d", "prod_main", "", "", false);
-						for(SearchTypeRatioVO entry: list) {
+						for(SearchTypeHitVO entry: list) {
 							logger.debug("entry : {}/{}", entry.getTimeId(), entry.getDtype());
 						}
 						
 						list = mapper.getEntryListBetween(site, category, stype, "d", "", "d20131201", "d20131204", false);
-						for(SearchTypeRatioVO entry: list) {
+						for(SearchTypeHitVO entry: list) {
 							logger.debug("entry : {}/{}", entry.getTimeId(), entry.getDtype());
 						}
 						

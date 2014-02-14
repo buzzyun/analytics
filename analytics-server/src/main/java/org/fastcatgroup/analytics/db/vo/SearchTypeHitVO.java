@@ -1,6 +1,6 @@
 package org.fastcatgroup.analytics.db.vo;
 
-public class SearchTypeRatioVO {
+public class SearchTypeHitVO {
 	
 	private String timeId;
 	

@@ -20,113 +20,95 @@
 					class="icon-dashboard"></i> Dashboard 
 			</a>
 			</li>
-			<%
-				lcatCurrent = "report".equals(lcat);
-			%>
-			<li class="<%=lcatCurrent ? "current" :"" %>"><a href="javascript:void(0);"> <i
-					class="icon-bar-chart"></i> 검색어관리
-			</a>
-				<ul class="sub-menu">
-					<li class="<%=(lcatCurrent && "relateKeyword".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/keyword/relate/index.html"/>">
-							<i class="icon-angle-right"></i> 연관검색어
-					</a></li> 
-				</ul>
-			</li>
-			<%
-				lcatCurrent = "rank".equals(lcat);
-			%>
-			<li class="<%=lcatCurrent ? "current" :"" %>"><a href="javascript:void(0);"> <i
-					class="icon-bar-chart"></i> 검색순위 
-			</a>
-				<ul class="sub-menu">
-					<li class="<%=(lcatCurrent && "realtimeSearchKeyword".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/rank/realtimeSearchKeyword.html"/>">
-							<i class="icon-angle-right"></i> 실시간검색어순위
-					</a></li>
-					<li class="<%=(lcatCurrent && "searchKeyword".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/rank/searchKeyword.html"/>">
-							<i class="icon-angle-right"></i> 검색어순위
-					</a></li> 
-					<li class="<%=(lcatCurrent && "myKeyword".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/rank/myKeyword.html"/>">
-							<i class="icon-angle-right"></i> 관심어순위
-					</a></li> 
-					<li class="<%=(lcatCurrent && "newKeyword".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/rank/newKeyword.html"/>">
-							<i class="icon-angle-right"></i> 신규 검색어 순위
-					</a></li>
-					<li class="<%=(lcatCurrent && "hotKeyword".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/rank/hotKeyword.html"/>">
-							<i class="icon-angle-right"></i> 급상승 검색어 순위
-					</a></li> 
-					<li class="<%=(lcatCurrent && "coldKeyword".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/rank/hotKeyword.html"/>">
-							<i class="icon-angle-right"></i> 급하강 검색어 순위
-					</a></li>
-					<li class="<%=(lcatCurrent && "emptyKeyword".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/rank/hotKeyword.html"/>">
-							<i class="icon-angle-right"></i> 결과부족 검색어 순위
-					</a></li>
-				</ul>
-			</li>
 			
 			<%
 				lcatCurrent = "keywordProgress".equals(lcat);
 			%>
-			<li class="<%=lcatCurrent ? "current" :"" %>"><a href="javascript:void(0);"> <i
-					class="icon-bar-chart"></i> 검색추이 
-			</a>
-				<ul class="sub-menu">
-					<li class="<%=(lcatCurrent && "searchKeyword".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/progress/searchKeyword.html"/>">
-							<i class="icon-angle-right"></i> 검색어
-					</a></li> 
-					<li class="<%=(lcatCurrent && "myKeyword".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/progress/myKeyword.html"/>">
-							<i class="icon-angle-right"></i> 관심어
-					</a></li> 
+			<li class="<%=lcatCurrent ? "current" :"" %>"><a href="<c:url value="/${siteId}/report/progress/searchKeyword.html"/>">
+							<i class="icon-bar-chart"></i> Hit Progress
+					</a>
+				<%-- <ul class="sub-menu">
 					<li class="<%=(lcatCurrent && "hitCount".equals(mcat)) ? "current" : "" %>"><a
 						href="<c:url value="/${siteId}/report/progress/hitCount.html"/>">
-							<i class="icon-angle-right"></i> 검색횟수
+							<i class="icon-angle-right"></i> 전체
 					</a></li> 
+					<li class="<%=(lcatCurrent && "searchKeyword".equals(mcat)) ? "current" : "" %>"><a
+						href="<c:url value="/${siteId}/report/progress/searchKeyword.html"/>">
+							<i class="icon-angle-right"></i> 검색어별
+					</a></li> 
+				</ul> --%>
+			</li>
+			
+			<%
+				lcatCurrent = "rank".equals(lcat);
+			%>
+			<li class="<%=lcatCurrent ? "current" :"" %>"><a href="javascript:void(0);"> <i
+					class="icon-bar-chart"></i> Keyword Rank 
+			</a>
+				<ul class="sub-menu">
+					<li class="<%=(lcatCurrent && "realtimeSearchKeyword".equals(mcat)) ? "current" : "" %>"><a
+						href="<c:url value="/${siteId}/report/rank/realtimeSearchKeyword.html"/>">
+							<i class="icon-angle-right"></i> Realtime Rank
+					</a></li>
+					<li class="<%=(lcatCurrent && "searchKeyword".equals(mcat)) ? "current" : "" %>"><a
+						href="<c:url value="/${siteId}/report/rank/searchKeyword.html"/>">
+							<i class="icon-angle-right"></i> All Keyword
+					</a></li> 
+					<li class="<%=(lcatCurrent && "newKeyword".equals(mcat)) ? "current" : "" %>"><a
+						href="<c:url value="/${siteId}/report/rank/newKeyword.html"/>">
+							<i class="icon-angle-right"></i> New Keyword
+					</a></li>
+					<li class="<%=(lcatCurrent && "hotKeyword".equals(mcat)) ? "current" : "" %>"><a
+						href="<c:url value="/${siteId}/report/rank/hotKeyword.html"/>">
+							<i class="icon-angle-right"></i> Hot Keyword
+					</a></li> 
+					<li class="<%=(lcatCurrent && "coldKeyword".equals(mcat)) ? "current" : "" %>"><a
+						href="<c:url value="/${siteId}/report/rank/hotKeyword.html"/>">
+							<i class="icon-angle-right"></i> Down Keyword
+					</a></li>
+					<li class="<%=(lcatCurrent && "emptyKeyword".equals(mcat)) ? "current" : "" %>"><a
+						href="<c:url value="/${siteId}/report/rank/hotKeyword.html"/>">
+							<i class="icon-angle-right"></i> No Result
+					</a></li>
 				</ul>
 			</li>
+			
+			
 			<%
 				lcatCurrent = "typeProgress".equals(lcat);
 			%>
 			<li class="<%=lcatCurrent ? "current" :"" %>"><a
 				href="javascript:void(0);"> <i class="icon-bar-chart"></i>
-					유형별검색추이
+					Type Ratio
 			</a>
 				<ul class="sub-menu">
 					<li class="<%=(lcatCurrent && "category".equals(mcat)) ? "current" : "" %>"><a
 						href="<c:url value="/${siteId}/report/type/viewCategory.html"/>">
-							<i class="icon-angle-right"></i> 카테고리별
+							<i class="icon-angle-right"></i> Category
 					</a></li>
 					<li class="<%=(lcatCurrent && "page".equals(mcat)) ? "current" : "" %>"><a
 						href="<c:url value="/${siteId}/report/type/viewCategory.html"/>">
-							<i class="icon-angle-right"></i> 페이지번호별
+							<i class="icon-angle-right"></i> Page Number
 					</a></li> 
 					<li class="<%=(lcatCurrent && "sort".equals(mcat)) ? "current" : "" %>"><a
 						href="<c:url value="/${siteId}/report/type/viewCategory.html"/>">
-							<i class="icon-angle-right"></i> 정렬별
+							<i class="icon-angle-right"></i> Sort
 					</a></li> 
 					<li class="<%=(lcatCurrent && "age".equals(mcat)) ? "current" : "" %>"><a
 						href="<c:url value="/${siteId}/report/type/viewCategory.html"/>">
-							<i class="icon-angle-right"></i> 연령별
+							<i class="icon-angle-right"></i> Age
 					</a></li> 
 					<li class="<%=(lcatCurrent && "service".equals(mcat)) ? "current" : "" %>"><a
 						href="<c:url value="/${siteId}/report/type/viewService.html"/>">
-							<i class="icon-angle-right"></i> 서비스별
+							<i class="icon-angle-right"></i> Service
 					</a></li> 
 					<li class="<%=(lcatCurrent && "login".equals(mcat)) ? "current" : "" %>"><a
 						href="<c:url value="/${siteId}/report/type/viewCategory.html"/>">
-							<i class="icon-angle-right"></i> 로그인별
+							<i class="icon-angle-right"></i> Login
 					</a></li> 
 					<li class="<%=(lcatCurrent && "sex".equals(mcat)) ? "current" : "" %>"><a
 						href="<c:url value="/${siteId}/report/type/viewCategory.html"/>">
-							<i class="icon-angle-right"></i> 성별
+							<i class="icon-angle-right"></i> Gender
 					</a></li>
 				</ul>
 			</li>
@@ -136,20 +118,34 @@
 			%>
 			<li class="<%=lcatCurrent ? "current" :"" %>"><a
 				href="javascript:void(0);"> <i class="icon-bar-chart"></i>
-					클릭유입률
+					CTR
 			</a>
 				<ul class="sub-menu">
 					<li class="<%=(lcatCurrent && "overview".equals(mcat)) ? "current" : "" %>"><a
 						href="<c:url value="/${siteId}/report/ctr/view.html"/>">
-							<i class="icon-angle-right"></i> 전체
+							<i class="icon-angle-right"></i> All
 					</a></li> 
 					<li class="<%=(lcatCurrent && "keyword".equals(mcat)) ? "current" : "" %>"><a
 						href="<c:url value="/${siteId}/report/ctr/keyword.html"/>">
-							<i class="icon-angle-right"></i> 키워드
+							<i class="icon-angle-right"></i> Keyword
 					</a></li> 
 					<li class="<%=(lcatCurrent && "keyword".equals(mcat)) ? "current" : "" %>"><a
 						href="<c:url value="/${siteId}/report/ctr/searchKeyword.html"/>">
-							<i class="icon-angle-right"></i> 검색키워드
+							<i class="icon-angle-right"></i> [detail..]
+					</a></li> 
+				</ul>
+			</li>
+			
+			<%
+				lcatCurrent = "report".equals(lcat);
+			%>
+			<li class="<%=lcatCurrent ? "current" :"" %>"><a href="javascript:void(0);"> <i
+					class="icon-bar-chart"></i> Keywords
+			</a>
+				<ul class="sub-menu">
+					<li class="<%=(lcatCurrent && "relateKeyword".equals(mcat)) ? "current" : "" %>"><a
+						href="<c:url value="/${siteId}/report/keyword/relate/index.html"/>">
+							<i class="icon-angle-right"></i> Relate Keyword
 					</a></li> 
 				</ul>
 			</li>

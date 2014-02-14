@@ -47,7 +47,7 @@
   padding-left: 11px;
 }
 .daterangepicker .calendar {
-  display: none;
+  /*display: none;*/
   max-width: 270px;
 }
 .daterangepicker .calendar th,
@@ -76,7 +76,7 @@
   border: 1px solid #ccc;
   color: #555;
   display: block;
-  font-size: 11px;
+  font-size: 11px !important;
   height: 30px;
   line-height: 30px;
   vertical-align: middle;

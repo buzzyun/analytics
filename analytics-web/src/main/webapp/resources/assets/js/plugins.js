@@ -21,29 +21,25 @@ var Plugins = function() {
 	var initDaterangepicker = function() {
 		if ($.fn.daterangepicker) {
 			$('.range').daterangepicker({
-				startDate: moment().subtract('days', 29),
+				startDate: moment(),
 				endDate: moment(),
-				minDate: '01/01/2012',
-				maxDate: '12/31/2014',
-				dateLimit: { days: 60 },
-				showDropdowns: true,
+				minDate: '2013.01.01',
+				//maxDate: '',
+//				dateLimit: { days: 60 },
+				//showDropdowns: true,
 				showWeekNumbers: true,
 				timePicker: false,
-				timePickerIncrement: 1,
-				timePicker12Hour: true,
 				ranges: {
 				   'Today': [moment(), moment()],
 				   'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
-				   'Last 7 Days': [moment().subtract('days', 6), moment()],
-				   'Last 30 Days': [moment().subtract('days', 29), moment()],
-				   'This Month': [moment().startOf('month'), moment().endOf('month')],
-				   'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+				   'Last Week': [moment().subtract('weeks', 1).startOf('week'), moment().subtract('weeks', 1).endOf('week')],
+				   'Last Month': [moment().subtract('months', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
 				},
 				opens: 'left',
 				buttonClasses: ['btn btn-default'],
-				applyClass: 'btn-sm btn-primary',
-				cancelClass: 'btn-sm',
-				format: 'MM/DD/YYYY',
+				applyClass: 'btn-xs btn-primary',
+				cancelClass: 'btn-xs',
+				format: 'YYYY.MM.DD',
 				separator: ' to ',
 				locale: {
 					applyLabel: 'Submit',
@@ -52,28 +48,16 @@ var Plugins = function() {
 					customRangeLabel: 'Custom Range',
 					daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr','Sa'],
 					monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-					firstDay: 1
+					firstDay: 0
 				}
 			},
 
 			function (start, end) {
-				var range_updated = start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY');
-
-				App.blockUI($("#content"));
-				setTimeout(function () {
-					App.unblockUI($("#content"));
-					noty({
-						text: '<strong>Dashboard updated to ' + range_updated + '.</strong>',
-						type: 'success',
-						timeout: 1000
-					});
-					//App.scrollTo();
-				}, 1000);
-
+				var range_updated = start.format('YYYY.MM.DD') + ' - ' + end.format('YYYY.MM.DD');
 				$('.range span').html(range_updated);
 			});
 
-			$('.range span').html(moment().subtract('days', 29).format('MMMM D, YYYY') + ' - ' + moment().format('MMMM D, YYYY'));
+			$('.range span').html(moment().format('YYYY.MM.DD') + ' - ' + moment().format('YYYY.MM.DD'));
 		}
 	}
 

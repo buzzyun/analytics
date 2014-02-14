@@ -237,10 +237,11 @@ public class DBMapperTest {
 					SearchTypeHitVO vo;
 					List<SearchTypeHitVO> list;
 					List<String> typeList;
+					String typeId = null;
 					try {
-						mapper.createTable(site);
-						mapper.createIndex(site);
-						mapper.validateTable(site);
+						mapper.createTable(site, typeId);
+						mapper.createIndex(site, typeId);
+						mapper.validateTable(site, typeId);
 						
 						mapper.putEntry(site, category, stype, "prod_main", "d20131201", 100);
 						mapper.putEntry(site, category, stype, "prod_list", "d20131201", 100);
@@ -281,7 +282,7 @@ public class DBMapperTest {
 						assertEquals(sum,180);
 						
 					} finally {
-						mapper.dropTable(site);
+						mapper.dropTable(site, typeId);
 						session.commit();
 					}
 				}

@@ -100,7 +100,7 @@ public class MakePopularKeywordJob extends Job {
 							
 							PopularKeywordVO vo = mapper.getRankEntry(categoryId, TIME_REALTIME, rank);
 							
-							PopularKeywordVO newVo = new PopularKeywordVO(categoryId, TIME_REALTIME, rankKeyword.getKeyword(), 0, rank, rankKeyword.getRankDiffType(), rankKeyword.getRankDiff());
+							PopularKeywordVO newVo = new PopularKeywordVO(categoryId, TIME_REALTIME, rankKeyword.getKeyword(), rankKeyword.getCount(), rank, rankKeyword.getCountDiff(), rankKeyword.getRankDiffType(), rankKeyword.getRankDiff());
 							if(vo == null){
 								mapper.putEntry(newVo);
 							}else{

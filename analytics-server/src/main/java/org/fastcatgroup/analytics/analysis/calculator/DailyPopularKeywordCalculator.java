@@ -55,6 +55,14 @@ public class DailyPopularKeywordCalculator extends Calculator<SearchLog> {
 		File rankLogFile = new File(workingDir, KEY_COUNT_RANK_FILENAME);
 		File compareRankLogFile = new File(prevWorkingDir, KEY_COUNT_RANK_FILENAME);
 		File popularKeywordLogFile = new File(workingDir, POPULAR_FILENAME);
+		
+		//카테고리가 _root이면 10000개, 나머지는 100개씩.
+		if(categoryId.equals("_root")){
+			topCount = 10000;
+		}else{
+			topCount = 100;
+		}
+		
 		ProcessHandler rankDiff = new KeywordRankDiffHandler(rankLogFile, compareRankLogFile, topCount, encoding, entryParser).appendTo(logSort);
 		
 		/* 3. 구해진 인기키워드를 저장한다. */

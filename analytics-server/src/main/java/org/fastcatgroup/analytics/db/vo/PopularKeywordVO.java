@@ -12,17 +12,19 @@ public class PopularKeywordVO {
 	
 	private String word;
 	private int count;
+	private int countDiff;
 	private RankDiffType rankDiffType;
 	private int rankDiff;
 	
 	public PopularKeywordVO(){
 	}
 	
-	public PopularKeywordVO(String category, String time, String word, int count, int rank, RankDiffType rankDiffType, int rankDiff) {
+	public PopularKeywordVO(String category, String time, String word, int count, int rank, int countDiff, RankDiffType rankDiffType, int rankDiff) {
 		this.category = category;
 		this.time = time;
 		this.word = word;
 		this.count = count;
+		this.countDiff = countDiff;
 		this.rank = rank;
 		this.rankDiffType = rankDiffType;
 		this.rankDiff = rankDiff;
@@ -65,6 +67,12 @@ public class PopularKeywordVO {
 	}
 	public void setRank(int rank) {
 		this.rank = rank;
+	}
+	public int getCountDiff() {
+		return countDiff;
+	}
+	public void setCountDiff(int countDiff) {
+		this.countDiff = countDiff;
 	}
 	public RankDiffType getRankDiffType() {
 		return rankDiffType;

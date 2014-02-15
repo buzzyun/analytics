@@ -22,21 +22,21 @@
 			</li>
 			
 			<%
-				lcatCurrent = "keywordProgress".equals(lcat);
+				lcatCurrent = "hitProgress".equals(lcat);
 			%>
-			<li class="<%=lcatCurrent ? "current" :"" %>"><a href="<c:url value="/${siteId}/report/progress/searchKeyword.html"/>">
+			<li class="<%=lcatCurrent ? "current" :"" %>"><a href="<c:url value="/${siteId}/report/progress/index.html"/>">
 							<i class="icon-bar-chart"></i> Hit Progress
 					</a>
-				<%-- <ul class="sub-menu">
-					<li class="<%=(lcatCurrent && "hitCount".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/progress/hitCount.html"/>">
-							<i class="icon-angle-right"></i> 전체
+				<ul class="sub-menu">
+					<li class="<%=(lcatCurrent && "all".equals(mcat)) ? "current" : "" %>">
+					<a href="<c:url value="/${siteId}/report/progress/index.html"/>">
+							<i class="icon-angle-right"></i> All
 					</a></li> 
-					<li class="<%=(lcatCurrent && "searchKeyword".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/progress/searchKeyword.html"/>">
-							<i class="icon-angle-right"></i> 검색어별
+					<li class="<%=(lcatCurrent && "keyword".equals(mcat)) ? "current" : "" %>">
+					<a href="<c:url value="/${siteId}/report/progress/keyword.html"/>">
+							<i class="icon-angle-right"></i> Keyword
 					</a></li> 
-				</ul> --%>
+				</ul>
 			</li>
 			
 			<%

@@ -11,6 +11,16 @@ public interface SearchHitMapper extends AnalyticsMapper {
 			@Param("categoryId") String categoryId, @Param("timeId") String timeId)
 			throws Exception;
 	
+	public SearchHitVO getEntryList(@Param("siteId") String siteId,
+			@Param("categoryId") String categoryId, @Param("timeId") String timeId)
+			throws Exception;
+	
+	public List<SearchHitVO> getEntryListBetween(@Param("siteId") String siteId,
+			@Param("categoryId") String categoryId, @Param("timeType") String timeType,
+			@Param("from") String from, @Param("to") String to);
+
+	
+	
 	public SearchHitVO getMinEntry(@Param("siteId") String siteId,
 			@Param("categoryId") String categoryId, @Param("dFilter") String dFilter)
 			throws Exception;
@@ -19,9 +29,7 @@ public interface SearchHitMapper extends AnalyticsMapper {
 			@Param("categoryId") String categoryId, @Param("dFilter") String dFilter)
 			throws Exception;
 
-	public List<SearchHitVO> getEntryListBetween(@Param("siteId") String siteId,
-			@Param("categoryId") String categoryId, @Param("dFilter") String dFilter,
-			@Param("from") String from, @Param("to") String to);
+	
 	
 	public int getCountBetween(@Param("siteId") String siteId,
 			@Param("categoryId") String categoryId, @Param("dFilter") String dFilter,

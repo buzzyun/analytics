@@ -12,6 +12,8 @@ import org.fastcatgroup.analytics.analysis.handler.PopularKeywordResultHandler;
 import org.fastcatgroup.analytics.analysis.handler.ProcessHandler;
 import org.fastcatgroup.analytics.analysis.handler.SearchLogKeyCountHandler;
 import org.fastcatgroup.analytics.analysis.handler.UpdateDailyPopularKeywordHandler;
+import org.fastcatgroup.analytics.analysis.handler.UpdateKeywordHitHandler;
+import org.fastcatgroup.analytics.analysis.handler.UpdateSearchHitHandler;
 import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
 
@@ -48,8 +50,11 @@ public class DailyPopularKeywordCalculator extends Calculator<SearchLog> {
 		SearchLogValidator logValidator = new SearchLogValidator(banWords);
 		new SearchLogKeyCountHandler(categoryId, workingDir, KEY_COUNT_FILENAME, minimumHitCount, logValidator, entryParser).attachLogHandlerTo(categoryProcess);
 		
+		/* 0. 갯수를 db로 저장한다. */
+		ProcessHandler updateSearchHitHandler = new UpdateSearchHitHandler().attachProcessTo(categoryProcess);
+		
 		/* 1. count로 정렬하여 key-count-rank.log로 저장. */
-		ProcessHandler logSort = new KeyCountLogSortHandler(workingDir, KEY_COUNT_FILENAME, KEY_COUNT_RANK_FILENAME, encoding, runKeySize, entryParser).attachProcessTo(categoryProcess);
+		ProcessHandler logSort = new KeyCountLogSortHandler(workingDir, KEY_COUNT_FILENAME, KEY_COUNT_RANK_FILENAME, encoding, runKeySize, entryParser).appendTo(updateSearchHitHandler);
 		
 		/* 2. 이전일과 비교하여 diff 생성. */
 		File rankLogFile = new File(workingDir, KEY_COUNT_RANK_FILENAME);
@@ -62,6 +67,9 @@ public class DailyPopularKeywordCalculator extends Calculator<SearchLog> {
 		}else{
 			topCount = 100;
 		}
+		
+		//키워드별 count 를 바로 저장한다.
+		new UpdateKeywordHitHandler(rankLogFile, topCount, encoding, entryParser).appendTo(logSort);
 		
 		ProcessHandler rankDiff = new KeywordRankDiffHandler(rankLogFile, compareRankLogFile, topCount, encoding, entryParser).appendTo(logSort);
 		

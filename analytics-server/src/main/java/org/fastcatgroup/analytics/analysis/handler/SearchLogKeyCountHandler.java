@@ -16,6 +16,7 @@ public class SearchLogKeyCountHandler extends CategoryLogHandler<SearchLog> {
 
 	private KeyCountLogAggregator<SearchLog> aggregator;
 	LogValidator<SearchLog> logValidator;
+	int count;
 	
 	public SearchLogKeyCountHandler(String categoryId, File baseDir, String targetFilename, int minimumHitCount, LogValidator<SearchLog> logValidator,
 			KeyCountRunEntryParser entryParser) {
@@ -29,6 +30,7 @@ public class SearchLogKeyCountHandler extends CategoryLogHandler<SearchLog> {
 	@Override
 	public void handleLog(SearchLog logData) throws IOException {
 		// logger.debug("handleLog[{}] > {}", categoryId, logData);
+		count++;
 		String keyword = logData.keyword();
 		if (keyword != null && keyword.length() > 0) {
 			if (categoryId.equals(logData.categoryId())) {
@@ -50,7 +52,7 @@ public class SearchLogKeyCountHandler extends CategoryLogHandler<SearchLog> {
 	@Override
 	public Object done() throws IOException {
 		aggregator.done();
-		return null;
+		return count;
 	}
 
 }

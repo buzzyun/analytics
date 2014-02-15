@@ -9,6 +9,7 @@
 		create table ${siteId}_hit (
 			categoryId varchar(30), 
 			timeId varchar(11),
+			timeType char(1),
 			hit int,
 			primary key (timeId)
 		) ENGINE=InnoDB;
@@ -19,7 +20,7 @@
 	</update>
 	
 	<select id="validateTable" parameterType="map" resultType="map">
-		select timeId, categoryId, hit
+		select timeId, timeType, categoryId, hit
 		from ${siteId}_hit 
 		limit 1
 	</select>
@@ -30,10 +31,38 @@
 	
 	<select id="getEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchHitVO">
 		select * from ${siteId}_hit 
-		where
+		<where>
 		categoryId=#{categoryId} 
 		and timeId=#{timeId}
+		</where>
 	</select>
+	
+	<select id="getEntryList" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchHitVO">
+		select * from ${siteId}_hit
+		<where>
+			categoryId=#{categoryId}
+			and timeId = #{timeId}
+		</where>
+	</select>
+	
+	<select id="getEntryListBetween" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchHitVO">
+		select * from ${siteId}_hit
+		<where>
+			categoryId=#{categoryId}
+			and timeType = #{timeType}
+			<if test="from != null and from != ''">
+				and timeId &gt;= #{from} 
+			</if>
+			<if test="to != null and to !=''">
+				and timeId &lt;= #{to}
+			</if>
+		</where>
+	</select>
+	
+	
+	
+	
+	
 	
 	<select id="getMinEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchHitVO">
 		select * from ${siteId}_hit 
@@ -50,17 +79,6 @@
 		categoryId=#{categoryId} 
 		and timeId=(select max(timeId) from ${siteId}_hit where timeId like '${dFilter}%') 
 		limit 1
-	</select>
-	
-	<select id="getEntryListBetween" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchHitVO">
-		select * from ${siteId}_hit  
-		<where>
-			categoryId=#{categoryId}
-			<if test="from != null and from != '' and to != null and to !=''">
-				and timeId between #{from} and #{to}
-			</if>
-			and timeId like '${dFilter}%'
-		</where>
 	</select>
 	
 	<select id="getCountBetween" parameterType="map" resultType="int">

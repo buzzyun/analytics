@@ -41,7 +41,7 @@ public class UpdateDailyPopularKeywordHandler extends ProcessHandler {
 				String timeId = SearchStatisticsProperties.getTimeId(cal, Calendar.DAY_OF_MONTH);
 				
 				
-				int count = mapper.getCount(siteId, categoryId, timeId);
+				int count = mapper.getCount(siteId, categoryId, timeId, null, 0);
 				if(count > 0){
 					mapper.updateClean(siteId, categoryId, timeId);
 				}

@@ -132,13 +132,13 @@ public class DBMapperTest {
 						assertEquals("m201312", vo.getTimeId());
 						
 						//범위내 항목 덤프
-						list = mapper.getEntryListBetween(site, category, "d", "d20131226", "d20131227");
+						list = null;//mapper.getEntryListBetween(site, category, "D20131226", "D20131227");
 						for(SearchHitVO entry : list) {
 							logger.debug("entry : {}", entry.getTimeId());
 						}
 						
 						//범위내 항목 덤프 (날자타입)
-						list = mapper.getEntryListBetween(site, category, "d", null, null);
+						list = null;//mapper.getEntryListBetween(site, category, null, null);
 						for(SearchHitVO entry : list) {
 							logger.debug("entry : {}", entry.getTimeId());
 						}

@@ -17,7 +17,6 @@ public abstract class Schedule {
 	public long scheduledTime() {
 		return scheduledTime;
 	}
-
 	
 	//delay 시간까지 감안한 실제 시작시간.
 	public long delayedScheduledTime() {

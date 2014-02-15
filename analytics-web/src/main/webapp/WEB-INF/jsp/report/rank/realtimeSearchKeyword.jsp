@@ -75,19 +75,7 @@ $(document).ready(function(){
 									<i class="icon-calendar"></i> Period : 현재시각
 								</h4>
 							</div>
-						</div>
-
-					</div>
-				</div>
-				
-				
-				<div class="row">
-					<div class="col-md-12">
-						<div class="widget box">
-							<div class="widget-header">
-								<h4>TOP 10</h4>
-							</div>
-							<div class="widget-content no-padding">
+							<div class="widget-content">
 								<div>
 									<table class="table table-striped table-bordered table-condensed">
 										<thead>
@@ -121,9 +109,10 @@ $(document).ready(function(){
 							
 							</div>
 						</div>
-					
+
 					</div>
 				</div>
+				
 			</div>
 		</div>
 	</div>

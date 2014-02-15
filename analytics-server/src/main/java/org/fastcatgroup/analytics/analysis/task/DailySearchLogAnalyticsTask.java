@@ -17,20 +17,20 @@ import org.fastcatgroup.analytics.analysis.schedule.Schedule;
  * 일별 검색로그 계산 task 내부에 인기검색어, 검색횟수 calculator를 가지고 있다.
  * 
  * */
-public class DailySearchLogAnalysisTask extends AnalysisTask<SearchLog> {
+public class DailySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 
 	private static final long serialVersionUID = 4212969890908932929L;
 
-	public DailySearchLogAnalysisTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
+	public DailySearchLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
 		super(siteId, categoryIdList, schedule, priority);
 	}
 
 	@Override
-	public void prepare() {
+	protected void prepare(Calendar calendar) {
 		// baseDir : statistics/search/date/Y####/M##/D##/data/{siteId} 경로
 		File dir = environment.filePaths().getStatisticsRoot().file("search", "date");
-		Calendar calendar = Calendar.getInstance();
-		Calendar prevCalendar = Calendar.getInstance();
+		
+		Calendar prevCalendar = (Calendar) calendar.clone();
 		prevCalendar.add(Calendar.DAY_OF_MONTH, -1);
 		File baseDir = new File(SearchStatisticsProperties.getDayDataDir(dir, calendar), siteId);
 		File prevDir = new File(SearchStatisticsProperties.getDayDataDir(dir, prevCalendar), siteId);

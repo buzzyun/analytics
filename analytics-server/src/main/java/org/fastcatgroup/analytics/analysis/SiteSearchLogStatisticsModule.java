@@ -17,9 +17,9 @@ import org.fastcatgroup.analytics.analysis.schedule.EveryYearSchedule;
 import org.fastcatgroup.analytics.analysis.schedule.FixedSchedule;
 import org.fastcatgroup.analytics.analysis.schedule.Schedule;
 import org.fastcatgroup.analytics.analysis.schedule.ScheduledTaskRunner;
-import org.fastcatgroup.analytics.analysis.task.DailySearchLogAnalysisTask;
-import org.fastcatgroup.analytics.analysis.task.RealtimeSearchLogAnalysisTask;
-import org.fastcatgroup.analytics.analysis.task.RelateSearchLogAnalysisTask;
+import org.fastcatgroup.analytics.analysis.task.DailySearchLogAnalyticsTask;
+import org.fastcatgroup.analytics.analysis.task.RealtimeSearchLogAnalyticsTask;
+import org.fastcatgroup.analytics.analysis.task.RelateSearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
 import org.fastcatgroup.analytics.control.JobService;
 import org.fastcatgroup.analytics.db.vo.RankKeywordVO.RankDiffType;
@@ -91,7 +91,7 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		int periodInSeconds = 300;
 		periodInSeconds = 60;//1분.
 		Schedule realtimeSchedule = new FixedSchedule(cal, periodInSeconds, delayInSeconds);
-		RealtimeSearchLogAnalysisTask realtimeTask = new RealtimeSearchLogAnalysisTask(siteId, categoryIdList, realtimeSchedule, 0, realtimeRawLogger);
+		RealtimeSearchLogAnalyticsTask realtimeTask = new RealtimeSearchLogAnalyticsTask(siteId, categoryIdList, realtimeSchedule, 0, realtimeRawLogger);
 		realtimeTaskRunner.addTask(realtimeTask);
 		realtimeTaskRunner.start();
 
@@ -102,7 +102,7 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		relateTaskRunner = new ScheduledTaskRunner("daily-search-log-task-runner", JobService.getInstance(), environment);
 		Schedule relateSchedule = new EveryDaySchedule(0, delayInSeconds); //매일 0시.
 //		Schedule relateSchedule = new FixedSchedule(cal, 10, delayInSeconds);
-		RelateSearchLogAnalysisTask relateSearchLogAnalysisTask = new RelateSearchLogAnalysisTask(siteId, categoryIdList, relateSchedule, 1);
+		RelateSearchLogAnalyticsTask relateSearchLogAnalysisTask = new RelateSearchLogAnalyticsTask(siteId, categoryIdList, relateSchedule, 1);
 		relateTaskRunner.addTask(relateSearchLogAnalysisTask);
 		relateTaskRunner.start();
 		
@@ -112,7 +112,7 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		dailyTaskRunner = new ScheduledTaskRunner("daily-search-log-task-runner", JobService.getInstance(), environment);
 		// 일
 		Schedule dailySchedule = new EveryDaySchedule(0, delayInSeconds); //매일 0시.
-		DailySearchLogAnalysisTask dailySearchLogAnalysisTask = new DailySearchLogAnalysisTask(siteId, categoryIdList, dailySchedule, 1);
+		DailySearchLogAnalyticsTask dailySearchLogAnalysisTask = new DailySearchLogAnalyticsTask(siteId, categoryIdList, dailySchedule, 1);
 		dailyTaskRunner.addTask(dailySearchLogAnalysisTask);
 		
 		// 주

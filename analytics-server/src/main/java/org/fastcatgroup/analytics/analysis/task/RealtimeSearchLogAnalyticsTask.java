@@ -2,6 +2,7 @@ package org.fastcatgroup.analytics.analysis.task;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
@@ -17,7 +18,7 @@ import org.fastcatgroup.analytics.analysis.schedule.Schedule;
  * 실시간 인기검색어 통계용 task
  * 
  * */
-public class RealtimeSearchLogAnalysisTask extends AnalysisTask<SearchLog> {
+public class RealtimeSearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 
 	private static final long serialVersionUID = 4212969890908932929L;
 
@@ -25,14 +26,14 @@ public class RealtimeSearchLogAnalysisTask extends AnalysisTask<SearchLog> {
 	private Set<String> banWords;
 	private int minimumHitCount;
 	private RollingRawLogger realtimeRawLogger;
-	
-	public RealtimeSearchLogAnalysisTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority, RollingRawLogger realtimeRawLogger) {
+
+	public RealtimeSearchLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority, RollingRawLogger realtimeRawLogger) {
 		super(siteId, categoryIdList, schedule, priority);
 		this.realtimeRawLogger = realtimeRawLogger;
 	}
 
 	@Override
-	public void prepare() {
+	public void prepare(Calendar calendar) {
 		// baseDir : statistics/search/rt/data 경로
 		baseDir = environment.filePaths().getStatisticsRoot().file("search", "rt", "data", siteId);
 		banWords = null;
@@ -48,13 +49,16 @@ public class RealtimeSearchLogAnalysisTask extends AnalysisTask<SearchLog> {
 		}
 
 		// calc를 카테고리별로 모두 만든다.
-		Calculator<SearchLog> calculator = new RealtimePopularKeywordCalculator("Realtime popular keyword calculator", baseDir, siteId, categoryIdList, banWords, minimumHitCount, topCount);
+		Calculator<SearchLog> calculator = new RealtimePopularKeywordCalculator("Realtime popular keyword calculator", baseDir, siteId, categoryIdList, banWords, minimumHitCount,
+				topCount);
 		addCalculator(calculator);
 	}
 
 	@Override
-	protected void preProcess(){
-		realtimeRawLogger.rolling();
+	protected void preProcess() {
+		if (realtimeRawLogger != null) {
+			realtimeRawLogger.rolling();
+		}
 	}
-	
+
 }

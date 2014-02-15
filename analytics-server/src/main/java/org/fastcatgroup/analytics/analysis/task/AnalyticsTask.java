@@ -1,6 +1,8 @@
 package org.fastcatgroup.analytics.analysis.task;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.fastcatgroup.analytics.analysis.calculator.Calculator;
@@ -11,10 +13,10 @@ import org.fastcatgroup.analytics.job.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AnalysisTask<LogType extends LogData> extends Job implements Comparable<AnalysisTask<LogType>> {
+public abstract class AnalyticsTask<LogType extends LogData> extends Job implements Comparable<AnalyticsTask<LogType>> {
 	private static final long serialVersionUID = -8028269282257112376L;
 
-	protected static Logger logger = LoggerFactory.getLogger(AnalysisTask.class);
+	protected static Logger logger = LoggerFactory.getLogger(AnalyticsTask.class);
 	
 	protected String siteId;
 	protected List<String> categoryIdList;
@@ -25,7 +27,7 @@ public abstract class AnalysisTask<LogType extends LogData> extends Job implemen
 	protected SourceLogReader<LogType> logReader;
 	private int executeCount;
 
-	public AnalysisTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
+	public AnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
 		this.siteId = siteId;
 		this.categoryIdList = categoryIdList;
 		this.schedule = schedule;
@@ -33,7 +35,7 @@ public abstract class AnalysisTask<LogType extends LogData> extends Job implemen
 		this.calculatorList = new ArrayList<Calculator<LogType>>();
 	}
 
-	protected abstract void prepare();
+	protected abstract void prepare(Calendar calendar);
 	
 	protected void addCalculator(Calculator<LogType> calculator){
 		calculator.init();
@@ -54,10 +56,11 @@ public abstract class AnalysisTask<LogType extends LogData> extends Job implemen
 			calculatorList.clear();
 			
 			preProcess();
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTimeInMillis(getScheduledTime());
+			prepare(calendar);
 			
-			prepare();
-			
-//			logger.debug("AnalysisTask logReader > {}", logReader);
+			logger.debug("### AnalysisTask Time > {}", new Date(calendar.getTimeInMillis()));
 			
 			if (logReader != null) {
 				try {
@@ -91,7 +94,7 @@ public abstract class AnalysisTask<LogType extends LogData> extends Job implemen
 	}
 
 	@Override
-	public int compareTo(AnalysisTask<LogType> o) {
+	public int compareTo(AnalyticsTask<LogType> o) {
 		int c = (int) (schedule.scheduledTime() - o.schedule.scheduledTime());
 
 		if (c == 0) {

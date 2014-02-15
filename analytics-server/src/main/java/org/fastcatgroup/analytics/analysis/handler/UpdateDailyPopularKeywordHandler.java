@@ -3,6 +3,7 @@ package org.fastcatgroup.analytics.analysis.handler;
 import java.util.Calendar;
 import java.util.List;
 
+import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
@@ -27,21 +28,29 @@ public class UpdateDailyPopularKeywordHandler extends ProcessHandler {
 		if (parameter != null) {
 			List<RankKeyword> keywordList = (List<RankKeyword>) parameter;
 			StatisticsService statisticsService = ServiceManager.getInstance().getService(StatisticsService.class);
-			// TODO db입력.
-
+			// db입력.
+			
 			AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
 			MapperSession<SearchKeywordRankMapper> mapperSession = dbService.getMapperSession(SearchKeywordRankMapper.class);
 			try {
 				SearchKeywordRankMapper mapper = mapperSession.getMapper();
-				// TODO 기준시각을 받는다.
-				Calendar cal = null;
+				// 기준시각.
+				Calendar cal = Calendar.getInstance();
+				cal.add(Calendar.DAY_OF_MONTH, -1);
 
-				String time = "";
+				String timeId = SearchStatisticsProperties.getTimeId(cal, Calendar.DAY_OF_MONTH);
+				
+				
+				int count = mapper.getCount(siteId, categoryId, timeId);
+				if(count > 0){
+					mapper.updateClean(siteId, categoryId, timeId);
+				}
+				
 				for (RankKeyword rankKeyword : keywordList) {
 					rankKeyword.getKeyword();
-					RankKeywordVO vo = new RankKeywordVO(categoryId, time, rankKeyword.getKeyword(), rankKeyword.getCount(), rankKeyword.getRank(),
+					RankKeywordVO vo = new RankKeywordVO(categoryId, timeId, rankKeyword.getKeyword(), rankKeyword.getCount(), rankKeyword.getRank(),
 							rankKeyword.getCountDiff(), rankKeyword.getRankDiffType(), rankKeyword.getRankDiff());
-					mapper.putEntry(siteId, "all", vo);
+					mapper.putEntry(siteId, vo);
 				}
 			} finally {
 				if (mapperSession != null) {

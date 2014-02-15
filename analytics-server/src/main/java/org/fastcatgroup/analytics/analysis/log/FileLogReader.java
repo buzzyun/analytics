@@ -6,9 +6,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-
 public abstract class FileLogReader<LogType extends LogData> implements SourceLogReader<LogType> {
-	
+
 	private File file;
 	private BufferedReader reader;
 
@@ -20,14 +19,18 @@ public abstract class FileLogReader<LogType extends LogData> implements SourceLo
 	@Override
 	public LogType readLog() {
 		try {
-			String line = reader.readLine();
-			if (line == null) {
-				return null;
-			} else {
-				String[] el = line.split("\t");
-				return makeLog(el);
-//				return new SearchLog(el[0], el[1], el.length >= 3 ? el[2] : "");
-			}
+
+			String line = null;
+			do {
+				line = reader.readLine();
+				if (line == null) {
+					return null;
+				}
+				//길이가 0이면 재시도.
+			} while (line.trim().length() == 0);
+
+			String[] el = line.split("\t");
+			return makeLog(el);
 		} catch (IOException e) {
 			logger.error("", e);
 			return null;
@@ -35,7 +38,7 @@ public abstract class FileLogReader<LogType extends LogData> implements SourceLo
 	}
 
 	protected abstract LogType makeLog(String[] el);
-	
+
 	@Override
 	public void close() {
 		try {
@@ -45,9 +48,9 @@ public abstract class FileLogReader<LogType extends LogData> implements SourceLo
 		} catch (IOException ignore) {
 		}
 	}
-	
+
 	@Override
-	public String toString(){
+	public String toString() {
 		return getClass().getSimpleName() + " / " + file.getAbsolutePath();
 	}
 }

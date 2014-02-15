@@ -17,19 +17,18 @@ import org.fastcatgroup.analytics.analysis.schedule.Schedule;
  * 일별 연관검색어 계산 task.
  * 
  * */
-public class RelateSearchLogAnalysisTask extends AnalysisTask<RelateSearchLog> {
+public class RelateSearchLogAnalyticsTask extends AnalyticsTask<RelateSearchLog> {
 
 	private static final long serialVersionUID = 4212969890908932929L;
 
-	public RelateSearchLogAnalysisTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
+	public RelateSearchLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
 		super(siteId, categoryIdList, schedule, priority);
 	}
 
 	@Override
-	public void prepare() {
+	public void prepare(Calendar calendar) {
 		// baseDir : statistics/search/date/Y####/M##/D##/data/{siteId} 경로
 		File dir = environment.filePaths().getStatisticsRoot().file("search", "date");
-		Calendar calendar = Calendar.getInstance();
 		File baseDir = new File(SearchStatisticsProperties.getDayDataDir(dir, calendar), siteId);
 		Set<String> banWords = null;
 		int minimumHitCount = 5;

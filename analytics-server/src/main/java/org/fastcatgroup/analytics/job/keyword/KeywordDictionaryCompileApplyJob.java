@@ -107,7 +107,7 @@ public class KeywordDictionaryCompileApplyJob extends Job {
 
 		for (Category category : categoryList) {
 
-			List<RankKeywordVO> keywordList = mapper.getEntryList("", "", category.getId(), time);
+			List<RankKeywordVO> keywordList = null;//mapper.getEntryList("", category.getId(), time, 0, 10);
 
 			PopularKeywordDictionary dictionary = new PopularKeywordDictionary(keywordList);
 

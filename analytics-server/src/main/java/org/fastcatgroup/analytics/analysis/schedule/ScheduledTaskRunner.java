@@ -6,7 +6,7 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 
 import org.fastcatgroup.analytics.analysis.log.LogData;
-import org.fastcatgroup.analytics.analysis.task.AnalysisTask;
+import org.fastcatgroup.analytics.analysis.task.AnalyticsTask;
 import org.fastcatgroup.analytics.control.JobExecutor;
 import org.fastcatgroup.analytics.control.ResultFuture;
 import org.fastcatgroup.analytics.env.Environment;
@@ -21,17 +21,17 @@ public class ScheduledTaskRunner extends Thread {
 
 	private JobExecutor jobExecutor;
 	private Environment environment;
-	private Queue<AnalysisTask> priorityJobQueue;
+	private Queue<AnalyticsTask> priorityJobQueue;
 	private boolean isCanceled;
 
 	public ScheduledTaskRunner(String name, JobExecutor jobExecutor, Environment environment) {
 		super(name);
 		this.jobExecutor = jobExecutor;
 		this.environment = environment;
-		this.priorityJobQueue = new PriorityQueue<AnalysisTask>(5);
+		this.priorityJobQueue = new PriorityQueue<AnalyticsTask>(5);
 	}
 
-	public void addTask(AnalysisTask task) {
+	public void addTask(AnalyticsTask task) {
 		task.setEnvironment(environment);
 		priorityJobQueue.add(task);
 	}
@@ -46,14 +46,14 @@ public class ScheduledTaskRunner extends Thread {
 	public void run() {
 		int size = priorityJobQueue.size();
 		for (int i = 0; i < size; i++) {
-			AnalysisTask task = priorityJobQueue.poll();
+			AnalyticsTask task = priorityJobQueue.poll();
 			task.updateScheduleTimeByNow();
 			priorityJobQueue.offer(task);
 		}
 
 		while (!isCanceled) {
 			try {
-				AnalysisTask task = priorityJobQueue.poll();
+				AnalyticsTask task = priorityJobQueue.poll();
 				if (task == null) {
 					// 작업이 없으면 끝난다.
 					break;

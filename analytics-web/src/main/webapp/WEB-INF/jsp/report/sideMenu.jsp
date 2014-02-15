@@ -50,26 +50,26 @@
 						href="<c:url value="/${siteId}/report/rank/realtimeSearchKeyword.html"/>">
 							<i class="icon-angle-right"></i> Realtime Rank
 					</a></li>
-					<li class="<%=(lcatCurrent && "searchKeyword".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/rank/searchKeyword.html"/>">
+					<li class="<%=(lcatCurrent && "all".equals(mcat)) ? "current" : "" %>"><a
+						href="<c:url value="/${siteId}/report/rank/searchKeywordAll.html"/>">
 							<i class="icon-angle-right"></i> All Keyword
 					</a></li> 
-					<li class="<%=(lcatCurrent && "newKeyword".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/rank/newKeyword.html"/>">
+					<li class="<%=(lcatCurrent && "new".equals(mcat)) ? "current" : "" %>"><a
+						href="<c:url value="/${siteId}/report/rank/searchKeywordNew.html"/>">
 							<i class="icon-angle-right"></i> New Keyword
 					</a></li>
-					<li class="<%=(lcatCurrent && "hotKeyword".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/rank/hotKeyword.html"/>">
+					<li class="<%=(lcatCurrent && "hot".equals(mcat)) ? "current" : "" %>"><a
+						href="<c:url value="/${siteId}/report/rank/searchKeywordHot.html"/>">
 							<i class="icon-angle-right"></i> Hot Keyword
 					</a></li> 
-					<li class="<%=(lcatCurrent && "coldKeyword".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/rank/hotKeyword.html"/>">
+					<li class="<%=(lcatCurrent && "down".equals(mcat)) ? "current" : "" %>"><a
+						href="<c:url value="/${siteId}/report/rank/searchKeywordDown.html"/>">
 							<i class="icon-angle-right"></i> Down Keyword
 					</a></li>
-					<li class="<%=(lcatCurrent && "emptyKeyword".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/rank/hotKeyword.html"/>">
+					<%-- <li class="<%=(lcatCurrent && "emptyKeyword".equals(mcat)) ? "current" : "" %>"><a
+						href="<c:url value="/${siteId}/report/rank/searchKeywordNo.html"/>">
 							<i class="icon-angle-right"></i> No Result
-					</a></li>
+					</a></li> --%>
 				</ul>
 			</li>
 			

@@ -6,17 +6,12 @@ public class SearchTypeHitVO {
 	
 	private String timeId;
 	
+	private String typeId;
+	
 	private String dtype;
 	
 	private int hit;
 	
-	public String getTimeId() {
-		return timeId;
-	}
-	public void setTimeId(String timeId) {
-		this.timeId = timeId;
-	}
-
 	public String getCategoryId() {
 		return categoryId;
 	}
@@ -24,6 +19,20 @@ public class SearchTypeHitVO {
 		this.categoryId = categoryId;
 	}
 	
+	public String getTimeId() {
+		return timeId;
+	}
+	public void setTimeId(String timeId) {
+		this.timeId = timeId;
+	}
+	
+	public String getTypeId() {
+		return typeId;
+	}
+	public void setTypeId(String typeId) {
+		this.typeId = typeId;
+	}
+
 	public String getDtype() {
 		return dtype;
 	}

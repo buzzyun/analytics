@@ -6,9 +6,10 @@
 <mapper namespace="org.fastcatgroup.analytics.db.mapper.SearchTypeHitMapper">
 
 	<update id="createTable" parameterType="map" >
-		create table ${siteId}_type_hit_${typeId} (
+		create table ${siteId}_type_hit (
 			categoryId varchar(64),
 			timeId varchar(11),
+			typeId varchar(32),
 			dtype varchar(32),
 			hit int,
 			primary key (categoryId, timeId, dtype)
@@ -16,49 +17,49 @@
 	</update>
 	
 	<update id="createIndex" parameterType="map" >
-		create index dtype_${siteId}_type_hit_${typeId} on ${siteId}_type_hit_${typeId}(dtype)
+		create index dtype_${siteId}_type_hit on ${siteId}_type_hit(dtype)
 	</update>
 	
 	<select id="validateTable" parameterType="map" resultType="map">
-		select categoryId, timeId, dtype, hit
-		from ${siteId}_type_hit_${typeId}
+		select categoryId, timeId, typeId, dtype, hit
+		from ${siteId}_type_hit
 		limit 1
 	</select>
 
 	<update id="dropTable" parameterType="map">
-		drop table ${siteId}_type_hit_${typeId}
+		drop table ${siteId}_type_hit
 	</update>
 
 	<delete id="truncate" parameterType="map">
-		truncate table ${siteId}_type_hit_${typeId} 
+		truncate table ${siteId}_type_hit 
 	</delete>
 	
 	<select id="getEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchTypeHitVO">
-		select * from ${siteId}_type_hit_${typeId} 
+		select * from ${siteId}_type_hit 
 		where categoryId = #{categoryId}
 		and timeId=#{timeId}
+		and typeId=#{typeId}
 		and dtype=#{dtype}
 	</select>
 	
 	<select id="getEntryList" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchTypeHitVO">
-		select * from ${siteId}_type_hit_${typeId} 
+		select * from ${siteId}_type_hit 
 		where categoryId = #{categoryId}
 		and timeId=#{timeId}
 	</select>
 	
 	<insert id="putEntry" parameterType="map" useGeneratedKeys="true" >
-		insert into ${siteId}_type_hit_${typeId} 
-		(categoryId, timeId, dtype, hit) 
+		insert into ${siteId}_type_hit 
+		(categoryId, timeId, typeId, dtype, hit) 
 		values 
-		(#{categoryId}, #{timeId}, #{dtype}, #{hit})
+		(#{categoryId}, #{timeId}, #{typeId}, #{dtype}, #{hit})
 	</insert>
 	
-	<update id="updateEntry" parameterType="map">
-		update ${siteId}_type_hit_${typeId} 
-		set hit = #{hit} 
+	<update id="updateClear" parameterType="map">
+		delete from ${siteId}_type_hit 
 		where categoryId = #{categoryId}
-		and timeId=#{timeId}
-		and dtype=#{dtype}
+		and timeId = #{timeId}
+		and typeId = #{typeId}
 	</update>
 	
 </mapper>

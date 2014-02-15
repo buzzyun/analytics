@@ -11,6 +11,7 @@ public class SearchLogReader extends FileLogReader<SearchLog> {
 
 	@Override
 	protected SearchLog makeLog(String[] el) {
+		logger.debug("log>>> {}, {}", el.length, el);
 		return new SearchLog(el[0], el[1]);
 	}
 

@@ -11,6 +11,9 @@ public interface SearchTypeHitMapper extends AnalyticsMapper {
 			@Param("timeId") String timeId, @Param("typeId") String typeId, 
 			@Param("dtype") String dtype) throws Exception;
 	
+	public int getCount(@Param("siteId") String siteId, @Param("categoryId") String categoryId, 
+			@Param("timeId") String timeId, @Param("typeId") String typeId) throws Exception;
+	
 	public List<SearchTypeHitVO> getEntryList(@Param("siteId") String siteId, @Param("categoryId") String categoryId, 
 			@Param("timeId") String timeId, @Param("typeId") String typeId)	throws Exception;
 	

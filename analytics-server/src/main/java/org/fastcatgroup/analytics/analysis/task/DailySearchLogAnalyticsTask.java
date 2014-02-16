@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.calculator.Calculator;
-import org.fastcatgroup.analytics.analysis.calculator.DailyPopularKeywordCalculator;
+import org.fastcatgroup.analytics.analysis.calculator.DailyKeywordHitAndRankCalculator;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
 import org.fastcatgroup.analytics.analysis.log.SearchLogReader;
 import org.fastcatgroup.analytics.analysis.schedule.Schedule;
@@ -47,7 +47,7 @@ public class DailySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 		}
 
 		// calc를 카테고리별로 모두 만든다.
-		Calculator<SearchLog> popularKeywordCalculator = new DailyPopularKeywordCalculator("Daily popular keyword calculator", baseDir, prevDir, siteId, categoryIdList, banWords, minimumHitCount, topCount);
+		Calculator<SearchLog> popularKeywordCalculator = new DailyKeywordHitAndRankCalculator("Daily popular keyword calculator", calendar, baseDir, prevDir, siteId, categoryIdList, banWords, minimumHitCount, topCount);
 		addCalculator(popularKeywordCalculator);
 		
 	}

@@ -19,7 +19,7 @@ public class SearchProgressController extends AbstractController {
 
 	@RequestMapping("/index")
 	public ModelAndView index(@PathVariable String siteId, @RequestParam(defaultValue="_root") String categoryId
-			, @RequestParam(required=false) String timeType, @RequestParam(required=false) String timeFrom, @RequestParam(required=false) String timeTo) {
+			, @RequestParam(required=false) String timeFrom, @RequestParam(required=false) String timeTo) {
 
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/progress/index");
@@ -30,8 +30,8 @@ public class SearchProgressController extends AbstractController {
 		try {
 			SearchHitMapper mapper = mapperSession.getMapper();
 			List<SearchHitVO> list = null;
-			if(timeType != null && timeFrom != null && timeTo != null){
-				list = mapper.getEntryListBetween(siteId, categoryId, timeType, timeFrom, timeTo);
+			if(timeFrom != null && timeTo != null){
+				list = mapper.getEntryListBetween(siteId, categoryId, timeFrom, timeTo);
 			}
 			mav.addObject("categoryId", categoryId);
 			mav.addObject("list", list);
@@ -48,7 +48,7 @@ public class SearchProgressController extends AbstractController {
 	
 	@RequestMapping("/keyword")
 	public ModelAndView keyword(@PathVariable String siteId, @RequestParam(defaultValue="_root") String categoryId
-			, @RequestParam(required=false) String timeType, @RequestParam(required=false) String timeFrom, @RequestParam(required=false) String timeTo) {
+			, @RequestParam(required=false) String timeFrom, @RequestParam(required=false) String timeTo) {
 
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/progress/keyword");
@@ -59,8 +59,8 @@ public class SearchProgressController extends AbstractController {
 		try {
 			SearchHitMapper mapper = mapperSession.getMapper();
 			List<SearchHitVO> list = null;
-			if(timeType != null && timeFrom != null && timeTo != null){
-				list = mapper.getEntryListBetween(siteId, categoryId, timeType, timeFrom, timeTo);
+			if(timeFrom != null && timeTo != null){
+				list = mapper.getEntryListBetween(siteId, categoryId, timeFrom, timeTo);
 			}
 			mav.addObject("categoryId", categoryId);
 			mav.addObject("list", list);

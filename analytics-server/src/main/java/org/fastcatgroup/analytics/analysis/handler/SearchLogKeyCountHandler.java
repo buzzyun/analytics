@@ -30,7 +30,7 @@ public class SearchLogKeyCountHandler extends CategoryLogHandler<SearchLog> {
 	@Override
 	public void handleLog(SearchLog logData) throws IOException {
 		// logger.debug("handleLog[{}] > {}", categoryId, logData);
-		count++;
+		
 		String keyword = logData.keyword();
 		if (keyword != null && keyword.length() > 0) {
 			if (categoryId.equals(logData.categoryId())) {
@@ -39,11 +39,13 @@ public class SearchLogKeyCountHandler extends CategoryLogHandler<SearchLog> {
 				if (logValidator != null && logValidator.isValid(logData)) {
 					aggregator.handleLog(logData);
 				}
+				count++;
 			} else if (categoryId.equals("_root")) {
 				// root는 모두다.
 				if (logValidator != null && logValidator.isValid(logData)) {
 					aggregator.handleLog(logData);
 				}
+				count++;
 			}
 
 		}

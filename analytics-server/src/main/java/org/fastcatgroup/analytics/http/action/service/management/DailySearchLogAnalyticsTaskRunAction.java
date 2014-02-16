@@ -19,8 +19,8 @@ import org.fastcatgroup.analytics.http.action.ServiceAction;
 import org.fastcatgroup.analytics.service.ServiceManager;
 import org.fastcatgroup.analytics.util.ResponseWriter;
 
-@ActionMapping("/management/run/daily-search-log-analysis-task")
-public class DailySearchLogAnalysisTaskRunAction extends ServiceAction {
+@ActionMapping("/management/run/daily-search-log-analytics-task")
+public class DailySearchLogAnalyticsTaskRunAction extends ServiceAction {
 
 	@Override
 	public void doAction(ActionRequest request, ActionResponse response) throws Exception {

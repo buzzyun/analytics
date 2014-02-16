@@ -1,6 +1,7 @@
 package org.fastcatgroup.analytics.analysis.calculator;
 
 import java.io.File;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
@@ -28,8 +29,8 @@ public class RealtimePopularKeywordCalculator extends Calculator<SearchLog> {
 	private int minimumHitCount;
 	private int topCount;
 	
-	public RealtimePopularKeywordCalculator(String name, File baseDir, String siteId, List<String> categoryIdList, Set<String> banWords, int minimumHitCount, int topCount) {
-		super(name, baseDir, siteId, categoryIdList);
+	public RealtimePopularKeywordCalculator(String name, Calendar calendar, File baseDir, String siteId, List<String> categoryIdList, Set<String> banWords, int minimumHitCount, int topCount) {
+		super(name, calendar, baseDir, siteId, categoryIdList);
 		this.banWords = banWords;
 		this.minimumHitCount = minimumHitCount;
 		this.topCount = topCount;

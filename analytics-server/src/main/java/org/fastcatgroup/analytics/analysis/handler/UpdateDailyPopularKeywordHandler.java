@@ -3,13 +3,11 @@ package org.fastcatgroup.analytics.analysis.handler;
 import java.util.Calendar;
 import java.util.List;
 
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
 import org.fastcatgroup.analytics.db.mapper.SearchKeywordRankMapper;
-import org.fastcatgroup.analytics.db.mapper.RelateKeywordMapper;
 import org.fastcatgroup.analytics.db.vo.RankKeywordVO;
 import org.fastcatgroup.analytics.service.ServiceManager;
 
@@ -17,10 +15,12 @@ public class UpdateDailyPopularKeywordHandler extends ProcessHandler {
 
 	String siteId;
 	String categoryId;
-
-	public UpdateDailyPopularKeywordHandler(String siteId, String categoryId) {
+	String timeId;
+	
+	public UpdateDailyPopularKeywordHandler(String siteId, String categoryId, String timeId) {
 		this.siteId = siteId;
 		this.categoryId = categoryId;
+		this.timeId = timeId;
 	}
 
 	@Override
@@ -38,9 +38,6 @@ public class UpdateDailyPopularKeywordHandler extends ProcessHandler {
 				Calendar cal = Calendar.getInstance();
 				cal.add(Calendar.DAY_OF_MONTH, -1);
 
-				String timeId = SearchStatisticsProperties.getTimeId(cal, Calendar.DAY_OF_MONTH);
-				
-				
 				int count = mapper.getCount(siteId, categoryId, timeId, null, 0);
 				if(count > 0){
 					mapper.updateClean(siteId, categoryId, timeId);

@@ -48,7 +48,7 @@ public class RelateSearchLogAnalyticsTask extends AnalyticsTask<RelateSearchLog>
 			logger.error("", e.getMessage());
 		}
 
-		Calculator<RelateSearchLog> relateKeywordCalculator = new DailyRelateKeywordCalculator("Daily relate keyword calculator", baseDir, siteId, categoryIdList, banWords, minimumHitCount);
+		Calculator<RelateSearchLog> relateKeywordCalculator = new DailyRelateKeywordCalculator("Daily relate keyword calculator", calendar, baseDir, siteId, categoryIdList, banWords, minimumHitCount);
 		addCalculator(relateKeywordCalculator);
 	}
 

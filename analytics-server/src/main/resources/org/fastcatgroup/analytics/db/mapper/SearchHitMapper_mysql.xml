@@ -9,18 +9,17 @@
 		create table ${siteId}_hit (
 			categoryId varchar(30), 
 			timeId varchar(11),
-			timeType char(1),
 			hit int,
-			primary key (timeId)
+			primary key (categoryId, timeId)
 		) ENGINE=InnoDB;
 	</update>
 	
 	<update id="createIndex" parameterType="map" >
-		create index timeId_${siteId}_hit on ${siteId}_hit(timeId)
+		create index timeId_${siteId}_hit on ${siteId}_hit(categoryId, timeId)
 	</update>
 	
 	<select id="validateTable" parameterType="map" resultType="map">
-		select timeId, timeType, categoryId, hit
+		select categoryId, timeId, categoryId, hit
 		from ${siteId}_hit 
 		limit 1
 	</select>
@@ -45,11 +44,41 @@
 		</where>
 	</select>
 	
+	<insert id="putEntry" parameterType="map">
+		insert into ${siteId}_hit 
+		(categoryId, timeId, hit) values (#{categoryId}, #{timeId}, #{hit})
+	</insert>
+	
+	<update id="updateEntry" parameterType="map">
+		update ${siteId}_hit set hit = #{hit} 
+		where 
+		categoryId=#{categoryId} 
+		and timeId = #{timeId}
+	</update>
+	
+	<delete id="deleteEntry" parameterType="map">
+		delete ${siteId}_hit set hit = #{hit} 
+		where 
+		categoryId=#{categoryId}
+		and timeId = #{timeId}
+	</delete>
+	
+	<!-- from and to is required -->
+	<delete id="deleteEntryBetween" parameterType="map">
+		delete ${siteId}_hit set hit = #{hit} 
+		where 
+		categoryId=#{categoryId}
+		and timeId between #{from} and #{to} 
+	</delete>
+	
+	<delete id="truncate" parameterType="map">
+		truncate table ${siteId}_hit 
+	</delete>
+	
 	<select id="getEntryListBetween" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchHitVO">
 		select * from ${siteId}_hit
 		<where>
 			categoryId=#{categoryId}
-			and timeType = #{timeType}
 			<if test="from != null and from != ''">
 				and timeId &gt;= #{from} 
 			</if>
@@ -58,10 +87,6 @@
 			</if>
 		</where>
 	</select>
-	
-	
-	
-	
 	
 	
 	<select id="getMinEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchHitVO">
@@ -98,36 +123,5 @@
 		categoryId=#{categoryId}
 		and timeId between #{from} and #{to}
 	</select>
-	
-	<insert id="putEntry" parameterType="map" useGeneratedKeys="true" >
-		insert into ${siteId}_hit 
-		(categoryId, timeId, hit) values (#{categoryId}, #{timeId}, #{hit})
-	</insert>
-	
-	<update id="updateEntry" parameterType="map">
-		update ${siteId}_hit set hit = #{hit} 
-		where 
-		categoryId=#{categoryId} 
-		and timeId = #{timeId}
-	</update>
-	
-	<delete id="deleteEntry" parameterType="map">
-		delete ${siteId}_hit set hit = #{hit} 
-		where 
-		categoryId=#{categoryId}
-		and timeId = #{timeId}
-	</delete>
-	
-	<!-- from and to is required -->
-	<delete id="deleteEntryBetween" parameterType="map">
-		delete ${siteId}_hit set hit = #{hit} 
-		where 
-		categoryId=#{categoryId}
-		and timeId between #{from} and #{to} 
-	</delete>
-	
-	<delete id="truncate" parameterType="map">
-		truncate table ${siteId}_hit 
-	</delete>
 
 </mapper>

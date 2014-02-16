@@ -8,10 +8,10 @@
 	<update id="createTable" parameterType="map" >
 		create table ${siteId}_hit_keyword (
 			categoryId varchar(30), 
-			timeid varchar(11),
+			timeId varchar(11),
 			keyword varchar(128),
 			hit int,
-			primary key (categoryId, timeid, keyword)
+			primary key (categoryId, timeId, keyword)
 		)
 	</update>
 	
@@ -20,7 +20,7 @@
 	</update>
 	
 	<select id="validateTable" parameterType="map" resultType="map">
-		select categoryId, timeid, keyword, hit
+		select categoryId, timeId, keyword, hit
 		from ${siteId}_hit_keyword
 		limit 1
 	</select>
@@ -36,6 +36,21 @@
 		and timeId=#{timeId}
 		and keyword=#{keyword}
 	</select>
+	
+	<select id="getCount" parameterType="map" resultType="int">
+		select count(*) from ${siteId}_hit_keyword 
+		where 
+		categoryId=#{categoryId} 
+		and timeId=#{timeId}
+	</select>
+	
+	<delete id="updateClear" parameterType="map">
+		delete from ${siteId}_hit_keyword
+		where 
+		categoryId=#{categoryId}
+		and timeId = #{timeId}
+	</delete>
+	
 	
 	<select id="getMinEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchKeywordHitVO">
 		select * from ${siteId}_hit_keyword 
@@ -133,7 +148,8 @@
 	</update>
 	
 	<delete id="deleteEntry" parameterType="map">
-		delete ${siteId}_hit_keyword set hit = #{hit} 
+		delete from 
+		${siteId}_hit_keyword
 		where 
 		categoryId=#{categoryId}
 		and timeId = #{timeId}
@@ -141,7 +157,8 @@
 	</delete>
 	
 	<delete id="deleteEntryBetween" parameterType="map">
-		delete ${siteId}_hit_keyword set hit = #{hit}
+		delete from 
+		${siteId}_hit_keyword set hit = #{hit}
 		<where>
 			categoryId=#{categoryId}
 			<if test="keyword != null and keyword != '' ">

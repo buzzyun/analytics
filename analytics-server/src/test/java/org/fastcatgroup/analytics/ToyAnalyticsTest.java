@@ -37,4 +37,12 @@ public class ToyAnalyticsTest {
 		
 	}
 
+	@Test
+	public void test11(){
+		String line = "1	2	-	-	-	-	-	-	-";
+		String[] el = line.split("\t");
+		for(int i=0;i<el.length;i++){
+			System.out.println(i + " : " + el[i]);
+		}
+	}
 }

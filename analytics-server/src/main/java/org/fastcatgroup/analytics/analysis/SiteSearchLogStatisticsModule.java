@@ -18,6 +18,7 @@ import org.fastcatgroup.analytics.analysis.schedule.FixedSchedule;
 import org.fastcatgroup.analytics.analysis.schedule.Schedule;
 import org.fastcatgroup.analytics.analysis.schedule.ScheduledTaskRunner;
 import org.fastcatgroup.analytics.analysis.task.DailySearchLogAnalyticsTask;
+import org.fastcatgroup.analytics.analysis.task.DailyTypeSearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.RealtimeSearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.RelateSearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
@@ -110,9 +111,13 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		 */
 		dailyTaskRunner = new ScheduledTaskRunner("daily-search-log-task-runner", JobService.getInstance(), environment);
 		// 일
-		Schedule dailySchedule = new EveryDaySchedule(0, delayInSeconds); //매일 0시.
-		DailySearchLogAnalyticsTask dailySearchLogAnalysisTask = new DailySearchLogAnalyticsTask(siteId, categoryIdList, dailySchedule, 1);
+		Schedule dailySchedule1 = new EveryDaySchedule(0, delayInSeconds); //매일 0시.
+		DailySearchLogAnalyticsTask dailySearchLogAnalysisTask = new DailySearchLogAnalyticsTask(siteId, categoryIdList, dailySchedule1, 1);
 		dailyTaskRunner.addTask(dailySearchLogAnalysisTask);
+		
+		Schedule dailySchedule2 = new EveryDaySchedule(0, delayInSeconds);
+		DailyTypeSearchLogAnalyticsTask dailyTypeSearchLogAnalyticsTask = new DailyTypeSearchLogAnalyticsTask(siteId, categoryIdList, dailySchedule2, 2);
+		dailyTaskRunner.addTask(dailyTypeSearchLogAnalyticsTask);
 		
 		// 주
 		 Schedule weeklySchedule = new EveryWeekSchedule(0, 0, delayInSeconds);

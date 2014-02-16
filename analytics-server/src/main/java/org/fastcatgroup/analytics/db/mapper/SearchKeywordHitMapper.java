@@ -11,6 +11,12 @@ public interface SearchKeywordHitMapper extends AnalyticsMapper {
 			@Param("categoryId") String categoryId, @Param("timeId") String timeId,
 			@Param("keyword") String keyword) throws Exception;
 	
+	public int getCount(@Param("siteId") String siteId,
+			@Param("categoryId") String categoryId, @Param("timeId") String timeId) throws Exception;
+	
+	public int updateClear(@Param("siteId") String siteId,
+			@Param("categoryId") String categoryId, @Param("timeId") String timeId) throws Exception;
+	
 	public SearchKeywordHitVO getMinEntry(@Param("siteId") String siteId,
 			@Param("categoryId") String categoryId, @Param("dFilter") String dFilter, 
 			@Param("keyword") String keyword) throws Exception;

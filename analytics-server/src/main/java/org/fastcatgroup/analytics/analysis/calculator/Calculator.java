@@ -3,6 +3,7 @@ package org.fastcatgroup.analytics.analysis.calculator;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.EmptyStackException;
 import java.util.List;
 import java.util.Stack;
@@ -20,7 +21,7 @@ import org.slf4j.LoggerFactory;
  * */
 public abstract class Calculator<LogType extends LogData> {
 	protected static Logger logger = LoggerFactory.getLogger(Calculator.class);
-
+	protected Calendar calendar;
 	protected String siteId;
 	protected String name;
 	protected File baseDir;
@@ -30,8 +31,9 @@ public abstract class Calculator<LogType extends LogData> {
 	private List<CategoryProcess<LogType>> categoryProcessList;
 	private Stack<ProcessHandlerParameter> nextStack;
 
-	public Calculator(String name, File baseDir, String siteId, List<String> categoryIdList) {
+	public Calculator(String name, Calendar calendar, File baseDir, String siteId, List<String> categoryIdList) {
 		this.name = name;
+		this.calendar = calendar;
 		this.baseDir = baseDir;
 		this.siteId = siteId;
 		this.categoryIdList = categoryIdList;

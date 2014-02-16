@@ -17,8 +17,8 @@ import org.fastcatgroup.analytics.http.action.ServiceAction;
 import org.fastcatgroup.analytics.service.ServiceManager;
 import org.fastcatgroup.analytics.util.ResponseWriter;
 
-@ActionMapping("/management/run/realtime-search-log-analysis-task")
-public class RealtimeSearchLogAnalysisTaskRunAction extends ServiceAction {
+@ActionMapping("/management/run/realtime-search-log-analytics-task")
+public class RealtimeSearchLogAnalyticsTaskRunAction extends ServiceAction {
 
 	@Override
 	public void doAction(ActionRequest request, ActionResponse response) throws Exception {

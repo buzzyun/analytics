@@ -1,6 +1,7 @@
 package org.fastcatgroup.analytics.analysis.calculator;
 
 import java.io.File;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
@@ -22,8 +23,8 @@ public class DailyRelateKeywordCalculator extends Calculator<RelateSearchLog> {
 	//minimumHitCount번 이상 출현해야 연관어로 인정.
 	private int minimumHitCount;
 	
-	public DailyRelateKeywordCalculator(String name, File baseDir, String siteId, List<String> categoryIdList, Set<String> banWords, int minimumHitCount) {
-		super(name, baseDir, siteId, categoryIdList);
+	public DailyRelateKeywordCalculator(String name, Calendar calendar, File baseDir, String siteId, List<String> categoryIdList, Set<String> banWords, int minimumHitCount) {
+		super(name, calendar, baseDir, siteId, categoryIdList);
 		this.banWords = banWords;
 		this.minimumHitCount = minimumHitCount;
 	}

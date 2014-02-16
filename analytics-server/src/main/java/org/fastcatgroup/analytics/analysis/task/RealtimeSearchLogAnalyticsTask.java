@@ -49,7 +49,7 @@ public class RealtimeSearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 		}
 
 		// calc를 카테고리별로 모두 만든다.
-		Calculator<SearchLog> calculator = new RealtimePopularKeywordCalculator("Realtime popular keyword calculator", baseDir, siteId, categoryIdList, banWords, minimumHitCount,
+		Calculator<SearchLog> calculator = new RealtimePopularKeywordCalculator("Realtime popular keyword calculator", calendar, baseDir, siteId, categoryIdList, banWords, minimumHitCount,
 				topCount);
 		addCalculator(calculator);
 	}

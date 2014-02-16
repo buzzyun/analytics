@@ -14,16 +14,16 @@
 		) ENGINE=InnoDB;
 	</update>
 	
+	<select id="validateTable" parameterType="map" resultType="map">
+		select categoryId, timeId, hit
+		from ${siteId}_hit
+		where categoryId = ''
+	</select>
+
 	<update id="createIndex" parameterType="map" >
 		create index timeId_${siteId}_hit on ${siteId}_hit(categoryId, timeId)
 	</update>
 	
-	<select id="validateTable" parameterType="map" resultType="map">
-		select categoryId, timeId, categoryId, hit
-		from ${siteId}_hit 
-		limit 1
-	</select>
-
 	<update id="dropTable" parameterType="map">
 		drop table ${siteId}_hit
 	</update>

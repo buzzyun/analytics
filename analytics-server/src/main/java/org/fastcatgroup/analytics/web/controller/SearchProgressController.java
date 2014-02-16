@@ -5,7 +5,9 @@ import java.util.List;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
 import org.fastcatgroup.analytics.db.mapper.SearchHitMapper;
+import org.fastcatgroup.analytics.db.mapper.SearchKeywordHitMapper;
 import org.fastcatgroup.analytics.db.vo.SearchHitVO;
+import org.fastcatgroup.analytics.db.vo.SearchKeywordHitVO;
 import org.fastcatgroup.analytics.service.ServiceManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,19 +50,20 @@ public class SearchProgressController extends AbstractController {
 	
 	@RequestMapping("/keyword")
 	public ModelAndView keyword(@PathVariable String siteId, @RequestParam(defaultValue="_root") String categoryId
+			, @RequestParam(required=false) String keyword
 			, @RequestParam(required=false) String timeFrom, @RequestParam(required=false) String timeTo) {
 
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/progress/keyword");
 		
 		AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
-		MapperSession<SearchHitMapper> mapperSession = dbService.getMapperSession(SearchHitMapper.class);
+		MapperSession<SearchKeywordHitMapper> mapperSession = dbService.getMapperSession(SearchKeywordHitMapper.class);
 		
 		try {
-			SearchHitMapper mapper = mapperSession.getMapper();
-			List<SearchHitVO> list = null;
+			SearchKeywordHitMapper mapper = mapperSession.getMapper();
+			List<SearchKeywordHitVO> list = null;
 			if(timeFrom != null && timeTo != null){
-				list = mapper.getEntryListBetween(siteId, categoryId, timeFrom, timeTo);
+				list = mapper.getEntryListBetween(siteId, categoryId, keyword, timeFrom, timeTo);
 			}
 			mav.addObject("categoryId", categoryId);
 			mav.addObject("list", list);

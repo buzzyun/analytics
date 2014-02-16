@@ -14,7 +14,7 @@
 	</update>
 	
 	<update id="createIndex" parameterType="map">
-		create index id_index on ${siteId}_relate_keyword(id)
+		create index id_${siteId}_relate_keyword on ${siteId}_relate_keyword(id)
 	</update>
 	
 	<select id="validateTable" parameterType="map" resultType="map">

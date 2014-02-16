@@ -6,6 +6,7 @@
 <%
 String categoryId = request.getParameter("categoryId");
 List<SearchHitVO> list = (List<SearchHitVO>) request.getAttribute("list");
+String keyword = request.getParameter("keyword");
 String timeFrom = request.getParameter("timeFrom");
 String timeTo = request.getParameter("timeTo");
 %>
@@ -20,61 +21,65 @@ String timeTo = request.getParameter("timeTo");
 		
 		fillCategoryList('${siteId}', $("#select_category"), '<%=categoryId %>');
 
-			// Sample Data
-			var d1 = [ [ "d1", 2000 ], [ "d2", 500 ],
-					[ "d3", 1700 ], [ "d4", 1300 ],
-					[ "d5", 2600 ], [ "d6", 1300 ]
-					];
-
-			var data = [ {
-				label : "노트북",
-				data : d1,
-				color : '#eb8544'
-			}];
-
-			$.plot("#chart_dashboard_main", data, $.extend(true, {}, Plugins
-				.getFlotDefaults(),
-				{
-					xaxis : {
-						/* min : (new Date(2009, 12, 1)).getTime(),
-						max : (new Date(2010, 11, 2)).getTime(), */
-						//mode : "time",
-						//tickSize : [ 1, "month" ],
-						monthNames : [ "1", "2", "3", "4",
-								"5", "6", "7", "8", "9",
-								"10", "11", "12" ],
-						//tickLength : 0
-					},
-					series : {
-						lines : {
-							fill : false,
-							lineWidth : 1.5
-						},
-						points : {
-							show : true,
-							radius : 2.5,
-							lineWidth : 1.1
-						},
-						grow : {
-							active : true,
-							growings : [ {
-								stepMode : "maximum"
-							} ]
-						}
-					},
-					grid : {
-						hoverable : true,
-						clickable : true
-					},
-					tooltip : true,
-					tooltipOpts : {
-						content : '%s: %y'
+		// Sample Data
+		var d1 = [
+			<%
+			if(list != null){
+				for(int i=0;i<list.size();i++){
+					SearchHitVO vo = list.get(i);
+					if(i > 0){
+					%>,<%
 					}
-				}));
+				%>
+				[ <%=i %>, <%=vo.getHit() %> ]
+				<%
+				}
+			}
+			%>
+		];
+
+		var data = [ {
+			data : d1,
+			color : '#eb8544'
+		}];
+
+		$.plot("#chart_dashboard_main", data,
+			{
+				xaxis: {
+				},
+				yaxis: {
+					ticks: 20,
+					min: 0,
+				},
+				series : {
+					lines : {
+						show: true,
+						fill : false,
+						lineWidth : 1.5
+					},
+					points : {
+						show : true,
+						radius : 2.5,
+						lineWidth : 1.1
+					},
+					grow : {
+						active : true,
+						growings : [ {
+							stepMode : "maximum"
+						} ]
+					}
+				},
+				grid : {
+					hoverable : true,
+					clickable : true
+				},
+				tooltip : true,
+				tooltipOpts : {
+					content : '%s: %y'
+				}
+			});
 			
 		});
-	
-	
 </script>
 
 </head>
@@ -133,7 +138,7 @@ String timeTo = request.getParameter("timeTo");
 						</div>
 						<div class="col-md-12">
 							<div class="form-inline">
-								<input type="text" class="form-control fcol2" placeholder="Keyword.." value="노트북">
+								<input type="text" name="keyword" class="form-control fcol2" placeholder="Keyword.." value="<%=keyword %>">
 								<input type="submit" class="btn btn-primary" value="Submit">
 							</div>
 						</div>

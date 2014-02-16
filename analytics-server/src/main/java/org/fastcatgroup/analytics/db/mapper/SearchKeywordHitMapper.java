@@ -25,15 +25,10 @@ public interface SearchKeywordHitMapper extends AnalyticsMapper {
 			@Param("categoryId") String categoryId, @Param("dFilter") String dFilter,
 			@Param("keyword") String keyword) throws Exception;
 
-	public List<String> searchKeyword(@Param("siteId") String siteId,
-			@Param("categoryId") String categoryId, @Param("search") String search,
-			@Param("from") String from, @Param("to") String to);
-	
 	public List<SearchKeywordHitVO> getEntryListBetween(
 			@Param("siteId") String siteId, @Param("categoryId") String categoryId,
-			@Param("dFilter") String dFilter, @Param("keyword") String keyword,
-			@Param("from") String from, @Param("to") String to,
-			@Param("isGroup") boolean isGroup);
+			@Param("keyword") String keyword,
+			@Param("from") String from, @Param("to") String to);
 	
 	public int getCountBetween(@Param("siteId") String siteId,
 			@Param("categoryId") String categoryId, @Param("dFilter") String dFilter,

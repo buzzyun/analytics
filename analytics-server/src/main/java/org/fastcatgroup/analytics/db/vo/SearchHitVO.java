@@ -4,8 +4,6 @@ public class SearchHitVO {
 
 	protected String categoryId;
 	protected String timeId;
-	protected char timeType;
-
 	protected int hit;
 
 	public String getTimeId() {
@@ -16,14 +14,6 @@ public class SearchHitVO {
 		this.timeId = timeId;
 	}
 
-	public char getTimeType() {
-		return timeType;
-	}
-
-	public void setTimeType(char timeType) {
-		this.timeType = timeType;
-	}
-	
 	public String getCategoryId() {
 		return categoryId;
 	}

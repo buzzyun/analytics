@@ -1,7 +1,6 @@
 package org.fastcatgroup.analytics.db;
 
 import org.fastcatgroup.analytics.db.mapper.AnalyticsMapper;
-import org.fastcatgroup.analytics.db.mapper.AnalyticsTypeMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchHitMapper;
 import org.junit.Test;
 

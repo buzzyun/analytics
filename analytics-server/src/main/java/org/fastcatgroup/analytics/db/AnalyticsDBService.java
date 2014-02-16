@@ -19,7 +19,6 @@ import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig;
 import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig;
 import org.fastcatgroup.analytics.db.mapper.AnalyticsMapper;
-import org.fastcatgroup.analytics.db.mapper.AnalyticsTypeMapper;
 import org.fastcatgroup.analytics.db.mapper.RelateKeywordMapper;
 import org.fastcatgroup.analytics.db.mapper.RelateKeywordValueMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchHitMapper;
@@ -38,8 +37,13 @@ public class AnalyticsDBService extends AbstractDBService {
 	String[] rankList;
 	String[] typeList;
 
-	private static Class<?>[] mapperList = new Class<?>[] { SearchHitMapper.class, RelateKeywordMapper.class, RelateKeywordValueMapper.class, SearchKeywordHitMapper.class,
-			SearchHitMapper.class, SearchTypeHitMapper.class, SearchKeywordRankMapper.class };
+	private static Class<?>[] mapperList = new Class<?>[] { 
+		SearchKeywordHitMapper.class
+		, SearchHitMapper.class
+		, RelateKeywordMapper.class
+		, RelateKeywordValueMapper.class
+		, SearchTypeHitMapper.class
+		, SearchKeywordRankMapper.class };
 
 	public AnalyticsDBService(Environment environment, Settings settings, ServiceManager serviceManager) {
 		super(environment, settings, serviceManager);
@@ -83,79 +87,45 @@ public class AnalyticsDBService extends AbstractDBService {
 
 		for (Class<?> mapperDAO : mapperList) {
 			
-			if (AnalyticsMapper.class.isAssignableFrom(mapperDAO)) {
-				Class<? extends AnalyticsMapper> clazz = (Class<? extends AnalyticsMapper>) mapperDAO;
-				MapperSession<? extends AnalyticsMapper> mapperSession = (MapperSession<? extends AnalyticsMapper>) getMapperSession(clazz);
-				AnalyticsMapper managedMapper = mapperSession.getMapper();
-				for (SiteCategoryConfig siteConfig : siteCategoryConfig) {
-					String site = siteConfig.getSiteId();
+			Class<? extends AnalyticsMapper> clazz = (Class<? extends AnalyticsMapper>) mapperDAO;
+			MapperSession<? extends AnalyticsMapper> mapperSession = (MapperSession<? extends AnalyticsMapper>) getMapperSession(clazz);
+			AnalyticsMapper managedMapper = mapperSession.getMapper();
+			for (SiteCategoryConfig siteConfig : siteCategoryConfig) {
+				String siteId = siteConfig.getSiteId();
+				try {
+					try{
+						//mysql에서 이상하게 최초쿼리는 에러나서..
+						logger.debug("valiadte1 {}, {}", siteId, clazz.getSimpleName());
+						managedMapper.validateTable(siteId);
+					}catch(Exception ignore){
+					}
+					
+					logger.debug("valiadte {}, {}", siteId, clazz.getSimpleName());
+					managedMapper.validateTable(siteId);
+				} catch (Exception e) {
+					logger.error("valid error", e);
 					try {
-						logger.debug("valiadte {}", clazz.getSimpleName());
-						managedMapper.validateTable(site);
-					} catch (Exception e) {
-						try {
-							logger.debug("drop {}", clazz.getSimpleName());
-							managedMapper.dropTable(site);
-							mapperSession.commit();
-						} catch (Exception ignore) {
-						}
-						try {
-							logger.debug("create table {}", clazz.getSimpleName());
-							managedMapper.createTable(site);
-							mapperSession.commit();
-							logger.debug("create index {}", clazz.getSimpleName());
-							managedMapper.createIndex(site);
-							mapperSession.commit();
-
-						} catch (Exception e2) {
-							logger.error("", e2);
-						}
+						logger.debug("drop {}, {}", siteId, clazz.getSimpleName());
+						managedMapper.dropTable(siteId);
+						mapperSession.commit();
+					} catch (Exception ignore) {
 					}
+					try {
+						logger.debug("create table {}, {}", siteId, clazz.getSimpleName());
+						managedMapper.createTable(siteId);
+						mapperSession.commit();
+						logger.debug("create index {}, {}", siteId, clazz.getSimpleName());
+						managedMapper.createIndex(siteId);
+						mapperSession.commit();
 
-				}
-				mapperSession.closeSession();
-			} else if (AnalyticsTypeMapper.class.isAssignableFrom(mapperDAO)) {
-				Class<? extends AnalyticsTypeMapper> clazz = (Class<? extends AnalyticsTypeMapper>) mapperDAO;
-				MapperSession<? extends AnalyticsTypeMapper> mapperSession = (MapperSession<? extends AnalyticsTypeMapper>) getMapperSession(clazz);
-				AnalyticsTypeMapper managedMapper = mapperSession.getMapper();
-				String[] currentTypeList = null;
-				if (mapperDAO.isAssignableFrom(SearchKeywordRankMapper.class)) {
-					currentTypeList = rankList;
-				} else if (mapperDAO.isAssignableFrom(SearchTypeHitMapper.class)) {
-					currentTypeList = typeList;
-				}
-
-				for (SiteCategoryConfig siteConfig : siteCategoryConfig) {
-					String site = siteConfig.getSiteId();
-
-					for (String typeId : currentTypeList) {
-						try {
-							logger.debug("valiadte {}", clazz.getSimpleName());
-							managedMapper.validateTable(site, typeId);
-						} catch (Exception e) {
-							try {
-								logger.debug("drop {}", clazz.getSimpleName());
-								managedMapper.dropTable(site, typeId);
-								mapperSession.commit();
-							} catch (Exception ignore) {
-							}
-							try {
-								logger.debug("create table {}", clazz.getSimpleName());
-								managedMapper.createTable(site, typeId);
-								mapperSession.commit();
-								logger.debug("create index {}", clazz.getSimpleName());
-								managedMapper.createIndex(site, typeId);
-								mapperSession.commit();
-
-							} catch (Exception e2) {
-								logger.error("", e2);
-							}
-						}
+					} catch (Exception e2) {
+						logger.error("", e2);
 					}
-
 				}
-				mapperSession.closeSession();
+
 			}
+			mapperSession.closeSession();
+			
 
 		}
 

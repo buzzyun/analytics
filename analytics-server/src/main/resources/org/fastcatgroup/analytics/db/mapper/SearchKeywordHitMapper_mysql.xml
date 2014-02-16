@@ -12,22 +12,29 @@
 			keyword varchar(128),
 			hit int,
 			primary key (categoryId, timeId, keyword)
-		)
+		) ENGINE=InnoDB;
 	</update>
 	
 	<update id="createIndex" parameterType="map" >
-		create index keywordid_${siteId}_hit_keyword on ${siteId}_hit_keyword(keyword)
+		create index timeId_${siteId}_hit_keyword on ${siteId}_hit_keyword(categoryId, timeId, keyword)
 	</update>
 	
 	<select id="validateTable" parameterType="map" resultType="map">
 		select categoryId, timeId, keyword, hit
 		from ${siteId}_hit_keyword
-		limit 1
+		where categoryId = ''
 	</select>
 
 	<update id="dropTable" parameterType="map">
 		drop table ${siteId}_hit_keyword
 	</update>
+	
+	<select id="getCount" parameterType="map" resultType="int">
+		select count(*) from ${siteId}_hit_keyword 
+		where 
+		categoryId=#{categoryId} 
+		and timeId=#{timeId}
+	</select>
 	
 	<select id="getEntry" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchKeywordHitVO">
 		select * from ${siteId}_hit_keyword 
@@ -37,11 +44,37 @@
 		and keyword=#{keyword}
 	</select>
 	
-	<select id="getCount" parameterType="map" resultType="int">
+	<select id="getCountBetween" parameterType="map" resultType="int">
 		select count(*) from ${siteId}_hit_keyword 
-		where 
-		categoryId=#{categoryId} 
-		and timeId=#{timeId}
+		<where>
+			categoryId=#{categoryId}
+			<if test="keyword != null and keyword !=''">
+				and keyword = #{keyword}
+			</if>
+			<if test="from != null and from != ''">
+				and timeId &gt;= #{from} 
+			</if>
+			<if test="to != null and to !=''">
+				and timeId &lt;= #{to}
+			</if>
+			and timeId like '${dFilter}%'
+		</where>
+	</select>
+	
+	<select id="getEntryListBetween" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchKeywordHitVO">
+		select * from ${siteId}_hit_keyword
+		<where>
+			categoryId=#{categoryId}
+			<if test="keyword != null and keyword != ''">
+			and keyword = #{keyword}
+			</if>
+			<if test="from != null and from != ''">
+				and timeId &gt;= #{from} 
+			</if>
+			<if test="to != null and to !=''">
+				and timeId &lt;= #{to}
+			</if>
+		</where>
 	</select>
 	
 	<delete id="updateClear" parameterType="map">
@@ -77,51 +110,6 @@
 		limit 1
 	</select>
 	
-	<select id="searchKeyword" parameterType="map" resultType="string">
-		select distinct keyword from ${siteId}_hit_keyword
-		<where>
-			categoryId=#{categoryId}
-			<if test="search != null and search != ''">
-			and keyword like '%${search}%'
-			</if>
-			<if test="from != null and from != '' and to != null and to !=''">
-			and timeId between #{from} and #{to}
-			</if>
-		</where>
-	</select>
-	
-	<select id="getEntryListBetween" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchKeywordHitVO">
-		select a.* from (
-		select * from ${siteId}_hit_keyword
-		<where>
-			categoryId=#{categoryId}
-			<if test="keyword != null and keyword !=''">
-				and keyword = #{keyword}
-			</if>
-			<if test="from != null and from != '' and to != null and to !=''">
-				and timeId between #{from} and #{to}
-			</if>
-			and timeId like '${dFilter}%'
-		</where>
-		<if test="isGroup == true">
-		group by keyword
-		</if>
-		) a
-	</select>
-	
-	<select id="getCountBetween" parameterType="map" resultType="int">
-		select count(*) from ${siteId}_hit_keyword 
-		<where>
-			categoryId=#{categoryId}
-			<if test="keyword != null and keyword !=''">
-				and keyword = #{keyword}
-			</if>
-			<if test="from != null and from != '' and to != null and to !=''">
-				and timeId between #{from} and #{to}
-			</if>
-			and timeId like '${dFilter}%'
-		</where>
-	</select>
 	
 	<select id="getSumBetween" parameterType="map" resultType="int">
 		select sum(hit) from ${siteId}_hit_keyword 

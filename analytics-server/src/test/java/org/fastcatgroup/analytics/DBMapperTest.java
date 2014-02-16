@@ -188,36 +188,36 @@ public class DBMapperTest {
 						vo = mapper.getMaxEntry(site, category, "d", "");
 						assertEquals(vo.getTimeId(), "d20131204");
 						
-						keywordList = mapper.searchKeyword(site, category, "", "d20131202", "d20131204");
-						for(String keyword : keywordList) {
-							logger.debug("keyword : {}", keyword);
-						}
-						
-						keywordList = mapper.searchKeyword(site, category, "", "", "");
-						for(String keyword : keywordList) {
-							logger.debug("keyword : {}", keyword);
-						}
-						
-						keywordList = mapper.searchKeyword(site, category, "노트", "", "");
-						for(String keyword : keywordList) {
-							logger.debug("keyword : {}", keyword);
-							assertEquals(keyword,"노트북");
-						}
-						
-						list = mapper.getEntryListBetween(site, category, "d", "", "d20131202", "d20131204", false);
-						for(SearchKeywordHitVO entry : list) {
-							logger.debug("entry : {} / {}", entry.getTimeId(), entry.getKeyword());
-						}
-						
-						list = mapper.getEntryListBetween(site, category, "d", "노트북", "", "", false);
-						for(SearchKeywordHitVO entry : list) {
-							logger.debug("entry : {} / {}", entry.getTimeId(), entry.getKeyword());
-						}
-						
-						list = mapper.getEntryListBetween(site, category, "d", "노트북", "", "", true);
-						for(SearchKeywordHitVO entry : list) {
-							logger.debug("entry : {} / {}", entry.getTimeId(), entry.getKeyword());
-						}
+//						keywordList = mapper.searchKeyword(site, category, "", "d20131202", "d20131204");
+//						for(String keyword : keywordList) {
+//							logger.debug("keyword : {}", keyword);
+//						}
+//						
+//						keywordList = mapper.searchKeyword(site, category, "", "", "");
+//						for(String keyword : keywordList) {
+//							logger.debug("keyword : {}", keyword);
+//						}
+//						
+//						keywordList = mapper.searchKeyword(site, category, "노트", "", "");
+//						for(String keyword : keywordList) {
+//							logger.debug("keyword : {}", keyword);
+//							assertEquals(keyword,"노트북");
+//						}
+//						
+//						list = mapper.getEntryListBetween(site, category, "d", "", "d20131202", "d20131204", false);
+//						for(SearchKeywordHitVO entry : list) {
+//							logger.debug("entry : {} / {}", entry.getTimeId(), entry.getKeyword());
+//						}
+//						
+//						list = mapper.getEntryListBetween(site, category, "d", "노트북", "", "", false);
+//						for(SearchKeywordHitVO entry : list) {
+//							logger.debug("entry : {} / {}", entry.getTimeId(), entry.getKeyword());
+//						}
+//						
+//						list = mapper.getEntryListBetween(site, category, "d", "노트북", "", "", true);
+//						for(SearchKeywordHitVO entry : list) {
+//							logger.debug("entry : {} / {}", entry.getTimeId(), entry.getKeyword());
+//						}
 						
 						int count = mapper.getCountBetween(site, category, "m", "키워드", "", "");
 						assertEquals(count, 2);

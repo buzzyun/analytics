@@ -23,8 +23,6 @@ public interface SearchHitMapper extends AnalyticsMapper {
 			@Param("categoryId") String categoryId,
 			@Param("from") String from, @Param("to") String to);
 
-	
-	
 	public SearchHitVO getMinEntry(@Param("siteId") String siteId,
 			@Param("categoryId") String categoryId, @Param("dFilter") String dFilter)
 			throws Exception;

@@ -16,10 +16,10 @@
 			<%
 				boolean lcatCurrent = "dashboard".equals(lcat);
 			%>
-			<li class="<%=lcatCurrent ? "current" :"" %>"><a href="<c:url value="/${siteId}/report/dashboard.html"/>"> <i
+			<%-- <li class="<%=lcatCurrent ? "current" :"" %>"><a href="<c:url value="/${siteId}/report/dashboard.html"/>"> <i
 					class="icon-dashboard"></i> Dashboard 
 			</a>
-			</li>
+			</li> --%>
 			
 			<%
 				lcatCurrent = "hitProgress".equals(lcat);
@@ -83,37 +83,37 @@
 			</a>
 				<ul class="sub-menu">
 					<li class="<%=(lcatCurrent && "category".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/type/viewCategory.html"/>">
+						href="<c:url value="/${siteId}/report/type/category.html"/>">
 							<i class="icon-angle-right"></i> Category
 					</a></li>
 					<li class="<%=(lcatCurrent && "page".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/type/viewCategory.html"/>">
+						href="<c:url value="/${siteId}/report/type/page.html"/>">
 							<i class="icon-angle-right"></i> Page Number
 					</a></li> 
 					<li class="<%=(lcatCurrent && "sort".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/type/viewCategory.html"/>">
+						href="<c:url value="/${siteId}/report/type/sort.html"/>">
 							<i class="icon-angle-right"></i> Sort
 					</a></li> 
 					<li class="<%=(lcatCurrent && "age".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/type/viewCategory.html"/>">
+						href="<c:url value="/${siteId}/report/type/age.html"/>">
 							<i class="icon-angle-right"></i> Age
 					</a></li> 
 					<li class="<%=(lcatCurrent && "service".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/type/viewService.html"/>">
+						href="<c:url value="/${siteId}/report/type/service.html"/>">
 							<i class="icon-angle-right"></i> Service
 					</a></li> 
 					<li class="<%=(lcatCurrent && "login".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/type/viewCategory.html"/>">
+						href="<c:url value="/${siteId}/report/type/login.html"/>">
 							<i class="icon-angle-right"></i> Login
 					</a></li> 
-					<li class="<%=(lcatCurrent && "sex".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/type/viewCategory.html"/>">
+					<li class="<%=(lcatCurrent && "gender".equals(mcat)) ? "current" : "" %>"><a
+						href="<c:url value="/${siteId}/report/type/gender.html"/>">
 							<i class="icon-angle-right"></i> Gender
 					</a></li>
 				</ul>
 			</li>
 			
-			<%
+			<%-- <%
 				lcatCurrent = "ctr".equals(lcat);
 			%>
 			<li class="<%=lcatCurrent ? "current" :"" %>"><a
@@ -134,10 +134,10 @@
 							<i class="icon-angle-right"></i> [detail..]
 					</a></li> 
 				</ul>
-			</li>
+			</li> --%>
 			
 			<%
-				lcatCurrent = "report".equals(lcat);
+				lcatCurrent = "keywords".equals(lcat);
 			%>
 			<li class="<%=lcatCurrent ? "current" :"" %>"><a href="javascript:void(0);"> <i
 					class="icon-bar-chart"></i> Keywords

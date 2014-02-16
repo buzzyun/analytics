@@ -36,8 +36,8 @@ $(document).ready(function(){
 				<div class="crumbs">
 					<ul id="breadcrumbs" class="breadcrumb">
 						<li><i class="icon-home"></i> <a href="javascript:void(0);">Report</a></li>
-						<li><a href="#">검색순위</a></li>
-						<li><a href="#">검색어</a></li>
+						<li><a href="#">Keyword Rank</a></li>
+						<li><a href="#">Realtime</a></li>
 					</ul>
 					<!-- <ul class="crumb-buttons">
 						<li class="range">
@@ -52,7 +52,7 @@ $(document).ready(function(){
 				<!--=== Page Header ===-->
 				<div class="page-header">
 					<div class="page-title page-title-sm">
-						<h3>실시간검색어순위</h3>
+						<h3>Keyword Rank Realtime</h3>
 					</div>
 				</div>
 				<!-- /Page Header -->

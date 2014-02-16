@@ -34,7 +34,7 @@ $(document).ready(function(){
 		<ul class="nav navbar-nav navbar-left">
 			<c:if test="${not empty siteId}">
 				<li class="<%="report".equals(menuType) ? "active" : ""%>"><a href="<c:url value="/${siteId}/report/index.html"/>"> Report </a></li>
-				<li class="<%="configuration".equals(menuType) ? "active" : ""%>"><a href="<c:url value="/${siteId}/configuration/index.html"/>"> Configuration </a></li>
+				<%-- <li class="<%="configuration".equals(menuType) ? "active" : ""%>"><a href="<c:url value="/${siteId}/configuration/index.html"/>"> Configuration </a></li> --%>
 		    </c:if>
 					
 					
@@ -72,11 +72,11 @@ $(document).ready(function(){
 				</ul>
 			</li>
 			
-			<li><a href="<c:url value="/account/index.html"/>" class="dropdown-toggle"> <i class="icon-cog"></i>
-			</a></li>
+			<%-- <li><a href="<c:url value="/account/index.html"/>" class="dropdown-toggle"> <i class="icon-cog"></i>
+			</a></li> --%>
 
 			<!-- User Login Dropdown -->
-			<li class="dropdown user"><a href="#" class="dropdown-toggle"
+			<%-- <li class="dropdown user"><a href="#" class="dropdown-toggle"
 				data-toggle="dropdown"> <!--<img alt="" src="assets/img/avatar1_small.jpg" />-->
 					<i class="icon-male"></i> <span class="username">Sang Song</span> <i
 					class="icon-caret-down small"></i>
@@ -86,7 +86,7 @@ $(document).ready(function(){
 							My Profile</a></li>
 					<li><a href="<c:url value="/main/logout.html" />"><i class="icon-key"></i> Log Out</a></li>
 				</ul>
-			</li>
+			</li> --%>
 			<!-- /user login dropdown -->
 		</ul>
 		<!-- /Top Right Menu -->

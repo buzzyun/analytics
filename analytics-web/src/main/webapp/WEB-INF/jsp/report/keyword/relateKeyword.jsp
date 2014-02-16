@@ -40,7 +40,7 @@ $(document).ready(function(){
 	<c:import url="${ROOT_PATH}/inc/mainMenu.jsp" />
 	<div id="container">
 		<c:import url="${ROOT_PATH}/report/sideMenu.jsp">
-			<c:param name="lcat" value="report" />
+			<c:param name="lcat" value="keywords" />
 			<c:param name="mcat" value="relateKeyword" />
 		</c:import>
 		<div id="content">

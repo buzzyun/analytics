@@ -12,7 +12,7 @@
 			typeId varchar(32),
 			dtype varchar(32),
 			hit int,
-			primary key (categoryId, timeId, dtype)
+			primary key (categoryId, timeId, typeId)
 		) ENGINE=InnoDB;
 	</update>
 	
@@ -54,6 +54,21 @@
 		where categoryId = #{categoryId}
 		and timeId=#{timeId}
 		and typeId=#{typeId}
+	</select>
+	
+	
+	<select id="getEntryListBetween" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchTypeHitVO">
+		select * from ${siteId}_type_hit 
+		<where>
+			categoryId=#{categoryId}
+			<if test="from != null and from != ''">
+				and timeId &gt;= #{from} 
+			</if>
+			<if test="to != null and to !=''">
+				and timeId &lt;= #{to}
+			</if>
+			and typeId=#{typeId}
+		</where>
 	</select>
 	
 	<insert id="putEntry" parameterType="map" useGeneratedKeys="true" >

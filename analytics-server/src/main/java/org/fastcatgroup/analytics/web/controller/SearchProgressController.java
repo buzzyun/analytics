@@ -62,7 +62,7 @@ public class SearchProgressController extends AbstractController {
 		try {
 			SearchKeywordHitMapper mapper = mapperSession.getMapper();
 			List<SearchKeywordHitVO> list = null;
-			if(timeFrom != null && timeTo != null){
+			if(keyword != null && keyword.length() > 0 && timeFrom != null && timeTo != null){
 				list = mapper.getEntryListBetween(siteId, categoryId, keyword, timeFrom, timeTo);
 			}
 			mav.addObject("categoryId", categoryId);

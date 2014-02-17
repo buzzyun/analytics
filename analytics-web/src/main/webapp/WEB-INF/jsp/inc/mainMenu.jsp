@@ -34,7 +34,7 @@ $(document).ready(function(){
 		<ul class="nav navbar-nav navbar-left">
 			<c:if test="${not empty siteId}">
 				<li class="<%="report".equals(menuType) ? "active" : ""%>"><a href="<c:url value="/${siteId}/report/index.html"/>"> Report </a></li>
-				<%-- <li class="<%="configuration".equals(menuType) ? "active" : ""%>"><a href="<c:url value="/${siteId}/configuration/index.html"/>"> Configuration </a></li> --%>
+				<li class="<%="configuration".equals(menuType) ? "active" : ""%>"><a href="<c:url value="/${siteId}/configuration/index.html"/>"> Configuration </a></li>
 		    </c:if>
 					
 					

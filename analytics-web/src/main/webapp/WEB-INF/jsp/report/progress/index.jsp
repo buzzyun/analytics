@@ -66,7 +66,7 @@ if(timeTo == null){
 			color : '#eb8544'
 		}];
 
-		$.plot("#chart_dashboard_main", data,
+		$.plot("#chart_dashboard_main", data, 
 			{
 				xaxis: {
 					ticks :ticks
@@ -145,9 +145,9 @@ if(timeTo == null){
 								<input type="button" class="btn btn-sm btn-default" value="YEAR"> -->
 								<select name="timeType" class="select_flat select_flat-sm fcol1">
 									<option value="D">Day</option>
-									<option value="W">Week</option>
+									<!-- <option value="W">Week</option>
 									<option value="M">Month</option>
-									<option value="Y">Year</option>
+									<option value="Y">Year</option> -->
 								</select>
 								<input class="form-control fcol1-2 " size="16" type="text" name="timeFrom" value="<%=timeFrom %>" >
 								- <input class="form-control fcol1-2 " size="16" type="text" name="timeTo" value="<%=timeTo %>" >

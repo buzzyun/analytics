@@ -41,18 +41,48 @@ public class SearchProgressController extends AbstractController {
 				
 				list = mapper.getEntryListBetween(siteId, categoryId, timeFrom, timeTo);
 				
-				
-//				loop(startTime ~ endTime){
-//					vo= list.get(i);
-//					if(vo == null){
-//						//o으로..
-//						list.add(i, new Vo());
-//					}else{
-//						
-//					}
-//				}
-				
-				
+				if (list != null && list.size() > 0) {
+					Calendar timeCurrent = null;
+					SearchHitVO vo = null;
+
+					SearchHitVO newVO = null;
+					
+					for (int timeInx = 0; startTime.getTimeInMillis() <= endTime.getTimeInMillis(); timeInx++) {
+						String timeId = SearchStatisticsProperties.getTimeId(startTime, Calendar.DATE);
+						int hit = 0;
+						
+						if(list.size() > timeInx) {
+
+							vo = list.get(timeInx);
+							timeCurrent = SearchStatisticsProperties.parseTimeId(vo.getTimeId());
+	
+							long timeStartMillis = startTime.getTimeInMillis();
+							long timeCurrentMillis = timeCurrent.getTimeInMillis();
+	
+							if (timeStartMillis == timeCurrentMillis) {
+								hit = vo.getHit();
+								timeCurrent = null;
+							} else {
+								newVO = new SearchHitVO();
+								newVO.setTimeId(timeId);
+								newVO.setHit(hit);
+								if (timeStartMillis < timeCurrentMillis) {
+									// 목적일보다 작으므로 앞에 더해준다.
+									list.add(timeInx, newVO);
+								} else {
+									// 목적일보타 크므로 뒤에 더해준다.
+									list.add(timeInx + 1, newVO);
+								}
+							}
+						} else {
+							newVO = new SearchHitVO();
+							newVO.setTimeId(timeId);
+							newVO.setHit(hit);
+							list.add(newVO);
+						}
+						startTime.add(Calendar.DATE, 1);
+					}
+				}
 			}
 			mav.addObject("categoryId", categoryId);
 			mav.addObject("list", list);

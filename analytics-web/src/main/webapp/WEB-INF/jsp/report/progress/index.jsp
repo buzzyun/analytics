@@ -105,7 +105,7 @@ if(timeTo == null){
 			color : '#eb8544'
 		}];
 
-		$.plot("#chart_dashboard_main", data, 
+		$.plot("#chart_dashboard_main", data, $.extend(true, {}, Plugins.getFlotDefaults(), 
 			{
 				xaxis: {
 					ticks :ticks
@@ -140,7 +140,7 @@ if(timeTo == null){
 				tooltipOpts : {
 					content : '%s: %y'
 				}
-			});
+			}));
 			
 		});
 </script>

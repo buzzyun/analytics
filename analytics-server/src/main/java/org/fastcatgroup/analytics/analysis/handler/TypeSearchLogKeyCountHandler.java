@@ -17,6 +17,7 @@ public class TypeSearchLogKeyCountHandler extends CategoryLogHandler<TypeSearchL
 
 	public TypeSearchLogKeyCountHandler(String categoryId, String[] typeList) {
 		super(categoryId);
+		logger.debug("##TypeSearchLogKeyCountHandler > {}", categoryId);
 		this.typeList = typeList;
 		typeCouterList = new Map[typeList.length];
 		for (int i = 0; i < typeList.length; i++) {
@@ -26,7 +27,7 @@ public class TypeSearchLogKeyCountHandler extends CategoryLogHandler<TypeSearchL
 
 	@Override
 	public void handleLog(TypeSearchLog logData) throws IOException {
-
+		logger.debug("##TypeSearchLogKeyCountHandler > {} > {}", categoryId, logData);
 		String keyword = logData.keyword();
 		if (keyword != null && keyword.length() > 0) {
 			if (categoryId.equals(logData.categoryId())) {
@@ -43,6 +44,7 @@ public class TypeSearchLogKeyCountHandler extends CategoryLogHandler<TypeSearchL
 					} else {
 						counter.increment();
 					}
+					logger.debug("##TypeSearchLogKeyCountHandler1 type-count > {}:{}", type, counter);
 				}
 			} else if (categoryId.equals("_root")) {
 				// root는 모두다.
@@ -58,6 +60,7 @@ public class TypeSearchLogKeyCountHandler extends CategoryLogHandler<TypeSearchL
 					} else {
 						counter.increment();
 					}
+					logger.debug("##TypeSearchLogKeyCountHandler2 type-count > {}:{}", type, counter);
 				}
 			}
 

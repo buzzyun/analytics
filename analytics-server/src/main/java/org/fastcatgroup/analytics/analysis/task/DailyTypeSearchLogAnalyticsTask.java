@@ -40,7 +40,7 @@ public class DailyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchLog
 		try {
 			logReader = new TypeSearchLogReader(logFile, encoding);
 		} catch (IOException e) {
-			logger.error("", e.getMessage());
+			logger.error("", e);
 		}
 
 		// calc를 카테고리별로 모두 만든다.

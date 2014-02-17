@@ -83,6 +83,22 @@ if(timeTo == null){
 			}
 			%>
 		];
+		
+		var ticks = [
+			<%
+			if(list != null){
+				for(int i=0;i<list.size();i++){
+					SearchHitVO vo = list.get(i);
+					if(i > 0){
+					%>,<%
+					}
+				%>
+				[ <%=i %>, '<%=vo.getTimeId() %>' ]
+				<%
+				}
+			}
+			%>
+		];
 
 		var data = [ {
 			data : d1,
@@ -92,6 +108,7 @@ if(timeTo == null){
 		$.plot("#chart_dashboard_main", data,
 			{
 				xaxis: {
+					ticks :ticks
 				},
 				yaxis: {
 					ticks: 20,

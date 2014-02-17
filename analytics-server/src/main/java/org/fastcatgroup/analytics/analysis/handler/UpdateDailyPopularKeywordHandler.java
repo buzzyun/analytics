@@ -55,9 +55,8 @@ public class UpdateDailyPopularKeywordHandler extends ProcessHandler {
 				}
 			}
 			
-			//TODO 일간 인기키워드를 서비스할지 셋팅에서 확인한다. 
-			//어제. 그제, 그그제.. 등.. 
-			// statisticsService.updateDailyPopularKeywordList(siteId, categoryId, keywordList);
+			//이전에 셋팅된 메모리 객체를 없앤다. 다음에 최초 호출시 메모리에 다시 로드된다.
+			statisticsService.clearPopularKeywordList();
 		}
 		return null;
 	}

@@ -1,7 +1,9 @@
 package org.fastcatgroup.analytics.web.controller;
 
+import java.util.Calendar;
 import java.util.List;
 
+import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
 import org.fastcatgroup.analytics.db.mapper.SearchTypeHitMapper;
@@ -33,10 +35,21 @@ public class SearchTypeController extends AbstractController {
 			SearchTypeHitMapper mapper = mapperSession.getMapper();
 			List<SearchTypeHitVO> list = null;
 			
-			if(timeFrom != null && timeTo != null){
-				list = mapper.getTypeCountListBetween(siteId, categoryId, typeId, timeFrom, timeTo);
+			Calendar calendar = Calendar.getInstance();
+			calendar.add(Calendar.DATE, -1);
+			String defaultTimeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DATE);
+			if(timeFrom == null){
+				timeFrom = defaultTimeId;
 			}
+			if(timeTo == null){
+				timeTo = defaultTimeId;
+			}
+			
+			list = mapper.getTypeCountListBetween(siteId, categoryId, typeId, timeFrom, timeTo);
+			
 			mav.addObject("categoryId", categoryId);
+			mav.addObject("timeFrom", timeFrom);
+			mav.addObject("timeTo", timeTo);
 			mav.addObject("list", list);
 			
 		} catch (Exception e) {

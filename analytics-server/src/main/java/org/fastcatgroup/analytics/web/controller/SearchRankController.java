@@ -176,31 +176,4 @@ public class SearchRankController extends AbstractController {
 		return mav;
 	}
 
-	// 관심어순위
-	@RequestMapping("/myKeyword")
-	public ModelAndView myKeyword(@PathVariable String siteId) {
-
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName("report/rank/myKeyword");
-		return mav;
-	}
-
-	// 급상승검색어순위
-	@RequestMapping("/hotKeyword")
-	public ModelAndView hotKeyword(@PathVariable String siteId) {
-
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName("report/rank/hotKeyword");
-		return mav;
-	}
-
-	// 신규검색어순위
-	@RequestMapping("/newKeyword")
-	public ModelAndView newKeyword(@PathVariable String siteId) {
-
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName("report/rank/newKeyword");
-		return mav;
-	}
-
 }

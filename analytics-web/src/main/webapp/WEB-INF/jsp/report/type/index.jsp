@@ -6,14 +6,11 @@
 <%
 String categoryId = (String) request.getAttribute("categoryId");
 List<SearchTypeHitVO> list = (List<SearchTypeHitVO>) request.getAttribute("list");
-String timeFrom = request.getParameter("timeFrom");
-String timeTo = request.getParameter("timeTo");
-if(timeFrom == null){
-	timeFrom = "";
-}
-if(timeTo == null){
-	timeTo = "";
-}
+
+String typeId = (String) request.getAttribute("typeId");
+String timeFrom = (String) request.getAttribute("timeFrom");
+String timeTo = (String) request.getAttribute("timeTo");
+
 %>
 <c:set var="ROOT_PATH" value="../.." />
 
@@ -45,31 +42,34 @@ $(document).ready(function() {
 			service_rate_data[<%=i%>] = { label: "<%=vo.getDtype() %>", data: <%=ratioString %> };
 			<%
 		}
+		%>
+		
+		$.plot("#chart_category_rate", service_rate_data, $.extend(true, {}, Plugins.getFlotDefaults(), {
+			series: {
+				pie: {
+					show: true,
+					radius: 1,
+					label: {
+						show: true,
+					}
+				}
+			},
+			grid: {
+				hoverable: true
+			},
+			tooltip: true,
+			tooltipOpts: {
+				content: '%s: %p.0%', // show percentages, rounding to 2 decimal places
+				shifts: {
+					x: 20,
+					y: 0
+				}
+			}
+		}));
+		
+		<%
 	}
 	%>
-	
-	$.plot("#chart_category_rate", service_rate_data, $.extend(true, {}, Plugins.getFlotDefaults(), {
-	series: {
-		pie: {
-			show: true,
-			radius: 1,
-			label: {
-				show: true,
-			}
-		}
-	},
-	grid: {
-		hoverable: true
-	},
-	tooltip: true,
-	tooltipOpts: {
-		content: '%s: %p.0%', // show percentages, rounding to 2 decimal places
-		shifts: {
-			x: 20,
-			y: 0
-		}
-	}
-}));
 
 });
 
@@ -115,6 +115,14 @@ $(document).ready(function() {
 					
 					<div class="col-md-12">
 						<form class="form-inline" method="get">
+						
+						<%
+						if(!typeId.equals("category")){
+						%>
+							<select id="select_category" name="categoryId" class="select_flat select_flat-sm fcol2"></select>
+						<%
+						}
+						%>
 							<!-- <input type="button" class="btn btn-sm btn-warning" value="DAY"> 
 							<input type="button" class="btn btn-sm btn-default" value="WEEK">
 							<input type="button" class="btn btn-sm btn-default" value="MONTH">

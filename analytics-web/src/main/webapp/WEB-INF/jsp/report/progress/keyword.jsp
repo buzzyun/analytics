@@ -7,59 +7,14 @@
 <%
 String categoryId = request.getParameter("categoryId");
 List<SearchHitVO> list = (List<SearchHitVO>) request.getAttribute("list");
-
-if(list != null && list.size() > 0){
-	Calendar timeStart = SearchStatisticsProperties.parseTimeId(list.get(0).getTimeId());
-	Calendar timeFinish = SearchStatisticsProperties.parseTimeId(list.get(list.size()-1).getTimeId());
-	Calendar timeCurrent = null;
-	SearchHitVO vo = null;
-	
-	
-	for(int timeInx=0;timeStart.getTimeInMillis() <= timeFinish.getTimeInMillis(); timeInx++){
-		String timeId = SearchStatisticsProperties.getTimeId(timeStart, Calendar.DATE);
-		int hit = 0;
-		
-		if(timeCurrent == null) {
-			vo = list.get(timeInx);
-			timeCurrent = SearchStatisticsProperties.parseTimeId(vo.getTimeId()); 
-		}
-		
-		if(timeCurrent != null) {
-			timeStart.add(Calendar.DATE, 1);
-			long timeStartMillis = timeStart.getTimeInMillis();
-			long timeCurrentMillis = timeCurrent.getTimeInMillis();
-			if(timeStartMillis == timeCurrentMillis) {
-				hit = vo.getHit();
-				timeCurrent = null;
-			} else {
-				SearchHitVO newVO = new SearchHitVO();
-				newVO.setTimeId(timeId);
-				newVO.setHit(hit);
-				if(timeStartMillis < timeCurrentMillis) {
-					//목적일보다 작으므로 앞에 더해준다.
-					list.add(timeInx, newVO);
-				} else {
-					//목적일보타 크므로 뒤에 더해준다.
-					list.add(timeInx+1, newVO);
-				}
-			}
-		}
-	}
-}
-
 String keyword = request.getParameter("keyword");
-String timeFrom = request.getParameter("timeFrom");
-String timeTo = request.getParameter("timeTo");
+String timeFrom = (String) request.getAttribute("timeFrom");
+String timeTo = (String) request.getAttribute("timeTo");
 
 if(keyword == null){
 	keyword = "";
 }
-if(timeFrom == null){
-	timeFrom = "";
-}
-if(timeTo == null){
-	timeTo = "";
-}
+
 %>
 <c:set var="ROOT_PATH" value="../.." />
 
@@ -72,6 +27,10 @@ if(timeTo == null){
 		
 		fillCategoryList('${siteId}', $("#select_category"), '<%=categoryId %>');
 
+		<%
+		if(list != null){
+		%>
+		
 		// Sample Data
 		var d1 = [
 			<%
@@ -111,43 +70,47 @@ if(timeTo == null){
 		}];
 
 		$.plot("#chart_dashboard_main", data, $.extend(true, {}, Plugins.getFlotDefaults(), 
-			{
-				xaxis: {
-					ticks :ticks
+		{
+			xaxis: {
+				ticks :ticks
+			},
+			yaxis: {
+				ticks: 20,
+				min: 0,
+			},
+			series : {
+				lines : {
+					show: true,
+					fill : false,
+					lineWidth : 1.5
 				},
-				yaxis: {
-					ticks: 20,
-					min: 0,
+				points : {
+					show : true,
+					radius : 2.5,
+					lineWidth : 1.1
 				},
-				series : {
-					lines : {
-						show: true,
-						fill : false,
-						lineWidth : 1.5
-					},
-					points : {
-						show : true,
-						radius : 2.5,
-						lineWidth : 1.1
-					},
-					grow : {
-						active : true,
-						growings : [ {
-							stepMode : "maximum"
-						} ]
-					}
-				},
-				grid : {
-					hoverable : true,
-					clickable : true
-				},
-				tooltip : true,
-				tooltipOpts : {
-					content : '%s: %y'
+				grow : {
+					active : true,
+					growings : [ {
+						stepMode : "maximum"
+					} ]
 				}
-			}));
+			},
+			grid : {
+				hoverable : true,
+				clickable : true
+			},
+			tooltip : true,
+			tooltipOpts : {
+				content : '%s: %y'
+			}
+		}));
+		
+		<%
+		}
+		%>
 			
-		});
+	});
 </script>
 
 </head>

@@ -8,14 +8,9 @@
 String categoryId = request.getParameter("categoryId");
 List<SearchHitVO> list = (List<SearchHitVO>) request.getAttribute("list");
 
-String timeFrom = request.getParameter("timeFrom");
-String timeTo = request.getParameter("timeTo");
-if(timeFrom == null){
-	timeFrom = "";
-}
-if(timeTo == null){
-	timeTo = "";
-}
+String timeFrom = (String) request.getAttribute("timeFrom");
+String timeTo = (String) request.getAttribute("timeTo");
+
 %>
 <c:set var="ROOT_PATH" value="../.." />
 
@@ -28,35 +23,34 @@ if(timeTo == null){
 		
 		fillCategoryList('${siteId}', $("#select_category"), '<%=categoryId %>');
 
+		<%
+		if(list != null){
+		%>
 		// Sample Data
 		var d1 = [
 			<%
-			if(list != null){
-				for(int i=0;i<list.size();i++){
-					SearchHitVO vo = list.get(i);
-					if(i > 0){
-					%>,<%
-					}
-				%>
-				[ <%=i %>, <%=vo.getHit() %> ]
-				<%
+			for(int i=0;i<list.size();i++){
+				SearchHitVO vo = list.get(i);
+				if(i > 0){
+				%>,<%
 				}
+			%>
+			[ <%=i %>, <%=vo.getHit() %> ]
+			<%
 			}
 			%>
 		];
 		
 		var ticks = [
 			<%
-			if(list != null){
-				for(int i=0;i<list.size();i++){
-					SearchHitVO vo = list.get(i);
-					if(i > 0){
-					%>,<%
-					}
-				%>
-				[ <%=i %>, '<%=vo.getTimeId() %>' ]
-				<%
+			for(int i=0;i<list.size();i++){
+				SearchHitVO vo = list.get(i);
+				if(i > 0){
+				%>,<%
 				}
+			%>
+			[ <%=i %>, '<%=vo.getTimeId() %>' ]
+			<%
 			}
 			%>
 		];
@@ -101,9 +95,12 @@ if(timeTo == null){
 				tooltipOpts : {
 					content : '%s: %y'
 				}
-			}));
+		}));
+		<%
+		}
+		%>
 			
-		});
+	});
 </script>
 
 </head>

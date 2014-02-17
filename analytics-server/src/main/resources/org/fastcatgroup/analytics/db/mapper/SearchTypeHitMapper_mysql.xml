@@ -12,7 +12,7 @@
 			typeId varchar(32),
 			dtype varchar(32),
 			hit int,
-			primary key (categoryId, timeId, typeId)
+			primary key (categoryId, timeId, typeId, dtype)
 		) ENGINE=InnoDB;
 	</update>
 	

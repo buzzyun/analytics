@@ -1,17 +1,15 @@
 package org.fastcatgroup.analytics.http.action.service.keyword;
 
-import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
-import org.fastcatgroup.analytics.db.vo.RankKeywordVO;
+import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsService;
+import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
 import org.fastcatgroup.analytics.http.ActionMapping;
 import org.fastcatgroup.analytics.http.action.ActionRequest;
 import org.fastcatgroup.analytics.http.action.ActionResponse;
 import org.fastcatgroup.analytics.http.action.ServiceAction;
-import org.fastcatgroup.analytics.keyword.KeywordDictionary;
-import org.fastcatgroup.analytics.keyword.KeywordDictionary.KeywordDictionaryType;
-import org.fastcatgroup.analytics.keyword.KeywordService;
-import org.fastcatgroup.analytics.keyword.PopularKeywordDictionary;
 import org.fastcatgroup.analytics.service.ServiceManager;
 import org.fastcatgroup.analytics.util.ResponseWriter;
 
@@ -20,60 +18,55 @@ public class GetServicePopularKeywordAction extends ServiceAction {
 
 	@Override
 	public void doAction(ActionRequest request, ActionResponse response) throws Exception {
-		KeywordService keywordService = ServiceManager.getInstance().getService(KeywordService.class);
+		StatisticsService statisticsService = ServiceManager.getInstance().getService(StatisticsService.class);
 
 		writeHeader(response);
 		ResponseWriter responseWriter = getDefaultResponseWriter(response.getWriter());
 		responseWriter.object();
 
-		String type = request.getParameter("type");
-		String categoryId = request.getParameter("category");
+//		String type = request.getParameter("type");
+		String siteId = request.getParameter("siteId");
+		String categoryId = request.getParameter("categoryId");
+		String timeType = request.getParameter("timeType");
 		int interval = request.getIntParameter("interval", 1);
 		String errorMessage = null;
 
 		try {
-			KeywordDictionaryType keywordDictionaryType = KeywordDictionaryType.POPULAR_KEYWORD_REALTIME;
+			String timeId = null;
+			Calendar calendar = Calendar.getInstance();
+			List<RankKeyword> list = null;
+			if ("D".equalsIgnoreCase(timeType)) {
+				calendar.add(Calendar.DATE, -interval);
+				timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DATE);
+				list = statisticsService.getPopularKeywordList(siteId, categoryId, timeId);
+			} else if ("W".equalsIgnoreCase(timeType)) {
+				
+			} else if ("M".equalsIgnoreCase(timeType)) {
 			
-			if ("D".equalsIgnoreCase(type)) {
-				keywordDictionaryType = KeywordDictionaryType.POPULAR_KEYWORD_DAY;
-			} else if ("W".equalsIgnoreCase(type)) {
-				keywordDictionaryType = KeywordDictionaryType.POPULAR_KEYWORD_WEEK;
-			} else if ("M".equalsIgnoreCase(type)) {
-				keywordDictionaryType = KeywordDictionaryType.POPULAR_KEYWORD_MONTH;
 			}
-
-			responseWriter.key("category").value(categoryId);
-			responseWriter.key("type").value(keywordDictionaryType.name());
+			
+			responseWriter.key("siteId").value(siteId);
+			responseWriter.key("categoryId").value(categoryId);
+			responseWriter.key("timeType").value(timeType);
+			responseWriter.key("time").value(timeType);
 			
 			
-			KeywordDictionary keywordDictionary = keywordService.getKeywordDictionary(categoryId, keywordDictionaryType, interval);
-
-			PopularKeywordDictionary popularKeywordDictionary = (PopularKeywordDictionary) keywordDictionary;
-			if (popularKeywordDictionary != null) {
-
+			responseWriter.key("list").array();
+			if (list != null) {
 				
-				//FIXME 
-				
-				
-				
-				List<RankKeywordVO> keywordList = null;// popularKeywordDictionary.getKeywordList();
-				if (popularKeywordDictionary.getCreateTime() != null) {
-					responseWriter.key("time").value(new SimpleDateFormat("yyyy.MM.dd HH:mm").format(popularKeywordDictionary.getCreateTime()));
-				}
-				responseWriter.key("list").array();
-				for (RankKeywordVO vo : keywordList) {
+				for (RankKeyword vo : list) {
 					responseWriter.object();
-					responseWriter.key("word").value(vo.getKeyword());
 					responseWriter.key("rank").value(vo.getRank());
+					responseWriter.key("word").value(vo.getKeyword());
 					responseWriter.key("diffType").value(vo.getRankDiffType().name());
 					responseWriter.key("diff").value(vo.getRankDiff());
+					responseWriter.key("count").value(vo.getCount());
+					responseWriter.key("countDiff").value(vo.getCountDiff());
 					responseWriter.endObject();
 				}
-				responseWriter.endArray();
-
-			} else {
-				throw new Exception("Request popular keyword is not in service");
 			}
+			responseWriter.endArray();
+
 		} catch (Exception e) {
 			errorMessage = e.getMessage();
 		} finally {

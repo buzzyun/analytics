@@ -21,7 +21,7 @@ public class GetSericeRealtimePopularKeywordAction extends ServiceAction {
 		ResponseWriter responseWriter = getDefaultResponseWriter(response.getWriter());
 		responseWriter.object();
 
-		String type = request.getParameter("type");
+//		String type = request.getParameter("type");
 		String siteId = request.getParameter("siteId");
 		String categoryId = request.getParameter("categoryId");
 		String errorMessage = null;
@@ -30,10 +30,9 @@ public class GetSericeRealtimePopularKeywordAction extends ServiceAction {
 			StatisticsService statisticsService = ServiceManager.getInstance().getService(StatisticsService.class);
 			List<RankKeyword> list = statisticsService.getRealtimePopularKeywordList(siteId, categoryId);
 			
-			responseWriter.key("type").value(type);
+//			responseWriter.key("type").value(type);
 			responseWriter.key("siteId").value(siteId);
 			responseWriter.key("categoryId").value(categoryId);
-			
 			
 			responseWriter.key("list").array();
 			if (list != null) {

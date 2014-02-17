@@ -17,7 +17,8 @@ import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
 import org.fastcatgroup.analytics.db.mapper.RelateKeywordMapper;
-import org.fastcatgroup.analytics.db.mapper.RelateKeywordValueMapper;
+import org.fastcatgroup.analytics.db.mapper.SearchKeywordRankMapper;
+import org.fastcatgroup.analytics.db.vo.RankKeywordVO;
 import org.fastcatgroup.analytics.db.vo.RelateKeywordVO;
 import org.fastcatgroup.analytics.env.Environment;
 import org.fastcatgroup.analytics.env.SettingFileNames;
@@ -38,6 +39,7 @@ public class StatisticsService extends AbstractService {
 	private Map<String, CategoryStatistics> categoryStatisticsMap;
 
 	private Map<String, Map<String, List<RankKeyword>>> realtimePopularKeywordMap;
+	private Map<String, Map<String, Map<String, List<RankKeyword>>>> popularKeywordMap;
 
 	private Map<String, SiteSearchLogStatisticsModule> siteStatisticsModuleMap;
 
@@ -53,6 +55,8 @@ public class StatisticsService extends AbstractService {
 		}
 
 		realtimePopularKeywordMap = new ConcurrentHashMap<String, Map<String, List<RankKeyword>>>();
+		
+		popularKeywordMap = new ConcurrentHashMap<String, Map<String, Map<String, List<RankKeyword>>>>();
 
 		siteStatisticsModuleMap = new ConcurrentHashMap<String, SiteSearchLogStatisticsModule>();
 
@@ -141,13 +145,13 @@ public class StatisticsService extends AbstractService {
 	 * 실시간 인기검색어를 리턴한다.
 	 * */
 	public List<RankKeyword> getRealtimePopularKeywordList(String siteId, String categoryId) {
-		logger.debug("get realtime keyword. siteId:{} / categoryId:{}", siteId, categoryId);
+//		logger.debug("get realtime keyword. siteId:{} / categoryId:{}", siteId, categoryId);
 		Map<String, List<RankKeyword>> map = realtimePopularKeywordMap.get(siteId);
 		if (map != null) {
 			if (categoryId == null || categoryId.length() == 0) {
 				categoryId = "_root";
 			}
-			logger.debug("get realtime keyword map:{}", map);
+//			logger.debug("get realtime keyword map:{}", map);
 			return map.get(categoryId);
 		}
 		return null;
@@ -166,10 +170,10 @@ public class StatisticsService extends AbstractService {
 	}
 
 	public Map<String, List<String>> getRelateKeywordMap(String siteId) {
-		logger.debug("relateKeywordMap:{}", relateKeywordMap);
+//		logger.debug("relateKeywordMap:{}", relateKeywordMap);
 		Map<String, List<String>> map = relateKeywordMap.get(siteId);
 		if (map != null) {
-			logger.debug("get relative keyword map:{} [{}]", map);
+//			logger.debug("get relative keyword map:{} [{}]", map);
 			return map;
 		}
 		return null;
@@ -212,10 +216,6 @@ public class StatisticsService extends AbstractService {
 
 	@Override
 	protected boolean doStop() throws AnalyticsException {
-		// for (CategoryStatistics categoryStatistics : categoryStatisticsMap.values()) {
-		// categoryStatistics.close();
-		// }
-
 		for (SiteSearchLogStatisticsModule module : siteStatisticsModuleMap.values()) {
 			module.unload();
 		}
@@ -252,6 +252,73 @@ public class StatisticsService extends AbstractService {
 			module.addTypeLog(entries);
 		}
 
+	}
+
+	public void clearPopularKeywordList(){
+		popularKeywordMap.clear();
+	}
+	
+	public List<RankKeyword> getPopularKeywordList(String siteId, String categoryId, String timeId) {
+//		logger.debug("get keyword. siteId:{} / categoryId:{} / timeId:{}", siteId, categoryId, timeId);
+		Map<String, Map<String, List<RankKeyword>>> siteMap = popularKeywordMap.get(siteId);
+		List<RankKeyword> list = null;
+		if (siteMap != null) {
+			if (categoryId == null || categoryId.length() == 0) {
+				categoryId = "_root";
+			}
+//			logger.debug("get realtime keyword siteMap:{}", siteMap);
+			Map<String,List<RankKeyword>> timeMap = siteMap.get(categoryId);
+			
+			if(timeMap != null){
+				list = timeMap.get(timeId);
+			}
+		}
+		
+		if(list == null){
+			//디비 로딩 및 업데이트.
+			AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
+			MapperSession<SearchKeywordRankMapper> mapperSession = dbService.getMapperSession(SearchKeywordRankMapper.class);
+
+			try {
+				SearchKeywordRankMapper mapper = mapperSession.getMapper();
+				int length = 10;
+				list = new ArrayList<RankKeyword>(length);
+				List<RankKeywordVO> voList = mapper.getEntryList(siteId, categoryId, timeId, null, 0, 0, length);
+			
+				for(RankKeywordVO vo : voList){
+					RankKeyword keyword = new RankKeyword(vo.getKeyword(), vo.getRank(), vo.getCount());
+					keyword.setRankDiff(vo.getRankDiff());
+					keyword.setRankDiffType(vo.getRankDiffType());
+					list.add(keyword);
+				}
+				
+				logger.debug("## Update RankKeyword list {}:{}:{} > {}", siteId, categoryId, timeId, list);
+			
+			} catch (Exception e) {
+				logger.error("", e);
+			} finally {
+				if (mapperSession != null) {
+					mapperSession.closeSession();
+				}
+			}
+			
+			
+			if(siteMap == null){
+				siteMap = new HashMap<String, Map<String, List<RankKeyword>>>();
+				popularKeywordMap.put(siteId, siteMap);
+			}
+			
+			Map<String,List<RankKeyword>> timeMap = siteMap.get(categoryId);
+			
+			if(timeMap == null){
+				timeMap = new HashMap<String,List<RankKeyword>>();
+				siteMap.put(categoryId, timeMap);
+			}
+			
+			timeMap.put(timeId, list);
+			
+		}
+		return list;
 	}
 
 }

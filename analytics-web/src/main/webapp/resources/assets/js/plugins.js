@@ -304,7 +304,7 @@ var Plugins = function() {
 	 * Flot Defaults          *
 	 **************************/
 	var defaultPlotOptions = {
-		colors: [App.getLayoutColorCode('blue'), App.getLayoutColorCode('red'), App.getLayoutColorCode('green'), App.getLayoutColorCode('purple'), App.getLayoutColorCode('grey'), App.getLayoutColorCode('yellow')],
+		colors: [App.getLayoutColorCode('orange'), App.getLayoutColorCode('blue'), App.getLayoutColorCode('red'), App.getLayoutColorCode('green'), App.getLayoutColorCode('purple'), App.getLayoutColorCode('grey'), App.getLayoutColorCode('yellow')],
 		legend: {
 			show: true,
 			labelBoxBorderColor: "", // border color for the little label boxes

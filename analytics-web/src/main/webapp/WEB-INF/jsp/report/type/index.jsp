@@ -32,27 +32,29 @@ $(document).ready(function() {
 	
 	<%	
 	int totalCount = 0;
-	for(int i=0;i<list.size(); i++){
-		SearchTypeHitVO vo = list.get(i);
-		totalCount += vo.getHit();
-	}
-	for(int i=0;i<list.size(); i++){
-		SearchTypeHitVO vo = list.get(i);
-		float ratio = (((float)vo.getHit() / (float)totalCount) * 100.0f);
-		String ratioString = String.format("%.1f", ratio);
-		%>
-		service_rate_data[<%=i%>] = { label: "<%=vo.getDtype() %>", data: <%=ratioString %> };
-		<%
+	if(list != null){
+		for(int i=0;i<list.size(); i++){
+			SearchTypeHitVO vo = list.get(i);
+			totalCount += vo.getHit();
+		}
+		for(int i=0;i<list.size(); i++){
+			SearchTypeHitVO vo = list.get(i);
+			float ratio = (((float)vo.getHit() / (float)totalCount) * 100.0f);
+			String ratioString = String.format("%.1f", ratio);
+			%>
+			service_rate_data[<%=i%>] = { label: "<%=vo.getDtype() %>", data: <%=ratioString %> };
+			<%
+		}
 	}
 	%>
 	
-	$.plot("#chart_category_rate", service_rate_data, {
+	$.plot("#chart_category_rate", service_rate_data, $.extend(true, {}, Plugins.getFlotDefaults(), {
 	series: {
 		pie: {
 			show: true,
 			radius: 1,
 			label: {
-				show: true
+				show: true,
 			}
 		}
 	},
@@ -67,7 +69,7 @@ $(document).ready(function() {
 			y: 0
 		}
 	}
-});
+}));
 
 });
 
@@ -118,12 +120,12 @@ $(document).ready(function() {
 							<input type="button" class="btn btn-sm btn-default" value="MONTH">
 							<input type="button" class="btn btn-sm btn-default" value="YEAR"> -->
 							
-							<select name="timeType" class="select_flat select_flat-sm fcol1">
+							<!-- <select name="timeType" class="select_flat select_flat-sm fcol1">
 								<option value="D">Day</option>
 								<option value="W">Week</option>
 								<option value="M">Month</option>
 								<option value="Y">Year</option>
-							</select>
+							</select> -->
 							<input class="form-control fcol1-2 " size="16" type="text" name="timeFrom" value="<%=timeFrom %>" >
 							- <input class="form-control fcol1-2 " size="16" type="text" name="timeTo" value="<%=timeTo %>" >
 							

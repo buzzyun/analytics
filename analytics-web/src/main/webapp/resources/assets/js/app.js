@@ -11,7 +11,8 @@ var App = function() {
 	var isIE10 = false;
 	var responsiveHandlers = [];
 	var layoutColorCodes = {
-		'blue':   '#54728c',
+		'orange':   '#fbb450',
+		'blue':   '#4787ed',
 		'red':    '#e25856',
 		'green':  '#94B86E',
 		'purple': '#852b99',

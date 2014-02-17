@@ -11,6 +11,7 @@ import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.Categor
 import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig;
 import org.fastcatgroup.analytics.analysis.schedule.TimeSchedule;
 import org.fastcatgroup.analytics.analysis.task.DailySearchLogAnalyticsTask;
+import org.fastcatgroup.analytics.analysis.task.DailyTypeSearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.control.JobService;
 import org.fastcatgroup.analytics.http.ActionMapping;
 import org.fastcatgroup.analytics.http.action.ActionRequest;
@@ -48,12 +49,19 @@ public class DailySearchLogAnalyticsTaskRunAction extends ServiceAction {
 
 			}
 
+			/* 1. raw.log */
 			Calendar calendar = SearchStatisticsProperties.parseTimeId(timeId);
 			TimeSchedule schedule = new TimeSchedule(calendar.getTimeInMillis(), 0);
 			DailySearchLogAnalyticsTask task = new DailySearchLogAnalyticsTask(siteId, categoryIdList, schedule, 0);
 			task.setEnvironment(environment);
-
 			JobService.getInstance().offer(task);
+			
+			/* 2. type_raw.log */
+			TimeSchedule schedule2 = new TimeSchedule(calendar.getTimeInMillis(), 0);
+			DailyTypeSearchLogAnalyticsTask task2 = new DailyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule2, 0);
+			task2.setEnvironment(environment);
+			JobService.getInstance().offer(task2);
+			
 		} catch (Exception e) {
 			errorMessage = e.getMessage();
 		} finally {

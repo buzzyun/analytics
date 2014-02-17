@@ -37,6 +37,7 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 	ScheduledTaskRunner relateTaskRunner;
 	RollingRawLogger realtimeRawLogger;
 	DailyRawLogger dailyRawLogger;
+	DailyRawLogger dailyTypeRawLogger;
 	StatisticsService statisticsService;
 	List<String> categoryIdList;
 	
@@ -75,9 +76,12 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		}
 
 		String logFileName = "raw.log";
+		String typeLogFileName = "type_raw.log";
+		
 		realtimeRawLogger = new RollingRawLogger(realtimeKeywordBaseDir, siteId, logFileName);
 		dailyRawLogger = new DailyRawLogger(Calendar.getInstance(), dateKeywordBaseDir, siteId, logFileName);
-
+		dailyTypeRawLogger = new DailyRawLogger(Calendar.getInstance(), dateKeywordBaseDir, siteId, typeLogFileName);
+		
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
@@ -157,9 +161,12 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		return true;
 	}
 
-	public void log(String... data) {
+	public void addLog(String... data) {
 		realtimeRawLogger.log(data);
 		dailyRawLogger.log(data);
+	}
+	public void addTypeLog(String... data) {
+		dailyTypeRawLogger.log(data);
 	}
 
 	private File[] listCategoryDir(File dir) {

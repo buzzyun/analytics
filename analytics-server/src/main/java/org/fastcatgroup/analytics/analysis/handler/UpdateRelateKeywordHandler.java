@@ -72,23 +72,20 @@ public class UpdateRelateKeywordHandler extends ProcessHandler {
 							needToInsert = true;
 						}
 					}
-					
+					logger.debug("##needToInsert {} : {} : {}", needToInsert, keyword, value);
 					if(needToInsert){
 						RelateKeywordVO vo = mapper.getEntry(siteId, keyword);
 						
 						if (vo == null || vo.getId() == 0) {
 							//keyword 새로입력.
 							vo = new RelateKeywordVO(keyword, timestamp);
-
-							String valueList = vo.getValue();
-							valueList = valueList + ", " + value;
 							
 							mapper.putEntry(siteId, vo);
-							vmapper.putEntry(siteId, vo.getId(), valueList);
+							vmapper.putEntry(siteId, vo.getId(), value);
 							logger.debug("##Put relate {} / {} / {}", siteId, vo.getId(), value);
 						}else{
 							//업데이트..
-							
+							vmapper.putEntry(siteId, vo.getId(), value);
 							logger.debug("##Update relate {} / {} / {}", siteId, vo.getId(), value);
 						}
 					

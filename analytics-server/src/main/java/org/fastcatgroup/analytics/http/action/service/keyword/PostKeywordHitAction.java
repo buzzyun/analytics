@@ -40,17 +40,29 @@ public class PostKeywordHitAction extends ServiceAction {
 		if(type == null || type.trim().length() == 0 || siteId == null || siteId.trim().length() == 0 ){
 			return;
 		}
-		String categoryId = request.getParameter("categoryId");
-		if(categoryId == null){
-			categoryId = "";
-		}
-		String keyword = request.getParameter("keyword");
-		String prevKeyword = request.getParameter("prev");
+
 		String errorMessage = null;
-
 		try {
-			service.log(type, siteId, categoryId, keyword, prevKeyword);
+			/* 1. raw.log */
+			String categoryId = request.getParameter("categoryId");
+			if(categoryId == null){
+				categoryId = "";
+			}
+			String keyword = request.getParameter("keyword");
+			String prevKeyword = request.getParameter("prev");
+			String reponseTime = request.getParameter("resptime");
+			service.addLog(type, siteId, categoryId, keyword, prevKeyword, reponseTime);
 
+			/* 2. type_raw.log */
+			String typeCategory = categoryId;
+			String typePage = request.getParameter("page");
+			String typeSort = request.getParameter("sort");
+			String typeAge = request.getParameter("age");
+			String typeService = request.getParameter("service");
+			String typeLogin = request.getParameter("login");
+			String typeGender = request.getParameter("gender");
+			service.addTypeLog(type, siteId, categoryId, keyword, typeCategory, typePage, typeSort, typeAge, typeService, typeLogin, typeGender);
+			
 		} catch (Exception e) {
 			errorMessage = e.getMessage();
 		} finally {

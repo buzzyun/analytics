@@ -236,11 +236,20 @@ public class StatisticsService extends AbstractService {
 		return categoryStatisticsMap.get(categoryId);
 	}
 
-	public void log(String type, String siteId, String... entries) {
+	public void addLog(String type, String siteId, String... entries) {
 		// 현재 type은 사용되지 않음.
 		SiteSearchLogStatisticsModule module = siteStatisticsModuleMap.get(siteId);
 		if (module != null) {
-			module.log(entries);
+			module.addLog(entries);
+		}
+
+	}
+	
+	public void addTypeLog(String type, String siteId, String... entries) {
+		// 현재 type은 사용되지 않음.
+		SiteSearchLogStatisticsModule module = siteStatisticsModuleMap.get(siteId);
+		if (module != null) {
+			module.addTypeLog(entries);
 		}
 
 	}

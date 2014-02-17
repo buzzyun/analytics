@@ -1,31 +1,20 @@
 package org.fastcatgroup.analytics.web.controller;
 
-import java.util.List;
+import java.util.Calendar;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.CategoryConfig;
-import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig;
-import org.fastcatgroup.analytics.db.AnalyticsDBService;
-import org.fastcatgroup.analytics.db.MapperSession;
-import org.fastcatgroup.analytics.db.mapper.RelateKeywordMapper;
-import org.fastcatgroup.analytics.db.vo.RelateKeywordVO;
+import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.http.action.ActionRequest;
 import org.fastcatgroup.analytics.http.action.ActionResponse;
 import org.fastcatgroup.analytics.http.action.ServiceAction;
 import org.fastcatgroup.analytics.http.action.ServiceAction.Type;
+import org.fastcatgroup.analytics.http.action.service.management.DailySearchLogAnalyticsTaskRunAction;
+import org.fastcatgroup.analytics.http.action.service.management.RealtimeSearchLogAnalyticsTaskRunAction;
 import org.fastcatgroup.analytics.http.action.service.management.RelateSearchLogAnalyticsTaskRunAction;
-import org.fastcatgroup.analytics.service.ServiceManager;
-import org.jboss.netty.handler.codec.http.HttpRequest;
-import org.json.JSONObject;
-import org.json.JSONStringer;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -56,22 +45,25 @@ public class ConfigurationMainController extends AbstractController {
 		ServiceAction action = null;
 		
 		if("searchStatictics".equals(taskType)) {
-			
-			action = new RelateSearchLogAnalyticsTaskRunAction();
-			action.init(Type.json, request, response, null, null);
-			action.doAction(request, response);
-			
-			logger.debug("task done..");
-			
+			action = new DailySearchLogAnalyticsTaskRunAction();
 		} else if("relateKeyword".equals(taskType)) {
-			
+			action = new RelateSearchLogAnalyticsTaskRunAction();
 		} else if("realtimeKeyword".equals(taskType)) {
-			
-		} else {
-			
+			action = new RealtimeSearchLogAnalyticsTaskRunAction();
 		}
 		
+		if(action != null){
+			action.init(Type.json, request, response, null, null);
+			action.doAction(request, response);
+			logger.debug("task done..");
+		}
 		
+		if(timeId == null){
+			Calendar calendar = Calendar.getInstance();
+			calendar.add(Calendar.DATE, -1);
+			timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DATE);
+		}
+		mav.addObject("timeId", timeId);
 		return mav;
 	}
 }

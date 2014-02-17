@@ -8,6 +8,7 @@
 List<SiteCategoryConfig> siteCategoryList = (List<SiteCategoryConfig>) request.getAttribute("siteCategoryList");
 List<RankKeyword> rankList = (List<RankKeyword>) request.getAttribute("rankList");
 String categoryId = request.getParameter("categoryId");
+String timeId = (String) request.getAttribute("timeId");
 %>
 <c:set var="ROOT_PATH" value="../.." />
 
@@ -61,14 +62,15 @@ $(document).ready(function(){
 					
 					<div class="col-md-12">
 						<form class="form-inline" method="get" >
-							<select name="taskType" class="select_flat select_flat-sm fcol2">
+							<select name="taskType" class="select_flat select_flat-sm fcol2-1">
 								<option value="searchStatictics">Search Statistics</option>
 								<option value="relateKeyword">Relate Keyword</option>
+								<option value="realtimeKeyword">Realtime Popular Keyword</option>
 								<!-- <option value="W">Week</option>
 								<option value="M">Month</option>
 								<option value="Y">Year</option> -->
 							</select>
-							<input class="form-control fcol1-2 " size="16" type="text" name="timeId" value="" >
+							<input class="form-control fcol1-2 " size="16" type="text" name="timeId" value="<%=timeId %>" >
 							<input type="submit" class="btn btn-sm btn-primary" value="Run">
 						</form>
 					</div>

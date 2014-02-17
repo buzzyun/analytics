@@ -38,7 +38,9 @@ public class DailyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchLog
 		File logFile = new File(baseDir, "type_raw.log");
 		String encoding = SearchStatisticsProperties.encoding;
 		try {
-			logReader = new TypeSearchLogReader(logFile, encoding);
+			if(logFile.exists()){
+				logReader = new TypeSearchLogReader(logFile, encoding);
+			}
 		} catch (IOException e) {
 			logger.error("", e);
 		}

@@ -117,7 +117,7 @@ public class ActionRequest {
 		return queryString;
 	}
 
-	public Map prepareParameterMap() {
+	public Map<String, String> prepareParameterMap() {
 		if (parameterMap == null) {
 			parameterMap = new HashMap<String, String>();
 			if (queryString != null) {

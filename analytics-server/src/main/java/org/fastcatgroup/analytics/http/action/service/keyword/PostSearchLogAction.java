@@ -15,7 +15,7 @@ import org.fastcatgroup.analytics.util.ResponseWriter;
  * 검색시 이 액션을 호출하여 로그데이터를 기록한다.
  * 
  * */
-@ActionMapping("/service/log/search/post")
+@ActionMapping("/service/keyword/hit/post")
 public class PostSearchLogAction extends ServiceAction {
 
 	@Override

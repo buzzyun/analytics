@@ -26,8 +26,18 @@ public class ConfigurationMainController extends AbstractController {
 	public ModelAndView index(@PathVariable String siteId) {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("configuration/index");
+		
+		
 		return mav;
 	}
 	
-	
+	@RequestMapping("/management/run")
+	public ModelAndView run(@PathVariable String siteId, @RequestParam(required = false) String taskType, @RequestParam(required = false) String timeId) {
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("configuration/management/run");
+		
+		
+		return mav;
+	}
+
 }

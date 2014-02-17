@@ -14,15 +14,15 @@
 		<!--=== Navigation ===-->
 		<ul id="nav">
 			<%
-			boolean  lcatCurrent = "report".equals(lcat);
+			boolean  lcatCurrent = "management".equals(lcat);
 			%>
 			<li class="<%=lcatCurrent ? "current" :"" %>"><a href="javascript:void(0);"> <i
-					class="icon-bar-chart"></i> Keyword
+					class="icon-bar-chart"></i> Management
 			</a>
 				<ul class="sub-menu">
-					<li class="<%=(lcatCurrent && "relateKeyword".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/keyword/relate/index.html"/>">
-							<i class="icon-angle-right"></i> Relate Keyword 
+					<li class="<%=(lcatCurrent && "run".equals(mcat)) ? "current" : "" %>"><a
+						href="<c:url value="/${siteId}/configuration/management/run.html"/>">
+							<i class="icon-angle-right"></i> Run Statistics 
 					</a></li> 
 				</ul>
 			</li>

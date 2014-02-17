@@ -72,6 +72,10 @@ if(timeTo == null){
 		
 		fillCategoryList('${siteId}', $("#select_category"), '<%=categoryId %>');
 
+		<%
+		if(list != null){
+		%>
+		
 		// Sample Data
 		var d1 = [
 			<%
@@ -111,43 +115,47 @@ if(timeTo == null){
 		}];
 
 		$.plot("#chart_dashboard_main", data, $.extend(true, {}, Plugins.getFlotDefaults(), 
-			{
-				xaxis: {
-					ticks :ticks
+		{
+			xaxis: {
+				ticks :ticks
+			},
+			yaxis: {
+				ticks: 20,
+				min: 0,
+			},
+			series : {
+				lines : {
+					show: true,
+					fill : false,
+					lineWidth : 1.5
 				},
-				yaxis: {
-					ticks: 20,
-					min: 0,
+				points : {
+					show : true,
+					radius : 2.5,
+					lineWidth : 1.1
 				},
-				series : {
-					lines : {
-						show: true,
-						fill : false,
-						lineWidth : 1.5
-					},
-					points : {
-						show : true,
-						radius : 2.5,
-						lineWidth : 1.1
-					},
-					grow : {
-						active : true,
-						growings : [ {
-							stepMode : "maximum"
-						} ]
-					}
-				},
-				grid : {
-					hoverable : true,
-					clickable : true
-				},
-				tooltip : true,
-				tooltipOpts : {
-					content : '%s: %y'
+				grow : {
+					active : true,
+					growings : [ {
+						stepMode : "maximum"
+					} ]
 				}
-			}));
+			},
+			grid : {
+				hoverable : true,
+				clickable : true
+			},
+			tooltip : true,
+			tooltipOpts : {
+				content : '%s: %y'
+			}
+		}));
+		
+		<%
+		}
+		%>
 			
-		});
+	});
 </script>
 
 </head>

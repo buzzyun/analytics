@@ -28,35 +28,34 @@ if(timeTo == null){
 		
 		fillCategoryList('${siteId}', $("#select_category"), '<%=categoryId %>');
 
+		<%
+		if(list != null){
+		%>
 		// Sample Data
 		var d1 = [
 			<%
-			if(list != null){
-				for(int i=0;i<list.size();i++){
-					SearchHitVO vo = list.get(i);
-					if(i > 0){
-					%>,<%
-					}
-				%>
-				[ <%=i %>, <%=vo.getHit() %> ]
-				<%
+			for(int i=0;i<list.size();i++){
+				SearchHitVO vo = list.get(i);
+				if(i > 0){
+				%>,<%
 				}
+			%>
+			[ <%=i %>, <%=vo.getHit() %> ]
+			<%
 			}
 			%>
 		];
 		
 		var ticks = [
 			<%
-			if(list != null){
-				for(int i=0;i<list.size();i++){
-					SearchHitVO vo = list.get(i);
-					if(i > 0){
-					%>,<%
-					}
-				%>
-				[ <%=i %>, '<%=vo.getTimeId() %>' ]
-				<%
+			for(int i=0;i<list.size();i++){
+				SearchHitVO vo = list.get(i);
+				if(i > 0){
+				%>,<%
 				}
+			%>
+			[ <%=i %>, '<%=vo.getTimeId() %>' ]
+			<%
 			}
 			%>
 		];
@@ -101,9 +100,12 @@ if(timeTo == null){
 				tooltipOpts : {
 					content : '%s: %y'
 				}
-			}));
+		}));
+		<%
+		}
+		%>
 			
-		});
+	});
 </script>
 
 </head>

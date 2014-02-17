@@ -126,28 +126,5 @@ public class SearchProgressController extends AbstractController {
 		}
 		return mav;
 	}
-	
-	
-	//관심어추이.
-	@RequestMapping("/myKeyword")
-	public ModelAndView myKeyword(@PathVariable String siteId) {
-
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName("report/progress/myKeyword");
-		return mav;
-	}
-		
-	
-	//응답시간추이
-	@RequestMapping("/responseTime")
-	public ModelAndView responseTime(@PathVariable String siteId) {
-
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName("report/progress/responseTime");
-		return mav;
-	}
-	
-
-		
 
 }

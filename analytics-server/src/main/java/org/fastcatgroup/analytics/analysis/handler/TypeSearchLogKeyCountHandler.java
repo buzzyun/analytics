@@ -44,7 +44,7 @@ public class TypeSearchLogKeyCountHandler extends CategoryLogHandler<TypeSearchL
 					} else {
 						counter.increment();
 					}
-					logger.debug("##TypeSearchLogKeyCountHandler1 type-count > {}:{}", type, counter);
+					logger.debug("##TypeSearchLogKeyCountHandler1 type-count > {}:{} > {}:{}", categoryId, logData.categoryId(), type, counter);
 				}
 			} else if (categoryId.equals("_root")) {
 				// root는 모두다.
@@ -60,7 +60,7 @@ public class TypeSearchLogKeyCountHandler extends CategoryLogHandler<TypeSearchL
 					} else {
 						counter.increment();
 					}
-					logger.debug("##TypeSearchLogKeyCountHandler2 type-count > {}:{}", type, counter);
+					logger.debug("##TypeSearchLogKeyCountHandler2 type-count > {}:{} > {}:{}", categoryId, logData.categoryId(), type, counter);
 				}
 			}
 

@@ -8,14 +8,9 @@
 String categoryId = request.getParameter("categoryId");
 List<SearchHitVO> list = (List<SearchHitVO>) request.getAttribute("list");
 
-String timeFrom = request.getParameter("timeFrom");
-String timeTo = request.getParameter("timeTo");
-if(timeFrom == null){
-	timeFrom = "";
-}
-if(timeTo == null){
-	timeTo = "";
-}
+String timeFrom = (String) request.getAttribute("timeFrom");
+String timeTo = (String) request.getAttribute("timeTo");
+
 %>
 <c:set var="ROOT_PATH" value="../.." />
 

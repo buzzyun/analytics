@@ -34,57 +34,67 @@ public class SearchProgressController extends AbstractController {
 		try {
 			SearchHitMapper mapper = mapperSession.getMapper();
 			List<SearchHitVO> list = null;
-			if(timeFrom != null && timeTo != null){
+			
+			Calendar calendar = Calendar.getInstance();
+			calendar.add(Calendar.DATE, -1);
+			String defaultTimeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DATE);
+			if(timeFrom == null){
+				timeFrom = defaultTimeId;
+			}
+			if(timeTo == null){
+				timeTo = defaultTimeId;
+			}
 				
-				Calendar startTime = SearchStatisticsProperties.parseTimeId(timeFrom);
-				Calendar endTime = SearchStatisticsProperties.parseTimeId(timeTo);
-				
-				list = mapper.getEntryListBetween(siteId, categoryId, timeFrom, timeTo);
-				
-				if (list != null && list.size() > 0) {
-					Calendar timeCurrent = null;
-					SearchHitVO vo = null;
+			Calendar startTime = SearchStatisticsProperties.parseTimeId(timeFrom);
+			Calendar endTime = SearchStatisticsProperties.parseTimeId(timeTo);
+			
+			list = mapper.getEntryListBetween(siteId, categoryId, timeFrom, timeTo);
+			
+			if (list != null && list.size() > 0) {
+				Calendar timeCurrent = null;
+				SearchHitVO vo = null;
 
-					SearchHitVO newVO = null;
+				SearchHitVO newVO = null;
+				
+				for (int timeInx = 0; startTime.getTimeInMillis() <= endTime.getTimeInMillis(); timeInx++) {
+					String timeId = SearchStatisticsProperties.getTimeId(startTime, Calendar.DATE);
+					int hit = 0;
 					
-					for (int timeInx = 0; startTime.getTimeInMillis() <= endTime.getTimeInMillis(); timeInx++) {
-						String timeId = SearchStatisticsProperties.getTimeId(startTime, Calendar.DATE);
-						int hit = 0;
-						
-						if(list.size() > timeInx) {
+					if(list.size() > timeInx) {
 
-							vo = list.get(timeInx);
-							timeCurrent = SearchStatisticsProperties.parseTimeId(vo.getTimeId());
-	
-							long timeStartMillis = startTime.getTimeInMillis();
-							long timeCurrentMillis = timeCurrent.getTimeInMillis();
-	
-							if (timeStartMillis == timeCurrentMillis) {
-								hit = vo.getHit();
-								timeCurrent = null;
-							} else {
-								newVO = new SearchHitVO();
-								newVO.setTimeId(timeId);
-								newVO.setHit(hit);
-								if (timeStartMillis < timeCurrentMillis) {
-									// 목적일보다 작으므로 앞에 더해준다.
-									list.add(timeInx, newVO);
-								} else {
-									// 목적일보타 크므로 뒤에 더해준다.
-									list.add(timeInx + 1, newVO);
-								}
-							}
+						vo = list.get(timeInx);
+						timeCurrent = SearchStatisticsProperties.parseTimeId(vo.getTimeId());
+
+						long timeStartMillis = startTime.getTimeInMillis();
+						long timeCurrentMillis = timeCurrent.getTimeInMillis();
+
+						if (timeStartMillis == timeCurrentMillis) {
+							hit = vo.getHit();
+							timeCurrent = null;
 						} else {
 							newVO = new SearchHitVO();
 							newVO.setTimeId(timeId);
 							newVO.setHit(hit);
-							list.add(newVO);
+							if (timeStartMillis < timeCurrentMillis) {
+								// 목적일보다 작으므로 앞에 더해준다.
+								list.add(timeInx, newVO);
+							} else {
+								// 목적일보타 크므로 뒤에 더해준다.
+								list.add(timeInx + 1, newVO);
+							}
 						}
-						startTime.add(Calendar.DATE, 1);
+					} else {
+						newVO = new SearchHitVO();
+						newVO.setTimeId(timeId);
+						newVO.setHit(hit);
+						list.add(newVO);
 					}
+					startTime.add(Calendar.DATE, 1);
 				}
 			}
 			mav.addObject("categoryId", categoryId);
+			mav.addObject("timeFrom", timeFrom);
+			mav.addObject("timeTo", timeTo);
 			mav.addObject("list", list);
 			
 		} catch (Exception e) {
@@ -111,10 +121,70 @@ public class SearchProgressController extends AbstractController {
 		try {
 			SearchKeywordHitMapper mapper = mapperSession.getMapper();
 			List<SearchKeywordHitVO> list = null;
-			if(keyword != null && keyword.length() > 0 && timeFrom != null && timeTo != null){
-				list = mapper.getEntryListBetween(siteId, categoryId, keyword, timeFrom, timeTo);
+			
+			Calendar calendar = Calendar.getInstance();
+			calendar.add(Calendar.DATE, -1);
+			String defaultTimeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DATE);
+			if(timeFrom == null){
+				timeFrom = defaultTimeId;
 			}
+			if(timeTo == null){
+				timeTo = defaultTimeId;
+			}
+			
+			if(keyword != null && keyword.length() > 0){
+				Calendar startTime = SearchStatisticsProperties.parseTimeId(timeFrom);
+				Calendar endTime = SearchStatisticsProperties.parseTimeId(timeTo);
+				
+				list = mapper.getEntryListBetween(siteId, categoryId, keyword, timeFrom, timeTo);
+				
+				if (list != null && list.size() > 0) {
+					Calendar timeCurrent = null;
+					SearchKeywordHitVO vo = null;
+
+					SearchKeywordHitVO newVO = null;
+					
+					for (int timeInx = 0; startTime.getTimeInMillis() <= endTime.getTimeInMillis(); timeInx++) {
+						String timeId = SearchStatisticsProperties.getTimeId(startTime, Calendar.DATE);
+						int hit = 0;
+						
+						if(list.size() > timeInx) {
+
+							vo = list.get(timeInx);
+							timeCurrent = SearchStatisticsProperties.parseTimeId(vo.getTimeId());
+
+							long timeStartMillis = startTime.getTimeInMillis();
+							long timeCurrentMillis = timeCurrent.getTimeInMillis();
+
+							if (timeStartMillis == timeCurrentMillis) {
+								hit = vo.getHit();
+								timeCurrent = null;
+							} else {
+								newVO = new SearchKeywordHitVO();
+								newVO.setTimeId(timeId);
+								newVO.setHit(hit);
+								if (timeStartMillis < timeCurrentMillis) {
+									// 목적일보다 작으므로 앞에 더해준다.
+									list.add(timeInx, newVO);
+								} else {
+									// 목적일보타 크므로 뒤에 더해준다.
+									list.add(timeInx + 1, newVO);
+								}
+							}
+						} else {
+							newVO = new SearchKeywordHitVO();
+							newVO.setTimeId(timeId);
+							newVO.setHit(hit);
+							list.add(newVO);
+						}
+						startTime.add(Calendar.DATE, 1);
+					}
+				}
+			}
+			
 			mav.addObject("categoryId", categoryId);
+			mav.addObject("timeFrom", timeFrom);
+			mav.addObject("timeTo", timeTo);
 			mav.addObject("list", list);
 			
 		} catch (Exception e) {

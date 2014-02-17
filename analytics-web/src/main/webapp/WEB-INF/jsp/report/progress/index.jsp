@@ -3,9 +3,50 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="java.util.*" %>
 <%@ page import="org.fastcatgroup.analytics.db.vo.*" %>
+<%@ page import="org.fastcatgroup.analytics.analysis.SearchStatisticsProperties" %>
 <%
 String categoryId = request.getParameter("categoryId");
 List<SearchHitVO> list = (List<SearchHitVO>) request.getAttribute("list");
+
+if(list != null && list.size() > 0){
+	Calendar timeStart = SearchStatisticsProperties.parseTimeId(list.get(0).getTimeId());
+	Calendar timeFinish = SearchStatisticsProperties.parseTimeId(list.get(list.size()-1).getTimeId());
+	Calendar timeCurrent = null;
+	SearchHitVO vo = null;
+	
+	
+	for(int timeInx=0;timeStart.getTimeInMillis() <= timeFinish.getTimeInMillis(); timeInx++){
+		String timeId = SearchStatisticsProperties.getTimeId(timeStart, Calendar.DATE);
+		int hit = 0;
+		
+		if(timeCurrent == null) {
+			vo = list.get(timeInx);
+			timeCurrent = SearchStatisticsProperties.parseTimeId(vo.getTimeId()); 
+		}
+		
+		if(timeCurrent != null) {
+			timeStart.add(Calendar.DATE, 1);
+			long timeStartMillis = timeStart.getTimeInMillis();
+			long timeCurrentMillis = timeCurrent.getTimeInMillis();
+			if(timeStartMillis == timeCurrentMillis) {
+				hit = vo.getHit();
+				timeCurrent = null;
+			} else {
+				SearchHitVO newVO = new SearchHitVO();
+				newVO.setTimeId(timeId);
+				newVO.setHit(hit);
+				if(timeStartMillis < timeCurrentMillis) {
+					//목적일보다 작으므로 앞에 더해준다.
+					list.add(timeInx, newVO);
+				} else {
+					//목적일보타 크므로 뒤에 더해준다.
+					list.add(timeInx+1, newVO);
+				}
+			}
+		}
+	}
+}
+
 String timeFrom = request.getParameter("timeFrom");
 String timeTo = request.getParameter("timeTo");
 if(timeFrom == null){

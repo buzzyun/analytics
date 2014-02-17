@@ -29,32 +29,45 @@ $(document).ready(function() {
 	
 	//서비스별 Data
 	var service_rate_data = [];
-		service_rate_data[0] = { label: "컴퓨터", data: 50 };
-		service_rate_data[1] = { label: "노트북", data: 25 };
-		service_rate_data[2] = { label: "가전", data: 20 };
-		service_rate_data[3] = { label: "주변기기", data: 5 };
-		$.plot("#chart_category_rate", service_rate_data, $.extend(true, {}, Plugins.getFlotDefaults(), {
-		series: {
-			pie: {
-				show: true,
-				radius: 1,
-				label: {
-					show: true
-				}
-			}
-		},
-		grid: {
-			hoverable: true
-		},
-		tooltip: true,
-		tooltipOpts: {
-			content: '%p.0%, %s', // show percentages, rounding to 2 decimal places
-			shifts: {
-				x: 20,
-				y: 0
+	
+	<%	
+	int totalCount = 0;
+	for(int i=0;i<list.size(); i++){
+		SearchTypeHitVO vo = list.get(i);
+		totalCount += vo.getHit();
+	}
+	for(int i=0;i<list.size(); i++){
+		SearchTypeHitVO vo = list.get(i);
+		float ratio = (((float)vo.getHit() / (float)totalCount) * 100.0f);
+		String ratioString = String.format("%.1f", ratio);
+		%>
+		service_rate_data[<%=i%>] = { label: "<%=vo.getDtype() %>", data: <%=ratioString %> };
+		<%
+	}
+	%>
+	
+	$.plot("#chart_category_rate", service_rate_data, {
+	series: {
+		pie: {
+			show: true,
+			radius: 1,
+			label: {
+				show: true
 			}
 		}
-	}));
+	},
+	grid: {
+		hoverable: true
+	},
+	tooltip: true,
+	tooltipOpts: {
+		content: '%p.0%, %s', // show percentages, rounding to 2 decimal places
+		shifts: {
+			x: 20,
+			y: 0
+		}
+	}
+});
 
 });
 
@@ -157,22 +170,23 @@ $(document).ready(function() {
 									<table class="table table-striped table-bordered table-condensed">
 										<thead>
 											<tr>
-												<th>TIME</th>
-												<th>컴퓨터</th>
-												<th>노트북</th>
-												<th>가전</th>
-												<th>주변기기</th>
+												<th>Rank</th>
+												<th>Type</th>
+												<th>Hit Count</th>
+												<th>Ratio</th>
 											</tr>
 										</thead>
 										<tbody>
 											<%
 											for(int i=0;i<list.size(); i++){
 												SearchTypeHitVO vo = list.get(i);
+												float ratio = (((float)vo.getHit() / (float)totalCount) * 100.0f);
 											%>
 											<tr>
-											<td><%=vo.getTimeId() %></td>
+											<td><%=i + 1 %></td>
 											<td><%=vo.getDtype() %></td>
 											<td><%=vo.getHit() %></td>
+											<td><%=String.format("%.1f", ratio) %>%</td>
 											</tr>
 											<%
 											}
@@ -180,8 +194,8 @@ $(document).ready(function() {
 											<tr>
 												<td>Summary</td>
 												<td></td>
-												<td></td>
-												<td></td>
+												<td><%=totalCount %></td>
+												<td>100.0%</td>
 											</tr>
 										</tbody>
 									</table>

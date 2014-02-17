@@ -1,7 +1,9 @@
 package org.fastcatgroup.analytics.web.controller;
 
+import java.util.Calendar;
 import java.util.List;
 
+import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
 import org.fastcatgroup.analytics.db.mapper.SearchHitMapper;
@@ -33,7 +35,24 @@ public class SearchProgressController extends AbstractController {
 			SearchHitMapper mapper = mapperSession.getMapper();
 			List<SearchHitVO> list = null;
 			if(timeFrom != null && timeTo != null){
+				
+				Calendar startTime = SearchStatisticsProperties.parseTimeId(timeFrom);
+				Calendar endTime = SearchStatisticsProperties.parseTimeId(timeTo);
+				
 				list = mapper.getEntryListBetween(siteId, categoryId, timeFrom, timeTo);
+				
+				
+//				loop(startTime ~ endTime){
+//					vo= list.get(i);
+//					if(vo == null){
+//						//o으로..
+//						list.add(i, new Vo());
+//					}else{
+//						
+//					}
+//				}
+				
+				
 			}
 			mav.addObject("categoryId", categoryId);
 			mav.addObject("list", list);

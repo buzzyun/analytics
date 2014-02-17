@@ -1,6 +1,7 @@
 package org.fastcatgroup.analytics.db.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.fastcatgroup.analytics.db.vo.SearchTypeHitVO;
@@ -18,6 +19,9 @@ public interface SearchTypeHitMapper extends AnalyticsMapper {
 			@Param("timeId") String timeId, @Param("typeId") String typeId)	throws Exception;
 	
 	public List<SearchTypeHitVO> getEntryListBetween(@Param("siteId") String siteId, @Param("categoryId") String categoryId, 
+			@Param("typeId") String typeId, @Param("from") String from, @Param("to") String to)	throws Exception;
+	
+	public List<SearchTypeHitVO> getTypeCountListBetween(@Param("siteId") String siteId, @Param("categoryId") String categoryId, 
 			@Param("typeId") String typeId, @Param("from") String from, @Param("to") String to)	throws Exception;
 	
 	public int putEntry(@Param("siteId") String siteId, @Param("categoryId") String categoryId, 

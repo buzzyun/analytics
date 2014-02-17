@@ -86,6 +86,7 @@
 				and timeId &lt;= #{to}
 			</if>
 		</where>
+		order by timeId asc
 	</select>
 	
 	

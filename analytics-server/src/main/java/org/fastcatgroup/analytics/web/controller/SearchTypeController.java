@@ -28,11 +28,13 @@ public class SearchTypeController extends AbstractController {
 		AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
 		MapperSession<SearchTypeHitMapper> mapperSession = dbService.getMapperSession(SearchTypeHitMapper.class);
 		
+		
 		try {
 			SearchTypeHitMapper mapper = mapperSession.getMapper();
 			List<SearchTypeHitVO> list = null;
+			
 			if(timeFrom != null && timeTo != null){
-				list = mapper.getEntryListBetween(siteId, categoryId, typeId, timeFrom, timeTo);
+				list = mapper.getTypeCountListBetween(siteId, categoryId, typeId, timeFrom, timeTo);
 			}
 			mav.addObject("categoryId", categoryId);
 			mav.addObject("list", list);

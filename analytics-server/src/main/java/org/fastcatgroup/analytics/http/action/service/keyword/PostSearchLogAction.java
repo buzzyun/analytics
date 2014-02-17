@@ -15,8 +15,8 @@ import org.fastcatgroup.analytics.util.ResponseWriter;
  * 검색시 이 액션을 호출하여 로그데이터를 기록한다.
  * 
  * */
-@ActionMapping("/service/keyword/hit/post")
-public class PostKeywordHitAction extends ServiceAction {
+@ActionMapping("/service/log/search/post")
+public class PostSearchLogAction extends ServiceAction {
 
 	@Override
 	public void doAction(ActionRequest request, ActionResponse response) throws Exception {
@@ -51,16 +51,42 @@ public class PostKeywordHitAction extends ServiceAction {
 			String keyword = request.getParameter("keyword");
 			String prevKeyword = request.getParameter("prev");
 			String reponseTime = request.getParameter("resptime");
+			if(reponseTime == null || reponseTime.length() == 0){
+				reponseTime = "0";
+			}
 			service.addLog(type, siteId, categoryId, keyword, prevKeyword, reponseTime);
 
 			/* 2. type_raw.log */
-			String typeCategory = categoryId;
+			String typeCategory = request.getParameter("category");
 			String typePage = request.getParameter("page");
 			String typeSort = request.getParameter("sort");
 			String typeAge = request.getParameter("age");
 			String typeService = request.getParameter("service");
 			String typeLogin = request.getParameter("login");
 			String typeGender = request.getParameter("gender");
+			//- 로 전달시 해당 값은 통계에 넣지 않도록 함.
+			if(typeCategory == null || typeCategory.length() == 0){
+				typeCategory = "-";
+			}
+			if(typePage == null || typePage.length() == 0){
+				typePage = "-";
+			}
+			if(typeSort == null || typeSort.length() == 0){
+				typeSort = "-";
+			}
+			if(typeAge == null || typeAge.length() == 0){
+				typeAge = "-";
+			}
+			if(typeService == null || typeService.length() == 0){
+				typeService = "-";
+			}
+			if(typeLogin == null || typeLogin.length() == 0){
+				typeLogin = "-";
+			}
+			if(typeGender == null || typeGender.length() == 0){
+				typeGender = "-";
+			}
+			
 			service.addTypeLog(type, siteId, categoryId, keyword, typeCategory, typePage, typeSort, typeAge, typeService, typeLogin, typeGender);
 			
 		} catch (Exception e) {

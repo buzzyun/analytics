@@ -8,6 +8,12 @@ String categoryId = request.getParameter("categoryId");
 List<SearchHitVO> list = (List<SearchHitVO>) request.getAttribute("list");
 String timeFrom = request.getParameter("timeFrom");
 String timeTo = request.getParameter("timeTo");
+if(timeFrom == null){
+	timeFrom = "";
+}
+if(timeTo == null){
+	timeTo = "";
+}
 %>
 <c:set var="ROOT_PATH" value="../.." />
 
@@ -113,11 +119,11 @@ String timeTo = request.getParameter("timeTo");
 					<form method="get">
 						<div class="col-md-12 bottom-space">
 							<div class="form-inline">
-								<select id="select_category" class="select_flat select_flat-sm fcol2"></select>
-								<input type="button" class="btn btn-sm btn-warning" value="DAY"> 
+								<select id="select_category" name="categoryId" class="select_flat select_flat-sm fcol2"></select>
+								<!-- <input type="button" class="btn btn-sm btn-warning" value="DAY"> 
 								<input type="button" class="btn btn-sm btn-default" value="WEEK">
 								<input type="button" class="btn btn-sm btn-default" value="MONTH">
-								<input type="button" class="btn btn-sm btn-default" value="YEAR">
+								<input type="button" class="btn btn-sm btn-default" value="YEAR"> -->
 								<select name="timeType" class="select_flat select_flat-sm fcol1">
 									<option value="D">Day</option>
 									<option value="W">Week</option>

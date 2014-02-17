@@ -8,6 +8,12 @@ String categoryId = (String) request.getAttribute("categoryId");
 List<SearchTypeHitVO> list = (List<SearchTypeHitVO>) request.getAttribute("list");
 String timeFrom = request.getParameter("timeFrom");
 String timeTo = request.getParameter("timeTo");
+if(timeFrom == null){
+	timeFrom = "";
+}
+if(timeTo == null){
+	timeTo = "";
+}
 %>
 <c:set var="ROOT_PATH" value="../.." />
 
@@ -94,11 +100,10 @@ $(document).ready(function() {
 					
 					<div class="col-md-12">
 						<form class="form-inline" method="get">
-							<input type="button" class="btn btn-sm btn-warning" value="DAY"> 
+							<!-- <input type="button" class="btn btn-sm btn-warning" value="DAY"> 
 							<input type="button" class="btn btn-sm btn-default" value="WEEK">
-							<input
-								type="button" class="btn btn-sm btn-default" value="MONTH">
-							<input type="button" class="btn btn-sm btn-default" value="YEAR">
+							<input type="button" class="btn btn-sm btn-default" value="MONTH">
+							<input type="button" class="btn btn-sm btn-default" value="YEAR"> -->
 							
 							<select name="timeType" class="select_flat select_flat-sm fcol1">
 								<option value="D">Day</option>
@@ -141,7 +146,7 @@ $(document).ready(function() {
 					<div class="col-md-12">
 						<div class="widget box">
 							<div class="widget-header">
-								<h4>카테고리별사용비율</h4>
+								<h4>${typeId} ratio</h4>
 							</div>
 							<div class="widget-content">
 								<div id="chart_category_rate" class="chart"></div>

@@ -117,13 +117,14 @@ public class ActionRequest {
 		return queryString;
 	}
 
-	private void prepareParameterMap() {
+	public Map prepareParameterMap() {
 		if (parameterMap == null) {
 			parameterMap = new HashMap<String, String>();
 			if (queryString != null) {
 				parse();
 			}
 		}
+		return parameterMap;
 	}
 
 	private void parse() {

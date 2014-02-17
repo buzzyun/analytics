@@ -76,6 +76,7 @@ public class KeyCountLogSortHandler extends ProcessHandler {
 			if (rankFile.exists()) {
 				FileUtils.deleteQuietly(rankFile);
 			}
+			FileUtils.forceMkdir(rankFile.getParentFile());
 			rankFile.createNewFile();
 		}
 		return null;

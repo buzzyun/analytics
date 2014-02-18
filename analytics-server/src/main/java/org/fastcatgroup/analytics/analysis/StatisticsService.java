@@ -259,7 +259,7 @@ public class StatisticsService extends AbstractService {
 	}
 	
 	public List<RankKeyword> getPopularKeywordList(String siteId, String categoryId, String timeId) {
-//		logger.debug("get keyword. siteId:{} / categoryId:{} / timeId:{}", siteId, categoryId, timeId);
+		//logger.debug("get keyword. siteId:{} / categoryId:{} / timeId:{} / popularKeywordMap:{}", siteId, categoryId, timeId, popularKeywordMap);
 		Map<String, Map<String, List<RankKeyword>>> siteMap = popularKeywordMap.get(siteId);
 		List<RankKeyword> list = null;
 		if (siteMap != null) {

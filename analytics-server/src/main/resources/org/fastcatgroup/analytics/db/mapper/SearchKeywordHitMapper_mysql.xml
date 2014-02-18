@@ -123,7 +123,7 @@
 	</select>
 	
 	<insert id="putEntry" parameterType="map" useGeneratedKeys="true" >
-		insert into ${siteId}_hit_keyword 
+		insert ignore into ${siteId}_hit_keyword 
 		(categoryId, timeId, keyword, hit) values (#{categoryId}, #{timeId},#{keyword}, #{hit})
 	</insert>
 	

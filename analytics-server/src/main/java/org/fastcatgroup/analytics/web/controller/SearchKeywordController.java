@@ -78,8 +78,7 @@ public class SearchKeywordController extends AbstractController {
 	}
 
 	@RequestMapping("/relate/update")
-	@ResponseBody
-	public String addUpdateRelateKeyword(
+	public ModelAndView addUpdateRelateKeyword(
 			@PathVariable String siteId, 
 			@RequestParam("ID") String id,
 			@RequestParam("KEYWORD") String keyword, 
@@ -117,14 +116,14 @@ public class SearchKeywordController extends AbstractController {
 		}
 		JSONStringer s = new JSONStringer();
 		s.object().key("success").value(result).endObject();
-		return s.toString();
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("content", s.toString());
+		mav.setViewName("text");
+		return mav;
 	}
 	
 	@RequestMapping("/relate/apply")
-	@ResponseBody
-	public String applyRelateKeyword( 
-			@PathVariable String siteId
-			) {
+	public ModelAndView applyRelateKeyword(@PathVariable String siteId) {
 		boolean result = false;
 		
 		ServiceManager serviceManager = ServiceManager.getInstance();
@@ -178,7 +177,10 @@ public class SearchKeywordController extends AbstractController {
 		
 		JSONStringer s = new JSONStringer();
 		s.object().key("success").value(result).endObject();
-		return s.toString();
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("content", s.toString());
+		mav.setViewName("text");
+		return mav;
 	}
 
 	private boolean addKeywordData( String siteId, String id, String keyword, String value

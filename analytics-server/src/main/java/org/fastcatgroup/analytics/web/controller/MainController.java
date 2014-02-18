@@ -88,77 +88,13 @@ public class MainController extends AbstractController {
 		return mav;
 	}
 
-	/**
-	 * 검색엔진에 proxy로 호출해준다. &uri=/a/b/c&param1=1&param=2와 같이 파라미터를 전달받으면 재조합해서 uri로 호출한다. 
-	 * Get,Post모두 가능. 
-	 * */
 	@RequestMapping("/main/request")
-	@ResponseBody
-	public String request(HttpServletRequest request) throws Exception {
-
-		String uri = request.getParameter("uri");
-		String dataType = request.getParameter("dataType");
-		
-		//만약 ? 가 붙어있다면 제거한다.
-		int parameterStart = uri.indexOf('?');
-		if(parameterStart > 0){
-			uri = uri.substring(0, parameterStart);
-		}
-		
-		AbstractMethod abstractMethod = null;
-		if (request.getMethod().equalsIgnoreCase("GET")) {
-//			abstractMethod = httpGet(request.getSession(), uri);
-		}else if (request.getMethod().equalsIgnoreCase("POST")) {
-//			abstractMethod = httpPost(request.getSession(), uri);
-		}else{
-			//error
-			logger.error("Unknown http method >> {}", request.getMethod());
-		}
-		
-		Enumeration<String> enumeration = request.getParameterNames();
-		while (enumeration.hasMoreElements()) {
-			String key = enumeration.nextElement();
-			String value = request.getParameter(key);
-			//uri파라미터를 제외한 모든 파라미터를 재전달한다.
-			if(!key.equals("uri")){
-				abstractMethod.addParameter(key, value);
-			}
-		}
-		
-		if(dataType != null){
-			if(dataType.equalsIgnoreCase("text")){
-				return abstractMethod.requestText();
-			}else if(dataType.equalsIgnoreCase("xml")){ 
-				try {
-					//if you using XML Document object you'll get message below
-					//"Document: No DOCTYPE declaration, Root is [Element: ]]"
-					//so. use requestText method
-					String document = abstractMethod.requestText();
-					if(document == null){
-						return "";
-					}else{
-						return document;
-					}
-				} catch (Exception e) {
-					logger.error("", e);
-					return "";
-				}
-			}
-		}
-		
-		//default json
-		JSONObject result = null;
-		try {
-			result = abstractMethod.requestJSON();
-			if(result == null){
-				return "";
-			}else{
-				return result.toString();
-			}
-		} catch (Exception e) {
-			logger.error("", e);
-			return "";
-		}
+	public ModelAndView request(@RequestParam String uri, @RequestParam String dataType) throws Exception {
+		String content = uri + " : " + dataType;
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("content", content);
+		mav.setViewName("text");
+		return mav;
 		
 	}
 

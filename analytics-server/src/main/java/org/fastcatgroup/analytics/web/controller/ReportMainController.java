@@ -45,8 +45,7 @@ public class ReportMainController extends AbstractController {
 	}
 	
 	@RequestMapping("/categoryList")
-	@ResponseBody
-	public String getCategoryList(@PathVariable String siteId) {
+	public ModelAndView getCategoryList(@PathVariable String siteId) {
 		List<SiteCategoryConfig> siteCategoryList = getSiteCategoryListConfig();
 		JSONStringer s = new JSONStringer();
 		s.array();
@@ -60,6 +59,9 @@ public class ReportMainController extends AbstractController {
 			}
 		}
 		s.endArray();
-		return s.toString();
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("content", s.toString());
+		mav.setViewName("text");
+		return mav;
 	}
 }

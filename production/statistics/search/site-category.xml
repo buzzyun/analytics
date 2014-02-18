@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <site-category-list>
-    <site-category siteName="통합검색" siteId="total">
-        <category name="카테고리1" id="cat1"/>
-        <category name="카테고리2" id="cat2"/>
+    <site-category siteName="www.websqrd.com" siteId="www-websqrd">
+    	<category name="ALL" id="_root"/>
+        <category name="category1" id="cat1"/>
+        <category name="category2" id="cat2"/>
     </site-category>
+    <!-- <site-category siteName="mobile.websqrd.com" siteId="mobile-websqrd">
+    	<category name="ALL" id="_root"/>
+        <category name="category1" id="cat1"/>
+        <category name="category2" id="cat2"/>
+    </site-category> -->
+    <!-- <site-category siteName="shopping.websqrd.com" siteId="shopping-websqrd">
+    	<category name="ALL" id="_root"/>
+        <category name="category1" id="cat1"/>
+        <category name="category2" id="cat2"/>
+    </site-category> -->
 </site-category-list>

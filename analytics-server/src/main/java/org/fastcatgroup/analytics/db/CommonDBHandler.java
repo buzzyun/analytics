@@ -67,6 +67,10 @@ public class CommonDBHandler {
 			// poolPingEnabled
 			// poolPingConnectionsNotUsedFor
 			// ////////////////////////////////
+			driverProperties.setProperty("poolPingEnabled", "true");
+			driverProperties.setProperty("poolPingQuery", "select 1 from dual");
+			driverProperties.setProperty("poolMaximumIdleConnections", "0");
+			driverProperties.setProperty("poolPingConnectionsNotUsedFor", "3600");
 		}
 
 		String dbType = settings.getString("type");

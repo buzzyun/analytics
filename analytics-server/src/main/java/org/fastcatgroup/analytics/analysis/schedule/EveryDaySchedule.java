@@ -28,4 +28,9 @@ public class EveryDaySchedule extends Schedule {
 		scheduledTime = calendar.getTimeInMillis();
 	}
 
+	@Override
+	public long baseTime() {
+		return scheduledTime - 24 * 3600 * 1000; //통계 대상은 하루전으로. 
+	}
+
 }

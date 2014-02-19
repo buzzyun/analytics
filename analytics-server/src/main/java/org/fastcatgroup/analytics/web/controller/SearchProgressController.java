@@ -35,13 +35,16 @@ public class SearchProgressController extends AbstractController {
 			SearchHitMapper mapper = mapperSession.getMapper();
 			List<SearchHitVO> list = null;
 			
-			Calendar calendar = Calendar.getInstance();
-			calendar.add(Calendar.DATE, -1);
-			String defaultTimeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DATE);
 			if(timeFrom == null){
+				Calendar calendar = Calendar.getInstance();
+				calendar.add(Calendar.DATE, -7);
+				String defaultTimeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DATE);
 				timeFrom = defaultTimeId;
 			}
 			if(timeTo == null){
+				Calendar calendar = Calendar.getInstance();
+				calendar.add(Calendar.DATE, -1);
+				String defaultTimeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DATE);
 				timeTo = defaultTimeId;
 			}
 				
@@ -122,13 +125,16 @@ public class SearchProgressController extends AbstractController {
 			SearchKeywordHitMapper mapper = mapperSession.getMapper();
 			List<SearchKeywordHitVO> list = null;
 			
-			Calendar calendar = Calendar.getInstance();
-			calendar.add(Calendar.DATE, -1);
-			String defaultTimeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DATE);
 			if(timeFrom == null){
+				Calendar calendar = Calendar.getInstance();
+				calendar.add(Calendar.DATE, -7);
+				String defaultTimeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DATE);
 				timeFrom = defaultTimeId;
 			}
 			if(timeTo == null){
+				Calendar calendar = Calendar.getInstance();
+				calendar.add(Calendar.DATE, -1);
+				String defaultTimeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DATE);
 				timeTo = defaultTimeId;
 			}
 			

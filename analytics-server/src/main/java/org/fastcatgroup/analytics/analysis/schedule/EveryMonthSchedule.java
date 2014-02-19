@@ -19,5 +19,10 @@ public class EveryMonthSchedule extends Schedule {
 		//TODO scheduledTime 설정필요.
 				//scheduledTime =  
 	}
+	
+	@Override
+	public long baseTime() {
+		return scheduledTime - 24 * 3600 * 1000; //통계 대상은 하루전으로. 
+	}
 
 }

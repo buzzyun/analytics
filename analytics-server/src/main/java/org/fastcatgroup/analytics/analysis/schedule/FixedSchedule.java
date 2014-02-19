@@ -31,4 +31,9 @@ public class FixedSchedule extends Schedule {
 		}
 
 	}
+	
+	@Override
+	public long baseTime() {
+		return scheduledTime;
+	}
 }

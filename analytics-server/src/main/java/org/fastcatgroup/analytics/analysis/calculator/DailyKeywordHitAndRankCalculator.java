@@ -40,7 +40,7 @@ public class DailyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		File prevWorkingDir = new File(prevDir, categoryId);
 		
 		String timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DATE);
-		
+		int maxKeywordLength = SearchStatisticsProperties.maxKeywordLength;
 		int runKeySize = SearchStatisticsProperties.runKeySize;
 
 		String KEY_COUNT_FILENAME = "key-count.log";
@@ -50,7 +50,7 @@ public class DailyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
 		KeyCountRunEntryParser entryParser = new KeyCountRunEntryParser();
 		CategoryProcess<SearchLog> categoryProcess = new CategoryProcess<SearchLog>(categoryId);
-		SearchLogValidator logValidator = new SearchLogValidator(banWords);
+		SearchLogValidator logValidator = new SearchLogValidator(banWords, maxKeywordLength);
 		new SearchLogKeyCountHandler(categoryId, workingDir, KEY_COUNT_FILENAME, minimumHitCount, logValidator, entryParser).attachLogHandlerTo(categoryProcess);
 		
 		/* 0. 갯수를 db로 저장한다. */

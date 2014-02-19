@@ -49,13 +49,13 @@ public class RealtimePopularKeywordCalculator extends Calculator<SearchLog> {
 
 		File storeDir = new File(workingDir, "store");
 		String tmpLogFilename = "0.log";
-		
+		int maxKeywordLength = SearchStatisticsProperties.maxKeywordLength;
 		int realtimeSearchLogLimit = SearchStatisticsProperties.realtimeSearchLogLimit;
 		
 		logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
 		KeyCountRunEntryParser entryParser = new KeyCountRunEntryParser();
 		CategoryProcess<SearchLog> categoryProcess = new CategoryProcess<SearchLog>(categoryId);
-		SearchLogValidator logValidator = new SearchLogValidator(banWords);
+		SearchLogValidator logValidator = new SearchLogValidator(banWords, maxKeywordLength);
 		/* 1. store디렉토리에 기존 #.log를 shift하고 저장한다. */
 		new RealtimeSearchLogKeyCountHandler(categoryId, storeDir, tmpLogFilename, minimumHitCount, realtimeSearchLogLimit, logValidator, entryParser).attachLogHandlerTo(categoryProcess);
 		

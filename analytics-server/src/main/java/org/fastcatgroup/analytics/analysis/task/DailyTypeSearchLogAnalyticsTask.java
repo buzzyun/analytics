@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
 
+import org.fastcatgroup.analytics.analysis.DailyRawLogger;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.calculator.Calculator;
 import org.fastcatgroup.analytics.analysis.calculator.DailyTypeHitCalculator;
@@ -20,8 +21,11 @@ public class DailyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchLog
 
 	private static final long serialVersionUID = -1324147495414071499L;
 
-	public DailyTypeSearchLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
+	DailyRawLogger dailyTypeRawLogger;
+	
+	public DailyTypeSearchLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority, DailyRawLogger dailyTypeRawLogger) {
 		super(siteId, categoryIdList, schedule, priority);
+		this.dailyTypeRawLogger = dailyTypeRawLogger;
 	}
 
 	@Override
@@ -51,4 +55,10 @@ public class DailyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchLog
 		
 	}
 
+	@Override
+	protected void preProcess() {
+		if (dailyTypeRawLogger != null) {
+			dailyTypeRawLogger.rolling();
+		}
+	}
 }

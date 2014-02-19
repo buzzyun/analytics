@@ -116,11 +116,11 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		dailyTaskRunner = new ScheduledTaskRunner("daily-search-log-task-runner", JobService.getInstance(), environment);
 		// 일
 		Schedule dailySchedule1 = new EveryDaySchedule(0, delayInSeconds); //매일 0시.
-		DailySearchLogAnalyticsTask dailySearchLogAnalysisTask = new DailySearchLogAnalyticsTask(siteId, categoryIdList, dailySchedule1, 1);
+		DailySearchLogAnalyticsTask dailySearchLogAnalysisTask = new DailySearchLogAnalyticsTask(siteId, categoryIdList, dailySchedule1, 1, dailyRawLogger);
 		dailyTaskRunner.addTask(dailySearchLogAnalysisTask);
 		
 		Schedule dailySchedule2 = new EveryDaySchedule(0, delayInSeconds);
-		DailyTypeSearchLogAnalyticsTask dailyTypeSearchLogAnalyticsTask = new DailyTypeSearchLogAnalyticsTask(siteId, categoryIdList, dailySchedule2, 2);
+		DailyTypeSearchLogAnalyticsTask dailyTypeSearchLogAnalyticsTask = new DailyTypeSearchLogAnalyticsTask(siteId, categoryIdList, dailySchedule2, 2, dailyTypeRawLogger);
 		dailyTaskRunner.addTask(dailyTypeSearchLogAnalyticsTask);
 		
 		// 주

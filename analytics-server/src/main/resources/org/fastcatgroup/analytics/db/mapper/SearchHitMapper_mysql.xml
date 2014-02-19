@@ -11,7 +11,7 @@
 			timeId varchar(11),
 			hit int,
 			primary key (categoryId, timeId)
-		) ENGINE=InnoDB;
+		) ENGINE=InnoDB, CHARACTER SET=utf8 COLLATE utf8_unicode_ci;
 	</update>
 	
 	<select id="validateTable" parameterType="map" resultType="map">

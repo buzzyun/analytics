@@ -12,7 +12,7 @@
 			keyword varchar(128),
 			hit int,
 			primary key (categoryId, timeId, keyword)
-		) ENGINE=InnoDB;
+		) ENGINE=InnoDB, CHARACTER SET=utf8 COLLATE utf8_unicode_ci;
 	</update>
 	
 	<update id="createIndex" parameterType="map" >

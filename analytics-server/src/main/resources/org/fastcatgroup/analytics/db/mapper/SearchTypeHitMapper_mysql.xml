@@ -13,7 +13,7 @@
 			dtype varchar(32),
 			hit int,
 			primary key (categoryId, timeId, typeId, dtype)
-		) ENGINE=InnoDB;
+		) ENGINE=InnoDB, CHARACTER SET=utf8 COLLATE utf8_unicode_ci;
 	</update>
 	
 	<update id="createIndex" parameterType="map" >

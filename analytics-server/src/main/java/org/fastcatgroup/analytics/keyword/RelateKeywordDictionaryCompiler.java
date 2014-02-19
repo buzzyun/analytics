@@ -1,9 +1,11 @@
 package org.fastcatgroup.analytics.keyword;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -30,10 +32,11 @@ public class RelateKeywordDictionaryCompiler {
 	private static final String fileName = "relate_keyword.csv";
 	
 	public static Map<String, List<String>> compile(Environment env) {
+		return compile(env.homeFile());
+	}
+	public static Map<String, List<String>> compile(File home) {
 		
 		Map<String, List<String>> ret = new HashMap<String, List<String>>();
-		
-		File home = env.homeFile();
 		File dir = new File(home,"statistics");
 		File file = new File(dir, fileName);
 		
@@ -94,5 +97,28 @@ public class RelateKeywordDictionaryCompiler {
 			} catch (IOException ignore) { }
 		}
 		return ret;
+	}
+	
+	public static void main(String[] arg) throws Exception {
+		//File home = new File(arg[0]);
+		File home = new File("/home/websqrd/aaa");
+		Map<String, List<String>> dict = RelateKeywordDictionaryCompiler.compile(home);
+		BufferedWriter writer = new BufferedWriter(new FileWriter("/tmp/test.txt"));
+		for(String key : dict.keySet()) {
+			if(key.length() > 0) {
+				List<String> valueList = dict.get(key);
+				writer.append(key).append("\t");
+				StringBuilder sb = new StringBuilder();
+				for(String value : valueList) {
+					if(sb.length() > 0) {
+						sb.append(",");
+					}
+					sb.append(value);
+				}
+				writer.append(sb.toString()).write("\n");
+			}
+		}
+		writer.flush();
+		writer.close();
 	}
 }

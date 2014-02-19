@@ -10,6 +10,7 @@ String categoryId = (String) request.getAttribute("categoryId");
 
 int start = (Integer) request.getAttribute("start");
 int length = (Integer) request.getAttribute("length");
+int pageNo = (Integer) request.getAttribute("pageNo");
 
 String timeId = (String) request.getAttribute("timeId");
 int totalCount = (Integer) request.getAttribute("totalCount");
@@ -134,7 +135,7 @@ $(document).ready(function(){
 											RankKeywordVO vo = list.get(i);
 										%>
 										<tr>
-											<td><%=i+1 %></td>
+											<td><%=(pageNo -1) * length + i + 1 %></td>
 											<td><%=vo.getKeyword() %></td>
 											<td><%=vo.getCount() %></td>
 											<td><%=vo.getRankDiffType() %>
@@ -156,7 +157,7 @@ $(document).ready(function(){
 									<div class="col-md-12">
 									Rows 
 									<% if(list.size() > 0) { %>
-									<%=start %> - <%=start + list.size() - 1 %> of <%=totalCount %> 
+									<%=start + 1 %> - <%=start + list.size() %> of <%=totalCount %> 
 									<% } else { %>
 									Empty
 									<% } %>

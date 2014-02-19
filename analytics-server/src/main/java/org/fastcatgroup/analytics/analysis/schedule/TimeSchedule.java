@@ -10,4 +10,8 @@ public class TimeSchedule extends Schedule {
 	public void updateSchduleTime() {
 	}
 
+	@Override
+	public long baseTime() {
+		return scheduledTime; //실행과 동일 시간대.
+	}
 }

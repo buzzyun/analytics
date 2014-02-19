@@ -57,10 +57,11 @@ public abstract class AnalyticsTask<LogType extends LogData> extends Job impleme
 			
 			preProcess();
 			Calendar calendar = Calendar.getInstance();
-			calendar.setTimeInMillis(getScheduledTime());
+			calendar.setTimeInMillis(getBaseTime());
+			
 			prepare(calendar);
 			
-			logger.debug("### AnalysisTask Time > {}", new Date(calendar.getTimeInMillis()));
+			logger.debug("### AnalysisTask Run {} > {}", getClass().getSimpleName(), schedule);
 			
 			if (logReader != null) {
 				try {
@@ -110,6 +111,10 @@ public abstract class AnalyticsTask<LogType extends LogData> extends Job impleme
 
 	public long getScheduledTime() {
 		return schedule.scheduledTime();
+	}
+	
+	public long getBaseTime() {
+		return schedule.baseTime();
 	}
 
 	public long getDelayedScheduledTime() {

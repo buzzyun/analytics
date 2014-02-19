@@ -52,13 +52,13 @@ public class DailySearchLogAnalyticsTaskRunAction extends ServiceAction {
 			/* 1. raw.log */
 			Calendar calendar = SearchStatisticsProperties.parseTimeId(timeId);
 			TimeSchedule schedule = new TimeSchedule(calendar.getTimeInMillis(), 0);
-			DailySearchLogAnalyticsTask task = new DailySearchLogAnalyticsTask(siteId, categoryIdList, schedule, 0);
+			DailySearchLogAnalyticsTask task = new DailySearchLogAnalyticsTask(siteId, categoryIdList, schedule, 0, null);
 			task.setEnvironment(environment);
 			JobService.getInstance().offer(task);
 			
 			/* 2. type_raw.log */
 			TimeSchedule schedule2 = new TimeSchedule(calendar.getTimeInMillis(), 0);
-			DailyTypeSearchLogAnalyticsTask task2 = new DailyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule2, 0);
+			DailyTypeSearchLogAnalyticsTask task2 = new DailyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule2, 0, null);
 			task2.setEnvironment(environment);
 			JobService.getInstance().offer(task2);
 			

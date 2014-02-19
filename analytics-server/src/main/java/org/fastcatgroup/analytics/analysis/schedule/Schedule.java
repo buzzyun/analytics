@@ -1,8 +1,9 @@
 package org.fastcatgroup.analytics.analysis.schedule;
 
+import java.util.Date;
+
 
 public abstract class Schedule {
-	public static final int LAST_DAY_OF_MONTH = Integer.MAX_VALUE;
 	
 	protected long scheduledTime;
 	protected int delayInSeconds;
@@ -22,6 +23,13 @@ public abstract class Schedule {
 	public long delayedScheduledTime() {
 		return scheduledTime + delayInSeconds * 1000L;
 	}
+
+	//실행날짜와는 별개로 통계대상이 되는 시각.
+	public abstract long baseTime();
 	
+	@Override
+	public String toString(){
+		return getClass().getSimpleName() + " > " + new Date(scheduledTime) + " : " + new Date(baseTime());
+	}
 	
 }

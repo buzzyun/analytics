@@ -34,6 +34,12 @@ if(menuId.equals("all")){
 <head>
 <c:import url="${ROOT_PATH}/inc/header.jsp" />
 <script>
+
+function goPage(uri, pageNo){
+	var form = $("#pagenationForm");
+	form[0].pageNo.value=pageNo;
+	form.submit();
+}
 	
 $(document).ready(function(){
 	fillCategoryList('${siteId}', $("#select_category"), '<%=categoryId %>');
@@ -141,13 +147,43 @@ $(document).ready(function(){
 										%>
 									</tbody>
 								</table>
+								<%
+								
+								request.setAttribute("pageSize", 10);
+								
+								%>
+								<div class="table-footer">
+									<div class="col-md-12">
+									Rows 
+									<% if(list.size() > 0) { %>
+									<%=start %> - <%=start + list.size() - 1 %> of <%=totalCount %> 
+									<% } else { %>
+									Empty
+									<% } %>
+									
+									<jsp:include page="../../inc/pagenation.jsp" >
+									 	<jsp:param name="pageNo" value="${pageNo }"/>
+									 	<jsp:param name="totalSize" value="<%=totalCount %>" />
+										<jsp:param name="pageSize" value="${pageSize }" />
+										<jsp:param name="width" value="5" />
+										<jsp:param name="callback" value="goPage" />
+										<jsp:param name="requestURI" value="" />
+									 </jsp:include>
+									</div>
+								</div>	
 							</div>
 						</div>
-
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+	<form id="pagenationForm">
+	<input type="hidden" name="categoryId" value="${categoryId }"/>
+	<input type="hidden" name="timeId" value="${timeId }"/>
+	<input type="hidden" name="pageNo" value="${pageNo }"/>
+	<input type="hidden" name="start" value="${start }"/>
+	<input type="hidden" name="length" value="${length }"/>
+	</form>
 </body>
 </html>

@@ -41,47 +41,47 @@ public class SearchRankController extends AbstractController {
 
 	@RequestMapping("/searchKeywordAll")
 	public ModelAndView searchKeywordAll(@PathVariable String siteId, @RequestParam(defaultValue="_root") String categoryId
-			, @RequestParam(required=false) String timeId
+			, @RequestParam(required=false) String timeId, @RequestParam(defaultValue="1") int pageNo
 			, @RequestParam(defaultValue="0") int start, @RequestParam(defaultValue="10") int length) {
 		int rankDiffOver = 0;
 		String rankDiffType = null;
 		String menuId = "all";
-		return abstractSearchKeyword(siteId, categoryId, timeId, menuId, rankDiffType, rankDiffOver, start, length);
+		return abstractSearchKeyword(siteId, categoryId, timeId, menuId, rankDiffType, rankDiffOver, start, length, pageNo);
 	}
 	
 	@RequestMapping("/searchKeywordNew")
 	public ModelAndView searchKeywordNew(@PathVariable String siteId, @RequestParam(defaultValue="_root") String categoryId
-			, @RequestParam(required=false) String timeId
+			, @RequestParam(required=false) String timeId, @RequestParam(defaultValue="1") int pageNo
 			, @RequestParam(defaultValue="0") int start, @RequestParam(defaultValue="10") int length) {
 		
 		int rankDiffOver = 0;
 		String rankDiffType = RankDiffType.NEW.name();
 		String menuId = "new";
-		return abstractSearchKeyword(siteId, categoryId, timeId, menuId, rankDiffType, rankDiffOver, start, length);
+		return abstractSearchKeyword(siteId, categoryId, timeId, menuId, rankDiffType, rankDiffOver, start, length, pageNo);
 	}
 	
 	@RequestMapping("/searchKeywordHot")
 	public ModelAndView searchKeywordHot(@PathVariable String siteId, @RequestParam(defaultValue="_root") String categoryId
-			, @RequestParam(required=false) String timeId
+			, @RequestParam(required=false) String timeId, @RequestParam(defaultValue="1") int pageNo
 			, @RequestParam(defaultValue="0") int start, @RequestParam(defaultValue="10") int length) {
 		int rankDiffOver = 30;
 		String rankDiffType = RankDiffType.UP.name();
 		String menuId = "hot";
-		return abstractSearchKeyword(siteId, categoryId, timeId, menuId, rankDiffType, rankDiffOver, start, length);
+		return abstractSearchKeyword(siteId, categoryId, timeId, menuId, rankDiffType, rankDiffOver, start, length, pageNo);
 	}
 	
 	@RequestMapping("/searchKeywordDown")
 	public ModelAndView searchKeywordDown(@PathVariable String siteId, @RequestParam(defaultValue="_root") String categoryId
-			, @RequestParam(required=false) String timeId
+			, @RequestParam(required=false) String timeId, @RequestParam(defaultValue="1") int pageNo
 			, @RequestParam(defaultValue="0") int start, @RequestParam(defaultValue="10") int length) {
 		int rankDiffOver = 30;
 		String rankDiffType = RankDiffType.DN.name();
 		String menuId = "down";
-		return abstractSearchKeyword(siteId, categoryId, timeId, menuId, rankDiffType, rankDiffOver, start, length);
+		return abstractSearchKeyword(siteId, categoryId, timeId, menuId, rankDiffType, rankDiffOver, start, length, pageNo);
 	}
 	
 	public ModelAndView abstractSearchKeyword(String siteId, String categoryId, String timeId, String menuId
-			, String rankDiffType, int rankDiffOver, int start, int length) {
+			, String rankDiffType, int rankDiffOver, int start, int length, int pageNo) {
 		
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/rank/searchKeyword");
@@ -90,6 +90,8 @@ public class SearchRankController extends AbstractController {
 		MapperSession<SearchKeywordRankMapper> mapperSession = dbService.getMapperSession(SearchKeywordRankMapper.class);
 		try {
 			SearchKeywordRankMapper mapper = mapperSession.getMapper();
+			
+			start = (pageNo - 1) * length;
 			
 			if(timeId == null){
 				Calendar calendar = Calendar.getInstance();
@@ -100,9 +102,11 @@ public class SearchRankController extends AbstractController {
 			int totalCount = mapper.getCount(siteId, categoryId, timeId, rankDiffType, rankDiffOver);
 			List<RankKeywordVO> list = mapper.getEntryList(siteId, categoryId, timeId, rankDiffType, rankDiffOver, start, length);
 			
+			
 			mav.addObject("categoryId", categoryId);
 			mav.addObject("start", start);
 			mav.addObject("length", length);
+			mav.addObject("pageNo", pageNo);
 			mav.addObject("timeId", timeId);
 			mav.addObject("categoryId", categoryId);
 			mav.addObject("menuId", menuId);

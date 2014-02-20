@@ -107,7 +107,7 @@ public class StatisticsService extends AbstractService {
 				logger.debug("### Load relate keyword site {} > {}", siteId, mapper);
 				int count = mapper.getCount(siteId);
 				logger.debug("### Load relate keyword site count {}", count);
-				List<RelateKeywordVO> list = mapper.getEntryList(siteId);
+				List<RelateKeywordVO> list = mapper.getEntryList(siteId,0,0);
 				if (list != null) {
 					for (RelateKeywordVO vo : list) {
 						String keyword = vo.getKeyword();

@@ -162,14 +162,14 @@ function gorelateApplyPage(pageNo){
 			<div class="col-md-12">
 			Rows 
 			<% if(entryList.size() > 0) { %>
-			<%=start + 1 %> - <%=start + entryList.size() %> of <%=totalSize %>
+			<%=start + 1 %> - <%=start + entryList.size() %> of <%=filteredSize %> <% if(filteredSize != totalSize) {%> (filtered from <%=totalSize %> total entries)<% } %>
 			<% } else { %>
 			Empty
 			<% } %>
 			
 			<jsp:include page="../../inc/pagenation.jsp" >
 			 	<jsp:param name="pageNo" value="${pageNo }"/>
-			 	<jsp:param name="totalSize" value="<%=totalSize %>" />
+			 	<jsp:param name="totalSize" value="<%=filteredSize %>" />
 				<jsp:param name="pageSize" value="${pageSize }" />
 				<jsp:param name="width" value="5" />
 				<jsp:param name="callback" value="gorelateKeywordPage" />

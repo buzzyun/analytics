@@ -53,31 +53,32 @@ function showUpdateUserModal(id){
 function update(formId, mode) {
 	
 	var form = $("#"+formId)[0];
-	
-	$.ajax({
-		url:"update-user.html",
-		type:"POST",
-		data:{
-			mode:mode
-			,id:form.id.value
-			,name:form.name.value
-			,userId:form.userId.value
-			,email:form.email.value
-			,sms:form.sms.value
-			,password:form.password.value
-		}, dataType:"json",
-		success:function(response) {
-			if(response["success"] == "true") {
-	 			noty({text: "update successed", layout:"topRight", timeout: 2000});
-	 			setTimeout(function() {
-					location.href = location.href;
-	 			},2000);
-			} else {
-	 			noty({text: "update failed !", layout:"topRight", timeout: 5000});
+	if($("#"+formId).valid()) {
+		$.ajax({
+			url:"update-user.html",
+			type:"POST",
+			data:{
+				mode:mode
+				,id:form.id.value
+				,name:form.name.value
+				,userId:form.userId.value
+				,email:form.email.value
+				,sms:form.sms.value
+				,password:form.password.value
+			}, dataType:"json",
+			success:function(response) {
+				if(response["success"] == "true") {
+		 			noty({text: "update successed", layout:"topRight", timeout: 2000});
+		 			setTimeout(function() {
+						location.href = location.href;
+		 			},2000);
+				} else {
+		 			noty({text: "update failed !", layout:"topRight", timeout: 5000});
+				}
+			}, fail:function(response){
 			}
-		}, fail:function(response){
-		}
-	});
+		});
+	}
 }
 
 </script>

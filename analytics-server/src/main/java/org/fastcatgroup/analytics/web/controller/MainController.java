@@ -35,12 +35,13 @@ public class MainController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/doLogin", method = { RequestMethod.GET, RequestMethod.POST })
-	public ModelAndView doLogin(HttpSession session, @RequestParam("host") String host, @RequestParam("userId") String userId,
-			@RequestParam("password") String password, @RequestParam(value="redirect", required=false) String redirect) throws Exception {
+	public ModelAndView doLogin(HttpSession session
+			, @RequestParam("userId") String userId, @RequestParam("password") String password
+			, @RequestParam(value="redirect", required=false) String redirect) throws Exception {
 
-		logger.debug("login {} : {}:{}", host, userId, password);
+		logger.debug("login {}:{}", userId, password);
 
-		if (host == null || host.length() == 0 || userId.length() == 0 || password.length() == 0) {
+		if (userId.length() == 0 || password.length() == 0) {
 			ModelAndView mav = new ModelAndView();
 			mav.setViewName("redirect:login.html");
 			return mav;

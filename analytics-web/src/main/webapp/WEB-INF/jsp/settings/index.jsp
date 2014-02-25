@@ -55,7 +55,7 @@ function update(formId, mode) {
 	var form = $("#"+formId);
 	
 	var valid = false;
-	
+
 	if(mode == "delete") { 
 		valid = true; 
 	} else {
@@ -78,10 +78,7 @@ function update(formId, mode) {
 			}, dataType:"json",
 			success:function(response) {
 				if(response["success"] == "true") {
-		 			noty({text: "update successed", layout:"topRight", timeout: 2000});
-		 			setTimeout(function() {
-						location.href = location.href;
-		 			},2000);
+					location.href = location.href;
 				} else {
 		 			noty({text: "update failed !", layout:"topRight", timeout: 5000});
 				}

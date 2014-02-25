@@ -23,16 +23,9 @@ import org.springframework.web.servlet.ModelAndView;
 public class AccountController extends AbstractController {
 	
 	@RequestMapping("/settings/index")
-	public ModelAndView index(HttpSession session) {
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("redirect:/settings/user.html");
-		return modelAndView;
-	}
-
-	@RequestMapping("/settings/user")
 	public ModelAndView user(HttpSession session) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("/settings/user");
+		modelAndView.setViewName("/settings/index");
 		
 		AnalyticsDBService analyticsDBService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
 		MapperSession<UserAccountMapper> mapperSession = null;

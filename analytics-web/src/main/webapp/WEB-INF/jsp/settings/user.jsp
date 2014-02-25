@@ -52,8 +52,18 @@ function showUpdateUserModal(id){
 
 function update(formId, mode) {
 	
-	var form = $("#"+formId)[0];
-	if($("#"+formId).valid()) {
+	var form = $("#"+formId);
+	
+	var valid = false;
+	
+	if(mode == "delete") { 
+		valid = true; 
+	} else {
+		valid = form.valid();
+	}
+	form = form[0];
+	
+	if(valid) {
 		$.ajax({
 			url:"update-user.html",
 			type:"POST",

@@ -35,7 +35,7 @@ $(document).ready(function(){
 			<c:if test="${not empty siteId}">
 				<li class="<%="report".equals(menuType) ? "active" : ""%>"><a href="<c:url value="/${siteId}/report/index.html"/>"> Report </a></li>
 				<li class="<%="configuration".equals(menuType) ? "active" : ""%>"><a href="<c:url value="/${siteId}/configuration/index.html"/>"> Configuration </a></li>
-		    </c:if>
+			</c:if>
 					
 					
 			
@@ -46,15 +46,30 @@ $(document).ready(function(){
 		<!-- Top Right Menu -->
 		<ul class="nav navbar-nav navbar-right">
 		
+			<li><a id="settingButton" href="<c:url value="/settings/index.html"/>" data-toggle="tooltip" data-placement="bottom" title="Settings"> <i class="icon-cog"></i>
+			</a></li>
+		
+			<li class="dropdown user"><a href="#" class="dropdown-toggle"
+				data-toggle="dropdown"> <!--<img alt="" src="assets/img/avatar1_small.jpg" />-->
+					<i class="icon-male"></i> <span class="username">${_userName}</span> <i
+					class="icon-caret-down small"></i>
+			</a>
+				<ul class="dropdown-menu">
+					<li><a href="<c:url value="/main/profile.html"/>"><i class="icon-user"></i>
+							My Profile</a></li>
+					<li><a href="<c:url value="/main/logout.html" />"><i class="icon-key"></i> Log Out</a></li>
+				</ul>
+			</li>
+		
 			<li class="dropdown user"><a href="#" class="dropdown-toggle"
 				data-toggle="dropdown">
 					<c:choose>
-					    <c:when test="${empty siteId}">
-					        Choose Site 
-					    </c:when>
-					    <c:otherwise>
-					       <i class="icon-globe"></i> <span class="username">${_siteName}</span> 
-					    </c:otherwise>
+						<c:when test="${empty siteId}">
+							Choose Site 
+						</c:when>
+						<c:otherwise>
+						   <i class="icon-globe"></i> <span class="username">${_siteName}</span> 
+						</c:otherwise>
 					</c:choose>
 					<i class="icon-caret-down small"></i>
 			</a>

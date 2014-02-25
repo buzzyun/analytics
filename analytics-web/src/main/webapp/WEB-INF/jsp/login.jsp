@@ -42,6 +42,7 @@ $(document).ready(function(){
 							action="<c:url value="/doLogin.html"/>" method="post">
 							<input type="hidden" name="redirect" value="<%=redirect %>" />
 							<!-- Input Fields -->
+							<!--
 							<div class="form-group">
 								<div class="input-icon">
 									<i class="icon-globe"></i> <input type="text" name="host"
@@ -49,6 +50,7 @@ $(document).ready(function(){
 										autofocus="autofocus" value="localhost:8090"/>
 								</div>
 							</div>
+							-->
 							<div class="form-group">
 								<div class="input-icon">
 									<i class="icon-user"></i> <input type="text" name="userId"

@@ -60,7 +60,7 @@
   padding-bottom: 15px;
   margin:0 auto;
 }
-.login .box .content table td.left {width: 200px; background: url(../img/fastcat-cat.png) 0px 100% no-repeat; background-position: left top;}
+.login .box .content table td.left {width: 200px; height: 200px; background: url(../img/fastcat-cat.png) 0px 100% no-repeat; background-position: left top;}
 .login .box .content table td.right {width: 300px; }
 
 .login .box form {

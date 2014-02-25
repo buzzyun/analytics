@@ -1,7 +1,6 @@
 package org.fastcatgroup.analytics.web;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +11,6 @@ import javax.servlet.http.HttpSession;
 import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig;
 import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig;
-import org.fastcatgroup.analytics.db.vo.UserAccountVO;
 import org.fastcatgroup.analytics.service.ServiceManager;
 import org.fastcatgroup.analytics.web.controller.MainController;
 import org.slf4j.Logger;
@@ -31,15 +29,31 @@ public class MainInterceptor extends HandlerInterceptorAdapter {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
 		HttpSession session = request.getSession();
-		String userId = null;
 		
 		if(session.getAttribute(MainController.USER_ID) == null) {
-			String contextPath = request.getContextPath();
-			response.sendRedirect(contextPath+"/login.html");
+			checkLoginRedirect(request, response);
+			return false;
 		}
 		return true;
 	}
 
+	private void checkLoginRedirect(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String loginURL = request.getContextPath() + "/login.html";
+		String method = request.getMethod();
+		if(method.equalsIgnoreCase("GET")){
+			String target = request.getRequestURL().toString();
+			String queryString = request.getQueryString();
+			if(queryString != null && queryString.length() > 0){
+				target += ("?" + queryString);
+			}
+			loginURL += ( "?redirect=" + target);
+			logger.debug("REDIRECT >> {}, target = {}", method, target);
+			logger.debug("RedirectURL >> {}", loginURL);
+		}
+		
+		response.sendRedirect(loginURL);
+	}
+	
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
 		

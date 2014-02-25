@@ -1,16 +1,20 @@
 package org.fastcatgroup.analytics.web;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig;
 import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig;
+import org.fastcatgroup.analytics.db.vo.UserAccountVO;
 import org.fastcatgroup.analytics.service.ServiceManager;
+import org.fastcatgroup.analytics.web.controller.MainController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerMapping;
@@ -26,6 +30,13 @@ public class MainInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
+		HttpSession session = request.getSession();
+		String userId = null;
+		
+		if(session.getAttribute(MainController.USER_ID) == null) {
+			String contextPath = request.getContextPath();
+			response.sendRedirect(contextPath+"/login.html");
+		}
 		return true;
 	}
 
@@ -38,7 +49,6 @@ public class MainInterceptor extends HandlerInterceptorAdapter {
 		}else if(uri.contains("/configuration/")){
 			modelAndView.addObject("_menuType", "configuration");
 		}
-		
 		
 		Map<String, Object> pathVariables = (Map<String, Object>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
 		String currentSiteId = (String) pathVariables.get("siteId");
@@ -57,6 +67,8 @@ public class MainInterceptor extends HandlerInterceptorAdapter {
 			}
 		}
 		
+		logger.debug("siteList:{}", siteList);
+		
 		modelAndView.addObject("_siteList", siteList);
 
 		if (currentSiteId != null) {
@@ -65,9 +77,7 @@ public class MainInterceptor extends HandlerInterceptorAdapter {
 					modelAndView.addObject("_siteName", el[1]);
 				}
 			}
-
 		}
-
 	}
 	//
 	// @Override

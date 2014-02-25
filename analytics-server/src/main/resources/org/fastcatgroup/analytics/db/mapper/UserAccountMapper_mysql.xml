@@ -7,7 +7,7 @@
 
 	<update id="createTable">
 		create table UserAccount (
-			id int GENERATED ALWAYS AS IDENTITY,
+			id int not null auto_increment,
 			name varchar(30),
 			userId varchar(30),
 			password varchar(200),

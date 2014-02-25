@@ -16,7 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class MainController extends AbstractController {
-
+	
 	public static final String USER_ID = "_USERID";
 	public static final String USER_NAME = "_USERNAME";
 	
@@ -118,5 +118,4 @@ public class MainController extends AbstractController {
 		return mav;
 		
 	}
-
 }

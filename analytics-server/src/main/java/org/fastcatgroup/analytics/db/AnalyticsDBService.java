@@ -26,6 +26,7 @@ import org.fastcatgroup.analytics.db.mapper.SearchKeywordHitMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchKeywordRankMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchTypeHitMapper;
 import org.fastcatgroup.analytics.db.mapper.UserAccountMapper;
+import org.fastcatgroup.analytics.db.vo.UserAccountVO;
 import org.fastcatgroup.analytics.env.Environment;
 import org.fastcatgroup.analytics.env.Settings;
 import org.fastcatgroup.analytics.exception.AnalyticsException;
@@ -120,7 +121,11 @@ public class AnalyticsDBService extends AbstractDBService {
 						logger.debug("create index {}, {}", siteId, clazz.getSimpleName());
 						managedMapper.createIndex(siteId);
 						mapperSession.commit();
-
+						
+						if(managedMapper instanceof UserAccountMapper) {
+							UserAccountMapper mapper = (UserAccountMapper)managedMapper;
+							mapper.putEntry(new UserAccountVO(UserAccountVO.ADMIN_USER_NAME, UserAccountVO.ADMIN_USER_ID, "1111", "", ""));
+						}
 					} catch (Exception e2) {
 						logger.error("", e2);
 					}
@@ -128,8 +133,6 @@ public class AnalyticsDBService extends AbstractDBService {
 
 			}
 			mapperSession.closeSession();
-			
-
 		}
 
 	}

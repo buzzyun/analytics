@@ -1,5 +1,6 @@
 package org.fastcatgroup.analytics.web.controller;
 
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.List;
 
@@ -53,10 +54,10 @@ public class AccountController extends AbstractController {
 	}
 	
 	@RequestMapping("/settings/get-user")
-	@ResponseBody
-	public void getUser(HttpServletResponse response, @RequestParam("id") int id ) throws Exception {
-		
-		Writer writer = response.getWriter();
+	public ModelAndView getUser(@RequestParam("id") int id ) throws Exception {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("text");
+		Writer writer = new StringWriter();
 		ResponseWriter responseWriter = getDefaultResponseWriter(writer);
 		
 		AnalyticsDBService analyticsDBService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
@@ -82,22 +83,23 @@ public class AccountController extends AbstractController {
 				try { mapperSession.closeSession(); } catch (Exception e) { }
 			}
 		}
+		
+		modelAndView.addObject("content",writer.toString());
+		
+		return modelAndView;
 	}
 	
 	@RequestMapping("/settings/update-user")
-	@ResponseBody
-	public void updateUser(HttpServletResponse response
-			, @RequestParam("mode") String mode
+	public ModelAndView updateUser( @RequestParam("mode") String mode
 			, @RequestParam("id") Integer id 
 			, @RequestParam("name") String name
 			, @RequestParam("userId") String userId
 			, @RequestParam("email") String email
 			, @RequestParam("sms") String sms
-			, @RequestParam("password") String password
-			, @RequestParam("confirmPassword") String confirm
-			
-			) throws Exception {
-		Writer writer = response.getWriter();
+			, @RequestParam("password") String password ) throws Exception {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("text");
+		Writer writer = new StringWriter();
 		ResponseWriter responseWriter = getDefaultResponseWriter(writer);
 		
 		AnalyticsDBService analyticsDBService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
@@ -118,13 +120,16 @@ public class AccountController extends AbstractController {
 				if(id!=null) {
 					entry = mapper.getEntry(id);
 					if(entry!=null) {
-						if (password == null || "".equals(password) || !password.equals(confirm)) {
+						if (password == null || "".equals(password)) {
 							doChangePassword = true;
 						}
+						updateMode = "update";
 					} else {
 						updateMode = "insert";
 					}
-				} else {
+				}
+				
+				if(entry == null) {
 					entry = new UserAccountVO();
 					entry.id = id;
 					updateMode = "insert";
@@ -160,7 +165,10 @@ public class AccountController extends AbstractController {
 			if(mapperSession!=null) {
 				try { mapperSession.closeSession(); } catch (Exception e) { }
 			}
+			responseWriter.done();
 		}
-		responseWriter.done();
+		
+		modelAndView.addObject("content", writer.toString());
+		return modelAndView;
 	}
 }

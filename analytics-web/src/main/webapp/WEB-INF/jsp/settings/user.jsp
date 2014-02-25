@@ -52,30 +52,30 @@ function showUpdateUserModal(id){
 
 function update(formId, mode) {
 	
-	var form = $(formId)[0];
+	var form = $("#"+formId)[0];
 	
 	$.ajax({
 		url:"update-user.html",
 		type:"POST",
 		data:{
-			id: id
-			},
-		dataType:"json",
+			mode:mode
+			,id:form.id.value
+			,name:form.name.value
+			,userId:form.userId.value
+			,email:form.email.value
+			,sms:form.sms.value
+			,password:form.password.value
+		}, dataType:"json",
 		success:function(response) {
-			var id = response["id"];
-			var userName = response["name"];
-			var userId = response["userId"];
-			var email = response["email"];
-			var sms = response["sms"];
-			console.log("response>", response);
- 			$("div#userEdit input[name|=name]").val(userName);
- 			$("div#userEdit input[name|=id]").val(id);
- 			$("div#userEdit input[name|=userId]").val(userId);
- 			$("div#userEdit input[name|=email]").val(email);
- 			$("div#userEdit input[name|=sms]").val(sms);
-			$("#userEdit").modal({show: true, backdrop: 'static'});
+			if(response["success"] == "true") {
+	 			noty({text: "update successed", layout:"topRight", timeout: 2000});
+	 			setTimeout(function() {
+					location.href = location.href;
+	 			},2000);
+			} else {
+	 			noty({text: "update failed !", layout:"topRight", timeout: 5000});
+			}
 		}, fail:function(response){
- 			noty({text: "Can't submit data error : ["+response+"] error", layout:"topRight", timeout: 5000});
 		}
 	});
 }
@@ -214,7 +214,7 @@ function update(formId, mode) {
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-					<button type="button" class="btn btn-primary" onclick="updateUsingProxy('new-user-form','update')">Create User</button>
+					<button type="button" class="btn btn-primary" onclick="update('new-user-form','update')">Create User</button>
 				</div>
 			</div>
 			<!-- /.modal-content -->
@@ -269,9 +269,9 @@ function update(formId, mode) {
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-danger pull-left" onclick="updateUsingProxy('update-user-form','delete')">Remove</button>
+					<button type="button" class="btn btn-danger pull-left" onclick="update('update-user-form','delete')">Remove</button>
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-					<button type="button" class="btn btn-primary" onclick="updateUsingProxy('update-user-form','update')">Save changes</button>
+					<button type="button" class="btn btn-primary" onclick="update('update-user-form','update')">Save changes</button>
 				</div>
 			</div>
 			<!-- /.modal-content -->

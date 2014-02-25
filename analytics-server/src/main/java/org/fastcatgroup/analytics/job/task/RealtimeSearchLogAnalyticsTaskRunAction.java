@@ -1,4 +1,4 @@
-package org.fastcatgroup.analytics.http.action.service.management;
+package org.fastcatgroup.analytics.job.task;
 
 import java.util.ArrayList;
 import java.util.List;

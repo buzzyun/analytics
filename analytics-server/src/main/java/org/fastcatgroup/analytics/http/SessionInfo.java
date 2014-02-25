@@ -1,15 +1,15 @@
 package org.fastcatgroup.analytics.http;
 
-import java.util.Map;
+import org.fastcatgroup.analytics.db.vo.UserAccountVO;
 
 public class SessionInfo {
-	
+
 	private String userId;
-	private Map<ActionAuthority, ActionAuthorityLevel> authorityMap;
-	
-	public SessionInfo(String userId, Map<ActionAuthority, ActionAuthorityLevel> authorityMap){
+	private Object info;
+
+	public SessionInfo(String userId, Object info) {
 		this.userId = userId;
-		this.authorityMap = authorityMap;
+		this.info = info;
 	}
 
 	public String getUserId() {
@@ -20,26 +20,12 @@ public class SessionInfo {
 		this.userId = userId;
 	}
 
-	public Map<ActionAuthority, ActionAuthorityLevel> getAuthorityMap() {
-		return authorityMap;
-	}
-
-	public void setAuthorityMap(Map<ActionAuthority, ActionAuthorityLevel> authorityMap) {
-		this.authorityMap = authorityMap;
-	}
-	
-	public boolean hasAuthority(ActionAuthority actionAuthority, ActionAuthorityLevel actionAuthorityLevel){
-		if(actionAuthority == null || actionAuthorityLevel == null){
+	public boolean isAdmin() {
+		if (info != null) {
+			return UserAccountVO.TYPE_ADMIN.equals(info.toString());
+		} else {
 			return false;
 		}
-		
-		ActionAuthorityLevel groupAuthoritylevel = authorityMap.get(actionAuthority);
-		if(groupAuthoritylevel != null){
-			return groupAuthoritylevel.isLargerThan(actionAuthorityLevel);
-		}
-		
-		//if authority is not defined, it has no authority.
-		return false;
 	}
-	
+
 }

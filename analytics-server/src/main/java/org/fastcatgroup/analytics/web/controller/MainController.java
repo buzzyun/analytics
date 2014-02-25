@@ -1,23 +1,25 @@
 package org.fastcatgroup.analytics.web.controller;
 
-import java.util.Enumeration;
-
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.fastcatgroup.analytics.db.AnalyticsDBService;
+import org.fastcatgroup.analytics.db.MapperSession;
+import org.fastcatgroup.analytics.db.mapper.UserAccountMapper;
+import org.fastcatgroup.analytics.db.vo.UserAccountVO;
+import org.fastcatgroup.analytics.service.ServiceManager;
 import org.fastcatgroup.analytics.web.http.ResponseHttpClient;
-import org.fastcatgroup.analytics.web.http.ResponseHttpClient.AbstractMethod;
-import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class MainController extends AbstractController {
 
+	public static final String USER_ID = "_USERID";
+	public static final String USER_NAME = "_USERNAME";
+	
 	@RequestMapping("/index")
 	public ModelAndView index(HttpSession session) throws Exception {
 		ModelAndView mav = new ModelAndView();
@@ -44,7 +46,26 @@ public class MainController extends AbstractController {
 			return mav;
 		}
 
-		//TODO
+		AnalyticsDBService analyticsDBService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
+		MapperSession<UserAccountMapper> mapperSession = analyticsDBService.getMapperSession(UserAccountMapper.class);
+		UserAccountMapper mapper = mapperSession.getMapper();
+		UserAccountVO account = mapper.getEntryByUserId(userId);
+		if (account.isEqualsEncryptedPassword(password)) {
+			// 로그인이 올바를 경우 메인 화면으로 이동한다.
+			ModelAndView mav = new ModelAndView();
+			if(redirect != null && redirect.length() > 0){
+				mav.setViewName("redirect:"+redirect);
+			}else{
+				// 로그인되었다면 바로 start.html로 간다.
+				mav.setViewName("redirect:main/start.html");	
+			}
+			
+			//session에 로그인 정보를 담는다.
+			session.setAttribute(USER_ID, userId);
+			session.setAttribute(USER_NAME, account.name);
+			
+			return mav;
+		}
 
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("login");

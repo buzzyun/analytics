@@ -4,13 +4,13 @@ import java.util.Calendar;
 import java.util.Map;
 
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.control.JobService;
 import org.fastcatgroup.analytics.http.action.ActionRequest;
 import org.fastcatgroup.analytics.http.action.ActionResponse;
 import org.fastcatgroup.analytics.http.action.ServiceAction;
 import org.fastcatgroup.analytics.http.action.ServiceAction.Type;
-import org.fastcatgroup.analytics.http.action.service.management.DailySearchLogAnalyticsTaskRunAction;
-import org.fastcatgroup.analytics.http.action.service.management.RealtimeSearchLogAnalyticsTaskRunAction;
-import org.fastcatgroup.analytics.http.action.service.management.RelateSearchLogAnalyticsTaskRunAction;
+import org.fastcatgroup.analytics.job.Job;
+import org.fastcatgroup.analytics.job.task.DailySearchLogAnalyticsTaskRunJob;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,27 +35,14 @@ public class ConfigurationMainController extends AbstractController {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("configuration/management/run");
 		
-		ActionRequest request = new ActionRequest(null, null);
-		ActionResponse response = new ActionResponse();
-		response.init();
-		Map<String, String> parameterMap = request.prepareParameterMap();
-		parameterMap.put("siteId", siteId);
-		parameterMap.put("timeId", timeId);
-		
-		ServiceAction action = null;
 		
 		if("searchStatictics".equals(taskType)) {
-			action = new DailySearchLogAnalyticsTaskRunAction();
+			Job job = new DailySearchLogAnalyticsTaskRunJob(siteId, timeId);
+			JobService.getInstance().offer(job);	
 		} else if("relateKeyword".equals(taskType)) {
-			action = new RelateSearchLogAnalyticsTaskRunAction();
+//			action = new RelateSearchLogAnalyticsTaskRunAction();
 		} else if("realtimeKeyword".equals(taskType)) {
-			action = new RealtimeSearchLogAnalyticsTaskRunAction();
-		}
-		
-		if(action != null){
-			action.init(Type.json, request, response, null, null);
-			action.doAction(request, response);
-			logger.debug("task done..");
+//			action = new RealtimeSearchLogAnalyticsTaskRunAction();
 		}
 		
 		if(timeId == null){

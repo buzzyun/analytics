@@ -1,4 +1,4 @@
-package org.fastcatgroup.analytics.http.action.service.management;
+package org.fastcatgroup.analytics.job.task;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -10,8 +10,7 @@ import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig;
 import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.CategoryConfig;
 import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig;
 import org.fastcatgroup.analytics.analysis.schedule.TimeSchedule;
-import org.fastcatgroup.analytics.analysis.task.DailySearchLogAnalyticsTask;
-import org.fastcatgroup.analytics.analysis.task.DailyTypeSearchLogAnalyticsTask;
+import org.fastcatgroup.analytics.analysis.task.RelateSearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.control.JobService;
 import org.fastcatgroup.analytics.http.ActionMapping;
 import org.fastcatgroup.analytics.http.action.ActionRequest;
@@ -20,8 +19,8 @@ import org.fastcatgroup.analytics.http.action.ServiceAction;
 import org.fastcatgroup.analytics.service.ServiceManager;
 import org.fastcatgroup.analytics.util.ResponseWriter;
 
-@ActionMapping("/management/run/daily-search-log-analytics-task")
-public class DailySearchLogAnalyticsTaskRunAction extends ServiceAction {
+@ActionMapping("/management/run/relate-search-log-analytics-task")
+public class RelateSearchLogAnalyticsTaskRunAction extends ServiceAction {
 
 	@Override
 	public void doAction(ActionRequest request, ActionResponse response) throws Exception {
@@ -49,18 +48,12 @@ public class DailySearchLogAnalyticsTaskRunAction extends ServiceAction {
 
 			}
 
-			/* 1. raw.log */
+			/* 연관어. */
 			Calendar calendar = SearchStatisticsProperties.parseTimeId(timeId);
 			TimeSchedule schedule = new TimeSchedule(calendar.getTimeInMillis(), 0);
-			DailySearchLogAnalyticsTask task = new DailySearchLogAnalyticsTask(siteId, categoryIdList, schedule, 0, null);
+			RelateSearchLogAnalyticsTask task = new RelateSearchLogAnalyticsTask(siteId, categoryIdList, schedule, 0);
 			task.setEnvironment(environment);
 			JobService.getInstance().offer(task);
-			
-			/* 2. type_raw.log */
-			TimeSchedule schedule2 = new TimeSchedule(calendar.getTimeInMillis(), 0);
-			DailyTypeSearchLogAnalyticsTask task2 = new DailyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule2, 0, null);
-			task2.setEnvironment(environment);
-			JobService.getInstance().offer(task2);
 			
 		} catch (Exception e) {
 			errorMessage = e.getMessage();

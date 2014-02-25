@@ -3,14 +3,20 @@ package org.fastcatgroup.analytics.http;
 /**
  * */
 public enum ActionAuthorityLevel {
-	NONE, READABLE, WRITABLE;
+	USER, ADMIN;
 	
 	public boolean isLargerThan(ActionAuthorityLevel level){
-		if(level == WRITABLE){
-			return this == WRITABLE;
-		}else if(level == READABLE){
-			return this == WRITABLE || this == READABLE;
+		//admin은 무조건 가능.
+		if(level == ADMIN){
+			return true;
 		}
-		return this != NONE;
+		
+		//user는 user허용 일때만 가능 
+		if(level == USER){
+			return this == USER;
+		}
+		
+		return false;
+		
 	}
 }

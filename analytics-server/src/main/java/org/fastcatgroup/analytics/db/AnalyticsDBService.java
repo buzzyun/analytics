@@ -25,6 +25,7 @@ import org.fastcatgroup.analytics.db.mapper.SearchHitMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchKeywordHitMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchKeywordRankMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchTypeHitMapper;
+import org.fastcatgroup.analytics.db.mapper.UserAccountMapper;
 import org.fastcatgroup.analytics.env.Environment;
 import org.fastcatgroup.analytics.env.Settings;
 import org.fastcatgroup.analytics.exception.AnalyticsException;
@@ -43,7 +44,9 @@ public class AnalyticsDBService extends AbstractDBService {
 		, RelateKeywordMapper.class
 		, RelateKeywordValueMapper.class
 		, SearchTypeHitMapper.class
-		, SearchKeywordRankMapper.class };
+		, SearchKeywordRankMapper.class 
+		, UserAccountMapper.class
+	};
 
 	public AnalyticsDBService(Environment environment, Settings settings, ServiceManager serviceManager) {
 		super(environment, settings, serviceManager);

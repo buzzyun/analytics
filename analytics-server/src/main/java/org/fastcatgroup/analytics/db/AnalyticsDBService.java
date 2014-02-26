@@ -34,8 +34,6 @@ import org.fastcatgroup.analytics.service.ServiceManager;
 
 public class AnalyticsDBService extends AbstractDBService {
 
-	protected static AnalyticsDBService instance;
-
 	String[] rankList;
 	String[] typeList;
 

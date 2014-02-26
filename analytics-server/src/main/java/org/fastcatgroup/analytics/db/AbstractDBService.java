@@ -28,8 +28,6 @@ public abstract class AbstractDBService extends AbstractService {
 	protected CommonDBHandler dbHandler;
 	
 	private Class<?>[] mapperList;
-	private Properties driverProperties;
-	private Map<String,Object> globalParam;
 	
 	public AbstractDBService(Environment environment, Settings settings, ServiceManager serviceManager) {
 		super(environment, settings, serviceManager);
@@ -49,8 +47,6 @@ public abstract class AbstractDBService extends AbstractService {
 	protected void init(Settings settings, Class<?>[] mapperList, Properties driverProperties, Map<String,Object> globalParam) {
 		this.settings = settings;
 		this.mapperList = mapperList;
-		this.driverProperties = driverProperties;
-		this.globalParam = globalParam;
 		dbHandler = new CommonDBHandler(settings, mapperList, driverProperties, globalParam);
 	}
 	

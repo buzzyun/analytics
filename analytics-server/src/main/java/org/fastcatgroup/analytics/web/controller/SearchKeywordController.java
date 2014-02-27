@@ -142,7 +142,7 @@ public class SearchKeywordController extends AbstractController {
 			
 			int totalSize = relateMapper.getCount(siteId);
 			
-			List<RelateKeywordVO> entryList = relateMapper.getEntryList(siteId, start, PAGE_SIZE - 1);
+			List<RelateKeywordVO> entryList = relateMapper.getEntryList(siteId, start, totalSize );
 			Map<String, List<String>>keywordMap = new HashMap<String, List<String>>();
 			
 			for (int rsize=0;rsize<totalSize;) {
@@ -160,6 +160,7 @@ public class SearchKeywordController extends AbstractController {
 					}
 					List<String> keywordList = Arrays.asList(valueString.split(","));
 					keywordMap.put(entry.getKeyword(), keywordList);
+					logger.trace("keyword:{} / values:{}", entry.getKeyword(), keywordList);
 				}
 				
 				start+=PAGE_SIZE;

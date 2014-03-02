@@ -111,7 +111,12 @@ public abstract class Calculator<LogType extends LogData> {
 		// category별로 모두 입력해준다.
 		for (CategoryProcess<LogType> process : categoryProcessList) {
 //			logger.debug("# calculate process offerLog > {}", process.getClass().getSimpleName());
-			process.logHandler().handleLog(logData);
+			try{
+				process.logHandler().handleLog(logData);
+			}catch(Exception e){
+				logger.error("ERROR logData > {}", logData);
+				logger.error("ERROR while offerLog", e);
+			}
 		}
 	}
 

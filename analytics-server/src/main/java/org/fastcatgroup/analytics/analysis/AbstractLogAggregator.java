@@ -50,7 +50,7 @@ public abstract class AbstractLogAggregator<LogType extends LogData> {
 	
 	public void handleLog(LogType log) throws IOException {
 //		logger.debug("{}: {}", getClass().getSimpleName(), log);
-		if (log != null) {
+		if (log != null && log.getKey() != null && log.getKey().length() > 0) {
 			Counter counter = aggregateMap.get(log.getKey());
 //			logger.debug("##handle log {} > {}", log.getKey(), counter);
 			if (counter != null) {

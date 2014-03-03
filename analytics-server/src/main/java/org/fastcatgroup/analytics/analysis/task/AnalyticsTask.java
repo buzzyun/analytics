@@ -61,7 +61,7 @@ public abstract class AnalyticsTask<LogType extends LogData> extends Job impleme
 			
 			prepare(calendar);
 			
-			logger.debug("### AnalysisTask Run {} > {}", getClass().getSimpleName(), schedule);
+			logger.info("### {} Run > {}", getClass().getSimpleName(), schedule);
 			
 			if (logReader != null) {
 				try {
@@ -86,7 +86,9 @@ public abstract class AnalyticsTask<LogType extends LogData> extends Job impleme
 				c.calculate();
 			}
 
+			logger.info("### {} Done!", getClass().getSimpleName());
 		} catch (Exception e) {
+			logger.info("### {} Error!", getClass().getSimpleName());
 			logger.error("", e);
 			return new JobResult(false);
 		}

@@ -105,7 +105,7 @@ public class AnalyticsDBService extends AbstractDBService {
 					logger.debug("valiadte {}, {}", siteId, clazz.getSimpleName());
 					managedMapper.validateTable(siteId);
 				} catch (Exception e) {
-					logger.error("valid error", e);
+//					logger.error("valid error", e);
 					try {
 						logger.debug("drop {}, {}", siteId, clazz.getSimpleName());
 						managedMapper.dropTable(siteId);

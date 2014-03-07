@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <site-category-list>
-    <site-category siteName="www.websqrd.com" siteId="www-websqrd">
+    <site-category siteName="www.testsite.com" siteId="www">
     	<category name="ALL" id="_root"/>
         <category name="category1" id="cat1"/>
         <category name="category2" id="cat2"/>

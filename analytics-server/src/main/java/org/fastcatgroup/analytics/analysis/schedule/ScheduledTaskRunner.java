@@ -45,14 +45,15 @@ public class ScheduledTaskRunner extends Thread {
 	@Override
 	public void run() {
 		int size = priorityJobQueue.size();
-		for (int i = 0; i < size; i++) {
-			AnalyticsTask task = priorityJobQueue.poll();
+		Iterator<AnalyticsTask> iterator = priorityJobQueue.iterator();
+		while (iterator.hasNext()) {
+			AnalyticsTask task = iterator.next();
 			task.updateScheduleTimeByNow();
-			priorityJobQueue.offer(task);
 		}
 
 		while (!isCanceled) {
 			try {
+				logger.debug("priorityJobQueue > {}", priorityJobQueue);
 				AnalyticsTask task = priorityJobQueue.poll();
 				if (task == null) {
 					// 작업이 없으면 끝난다.
@@ -76,8 +77,8 @@ public class ScheduledTaskRunner extends Thread {
 				}
 
 				try {
-					task.incrementExecution();
 					logger.debug("{} run!", task);
+					task.incrementExecution();
 
 					ResultFuture resultFuture = jobExecutor.offer(task);
 					Object result = null;

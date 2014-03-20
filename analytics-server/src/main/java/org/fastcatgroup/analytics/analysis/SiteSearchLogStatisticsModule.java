@@ -22,6 +22,7 @@ import org.fastcatgroup.analytics.analysis.task.DailyTypeSearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.RealtimeSearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.RelateSearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.WeeklySearchLogAnalyticsTask;
+import org.fastcatgroup.analytics.analysis.task.WeeklyTypeSearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
 import org.fastcatgroup.analytics.control.JobService;
 import org.fastcatgroup.analytics.db.vo.RankKeywordVO.RankDiffType;
@@ -129,11 +130,17 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 
 		/*
 		 * 주별 통계 
+		 * TODO:logger 추가할 것.
 		 */
 		Schedule weeklySchedule = new EveryDaySchedule(0, delayInSeconds);
 		//Schedule weeklySchedule = new FixedSchedule(cal, 10, 5);
-		WeeklySearchLogAnalyticsTask weeklyTask = new WeeklySearchLogAnalyticsTask(siteId, categoryIdList, weeklySchedule, 2, null);
-		dailyTaskRunner.addTask(weeklyTask);
+		WeeklySearchLogAnalyticsTask weeklySearchLogAnalysisTask = new WeeklySearchLogAnalyticsTask(siteId, categoryIdList, weeklySchedule, 1, null);
+		dailyTaskRunner.addTask(weeklySearchLogAnalysisTask);
+		
+		Schedule weeklySchedule2 = new EveryDaySchedule(0, delayInSeconds);
+		//Schedule weeklySchedule = new FixedSchedule(cal, 10, 5);
+		WeeklyTypeSearchLogAnalyticsTask weeklyTypeSearchLogAnalyticsTask = new WeeklyTypeSearchLogAnalyticsTask(siteId, categoryIdList, weeklySchedule2, 2, null);
+		dailyTaskRunner.addTask(weeklyTypeSearchLogAnalyticsTask);
 		
 		 
 		// AnalysisTask<SearchLog> weeklyTask = WeeklySearchLogAnalysisTask(siteId, categoryIdList, weeklySchedule, 1);

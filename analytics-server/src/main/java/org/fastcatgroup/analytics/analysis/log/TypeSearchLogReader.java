@@ -3,9 +3,9 @@ package org.fastcatgroup.analytics.analysis.log;
 import java.io.File;
 import java.io.IOException;
 
-public class TypeSearchLogReader extends FileLogReader<TypeSearchLog> {
+public class TypeSearchLogReader extends FileListLogReader<TypeSearchLog> {
 
-	public TypeSearchLogReader(File file, String encoding) throws IOException {
+	public TypeSearchLogReader(File[] file, String encoding) throws IOException {
 		super(file, encoding);
 	}
 

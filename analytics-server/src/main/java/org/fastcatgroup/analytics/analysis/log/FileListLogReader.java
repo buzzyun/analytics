@@ -16,15 +16,13 @@ public abstract class FileListLogReader<LogType extends LogData> implements Sour
 	public FileListLogReader(File[] files, String encoding) throws IOException {
 		this.files = files;
 		this.encoding = encoding;
-		if(files.length > 0) {
-			reader = openStream(0);
-		}
 	}
 	
 	private BufferedReader openStream(int inx) throws IOException {
 		try {
 			//open new stream from file list
 			if(files.length > inx) {
+				logger.trace("read file {}", files[inx]);
 				return new BufferedReader(new InputStreamReader(new FileInputStream(files[inx]), encoding));
 			}
 		} catch (IOException e) {
@@ -43,8 +41,13 @@ public abstract class FileListLogReader<LogType extends LogData> implements Sour
 			for (; currentInx < this.files.length;) {
 				
 				if (reader == null) {
-					reader = openStream(currentInx);
-					currentInx++;
+					if(files[currentInx] != null && files[currentInx].exists()) {
+						reader = openStream(currentInx);
+						currentInx++;
+					} else {
+						currentInx++;
+						continue;
+					}
 				}
 				
 				//read one available line

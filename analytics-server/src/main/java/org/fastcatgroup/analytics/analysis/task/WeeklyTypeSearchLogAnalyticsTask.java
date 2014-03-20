@@ -38,14 +38,13 @@ public class WeeklyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchLo
 		logger.debug("@@@@typeList > {} {}", "", typeList);
 		
 		//주의 최초로 되돌린다.
-		calendar.add(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_WEEK) * -1 + 1);
+		calendar.add(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_WEEK) * -1 + 6);
 		Calendar prevCalendar = (Calendar) calendar.clone();
 		prevCalendar.add(Calendar.DAY_OF_MONTH, -7);
 		File baseDir = new File(SearchStatisticsProperties.getDayDataDir(dir, calendar), siteId);
-
 		String encoding = SearchStatisticsProperties.encoding;
 		
-		int diff = SearchStatisticsProperties.getDateDiff(calendar, prevCalendar);
+		int diff = SearchStatisticsProperties.getDateDiff(prevCalendar, calendar);
 		//일주일치의 일자별 raw.log를 머징한다.
 		File[] files = new File[diff];
 		Calendar dailyCalendar = (Calendar) calendar.clone();

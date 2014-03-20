@@ -138,7 +138,7 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		dailyTaskRunner.addTask(weeklySearchLogAnalysisTask);
 		
 		Schedule weeklySchedule2 = new EveryDaySchedule(0, delayInSeconds);
-		//Schedule weeklySchedule = new FixedSchedule(cal, 10, 5);
+		//Schedule weeklySchedule2 = new FixedSchedule(cal, 10, 5);
 		WeeklyTypeSearchLogAnalyticsTask weeklyTypeSearchLogAnalyticsTask = new WeeklyTypeSearchLogAnalyticsTask(siteId, categoryIdList, weeklySchedule2, 2, null);
 		dailyTaskRunner.addTask(weeklyTypeSearchLogAnalyticsTask);
 		

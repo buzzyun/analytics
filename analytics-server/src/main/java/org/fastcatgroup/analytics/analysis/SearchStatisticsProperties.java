@@ -11,6 +11,10 @@ public class SearchStatisticsProperties {
 	public static int maxKeywordLength = 20;
 
 	public static final String ROOT_ID = "_root";
+	
+	public static int getDateDiff(Calendar c1, Calendar c2) {
+		return (int)(c2.getTimeInMillis() - c1.getTimeInMillis()) / (1000*60*60*24);
+	}
 
 	public static File getYearDataDir(File dir, Calendar calendar) {
 		int year = calendar.get(Calendar.YEAR);
@@ -49,6 +53,20 @@ public class SearchStatisticsProperties {
 			dayString = "D" + day;
 		}
 		return new File(new File(new File(new File(dir, yearString), monthString), dayString), "data");
+	}
+	
+	public static File getWeekDataDir(File dir, Calendar calendar) {
+		int year = calendar.get(Calendar.YEAR);
+		int week = calendar.get(Calendar.WEEK_OF_YEAR);
+		String yearString = "Y" + year;
+		String weekString = null;
+		
+		if(week < 10) {
+			weekString = "W0" + week;
+		} else {
+			weekString = "W"+week;
+		}
+		return new File(new File(new File(dir, yearString), weekString), "data");
 	}
 	
 	

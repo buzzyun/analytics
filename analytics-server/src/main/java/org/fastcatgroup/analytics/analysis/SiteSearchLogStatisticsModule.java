@@ -21,6 +21,7 @@ import org.fastcatgroup.analytics.analysis.task.DailySearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.DailyTypeSearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.RealtimeSearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.RelateSearchLogAnalyticsTask;
+import org.fastcatgroup.analytics.analysis.task.WeeklySearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
 import org.fastcatgroup.analytics.control.JobService;
 import org.fastcatgroup.analytics.db.vo.RankKeywordVO.RankDiffType;
@@ -94,7 +95,8 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		 */
 		realtimeTaskRunner = new ScheduledTaskRunner("rt-search-log-task-runner", JobService.getInstance(), environment);
 		int periodInSeconds = 300;
-		Schedule realtimeSchedule = new FixedSchedule(cal, periodInSeconds, delayInSeconds);
+		//Schedule realtimeSchedule = new FixedSchedule(cal, periodInSeconds, delayInSeconds);
+		Schedule realtimeSchedule =  new EveryDaySchedule(0, delayInSeconds);
 		RealtimeSearchLogAnalyticsTask realtimeTask = new RealtimeSearchLogAnalyticsTask(siteId, categoryIdList, realtimeSchedule, 0, realtimeRawLogger);
 		realtimeTaskRunner.addTask(realtimeTask);
 		realtimeTaskRunner.start();
@@ -116,15 +118,24 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		dailyTaskRunner = new ScheduledTaskRunner("daily-search-log-task-runner", JobService.getInstance(), environment);
 		// 일
 		Schedule dailySchedule1 = new EveryDaySchedule(0, delayInSeconds); //매일 0시.
+		//Schedule dailySchedule1 = new FixedSchedule(cal, periodInSeconds, delayInSeconds);
 		DailySearchLogAnalyticsTask dailySearchLogAnalysisTask = new DailySearchLogAnalyticsTask(siteId, categoryIdList, dailySchedule1, 1, dailyRawLogger);
 		dailyTaskRunner.addTask(dailySearchLogAnalysisTask);
 		
 		Schedule dailySchedule2 = new EveryDaySchedule(0, delayInSeconds);
+		//Schedule dailySchedule2 = new FixedSchedule(cal, periodInSeconds, delayInSeconds);
 		DailyTypeSearchLogAnalyticsTask dailyTypeSearchLogAnalyticsTask = new DailyTypeSearchLogAnalyticsTask(siteId, categoryIdList, dailySchedule2, 2, dailyTypeRawLogger);
 		dailyTaskRunner.addTask(dailyTypeSearchLogAnalyticsTask);
+
+		/*
+		 * 주별 통계 
+		 */
+		Schedule weeklySchedule = new EveryDaySchedule(0, delayInSeconds);
+		//Schedule weeklySchedule = new FixedSchedule(cal, 10, 5);
+		WeeklySearchLogAnalyticsTask weeklyTask = new WeeklySearchLogAnalyticsTask(siteId, categoryIdList, weeklySchedule, 2, null);
+		dailyTaskRunner.addTask(weeklyTask);
 		
-		// 주
-		 Schedule weeklySchedule = new EveryWeekSchedule(0, 0, delayInSeconds);
+		 
 		// AnalysisTask<SearchLog> weeklyTask = WeeklySearchLogAnalysisTask(siteId, categoryIdList, weeklySchedule, 1);
 		// dailyTaskRunner.addTask(weeklyTask);
 		// 월

@@ -132,7 +132,6 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 
 		/*
 		 * 주별 통계 
-		 * TODO:logger 추가할 것.
 		 */
 		Schedule weeklySchedule = new EveryDaySchedule(0, delayInSeconds);
 		//Schedule weeklySchedule = new FixedSchedule(cal, 10, 5);
@@ -147,7 +146,6 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		 
 		/*
 		 * 월별 통계 
-		 * TODO:logger 추가할 것.
 		 */
 		Schedule monthlySchedule = new EveryMonthSchedule(0, 0, delayInSeconds);
 		//Schedule monthlySchedule = new FixedSchedule(cal, 10, 5);
@@ -161,7 +159,7 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		
 		/*
 		 * 년도별 통계 
-		 * TODO:logger 추가할 것.
+		 * 년도별 통계는 DB 에서 읽어와 병합하도록 한다.
 		 */
 		Schedule yearlySchedule = new EveryYearSchedule(12, 0, 0, delayInSeconds);
 		// AnalysisTask<SearchLog> yearlyTask = YearlySearchLogAnalysisTask(siteId, categoryIdList, yearlySchedule, 1);

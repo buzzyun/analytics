@@ -19,6 +19,8 @@ import org.fastcatgroup.analytics.analysis.schedule.Schedule;
 import org.fastcatgroup.analytics.analysis.schedule.ScheduledTaskRunner;
 import org.fastcatgroup.analytics.analysis.task.DailySearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.DailyTypeSearchLogAnalyticsTask;
+import org.fastcatgroup.analytics.analysis.task.MonthlySearchLogAnalyticsTask;
+import org.fastcatgroup.analytics.analysis.task.MonthlyTypeSearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.RealtimeSearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.RelateSearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.WeeklySearchLogAnalyticsTask;
@@ -143,14 +145,25 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		dailyTaskRunner.addTask(weeklyTypeSearchLogAnalyticsTask);
 		
 		 
-		// AnalysisTask<SearchLog> weeklyTask = WeeklySearchLogAnalysisTask(siteId, categoryIdList, weeklySchedule, 1);
-		// dailyTaskRunner.addTask(weeklyTask);
-		// 월
-		 Schedule monthlySchedule = new EveryMonthSchedule(0, 0, delayInSeconds);
-		// AnalysisTask<SearchLog> monthlyTask = MonthlySearchLogAnalysisTask(siteId, categoryIdList, monthlySchedule, 1);
-		// dailyTaskRunner.addTask(monthlyTask);
-		// 년
-		 Schedule yearlySchedule = new EveryYearSchedule(12, 0, 0, delayInSeconds);
+		/*
+		 * 월별 통계 
+		 * TODO:logger 추가할 것.
+		 */
+		Schedule monthlySchedule = new EveryMonthSchedule(0, 0, delayInSeconds);
+		//Schedule monthlySchedule = new FixedSchedule(cal, 10, 5);
+		MonthlySearchLogAnalyticsTask monthlySearchLogAnalysisTask = new MonthlySearchLogAnalyticsTask(siteId, categoryIdList, monthlySchedule, 1, null);
+		dailyTaskRunner.addTask(monthlySearchLogAnalysisTask);
+		
+		Schedule monthlySchedule2 = new EveryMonthSchedule(0, 0, delayInSeconds);
+		//Schedule monthlySchedule2 = new FixedSchedule(cal, 10, 5);
+		MonthlyTypeSearchLogAnalyticsTask monthlyTypeSearchLogAnalyticsTask = new MonthlyTypeSearchLogAnalyticsTask(siteId, categoryIdList, monthlySchedule2, 2, null);
+		dailyTaskRunner.addTask(monthlyTypeSearchLogAnalyticsTask);
+		
+		/*
+		 * 년도별 통계 
+		 * TODO:logger 추가할 것.
+		 */
+		Schedule yearlySchedule = new EveryYearSchedule(12, 0, 0, delayInSeconds);
 		// AnalysisTask<SearchLog> yearlyTask = YearlySearchLogAnalysisTask(siteId, categoryIdList, yearlySchedule, 1);
 		// dailyTaskRunner.addTask(yearlyTask);
 

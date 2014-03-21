@@ -13,7 +13,7 @@ public class SearchStatisticsProperties {
 	public static final String ROOT_ID = "_root";
 	
 	public static int getDateDiff(Calendar c1, Calendar c2) {
-		return (int)(c2.getTimeInMillis() - c1.getTimeInMillis()) / (1000*60*60*24);
+		return (int) ((c2.getTimeInMillis() - c1.getTimeInMillis()) / (1000 * 60 * 60 * 24));
 	}
 
 	public static File getYearDataDir(File dir, Calendar calendar) {

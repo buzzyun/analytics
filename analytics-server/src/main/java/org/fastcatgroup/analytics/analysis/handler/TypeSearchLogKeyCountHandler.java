@@ -37,14 +37,18 @@ public class TypeSearchLogKeyCountHandler extends CategoryLogHandler<TypeSearchL
 					if (type.equals("-")) {
 						continue;
 					}
-					Counter counter = typeCouterList[i].get(type);
-					if (counter == null) {
-						counter = new Counter(1);
-						typeCouterList[i].put(type, counter);
-					} else {
-						counter.increment();
+					Counter counter = null;
+					
+					if(typeCouterList.length > i) {
+						counter = typeCouterList[i].get(type);
+						if (counter == null) {
+							counter = new Counter(1);
+							typeCouterList[i].put(type, counter);
+						} else {
+							counter.increment();
+						}
+						logger.trace("##TypeSearchLogKeyCountHandler1 type-count > {}:{} > {}:{}", categoryId, logData.categoryId(), type, counter);
 					}
-					logger.trace("##TypeSearchLogKeyCountHandler1 type-count > {}:{} > {}:{}", categoryId, logData.categoryId(), type, counter);
 				}
 			} else if (categoryId.equals("_root")) {
 				// root는 모두다.
@@ -53,14 +57,18 @@ public class TypeSearchLogKeyCountHandler extends CategoryLogHandler<TypeSearchL
 					if (type.equals("-")) {
 						continue;
 					}
-					Counter counter = typeCouterList[i].get(type);
-					if (counter == null) {
-						counter = new Counter(1);
-						typeCouterList[i].put(type, counter);
-					} else {
-						counter.increment();
+					Counter counter = null;
+					
+					if(typeCouterList.length > i) {
+						counter = typeCouterList[i].get(type);
+						if (counter == null) {
+							counter = new Counter(1);
+							typeCouterList[i].put(type, counter);
+						} else {
+							counter.increment();
+						}
+						logger.trace("##TypeSearchLogKeyCountHandler2 type-count > {}:{} > {}:{}", categoryId, logData.categoryId(), type, counter);
 					}
-					logger.trace("##TypeSearchLogKeyCountHandler2 type-count > {}:{} > {}:{}", categoryId, logData.categoryId(), type, counter);
 				}
 			}
 

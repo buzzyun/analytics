@@ -33,7 +33,7 @@ public class WeeklySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 		//주의 최초로 되돌린다.
 		calendar.add(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_WEEK) * -1 + 7);
 		Calendar prevCalendar = (Calendar) calendar.clone();
-		prevCalendar.add(Calendar.DAY_OF_MONTH, -6);
+		prevCalendar.add(Calendar.DAY_OF_MONTH, -7);
 		File baseDir = new File(SearchStatisticsProperties.getWeekDataDir(dir, calendar), siteId);
 		File prevDir = new File(SearchStatisticsProperties.getWeekDataDir(dir, prevCalendar), siteId);
 		Set<String> banWords = null;

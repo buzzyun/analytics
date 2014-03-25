@@ -12,6 +12,10 @@ import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCat
 import org.fastcatgroup.analytics.analysis.schedule.TimeSchedule;
 import org.fastcatgroup.analytics.analysis.task.DailySearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.DailyTypeSearchLogAnalyticsTask;
+import org.fastcatgroup.analytics.analysis.task.MonthlySearchLogAnalyticsTask;
+import org.fastcatgroup.analytics.analysis.task.MonthlyTypeSearchLogAnalyticsTask;
+import org.fastcatgroup.analytics.analysis.task.WeeklySearchLogAnalyticsTask;
+import org.fastcatgroup.analytics.analysis.task.WeeklyTypeSearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.control.JobService;
 import org.fastcatgroup.analytics.exception.AnalyticsException;
 import org.fastcatgroup.analytics.job.Job;
@@ -50,20 +54,60 @@ public class DailySearchLogAnalyticsTaskRunJob extends Job {
 			}
 
 		}
-
-		/* 1. raw.log */
-		Calendar calendar = SearchStatisticsProperties.parseTimeId(timeId);
-		TimeSchedule schedule = new TimeSchedule(calendar.getTimeInMillis(), 0);
-		DailySearchLogAnalyticsTask task = new DailySearchLogAnalyticsTask(siteId, categoryIdList, schedule, 0, null);
-		task.setEnvironment(environment);
-		JobService.getInstance().offer(task);
 		
-		/* 2. type_raw.log */
-		TimeSchedule schedule2 = new TimeSchedule(calendar.getTimeInMillis(), 0);
-		DailyTypeSearchLogAnalyticsTask task2 = new DailyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule2, 0, null);
-		task2.setEnvironment(environment);
-		JobService.getInstance().offer(task2);
+		if (timeId != null && !"".equals(timeId)) {
 			
+			Calendar calendar = SearchStatisticsProperties.parseTimeId(timeId);
+			
+//			switch (timeId.toUpperCase().charAt(0)) {
+//			
+//				case 'D':
+				/* 1. raw.log */
+				TimeSchedule schedule = new TimeSchedule(calendar.getTimeInMillis(), 0);
+				DailySearchLogAnalyticsTask task = new DailySearchLogAnalyticsTask(siteId, categoryIdList, schedule, 0, null);
+				task.setEnvironment(environment);
+				JobService.getInstance().offer(task);
+				
+				/* 2. type_raw.log */
+				TimeSchedule schedule2 = new TimeSchedule(calendar.getTimeInMillis(), 0);
+				DailyTypeSearchLogAnalyticsTask task2 = new DailyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule2, 0, null);
+				task2.setEnvironment(environment);
+				JobService.getInstance().offer(task2);
+				
+//				break;
+//				
+//				case 'W':
+				/* weekly log */
+				TimeSchedule schedule3 = new TimeSchedule(calendar.getTimeInMillis(), 0);
+				WeeklySearchLogAnalyticsTask task3 = new WeeklySearchLogAnalyticsTask(siteId, categoryIdList, schedule3, 1);
+				task3.setEnvironment(environment);
+				JobService.getInstance().offer(task3);
+				
+				/* weekly type log */
+				TimeSchedule schedule4 = new TimeSchedule(calendar.getTimeInMillis(), 0);
+				WeeklyTypeSearchLogAnalyticsTask task4 = new WeeklyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule4, 1);
+				task4.setEnvironment(environment);
+				JobService.getInstance().offer(task4);
+				
+//				break;
+//				
+//				case 'M':
+				/* monthly log */
+				TimeSchedule schedule5 = new TimeSchedule(calendar.getTimeInMillis(), 0);
+				MonthlySearchLogAnalyticsTask task5 = new MonthlySearchLogAnalyticsTask(siteId, categoryIdList, schedule5, 1);
+				task5.setEnvironment(environment);
+				JobService.getInstance().offer(task5);
+				
+				/* monthly type log */
+				TimeSchedule schedule6 = new TimeSchedule(calendar.getTimeInMillis(), 0);
+				MonthlyTypeSearchLogAnalyticsTask task6 = new MonthlyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule6, 1);
+				task6.setEnvironment(environment);
+				JobService.getInstance().offer(task6);
+				
+//				break;
+//			}
+		}
+		
 		return new JobResult(true);
 	}
 

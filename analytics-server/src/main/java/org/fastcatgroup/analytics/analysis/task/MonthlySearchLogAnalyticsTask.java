@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
-import org.fastcatgroup.analytics.analysis.DailyRawLogger;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.calculator.Calculator;
 import org.fastcatgroup.analytics.analysis.calculator.MonthlyKeywordHitAndRankCalculator;
@@ -22,11 +21,8 @@ public class MonthlySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 
 	private static final long serialVersionUID = 4212969890908932929L;
 
-	DailyRawLogger dailyRawLogger;
-	
-	public MonthlySearchLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority, DailyRawLogger dailyRawLogger) {
+	public MonthlySearchLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
 		super(siteId, categoryIdList, schedule, priority);
-		this.dailyRawLogger = dailyRawLogger;
 	}
 
 	@Override
@@ -58,6 +54,8 @@ public class MonthlySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 			dailyCalendar.add(Calendar.DAY_OF_MONTH, -1);
 		}
 		
+		logger.debug("calculating{} {}", "",files);
+		
 		try {
 			logReader = new SearchLogReader(files, encoding);
 		} catch (IOException e) {
@@ -66,12 +64,5 @@ public class MonthlySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 		// calc를 카테고리별로 모두 만든다.
 		Calculator<SearchLog> popularKeywordCalculator = new MonthlyKeywordHitAndRankCalculator("Monthly popular keyword calculator", calendar, baseDir, prevDir, siteId, categoryIdList, banWords, minimumHitCount, topCount);
 		addCalculator(popularKeywordCalculator);
-	}
-	
-	@Override
-	protected void preProcess() {
-		if (dailyRawLogger != null) {
-			dailyRawLogger.rolling();
-		}
 	}
 }

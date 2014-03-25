@@ -11,7 +11,7 @@ public class TypeSearchLogReader extends FileListLogReader<TypeSearchLog> {
 
 	@Override
 	protected TypeSearchLog makeLog(String[] el) {
-		logger.debug("typelog>>> {}, {}", el.length, el);
+		logger.trace("typelog>>> {}, {}", el.length, el);
 		return new TypeSearchLog(el);
 	}
 

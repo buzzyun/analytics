@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
-import org.fastcatgroup.analytics.analysis.DailyRawLogger;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.calculator.Calculator;
 import org.fastcatgroup.analytics.analysis.calculator.WeeklyKeywordHitAndRankCalculator;
@@ -21,12 +20,9 @@ import org.fastcatgroup.analytics.analysis.schedule.Schedule;
 public class WeeklySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 
 	private static final long serialVersionUID = 4212969890908932929L;
-
-	DailyRawLogger dailyRawLogger;
 	
-	public WeeklySearchLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority, DailyRawLogger dailyRawLogger) {
+	public WeeklySearchLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
 		super(siteId, categoryIdList, schedule, priority);
-		this.dailyRawLogger = dailyRawLogger;
 	}
 
 	@Override
@@ -35,9 +31,9 @@ public class WeeklySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 		File dir = environment.filePaths().getStatisticsRoot().file("search", "date");
 		
 		//주의 최초로 되돌린다.
-		calendar.add(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_WEEK) * -1 + 6);
+		calendar.add(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_WEEK) * -1 + 7);
 		Calendar prevCalendar = (Calendar) calendar.clone();
-		prevCalendar.add(Calendar.DAY_OF_MONTH, -7);
+		prevCalendar.add(Calendar.DAY_OF_MONTH, -6);
 		File baseDir = new File(SearchStatisticsProperties.getWeekDataDir(dir, calendar), siteId);
 		File prevDir = new File(SearchStatisticsProperties.getWeekDataDir(dir, prevCalendar), siteId);
 		Set<String> banWords = null;
@@ -57,20 +53,16 @@ public class WeeklySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 			dailyCalendar.add(Calendar.DAY_OF_MONTH, -1);
 		}
 		
+		logger.debug("calculating{} {}", "", files);
+		
 		try {
 			logReader = new SearchLogReader(files, encoding);
 		} catch (IOException e) {
 			logger.error("", e);
 		}
+		
 		// calc를 카테고리별로 모두 만든다.
 		Calculator<SearchLog> popularKeywordCalculator = new WeeklyKeywordHitAndRankCalculator("Weekly popular keyword calculator", calendar, baseDir, prevDir, siteId, categoryIdList, banWords, minimumHitCount, topCount);
 		addCalculator(popularKeywordCalculator);
-	}
-	
-	@Override
-	protected void preProcess() {
-		if (dailyRawLogger != null) {
-			dailyRawLogger.rolling();
-		}
 	}
 }

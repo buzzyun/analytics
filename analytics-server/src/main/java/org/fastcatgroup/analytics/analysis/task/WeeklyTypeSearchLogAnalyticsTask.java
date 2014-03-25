@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
 
-import org.fastcatgroup.analytics.analysis.DailyRawLogger;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.calculator.Calculator;
 import org.fastcatgroup.analytics.analysis.calculator.WeeklyTypeHitCalculator;
@@ -21,11 +20,9 @@ public class WeeklyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchLo
 
 	private static final long serialVersionUID = -1324147495414071499L;
 
-	DailyRawLogger dailyTypeRawLogger;
 	
-	public WeeklyTypeSearchLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority, DailyRawLogger dailyTypeRawLogger) {
+	public WeeklyTypeSearchLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
 		super(siteId, categoryIdList, schedule, priority);
-		this.dailyTypeRawLogger = dailyTypeRawLogger;
 	}
 
 	@Override
@@ -37,9 +34,9 @@ public class WeeklyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchLo
 		logger.debug("@@@@typeList > {} {}", "", typeList);
 		
 		//주의 최초로 되돌린다.
-		calendar.add(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_WEEK) * -1 + 6);
+		calendar.add(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_WEEK) * -1 + 7);
 		Calendar prevCalendar = (Calendar) calendar.clone();
-		prevCalendar.add(Calendar.DAY_OF_MONTH, -7);
+		prevCalendar.add(Calendar.DAY_OF_MONTH, -6);
 		File baseDir = new File(SearchStatisticsProperties.getDayDataDir(dir, calendar), siteId);
 		String encoding = SearchStatisticsProperties.encoding;
 		
@@ -53,6 +50,8 @@ public class WeeklyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchLo
 			dailyCalendar.add(Calendar.DAY_OF_MONTH, -1);
 		}
 		
+		logger.debug("calculating{} {}", "",files);
+		
 		try {
 			logReader = new TypeSearchLogReader(files, encoding);
 		} catch (IOException e) {
@@ -62,12 +61,5 @@ public class WeeklyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchLo
 		// calc를 카테고리별로 모두 만든다.
 		Calculator<TypeSearchLog> weeklyTypeHitCalculator = new WeeklyTypeHitCalculator("Weelky type hit calculator", calendar, baseDir, siteId, categoryIdList, typeList);
 		addCalculator(weeklyTypeHitCalculator);
-	}
-
-	@Override
-	protected void preProcess() {
-		if (dailyTypeRawLogger != null) {
-			dailyTypeRawLogger.rolling();
-		}
 	}
 }

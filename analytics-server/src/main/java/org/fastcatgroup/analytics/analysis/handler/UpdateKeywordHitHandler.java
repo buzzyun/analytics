@@ -57,7 +57,7 @@ public class UpdateKeywordHitHandler extends ProcessHandler {
 					}
 					
 					KeyCountRunEntry entry = targetReader.entry();
-					logger.debug("#### UpdateKeywordHit {} >> {} > {}", timeId, categoryId, entry);
+					logger.trace("#### UpdateKeywordHit {} >> {} > {}", timeId, categoryId, entry);
 					
 					mapper.putEntry(siteId, categoryId, timeId, entry.getKey(), entry.getCount());
 					i++;

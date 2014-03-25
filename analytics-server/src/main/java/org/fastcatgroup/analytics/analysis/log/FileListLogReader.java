@@ -6,7 +6,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public abstract class FileListLogReader<LogType extends LogData> implements SourceLogReader<LogType> {
+	
+	protected static final Logger logger = LoggerFactory.getLogger(FileListLogReader.class);
 
 	private File[] files;
 	private int currentInx;
@@ -22,7 +27,7 @@ public abstract class FileListLogReader<LogType extends LogData> implements Sour
 		try {
 			//open new stream from file list
 			if(files.length > inx) {
-				logger.trace("read file {}", files[inx]);
+				logger.debug("read file {} [{}/{}]", files[inx], inx, files.length);
 				return new BufferedReader(new InputStreamReader(new FileInputStream(files[inx]), encoding));
 			}
 		} catch (IOException e) {
@@ -38,18 +43,20 @@ public abstract class FileListLogReader<LogType extends LogData> implements Sour
 		try {
 			
 			//loop for file list
-			for (; currentInx < this.files.length;) {
+			for (; reader != null || currentInx < this.files.length;) {
 				
 				if (reader == null) {
 					if(files[currentInx] != null && files[currentInx].exists()) {
+						logger.debug("file[{}]:{} exists", currentInx, files[currentInx]);
 						reader = openStream(currentInx);
 						currentInx++;
 					} else {
+						logger.debug("file[{}/{}]:{} not exists. continue", currentInx, files.length, files[currentInx]);
 						currentInx++;
 						continue;
 					}
 				}
-				
+			
 				//read one available line
 				for (String rline = null; (rline = reader.readLine()) != null;) {
 					if(rline.trim().length() == 0) {
@@ -61,12 +68,14 @@ public abstract class FileListLogReader<LogType extends LogData> implements Sour
 					//
 					// return log...
 					//
+					logger.trace("makeLog : {} : {}", this, rline);
 					return makeLog(el);
 				}//for
 				
 				//end of current-file
 				
 				if(reader!=null) {
+					logger.debug("close reader..{} [{}/{}]", files[currentInx - 1], currentInx - 1, files.length);
 					reader.close();
 					reader = null;
 				}

@@ -8,9 +8,13 @@ import java.util.List;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.calculator.Calculator;
 import org.fastcatgroup.analytics.analysis.calculator.MonthlyTypeHitCalculator;
+import org.fastcatgroup.analytics.analysis.log.TypeSearchDatabaseReader;
 import org.fastcatgroup.analytics.analysis.log.TypeSearchLog;
 import org.fastcatgroup.analytics.analysis.log.TypeSearchLogReader;
 import org.fastcatgroup.analytics.analysis.schedule.Schedule;
+import org.fastcatgroup.analytics.db.AnalyticsDBService;
+import org.fastcatgroup.analytics.db.mapper.SearchTypeHitMapper;
+import org.fastcatgroup.analytics.service.ServiceManager;
 
 /**
  * 일별 검색로그 계산. 검색 type별 hit수. 
@@ -46,19 +50,18 @@ public class YearlyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchLo
 		int diff = SearchStatisticsProperties.getMonthDiff(prevCalendar, calendar);
 		
 		//1년치의 월별 로그를 데이터베이스를 사용하여 머징한다.
-		File[] files = new File[diff];
-		Calendar dailyCalendar = (Calendar) calendar.clone();
-		for(int inx=0;inx < diff; inx++) {
-			File dailyBaseDir = new File(SearchStatisticsProperties.getDayDataDir(dir, dailyCalendar), siteId);
-			files[inx] = new File(dailyBaseDir, "type_raw.log");
-			dailyCalendar.add(Calendar.DAY_OF_MONTH, -1);
-		}
 		
-		logger.debug("calculating{} {}", "",files);
+		String prevTimeId = SearchStatisticsProperties.getTimeId(prevCalendar, Calendar.YEAR);
+		
+		String currTimeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.YEAR);
+		
+		logger.debug("calculating {} ~ {}", prevTimeId, currTimeId);
+		
+		AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
 		
 		try {
-			logReader = new TypeSearchLogReader(files, encoding);
-		} catch (IOException e) {
+			logReader = new TypeSearchDatabaseReader(dbService.getMapperSession(SearchTypeHitMapper.class), siteId, prevTimeId, currTimeId);
+		} catch (Exception e) {
 			logger.error("", e);
 		}
 

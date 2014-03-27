@@ -1,179 +1,63 @@
 package org.fastcatgroup.analytics.analysis.log;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.List;
 
+import org.fastcatgroup.analytics.db.MapperSession;
+import org.fastcatgroup.analytics.db.mapper.AnalyticsMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class DatabaseLogReader<LogType extends LogData> implements SourceLogReader<LogType> {
+public abstract class DatabaseLogReader<LogType extends LogData, MapperType extends AnalyticsMapper, DataType> implements SourceLogReader<LogType> {
 	
 	protected static final Logger logger = LoggerFactory.getLogger(DatabaseLogReader.class);
-
+	
+	MapperSession<MapperType> mapperSession;
+	
 	private File[] files;
-	private int currentInx;
-	private BufferedReader reader;
-	private String encoding;
-	private String keyFileName;
-	private String siteId;
-	private String categoryId;
-	private String timeId;
 	
-	public DatabaseLogReader(File[] files, String encoding) throws IOException {
-		this.files = files;
-		this.encoding = encoding;
-		this.keyFileName = "";
-		this.siteId = "";
-		this.categoryId = "";
-		this.timeId = "";
-				
+	List<DataType> list = null;
+	
+	int currentInx;
+	
+	public DatabaseLogReader(MapperSession<MapperType> mapperSession) throws IOException {
+		this.mapperSession = mapperSession;
 	}
 	
-	private BufferedReader openStream(int inx) throws IOException {
-		try {
-			//open new stream from file list
-			if(files.length > inx) {
-				logger.trace("read file {} [{}/{}]", files[inx], inx, files.length);
-				if(files[inx].exists()) {
-					parseFileInfo();
-					return new BufferedReader(new InputStreamReader(new FileInputStream(files[inx]), encoding));
-				}
-				logger.error("file not found {}", files[inx]);
-			}
-		} catch (IOException e) {
-			logger.error("file open error {}", files[inx],e);
-			throw e;
-		} finally {
-		}
-		return null;
-	}
-
 	@Override
 	public LogType readLog() {
 		try {
 			
-			//loop for file list
-			for (; reader != null || currentInx < this.files.length;) {
-				
-				if (reader == null) {
-					if(files[currentInx] != null && files[currentInx].exists()) {
-						logger.debug("file[{}]:{} exists", currentInx, files[currentInx]);
-						reader = openStream(currentInx);
-						currentInx++;
-						if(reader == null) {
-							continue;
-						}
-					} else {
-						logger.debug("file[{}/{}]:{} not exists. continue", currentInx, files.length, files[currentInx]);
-						currentInx++;
-						continue;
-					}
-				}
+			if(list == null) {
+				list = prepareLog(mapperSession.getMapper());
+			}
 			
-				//read one available line
-				for (String rline = null; (rline = reader.readLine()) != null;) {
-					if(rline.trim().length() == 0) {
-						continue;
-					}
-					
-					String[] el = rline.split("\t");
-					
-					//
-					// return log...
-					//
-					logger.trace("makeLog : {} : {}", this, rline);
-					return makeLog(el);
-				}//for
+			for (; currentInx < list.size();) {
 				
-				//end of current-file
+				DataType data = list.get(currentInx++);
 				
-				if(reader!=null) {
-					logger.debug("close reader..{} [{}/{}]", files[currentInx - 1], currentInx - 1, files.length);
-					reader.close();
-					reader = null;
-				}
-				//loop for read another file
-			}//for
-
-		} catch (IOException e) {
+				return makeLog(data);
+			}
+		} catch (Exception e) {
 			logger.error("", e);
 		}
 		return null;
 	}
 	
-	protected abstract LogType makeLog(String[] el);
+	protected abstract List<DataType> prepareLog(MapperType mapper);
+	
+	protected abstract LogType makeLog(DataType data);
 
 	@Override
-	public void close() {
-		try {
-			if (reader != null) {
-				reader.close();
-			}
-		} catch (IOException ignore) {
-		}
+	public void close() { 
+		if(mapperSession!=null) try {
+			mapperSession.closeSession();
+		} catch (Exception ignore) { }
 	}
 
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + " / " + files;
-	}
-	
-	public String keyFileName() {
-		return keyFileName;
-	}
-
-	public String siteId() {
-		return siteId;
-	}
-	
-	public String categoryId() {
-		return categoryId;
-	}
-
-	public String timeId() {
-		return timeId;
-	}
-	
-	private void parseFileInfo() {
-		
-		keyFileName = siteId = categoryId = timeId = "";
-		
-		if(currentInx > 0) {
-			String[] fileName = files[currentInx - 1].getAbsolutePath().split(File.separator);
-			int length = fileName.length;
-			if(length > 3) {
-				keyFileName = fileName[length - 1];
-				
-				if("data".equals(fileName[length - 3])) {
-					siteId = fileName[length - 2];
-					categoryId = "";
-				} else if("data".equals(fileName[length - 4])) {
-					siteId = fileName[length - 3];
-					categoryId = fileName[length - 2];
-					length--;
-				}
-				
-				String timeCode = fileName[length - 4];
-				char c1 = timeCode.charAt(0);
-				if(c1 == 'D') {
-					String month = fileName[length - 5];
-					String year = fileName[length - 6];
-					timeId = "D" + year.substring(1) + month.substring(1)
-							+ timeCode.substring(1);
-				} else if(c1 == 'W') {
-					String year = fileName[length - 5];
-					timeId = "W" + year.substring(1) + timeCode.substring(1);
-				} else if(c1 == 'M') {
-					String year = fileName[length - 5];
-					timeId = "M" + year.substring(1) + timeCode.substring(1);
-				} else if(c1 == 'Y') {
-					timeId = timeCode;
-				}
-			}
-		}
-		logger.debug("key-name:{} / siteId:{} / categoryId:{} / timeId:{}", keyFileName, siteId, categoryId, timeId);
 	}
 }

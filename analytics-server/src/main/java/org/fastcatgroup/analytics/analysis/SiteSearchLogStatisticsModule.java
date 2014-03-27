@@ -25,6 +25,8 @@ import org.fastcatgroup.analytics.analysis.task.RealtimeSearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.RelateSearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.WeeklySearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.WeeklyTypeSearchLogAnalyticsTask;
+import org.fastcatgroup.analytics.analysis.task.YearlySearchLogAnalyticsTask;
+import org.fastcatgroup.analytics.analysis.task.YearlyTypeSearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
 import org.fastcatgroup.analytics.control.JobService;
 import org.fastcatgroup.analytics.db.vo.RankKeywordVO.RankDiffType;
@@ -161,11 +163,14 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		 * 년도별 통계 
 		 */
 		Schedule yearlySchedule = new EveryDaySchedule(0, delayInSeconds);
-		// AnalysisTask<SearchLog> yearlyTask = YearlySearchLogAnalysisTask(siteId, categoryIdList, yearlySchedule, 1);
-		// dailyTaskRunner.addTask(yearlyTask);
+		YearlySearchLogAnalyticsTask yearlySearchLogAnalysisTask = new YearlySearchLogAnalyticsTask(siteId, categoryIdList, yearlySchedule, 7);
+		dailyTaskRunner.addTask(yearlySearchLogAnalysisTask);
+				
+		Schedule yearlySchedule2 = new EveryDaySchedule(0, delayInSeconds);
+		YearlyTypeSearchLogAnalyticsTask yearlyTypeSearchLogAnalyticsTask = new YearlyTypeSearchLogAnalyticsTask(siteId, categoryIdList, yearlySchedule2, 8);
+		dailyTaskRunner.addTask(yearlyTypeSearchLogAnalyticsTask);
 
 		dailyTaskRunner.start();
-		
 		return true;
 	}
 
@@ -236,6 +241,4 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		}
 		return list;
 	}
-
-	
 }

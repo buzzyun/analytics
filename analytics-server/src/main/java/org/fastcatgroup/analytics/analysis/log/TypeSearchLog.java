@@ -4,8 +4,11 @@ public class TypeSearchLog extends LogData {
 
 	protected String[] el;
 	
-	public TypeSearchLog(String[] el) {
+	protected int count;
+	
+	public TypeSearchLog(String[] el, int count) {
 		this.el = el;
+		this.count = count;
 	}
 
 	public String categoryId() {
@@ -31,7 +34,7 @@ public class TypeSearchLog extends LogData {
 	
 	@Override
 	public int getCount() {
-		return 1;
+		return count;
 	}
 	
 	@Override

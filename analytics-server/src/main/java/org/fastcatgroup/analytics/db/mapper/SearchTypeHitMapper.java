@@ -21,6 +21,10 @@ public interface SearchTypeHitMapper extends AnalyticsMapper {
 	public List<SearchTypeHitVO> getEntryListBetween(@Param("siteId") String siteId, @Param("categoryId") String categoryId, 
 			@Param("typeId") String typeId, @Param("from") String from, @Param("to") String to)	throws Exception;
 	
+	public List<SearchTypeHitVO> getAllTypeEntryListBetween(
+			@Param("siteId") String siteId, @Param("from") String from,
+			@Param("to") String to) throws Exception;
+	
 	public List<SearchTypeHitVO> getTypeCountListBetween(@Param("siteId") String siteId, @Param("categoryId") String categoryId, 
 			@Param("typeId") String typeId, @Param("from") String from, @Param("to") String to)	throws Exception;
 	

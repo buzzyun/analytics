@@ -72,6 +72,19 @@
 		order by timeId asc
 	</select>
 	
+	<select id="getAllTypeEntryListBetween" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchTypeHitVO">
+		select * from ${siteId}_type_hit 
+		<where>
+			<if test="from != null and from != ''">
+				and timeId &gt;= #{from} 
+			</if>
+			<if test="to != null and to !=''">
+				and timeId &lt;= #{to}
+			</if>
+		</where>
+		order by timeId asc
+	</select>
+	
 	<select id="getTypeCountListBetween" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchTypeHitVO">
 		select dtype, sum(hit) as hit from ${siteId}_type_hit 
 		<where>

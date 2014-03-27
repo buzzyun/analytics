@@ -135,32 +135,32 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		 */
 		Schedule weeklySchedule = new EveryDaySchedule(0, delayInSeconds);
 		//Schedule weeklySchedule = new FixedSchedule(cal, 10, 5);
-		WeeklySearchLogAnalyticsTask weeklySearchLogAnalysisTask = new WeeklySearchLogAnalyticsTask(siteId, categoryIdList, weeklySchedule, 1);
+		WeeklySearchLogAnalyticsTask weeklySearchLogAnalysisTask = new WeeklySearchLogAnalyticsTask(siteId, categoryIdList, weeklySchedule, 3);
 		dailyTaskRunner.addTask(weeklySearchLogAnalysisTask);
 		
 		Schedule weeklySchedule2 = new EveryDaySchedule(0, delayInSeconds);
 		//Schedule weeklySchedule2 = new FixedSchedule(cal, 10, 5);
-		WeeklyTypeSearchLogAnalyticsTask weeklyTypeSearchLogAnalyticsTask = new WeeklyTypeSearchLogAnalyticsTask(siteId, categoryIdList, weeklySchedule2, 2);
+		WeeklyTypeSearchLogAnalyticsTask weeklyTypeSearchLogAnalyticsTask = new WeeklyTypeSearchLogAnalyticsTask(siteId, categoryIdList, weeklySchedule2, 4);
 		dailyTaskRunner.addTask(weeklyTypeSearchLogAnalyticsTask);
 		
 		 
 		/*
 		 * 월별 통계 
 		 */
-		Schedule monthlySchedule = new EveryMonthSchedule(0, 0, delayInSeconds);
+		Schedule monthlySchedule = new EveryDaySchedule(0, delayInSeconds);
 		//Schedule monthlySchedule = new FixedSchedule(cal, 10, 5);
-		MonthlySearchLogAnalyticsTask monthlySearchLogAnalysisTask = new MonthlySearchLogAnalyticsTask(siteId, categoryIdList, monthlySchedule, 1);
+		MonthlySearchLogAnalyticsTask monthlySearchLogAnalysisTask = new MonthlySearchLogAnalyticsTask(siteId, categoryIdList, monthlySchedule, 5);
 		dailyTaskRunner.addTask(monthlySearchLogAnalysisTask);
 		
-		Schedule monthlySchedule2 = new EveryMonthSchedule(0, 0, delayInSeconds);
+		Schedule monthlySchedule2 = new EveryDaySchedule(0, delayInSeconds);
 		//Schedule monthlySchedule2 = new FixedSchedule(cal, 10, 5);
-		MonthlyTypeSearchLogAnalyticsTask monthlyTypeSearchLogAnalyticsTask = new MonthlyTypeSearchLogAnalyticsTask(siteId, categoryIdList, monthlySchedule2, 2);
+		MonthlyTypeSearchLogAnalyticsTask monthlyTypeSearchLogAnalyticsTask = new MonthlyTypeSearchLogAnalyticsTask(siteId, categoryIdList, monthlySchedule2, 6);
 		dailyTaskRunner.addTask(monthlyTypeSearchLogAnalyticsTask);
 		
 		/*
 		 * 년도별 통계 
 		 */
-		Schedule yearlySchedule = new EveryYearSchedule(12, 0, 0, delayInSeconds);
+		Schedule yearlySchedule = new EveryDaySchedule(0, delayInSeconds);
 		// AnalysisTask<SearchLog> yearlyTask = YearlySearchLogAnalysisTask(siteId, categoryIdList, yearlySchedule, 1);
 		// dailyTaskRunner.addTask(yearlyTask);
 

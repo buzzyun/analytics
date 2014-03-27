@@ -34,7 +34,7 @@ public class YearlySearchLogAnalyticsTask extends AnalyticsTask<SearchLog>  impl
 		// baseDir : statistics/search/date/Y####/data/{siteId} 경로
 		File dir = environment.filePaths().getStatisticsRoot().file("search", "date");
 		
-		//해당년도의 최초로 되돌린다.
+		//해당년도의 마지막 일자로 되돌린다.
 		calendar.set(Calendar.MONTH, 0);
 		calendar.set(Calendar.DAY_OF_MONTH, 1);
 		calendar.add(Calendar.DAY_OF_MONTH, -1);

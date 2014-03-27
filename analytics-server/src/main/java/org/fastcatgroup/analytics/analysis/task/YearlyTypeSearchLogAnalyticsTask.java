@@ -32,16 +32,20 @@ public class YearlyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchLo
 		String[] typeList = environment.settingManager().getSystemSettings().getStringArray("db.typeList", ",");
 		logger.debug("@@@@typeList > {} {}", "", typeList);
 		
-		//주의 최초로 되돌린다.
-		calendar.add(Calendar.MONTH, 1);
-		calendar.add(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) * -1);
+		//해당년도의 마지막 일자로 되돌린다.
+		calendar.set(Calendar.MONTH, 0);
+		calendar.set(Calendar.DAY_OF_MONTH, 1);
+		calendar.add(Calendar.DAY_OF_MONTH, -1);
+		calendar.add(Calendar.YEAR, 1);
 		Calendar prevCalendar = (Calendar) calendar.clone();
-		prevCalendar.add(Calendar.MONTH, -1);
-		File baseDir = new File(SearchStatisticsProperties.getDayDataDir(dir, calendar), siteId);
+		prevCalendar.add(Calendar.YEAR, -1);
+		File baseDir = new File(SearchStatisticsProperties.getYearDataDir(dir, calendar), siteId);
+		
 		String encoding = SearchStatisticsProperties.encoding;
 		
-		int diff = SearchStatisticsProperties.getDateDiff(prevCalendar, calendar);
-		//일주일치의 일자별 raw.log를 머징한다.
+		int diff = SearchStatisticsProperties.getMonthDiff(prevCalendar, calendar);
+		
+		//1년치의 월별 로그를 데이터베이스를 사용하여 머징한다.
 		File[] files = new File[diff];
 		Calendar dailyCalendar = (Calendar) calendar.clone();
 		for(int inx=0;inx < diff; inx++) {

@@ -1,16 +1,14 @@
 package org.fastcatgroup.analytics.analysis.task;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
 
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.calculator.Calculator;
-import org.fastcatgroup.analytics.analysis.calculator.MonthlyTypeHitCalculator;
+import org.fastcatgroup.analytics.analysis.calculator.YearlyTypeHitCalculator;
 import org.fastcatgroup.analytics.analysis.log.TypeSearchDatabaseReader;
 import org.fastcatgroup.analytics.analysis.log.TypeSearchLog;
-import org.fastcatgroup.analytics.analysis.log.TypeSearchLogReader;
 import org.fastcatgroup.analytics.analysis.schedule.Schedule;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.mapper.SearchTypeHitMapper;
@@ -45,10 +43,6 @@ public class YearlyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchLo
 		prevCalendar.add(Calendar.YEAR, -1);
 		File baseDir = new File(SearchStatisticsProperties.getYearDataDir(dir, calendar), siteId);
 		
-		String encoding = SearchStatisticsProperties.encoding;
-		
-		int diff = SearchStatisticsProperties.getMonthDiff(prevCalendar, calendar);
-		
 		//1년치의 월별 로그를 데이터베이스를 사용하여 머징한다.
 		
 		String prevTimeId = SearchStatisticsProperties.getTimeId(prevCalendar, Calendar.YEAR);
@@ -66,7 +60,7 @@ public class YearlyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchLo
 		}
 
 		// calc를 카테고리별로 모두 만든다.
-		Calculator<TypeSearchLog> monthlyTypeHitCalculator = new MonthlyTypeHitCalculator("Montly type hit calculator", calendar, baseDir, siteId, categoryIdList, typeList);
-		addCalculator(monthlyTypeHitCalculator);
+		Calculator<TypeSearchLog> yearlyTypeHitCalculator = new YearlyTypeHitCalculator("Yearly type hit calculator", calendar, baseDir, siteId, categoryIdList, typeList);
+		addCalculator(yearlyTypeHitCalculator);
 	}
 }

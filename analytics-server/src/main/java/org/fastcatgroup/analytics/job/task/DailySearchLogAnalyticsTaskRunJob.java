@@ -72,7 +72,7 @@ public class DailySearchLogAnalyticsTaskRunJob extends Job {
 				
 				/* 2. type_raw.log */
 				TimeSchedule schedule2 = new TimeSchedule(calendar.getTimeInMillis(), 0);
-				DailyTypeSearchLogAnalyticsTask task2 = new DailyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule2, 0, null);
+				DailyTypeSearchLogAnalyticsTask task2 = new DailyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule2, 1, null);
 				task2.setEnvironment(environment);
 				JobService.getInstance().offer(task2);
 				
@@ -81,13 +81,13 @@ public class DailySearchLogAnalyticsTaskRunJob extends Job {
 //				case 'W':
 				/* weekly log */
 				TimeSchedule schedule3 = new TimeSchedule(calendar.getTimeInMillis(), 0);
-				WeeklySearchLogAnalyticsTask task3 = new WeeklySearchLogAnalyticsTask(siteId, categoryIdList, schedule3, 1);
+				WeeklySearchLogAnalyticsTask task3 = new WeeklySearchLogAnalyticsTask(siteId, categoryIdList, schedule3, 2);
 				task3.setEnvironment(environment);
 				JobService.getInstance().offer(task3);
 				
 				/* weekly type log */
 				TimeSchedule schedule4 = new TimeSchedule(calendar.getTimeInMillis(), 0);
-				WeeklyTypeSearchLogAnalyticsTask task4 = new WeeklyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule4, 1);
+				WeeklyTypeSearchLogAnalyticsTask task4 = new WeeklyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule4, 3);
 				task4.setEnvironment(environment);
 				JobService.getInstance().offer(task4);
 				
@@ -96,13 +96,13 @@ public class DailySearchLogAnalyticsTaskRunJob extends Job {
 //				case 'M':
 				/* monthly log */
 				TimeSchedule schedule5 = new TimeSchedule(calendar.getTimeInMillis(), 0);
-				MonthlySearchLogAnalyticsTask task5 = new MonthlySearchLogAnalyticsTask(siteId, categoryIdList, schedule5, 1);
+				MonthlySearchLogAnalyticsTask task5 = new MonthlySearchLogAnalyticsTask(siteId, categoryIdList, schedule5, 4);
 				task5.setEnvironment(environment);
 				JobService.getInstance().offer(task5);
 				
 				/* monthly type log */
 				TimeSchedule schedule6 = new TimeSchedule(calendar.getTimeInMillis(), 0);
-				MonthlyTypeSearchLogAnalyticsTask task6 = new MonthlyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule6, 1);
+				MonthlyTypeSearchLogAnalyticsTask task6 = new MonthlyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule6, 5);
 				task6.setEnvironment(environment);
 				JobService.getInstance().offer(task6);
 				
@@ -111,13 +111,13 @@ public class DailySearchLogAnalyticsTaskRunJob extends Job {
 //				case 'Y':
 				/* yearly log */
 				TimeSchedule schedule7 = new TimeSchedule(calendar.getTimeInMillis(), 0);
-				YearlySearchLogAnalyticsTask task7 = new YearlySearchLogAnalyticsTask(siteId, categoryIdList, schedule7, 1);
+				YearlySearchLogAnalyticsTask task7 = new YearlySearchLogAnalyticsTask(siteId, categoryIdList, schedule7, 6);
 				task7.setEnvironment(environment);
 				JobService.getInstance().offer(task7);
 				
 				/* yearly type log */
 				TimeSchedule schedule8 = new TimeSchedule(calendar.getTimeInMillis(), 0);
-				YearlyTypeSearchLogAnalyticsTask task8 = new YearlyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule8, 1);
+				YearlyTypeSearchLogAnalyticsTask task8 = new YearlyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule8, 7);
 				task8.setEnvironment(environment);
 				JobService.getInstance().offer(task8);
 //			}

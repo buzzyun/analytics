@@ -39,9 +39,9 @@ public class TypeSearchDatabaseReader extends DatabaseLogReader<TypeSearchLog, S
 
 	@Override
 	protected TypeSearchLog makeLog(SearchTypeHitVO vo) {
-		TypeSearchLog typeSearchLog = new TypeSearchLog(new String[] { vo.getCategoryId(), "",
+		TypeSearchLog typeSearchLog = new TypeSearchLog(new String[] { vo.getCategoryId(), "-",
 				vo.getDtype() }, vo.getHit());
-		logger.debug("make log : {}", typeSearchLog);
+		logger.debug("make log : {} : {}", typeSearchLog, vo.getHit());
 		return typeSearchLog;
 	}
 }

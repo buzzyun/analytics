@@ -45,7 +45,7 @@ public class TypeSearchLogKeyCountHandler extends CategoryLogHandler<TypeSearchL
 							counter = new Counter(1);
 							typeCouterList[i].put(type, counter);
 						} else {
-							counter.increment();
+							counter.increment(logData.getCount());
 						}
 						logger.trace("##TypeSearchLogKeyCountHandler1 type-count > {}:{} > {}:{}", categoryId, logData.categoryId(), type, counter);
 					}
@@ -65,7 +65,7 @@ public class TypeSearchLogKeyCountHandler extends CategoryLogHandler<TypeSearchL
 							counter = new Counter(1);
 							typeCouterList[i].put(type, counter);
 						} else {
-							counter.increment();
+							counter.increment(logData.getCount());
 						}
 						logger.trace("##TypeSearchLogKeyCountHandler2 type-count > {}:{} > {}:{}", categoryId, logData.categoryId(), type, counter);
 					}

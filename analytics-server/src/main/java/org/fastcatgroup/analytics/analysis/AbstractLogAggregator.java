@@ -54,7 +54,7 @@ public abstract class AbstractLogAggregator<LogType extends LogData> {
 			Counter counter = aggregateMap.get(log.getKey());
 //			logger.debug("##handle log {} > {}", log.getKey(), counter);
 			if (counter != null) {
-				counter.increment();
+				counter.increment(log.getCount());
 			} else {
 				aggregateMap.put(log.getKey(), new Counter(1));
 			}

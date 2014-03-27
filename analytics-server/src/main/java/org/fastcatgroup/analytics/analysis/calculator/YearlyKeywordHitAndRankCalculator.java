@@ -20,14 +20,14 @@ import org.fastcatgroup.analytics.analysis.handler.UpdateSearchHitHandler;
 import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
 
-public class WeeklyKeywordHitAndRankCalculator extends Calculator<SearchLog> implements KeywordHitAndRankInterface{
+public class YearlyKeywordHitAndRankCalculator extends Calculator<SearchLog> implements KeywordHitAndRankInterface {
 	
 	private File prevDir;
 	private Set<String> banWords;
 	private int minimumHitCount;
 	private int topCount;
 	
-	public WeeklyKeywordHitAndRankCalculator(String name, Calendar calendar, File baseDir, File prevDir, String siteId, List<String> categoryIdList, Set<String> banWords, int minimumHitCount, int topCount) {
+	public YearlyKeywordHitAndRankCalculator(String name, Calendar calendar, File baseDir, File prevDir, String siteId, List<String> categoryIdList, Set<String> banWords, int minimumHitCount, int topCount) {
 		super(name, calendar, baseDir, siteId, categoryIdList);
 		this.prevDir = prevDir;
 		this.banWords = banWords;
@@ -53,7 +53,9 @@ public class WeeklyKeywordHitAndRankCalculator extends Calculator<SearchLog> imp
 			} catch (IOException ignore) { }
 		}
 		
-		String timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.WEEK_OF_YEAR);
+		//12달치 파일을 돌면서 key-count / key-count-rank / popular 를 머징한다.
+		
+		String timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.YEAR);
 		int maxKeywordLength = SearchStatisticsProperties.maxKeywordLength;
 		int runKeySize = SearchStatisticsProperties.runKeySize;
 

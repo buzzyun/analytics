@@ -39,15 +39,14 @@ public class SearchLogKeyCountHandler extends CategoryLogHandler<SearchLog> {
 				if (logValidator != null && logValidator.isValid(logData)) {
 					aggregator.handleLog(logData);
 				}
-				count++;
+				count+=logData.getCount();
 			} else if (categoryId.equals("_root")) {
 				// root는 모두다.
 				if (logValidator != null && logValidator.isValid(logData)) {
 					aggregator.handleLog(logData);
 				}
-				count++;
+				count+=logData.getCount();
 			}
-
 		}
 	}
 
@@ -56,5 +55,4 @@ public class SearchLogKeyCountHandler extends CategoryLogHandler<SearchLog> {
 		aggregator.done();
 		return count;
 	}
-
 }

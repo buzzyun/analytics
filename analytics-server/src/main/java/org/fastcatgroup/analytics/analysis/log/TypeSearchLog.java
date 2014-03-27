@@ -30,6 +30,11 @@ public class TypeSearchLog extends LogData {
 	}
 	
 	@Override
+	public int getCount() {
+		return 1;
+	}
+	
+	@Override
 	public String toString(){
 		
 		StringBuffer sb = new StringBuffer();

@@ -3,6 +3,8 @@ package org.fastcatgroup.analytics.analysis;
 import java.io.File;
 import java.util.Calendar;
 
+import javax.swing.CellEditor;
+
 public class SearchStatisticsProperties {
 	public static final String KEY_COUNT_LOG_FILENAME = "key-count.log";
 	public static final String encoding = "utf-8";
@@ -14,6 +16,17 @@ public class SearchStatisticsProperties {
 	
 	public static int getDateDiff(Calendar c1, Calendar c2) {
 		return (int) ((c2.getTimeInMillis() - c1.getTimeInMillis()) / (1000 * 60 * 60 * 24));
+	}
+	
+	public static int getMonthDiff(Calendar c1, Calendar c2) {
+		
+		int mon1 = c1.get(Calendar.MONTH);
+		int mon2 = c2.get(Calendar.MONTH);
+		
+		int y1 = c1.get(Calendar.YEAR);
+		int y2 = c2.get(Calendar.YEAR);
+		
+		return (y2 - y1) * 12 + mon2 - mon1;
 	}
 
 	public static File getYearDataDir(File dir, Calendar calendar) {

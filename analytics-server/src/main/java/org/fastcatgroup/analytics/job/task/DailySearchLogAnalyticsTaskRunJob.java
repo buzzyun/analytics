@@ -16,6 +16,7 @@ import org.fastcatgroup.analytics.analysis.task.MonthlySearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.MonthlyTypeSearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.WeeklySearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.WeeklyTypeSearchLogAnalyticsTask;
+import org.fastcatgroup.analytics.analysis.task.YearlySearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.control.JobService;
 import org.fastcatgroup.analytics.exception.AnalyticsException;
 import org.fastcatgroup.analytics.job.Job;
@@ -105,6 +106,20 @@ public class DailySearchLogAnalyticsTaskRunJob extends Job {
 				JobService.getInstance().offer(task6);
 				
 //				break;
+				
+//				case 'Y':
+				/* yearly log */
+				TimeSchedule schedule7 = new TimeSchedule(calendar.getTimeInMillis(), 0);
+				YearlySearchLogAnalyticsTask task7 = new YearlySearchLogAnalyticsTask(siteId, categoryIdList, schedule7, 1);
+				task7.setEnvironment(environment);
+				JobService.getInstance().offer(task7);
+				
+//				/* monthly type log */
+//				TimeSchedule schedule6 = new TimeSchedule(calendar.getTimeInMillis(), 0);
+//				MonthlyTypeSearchLogAnalyticsTask task6 = new MonthlyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule6, 1);
+//				task6.setEnvironment(environment);
+//				JobService.getInstance().offer(task6);
+				
 //			}
 		}
 		

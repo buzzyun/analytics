@@ -6,6 +6,7 @@
 	content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
 <title>Fastcat Analytics</title>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
+<link rel="SHORTCUT ICON" HREF="${contextPath}/resources/assets/img/favicon.ico" />
 <!--=== CSS ===-->
 <!-- Bootstrap -->
 <link href="${contextPath}/resources/bootstrap/css/bootstrap.min.css" rel="stylesheet"

@@ -9,9 +9,22 @@
 	<script>
       $(document).ready(function() {
 	  
+    	 $('#date1').DatePicker({
+  			flat: true,
+  			date: new Date(),
+  			calendars: 3,
+  			mode: 'range',
+  			view: 'days',
+  			//lselect: 'days',
+  			starts: 1,
+  			onChange: function(formated) {
+  				$('#select_days').text(formated[0] +' ~ ' + formated[1]);
+  			}
+  		});
+    	  
 		$('#date3').DatePicker({
 			flat: true,
-			//date: ['2013-12-28','2015-01-23'],
+			date: ['2013-11','2015-02'],
 			//current: new Date(),
 			calendars: 3,
 			mode: 'range',
@@ -55,7 +68,13 @@
 </head>
 
 <body>
-	selected months sample calendar
+	<h1>Days</h1>
+	<div id="date1"></div>
+	<div id="select_days" style="text-align:left;font-size:16px;"></div>
+
+
+
+	<h1>selected months sample calendar</h1>
 	
 	<div id="date3"></div>
 	<div id="select_month" style="text-align:left;font-size:16px;"></div>

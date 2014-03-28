@@ -42,6 +42,8 @@
 	href="${contextPath}/resources/assets/css/console.css">
 <link rel="stylesheet"
 	href="${contextPath}/resources/assets/css/todc-bootstrap.css">	
+	
+<link rel="stylesheet" type="text/css" href="${contextPath}/resources/assets/css/datepicker/datepicker.css" />
 <!--=== JavaScript ===-->
 
 <script type="text/javascript" src="${contextPath}/resources/assets/js/libs/jquery-1.10.2.min.js"></script>
@@ -123,7 +125,8 @@
 <script type="text/javascript" src="${contextPath}/resources/assets/js/plugins.js"></script>
 <script type="text/javascript" src="${contextPath}/resources/assets/js/plugins.form-components.js"></script>
 
-<script type="text/javascript" src="${contextPath}/resources/plugins/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+<%-- <script type="text/javascript" src="${contextPath}/resources/plugins/bootstrap-datepicker/bootstrap-datepicker.js"></script> --%>
+<script type="text/javascript" src="${contextPath}/resources/assets/js/datepicker/datepicker.js"></script>
 
 <!-- Demo JS -->
 <!-- 

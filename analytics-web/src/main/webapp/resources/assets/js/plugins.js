@@ -30,10 +30,10 @@ var Plugins = function() {
 				showWeekNumbers: true,
 				timePicker: false,
 				ranges: {
-				   'Today': [moment(), moment()],
-				   'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
-				   'Last Week': [moment().subtract('weeks', 1).startOf('week'), moment().subtract('weeks', 1).endOf('week')],
-				   'Last Month': [moment().subtract('months', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+				   'Today': [moment(), moment()]
+//				   'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+//				   'Last Week': [moment().subtract('weeks', 1).startOf('week'), moment().subtract('weeks', 1).endOf('week')],
+//				   'Last Month': [moment().subtract('months', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
 				},
 				opens: 'left',
 				buttonClasses: ['btn btn-default'],

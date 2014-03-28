@@ -44,6 +44,20 @@ function goPage(uri, pageNo){
 	
 $(document).ready(function(){
 	fillCategoryList('${siteId}', $("#select_category"), '<%=categoryId %>');
+	
+	
+	$('#date1').DatePicker({
+		flat: true,
+		date: new Date(),
+		calendars: 1,
+		//mode: 'range',
+		view: 'days',
+		//lselect: 'days',
+		starts: 1,
+		onChange: function(formated) {
+			$('#select_days').text(formated[0] +' ~ ' + formated[1]);
+		}
+	});
 });
 </script>
 
@@ -107,6 +121,8 @@ $(document).ready(function(){
 								<input type="submit" class="btn btn-primary" value="Submit">
 							</div>
 						</div> -->
+						<div id="date1" class="pull-right"></div>
+						<div id="select_days" style="text-align:left;font-size:16px;"></div>
 					</form>
 				</div>
 				<div class="row">

@@ -99,7 +99,22 @@ String timeTo = (String) request.getAttribute("timeTo");
 		<%
 		}
 		%>
-			
+		
+		
+		
+		$('#date1').DatePicker({
+			flat: true,
+			date: new Date(),
+			calendars: 3,
+			mode: 'range',
+			view: 'days',
+			//lselect: 'days',
+			starts: 1,
+			onChange: function(formated) {
+				//$('#select_days').text(formated[0] +' ~ ' + formated[1]);
+			}
+		});
+		
 	});
 </script>
 
@@ -133,28 +148,51 @@ String timeTo = (String) request.getAttribute("timeTo");
 				<div class="row row-bg row-bg-sm">
 					<!-- .row-bg -->
 					<form method="get">
-						<div class="col-md-12 bottom-space">
-							<div class="form-inline">
-								<select id="select_category" name="categoryId" class="select_flat select_flat-sm fcol2"></select>
+						<div class="row">
+						<div class="col-md-5 bottom-space">
+							<div class="form-inline bottom-space">
+								<select id="select_category" name="categoryId" class="select_flat fcol2"></select>
 								<!-- <input type="button" class="btn btn-sm btn-warning" value="DAY"> 
 								<input type="button" class="btn btn-sm btn-default" value="WEEK">
 								<input type="button" class="btn btn-sm btn-default" value="MONTH">
 								<input type="button" class="btn btn-sm btn-default" value="YEAR"> -->
-								<select name="timeType" class="select_flat select_flat-sm fcol1">
+								<!-- <select name="timeType" class="select_flat select_flat-sm fcol1">
 									<option value="D">Day</option>
-									<!-- <option value="W">Week</option>
+									<option value="W">Week</option>
 									<option value="M">Month</option>
-									<option value="Y">Year</option> -->
-								</select>
+									<option value="Y">Year</option>
+								</select> -->
+								<span>
 								<input class="form-control fcol1-2 " size="16" type="text" name="timeFrom" value="<%=timeFrom %>" >
 								- <input class="form-control fcol1-2 " size="16" type="text" name="timeTo" value="<%=timeTo %>" >
+								</span>
 							</div>
-						</div>
-						<div class="col-md-12">
+							
+							<div class="btn-group bottom-space">
+								<button type="button" class="btn btn-default">Hourly</button>
+								<button type="button" class="btn btn-primary">Daily</button>
+								<button type="button" class="btn btn-default">Weekly</button>
+								<button type="button" class="btn btn-default">Monthly</button>
+								<button type="button" class="btn btn-default disabled">Yearly</button>
+							</div>
+							
 							<div class="form-inline">
 								<input type="submit" class="btn btn-primary" value="Submit">
 							</div>
 						</div>
+						<div class="col-md-7 bottom-space">
+							<div id="date1"></div>
+							<div class="form-inline">
+						</div>
+						
+						</div>
+						<!-- <div class="col-md-12">
+							<div class="form-inline">
+								<input type="submit" class="btn btn-primary" value="Submit">
+							</div>
+						</div> -->
+						
+						
 					</form>
 				</div>
 				

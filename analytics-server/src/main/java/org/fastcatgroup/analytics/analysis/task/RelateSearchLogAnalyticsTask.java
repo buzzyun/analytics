@@ -9,7 +9,7 @@ import java.util.Set;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.calculator.Calculator;
 import org.fastcatgroup.analytics.analysis.calculator.DailyRelateKeywordCalculator;
-import org.fastcatgroup.analytics.analysis.log.FileLogReader;
+import org.fastcatgroup.analytics.analysis.log.FileListLogReader;
 import org.fastcatgroup.analytics.analysis.log.RelateSearchLog;
 import org.fastcatgroup.analytics.analysis.schedule.Schedule;
 
@@ -36,7 +36,7 @@ public class RelateSearchLogAnalyticsTask extends AnalyticsTask<RelateSearchLog>
 		File logFile = new File(baseDir, "raw.log");
 		String encoding = SearchStatisticsProperties.encoding;
 		try {
-			logReader = new FileLogReader<RelateSearchLog>(logFile, encoding){
+			logReader = new FileListLogReader<RelateSearchLog>(new File[] {logFile}, encoding){
 
 				@Override
 				protected RelateSearchLog makeLog(String[] el) {

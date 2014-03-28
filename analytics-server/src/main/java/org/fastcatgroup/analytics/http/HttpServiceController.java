@@ -17,11 +17,9 @@ public class HttpServiceController {
 	private static final Logger logger = LoggerFactory.getLogger(HttpServiceController.class);
 	private ExecutorService executorService;
 	private Map<String, HttpAction> actionMap;
-	private HttpSessionManager httpSessionManager;
 	
-	public HttpServiceController(ExecutorService executorService, HttpSessionManager httpSessionManager) {
+	public HttpServiceController(ExecutorService executorService) {
 		this.executorService = executorService;
-		this.httpSessionManager = httpSessionManager;
 	}
 
 	public void dispatchRequest(HttpRequest request, HttpChannel httpChannel) {
@@ -79,11 +77,9 @@ public class HttpServiceController {
 			//허용 method가 아니면 null
 			return null;
 		}
-		ActionResponse actionResponse = new ActionResponse();
-		HttpSession httpSession = httpSessionManager.handleCookie(request, actionResponse);
-		
+		ActionResponse actionResponse = new ActionResponse(httpChannel);
 		HttpAction action = actionObj.clone();
-		action.init(contenType, new ActionRequest(uri, request), actionResponse, httpSession, httpChannel);
+		action.init(contenType, new ActionRequest(uri, request), actionResponse);
 		return action;
 	}
 

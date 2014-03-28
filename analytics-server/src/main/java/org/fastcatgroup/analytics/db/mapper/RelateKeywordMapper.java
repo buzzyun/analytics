@@ -14,9 +14,11 @@ public interface RelateKeywordMapper extends AnalyticsMapper {
 	
 	public RelateKeywordVO getEntryById(@Param("siteId") String siteId, @Param("id") String id) throws Exception;
 	
-	public List<RelateKeywordVO> getEntryList(@Param("siteId") String siteId) throws Exception;
+	public List<RelateKeywordVO> getEntryList(@Param("siteId") String siteId, @Param("start")int start, @Param("end")int end) throws Exception;
 	
 	public List<RelateKeywordVO> getEntryListByWhereCondition(@Param("siteId") String siteId, @Param("whereCondition") String whereCondition ,@Param("start")int start, @Param("end")int end) throws Exception; 
+	
+	public List<RelateKeywordVO> getEntryListByKeyword(@Param("siteId") String siteId, @Param("exactMatch") boolean exactMatch, @Param("keyword") String keyword ,@Param("start")int start, @Param("end")int end) throws Exception; 
 	
 	public void updateEntry(@Param("siteId") String siteId, @Param("entry") RelateKeywordVO vo) throws Exception;
 	
@@ -29,5 +31,7 @@ public interface RelateKeywordMapper extends AnalyticsMapper {
 	public int getCount(@Param("siteId") String siteId) throws Exception;
 	
 	public int getCountByWhereCondition(@Param("siteId") String siteId, @Param("whereCondition") String whereCondition) throws Exception;
+	
+	public int getCountByKeyword(@Param("siteId") String siteId, @Param("exactMatch") boolean exactMatch, @Param("keyword") String keyword) throws Exception;
 	
 }

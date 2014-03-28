@@ -17,7 +17,7 @@ public class TypeSearchLogKeyCountHandler extends CategoryLogHandler<TypeSearchL
 
 	public TypeSearchLogKeyCountHandler(String categoryId, String[] typeList) {
 		super(categoryId);
-		logger.debug("##TypeSearchLogKeyCountHandler > {}", categoryId);
+		logger.trace("##TypeSearchLogKeyCountHandler > {}", categoryId);
 		this.typeList = typeList;
 		typeCouterList = new Map[typeList.length];
 		for (int i = 0; i < typeList.length; i++) {
@@ -27,7 +27,7 @@ public class TypeSearchLogKeyCountHandler extends CategoryLogHandler<TypeSearchL
 
 	@Override
 	public void handleLog(TypeSearchLog logData) throws IOException {
-		logger.debug("##TypeSearchLogKeyCountHandler > {} > {}", categoryId, logData);
+		logger.trace("##TypeSearchLogKeyCountHandler > {} > {}", categoryId, logData);
 		String keyword = logData.keyword();
 		if (keyword != null && keyword.length() > 0) {
 			if (categoryId.equals(logData.categoryId())) {
@@ -37,14 +37,18 @@ public class TypeSearchLogKeyCountHandler extends CategoryLogHandler<TypeSearchL
 					if (type.equals("-")) {
 						continue;
 					}
-					Counter counter = typeCouterList[i].get(type);
-					if (counter == null) {
-						counter = new Counter(1);
-						typeCouterList[i].put(type, counter);
-					} else {
-						counter.increment();
+					Counter counter = null;
+					
+					if(typeCouterList.length > i) {
+						counter = typeCouterList[i].get(type);
+						if (counter == null) {
+							counter = new Counter(logData.getCount());
+							typeCouterList[i].put(type, counter);
+						} else {
+							counter.increment(logData.getCount());
+						}
+						logger.trace("##TypeSearchLogKeyCountHandler1 type-count > {}:{} > {}:{}", categoryId, logData.categoryId(), type, counter);
 					}
-					logger.debug("##TypeSearchLogKeyCountHandler1 type-count > {}:{} > {}:{}", categoryId, logData.categoryId(), type, counter);
 				}
 			} else if (categoryId.equals("_root")) {
 				// root는 모두다.
@@ -53,14 +57,18 @@ public class TypeSearchLogKeyCountHandler extends CategoryLogHandler<TypeSearchL
 					if (type.equals("-")) {
 						continue;
 					}
-					Counter counter = typeCouterList[i].get(type);
-					if (counter == null) {
-						counter = new Counter(1);
-						typeCouterList[i].put(type, counter);
-					} else {
-						counter.increment();
+					Counter counter = null;
+					
+					if(typeCouterList.length > i) {
+						counter = typeCouterList[i].get(type);
+						if (counter == null) {
+							counter = new Counter(1);
+							typeCouterList[i].put(type, counter);
+						} else {
+							counter.increment(logData.getCount());
+						}
+						logger.trace("##TypeSearchLogKeyCountHandler2 type-count > {}:{} > {}:{}", categoryId, logData.categoryId(), type, counter);
 					}
-					logger.debug("##TypeSearchLogKeyCountHandler2 type-count > {}:{} > {}:{}", categoryId, logData.categoryId(), type, counter);
 				}
 			}
 

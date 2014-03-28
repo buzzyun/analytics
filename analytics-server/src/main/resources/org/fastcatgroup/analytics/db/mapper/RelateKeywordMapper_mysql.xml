@@ -42,6 +42,9 @@
 		a.updateTime
 		from ${siteId}_relate_keyword a left join ${siteId}_relate_keyword_value b on b.keyId = a.id
 		group by a.id
+		<if test="end > 0">
+		limit #{start}, #{end}
+		</if>
 	</select>
 	
 	<select id="getEntryById" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.RelateKeywordVO">
@@ -52,25 +55,60 @@
 		where a.id=#{id}
 		group by a.id
 	</select>
-	
 	<select id="getEntryListByWhereCondition" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.RelateKeywordVO">
 		select a.id, a.keyword, 
 		concat(group_concat(b.value)) value, 
 		a.updateTime
-		from ${siteId}_relate_keyword a left join ${siteId}_relate_keyword_value b on b.keyId = a.id
-		<if test="whereCondition != ''">
-		where ${whereCondition}
-		</if>
+		from (
+			select a.*
+			from ${siteId}_relate_keyword a left join ${siteId}_relate_keyword_value b on b.keyId = a.id
+			<if test="whereCondition != ''">
+			where ${whereCondition}
+			</if>
+			group by a.id
+		) a left join ${siteId}_relate_keyword_value b on b.keyId = a.id
+		group by a.id
+		limit #{start}, #{end}
+	</select>
+	
+	<select id="getEntryListByKeyword" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.RelateKeywordVO">
+		select a.id, a.keyword, 
+		concat(group_concat(b.value)) value, 
+		a.updateTime
+		from (
+			select a.*
+			from ${siteId}_relate_keyword a left join ${siteId}_relate_keyword_value b on b.keyId = a.id
+			<if test="exactMatch == true">
+			where (a.keyword=#{keyword} or b.value=#{keyword})
+			</if>
+			<if test="exactMatch == false">
+			where (a.keyword like concat('%',#{keyword},'%') or concat('%',b.value=#{keyword},'%'))
+			</if>
+			group by a.id
+		) a left join ${siteId}_relate_keyword_value b on b.keyId = a.id
 		group by a.id
 		limit #{start}, #{end}
 	</select>
 	
 	<select id="getCountByWhereCondition" parameterType="map" resultType="int">
-		select count(*) from ${siteId}_relate_keyword a left join 
+		select count(*) from (select a.id from ${siteId}_relate_keyword a left join 
 		${siteId}_relate_keyword_value b on b.keyId = a.id
 		<if test="whereCondition != ''">
 		where ${whereCondition}
 		</if>
+		group by a.id) a
+	</select>
+
+	<select id="getCountByKeyword" parameterType="map" resultType="int">
+		select count(*) from (select a.id from ${siteId}_relate_keyword a left join 
+		${siteId}_relate_keyword_value b on b.keyId = a.id
+		<if test="exactMatch == true">
+		where (a.keyword=#{keyword} or b.value=#{keyword})
+		</if>
+		<if test="exactMatch == false">
+		where (a.keyword like concat('%',#{keyword},'%') or concat('%',b.value=#{keyword},'%'))
+		</if>
+		group by a.id) a
 	</select>
 	
 	<select id="getCount" parameterType="map" resultType="int">

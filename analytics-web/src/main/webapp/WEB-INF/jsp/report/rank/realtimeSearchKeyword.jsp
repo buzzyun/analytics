@@ -52,7 +52,7 @@ $(document).ready(function(){
 				<!--=== Page Header ===-->
 				<div class="page-header">
 					<div class="page-title page-title-sm">
-						<h3>Keyword Rank Realtime</h3>
+						<h3>Realtime Keyword Rank</h3>
 					</div>
 				</div>
 				<!-- /Page Header -->

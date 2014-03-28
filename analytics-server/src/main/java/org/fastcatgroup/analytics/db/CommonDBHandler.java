@@ -19,8 +19,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.sql.DataSource;
+
 import org.apache.ibatis.builder.xml.XMLMapperBuilder;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
+import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
@@ -58,19 +61,6 @@ public class CommonDBHandler {
 		
 		if (driverProperties == null) {
 			driverProperties = new Properties();
-			// ******* driverProperties *****
-			// poolMaximumActiveConnections
-			// poolMaximumIdleConnections
-			// poolMaximumCheckoutTime
-			// poolTimeToWait
-			// poolPingQuery
-			// poolPingEnabled
-			// poolPingConnectionsNotUsedFor
-			// ////////////////////////////////
-			driverProperties.setProperty("poolPingEnabled", "true");
-			driverProperties.setProperty("poolPingQuery", "select 1 from dual");
-			driverProperties.setProperty("poolMaximumIdleConnections", "0");
-			driverProperties.setProperty("poolPingConnectionsNotUsedFor", "3600");
 		}
 
 		String dbType = settings.getString("type");
@@ -78,7 +68,47 @@ public class CommonDBHandler {
 		driverProperties.setProperty("password", settings.getString("password"));
 		driverProperties.setProperty("driver.encoding", "UTF-8");
 
-		PooledDataSource dataSource = new PooledDataSource(settings.getString("driver"), settings.getString("url"), driverProperties);
+		boolean isAutoCommit = settings.getBoolean("autocommit", true);
+		boolean usePooling = settings.getBoolean("usePooling", true);
+		
+		DataSource dataSource = null;
+		if(usePooling){
+			PooledDataSource pooledDataSource = new PooledDataSource(settings.getString("driver"), settings.getString("url"), driverProperties);
+			boolean poolPingEnabled = settings.getBoolean("poolPingEnabled", true);	
+			String poolPingQuery = settings.getString("poolPingQuery");
+			int poolPingConnectionsNotUsedFor = settings.getInt("poolPingConnectionsNotUsedFor", -1);
+			int poolTimeToWait = settings.getInt("poolTimeToWait", -1);
+			int poolMaximumActiveConnections = settings.getInt("poolMaximumActiveConnections", -1);
+			int poolMaximumIdleConnections = settings.getInt("poolMaximumIdleConnections", -1);
+			
+			pooledDataSource.setPoolPingEnabled(poolPingEnabled);
+			
+			if(poolPingQuery != null){
+				pooledDataSource.setPoolPingQuery(poolPingQuery);
+			}
+			if(poolPingConnectionsNotUsedFor != -1){
+				pooledDataSource.setPoolPingConnectionsNotUsedFor(poolPingConnectionsNotUsedFor);
+			}
+			if(poolTimeToWait != -1){
+				pooledDataSource.setPoolTimeToWait(poolTimeToWait);
+			}
+			if(poolMaximumActiveConnections != -1){
+				pooledDataSource.setPoolMaximumActiveConnections(poolMaximumActiveConnections);
+			}
+			if(poolMaximumIdleConnections != -1){
+				pooledDataSource.setPoolMaximumIdleConnections(poolMaximumIdleConnections);
+			}
+			//autocommit
+			pooledDataSource.setDefaultAutoCommit(isAutoCommit);
+			
+			dataSource = pooledDataSource;
+			
+		}else{
+			UnpooledDataSource unpooledDataSource = new UnpooledDataSource(settings.getString("driver"), settings.getString("url"), driverProperties);
+			unpooledDataSource.setAutoCommit(isAutoCommit);
+			dataSource = unpooledDataSource;
+		}
+		
 		org.apache.ibatis.mapping.Environment environment = new org.apache.ibatis.mapping.Environment("ID", new JdbcTransactionFactory(), dataSource);
 		Configuration configuration = new Configuration(environment);
 		if (globalParam != null) {

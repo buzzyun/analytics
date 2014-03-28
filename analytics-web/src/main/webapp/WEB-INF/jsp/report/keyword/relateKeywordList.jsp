@@ -162,7 +162,7 @@ function gorelateApplyPage(pageNo){
 			<div class="col-md-12">
 			Rows 
 			<% if(entryList.size() > 0) { %>
-			<%=start %> - <%=start + entryList.size() - 1 %> of <%=filteredSize %> <% if(filteredSize != totalSize) {%> (filtered from <%=totalSize %> total entries)<% } %>
+			<%=start + 1 %> - <%=start + entryList.size() %> of <%=filteredSize %> <% if(filteredSize != totalSize) {%> (filtered from <%=totalSize %> total entries)<% } %>
 			<% } else { %>
 			Empty
 			<% } %>

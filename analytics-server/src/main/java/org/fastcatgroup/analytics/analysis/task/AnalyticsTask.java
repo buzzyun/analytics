@@ -17,7 +17,7 @@ public abstract class AnalyticsTask<LogType extends LogData> extends Job impleme
 	private static final long serialVersionUID = -8028269282257112376L;
 
 	protected static Logger logger = LoggerFactory.getLogger(AnalyticsTask.class);
-	
+	protected String name;
 	protected String siteId;
 	protected List<String> categoryIdList;
 	private Schedule schedule;
@@ -26,8 +26,11 @@ public abstract class AnalyticsTask<LogType extends LogData> extends Job impleme
 	private List<Calculator<LogType>> calculatorList;
 	protected SourceLogReader<LogType> logReader;
 	private int executeCount;
-
 	public AnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
+		this("Noname", siteId, categoryIdList, schedule, priority);
+	}
+	public AnalyticsTask(String name, String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
+		this.name = name;
 		this.siteId = siteId;
 		this.categoryIdList = categoryIdList;
 		this.schedule = schedule;
@@ -45,6 +48,9 @@ public abstract class AnalyticsTask<LogType extends LogData> extends Job impleme
 	protected void preProcess(){ 
 	}
 
+	public String name(){
+		return name;
+	}
 	public int priority() {
 		return priority;
 	}
@@ -61,7 +67,7 @@ public abstract class AnalyticsTask<LogType extends LogData> extends Job impleme
 			
 			prepare(calendar);
 			
-			logger.debug("### AnalysisTask Run {} > {}", getClass().getSimpleName(), schedule);
+			logger.info("### {}-{} Run > {}", getClass().getSimpleName(), name, schedule);
 			
 			if (logReader != null) {
 				try {
@@ -86,7 +92,9 @@ public abstract class AnalyticsTask<LogType extends LogData> extends Job impleme
 				c.calculate();
 			}
 
+			logger.info("### {}-{} Done!", getClass().getSimpleName(), name);
 		} catch (Exception e) {
+			logger.info("### {}-{} Error!", getClass().getSimpleName(), name);
 			logger.error("", e);
 			return new JobResult(false);
 		}
@@ -127,6 +135,10 @@ public abstract class AnalyticsTask<LogType extends LogData> extends Job impleme
 
 	public void incrementExecution() {
 		executeCount++;
+	}
+	
+	public String toString() {
+		return getClass().getSimpleName() + "[" + name + "] priority[" + priority + "] siteId[" + siteId + "] executeCount[" + executeCount + "] schedule["+schedule+"]";
 	}
 
 }

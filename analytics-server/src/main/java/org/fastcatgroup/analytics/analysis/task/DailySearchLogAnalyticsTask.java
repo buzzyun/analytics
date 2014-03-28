@@ -45,7 +45,7 @@ public class DailySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 		File logFile = new File(baseDir, "raw.log");
 		String encoding = SearchStatisticsProperties.encoding;
 		try {
-			logReader = new SearchLogReader(logFile, encoding);
+			logReader = new SearchLogReader(new File[] { logFile }, encoding);
 		} catch (IOException e) {
 			logger.error("", e);
 		}

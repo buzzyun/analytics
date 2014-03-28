@@ -19,7 +19,7 @@ rem ----------------------------------------------------------------------------
 
 setlocal enabledelayedexpansion
 
-if "%FASTCAT_HOME%"=="" (set IR_HOME=%~dp0\..\) else set IR_HOME=%FASTCAT_HOME%
+set IR_HOME=%~dp0\..\
 chdir /d %IR_HOME%
 set CONF=%IR_HOME%\conf
 set LIB=%IR_HOME%\lib
@@ -27,6 +27,8 @@ set FASTCAT_CLASSPATH=.
 
 for /f "tokens=*" %%x in ('dir /s /b %LIB%\*.jar') do (set FASTCAT_CLASSPATH=!FASTCAT_CLASSPATH!;%%x)
 
-java -Dserver.home=%IR_HOME% -Xmx512m -Dlogback.configurationFile=%CONF%\logback.xml -Dderby.stream.error.file=logs/db.log -classpath %FASTCAT_CLASSPATH% com.fastcatsearch.server.CatServer
+echo fastcatsearch-analytics start. see logs/system.log file.
+
+java -Xmx512m -Dlogback.configurationFile=%CONF%\logback.xml -Dderby.stream.error.file=logs/db.log -classpath %FASTCAT_CLASSPATH% org.fastcatsearch.server.CatServer %IR_HOME% >>logs/output.log 2>&1
 
 endlocal

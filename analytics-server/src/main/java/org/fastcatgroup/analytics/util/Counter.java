@@ -7,8 +7,8 @@ public class Counter {
 		count = i;
 	}
 
-	public void increment() {
-		count++;
+	public void increment(int n) {
+		count+=n;
 	}
 
 	public int value() {

@@ -23,7 +23,7 @@ public class PopularKeywordResultHandler extends ProcessHandler {
 		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(popularKeywordLogFile)));
 
 		List<RankKeyword> result = (List<RankKeyword>) parameter;
-		logger.debug("##Popular Keyword > {}", result);
+		logger.trace("##Popular Keyword > {}", result);
 		try {
 			for (RankKeyword k : result) {
 				writer.append(k.getKeyword());

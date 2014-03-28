@@ -29,7 +29,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
@@ -141,9 +140,9 @@ public class SearchKeywordController extends AbstractController {
 			
 			RelateKeywordMapper relateMapper = relateMapperSession.getMapper();
 			
-			int totalSize = relateMapper.getCountByWhereCondition(siteId, "");
+			int totalSize = relateMapper.getCount(siteId);
 			
-			List<RelateKeywordVO> entryList = relateMapper.getEntryListByWhereCondition(siteId, "", start, PAGE_SIZE - 1);
+			List<RelateKeywordVO> entryList = relateMapper.getEntryList(siteId, start, totalSize );
 			Map<String, List<String>>keywordMap = new HashMap<String, List<String>>();
 			
 			for (int rsize=0;rsize<totalSize;) {
@@ -161,6 +160,7 @@ public class SearchKeywordController extends AbstractController {
 					}
 					List<String> keywordList = Arrays.asList(valueString.split(","));
 					keywordMap.put(entry.getKeyword(), keywordList);
+					logger.trace("keyword:{} / values:{}", entry.getKeyword(), keywordList);
 				}
 				
 				start+=PAGE_SIZE;
@@ -303,7 +303,10 @@ public class SearchKeywordController extends AbstractController {
 			
 			
 			int totalSize = mapper.getCount(siteId);
+			//int filteredSize = mapper.getCount(siteId);//mapper.getCountByKeyword(siteId, exactMatch, keyword);
+			//int filteredSize = mapper.getCountByKeyword(siteId, exactMatch, keyword);
 			int filteredSize = mapper.getCountByWhereCondition(siteId, whereCondition);
+			//List<RelateKeywordVO> entryList = mapper.getEntryListByKeyword(siteId, exactMatch, keyword, start, PAGE_SIZE);
 			List<RelateKeywordVO> entryList = mapper.getEntryListByWhereCondition(siteId, whereCondition, start, PAGE_SIZE);
 
 			mav.addObject("entryList", entryList);
@@ -355,9 +358,9 @@ public class SearchKeywordController extends AbstractController {
 			
 			RelateKeywordMapper mapper = mapperSession.getMapper();
 			
-			int totalSize = mapper.getCountByWhereCondition(siteId, "");
+			int totalSize = mapper.getCount(siteId);
 			
-			List<RelateKeywordVO> entryList = mapper.getEntryListByWhereCondition(siteId, "", start, PAGE_SIZE - 1);
+			List<RelateKeywordVO> entryList = mapper.getEntryList(siteId, start, PAGE_SIZE - 1);
 			
 			writer = response.getWriter();
 			for (int rsize=0;rsize<totalSize;) {
@@ -377,7 +380,7 @@ public class SearchKeywordController extends AbstractController {
 				}
 				
 				start+=PAGE_SIZE;
-				entryList = mapper.getEntryListByWhereCondition(siteId, "", start, PAGE_SIZE);
+				entryList = mapper.getEntryList(siteId, start, PAGE_SIZE);
 			}
 		} catch (Exception e) {
 			logger.error("download error", e);

@@ -44,13 +44,6 @@ $(document).ready(function(){
 							<!-- Input Fields -->
 							<div class="form-group">
 								<div class="input-icon">
-									<i class="icon-globe"></i> <input type="text" name="host"
-										class="form-control required" placeholder="Address:Port"
-										autofocus="autofocus" value="localhost:8090"/>
-								</div>
-							</div>
-							<div class="form-group">
-								<div class="input-icon">
 									<i class="icon-user"></i> <input type="text" name="userId"
 										class="form-control required" placeholder="Username" />
 								</div>

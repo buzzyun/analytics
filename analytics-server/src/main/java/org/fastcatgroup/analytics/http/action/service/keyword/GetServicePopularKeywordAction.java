@@ -40,9 +40,13 @@ public class GetServicePopularKeywordAction extends ServiceAction {
 				timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DATE);
 				list = statisticsService.getPopularKeywordList(siteId, categoryId, timeId);
 			} else if ("W".equalsIgnoreCase(timeType)) {
-				
+				calendar.add(Calendar.WEEK_OF_YEAR, -interval);
+				timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.WEEK_OF_YEAR);
+				list = statisticsService.getPopularKeywordList(siteId, categoryId, timeId);
 			} else if ("M".equalsIgnoreCase(timeType)) {
-			
+				calendar.add(Calendar.MONTH, -interval);
+				timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.MONTH);
+				list = statisticsService.getPopularKeywordList(siteId, categoryId, timeId);
 			}
 			
 			responseWriter.key("siteId").value(siteId);

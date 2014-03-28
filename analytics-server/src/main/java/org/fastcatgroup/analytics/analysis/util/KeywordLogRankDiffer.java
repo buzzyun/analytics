@@ -43,7 +43,7 @@ public class KeywordLogRankDiffer {
 					}
 					
 					KeyCountRunEntry entry = targetReader.entry();
-					logger.debug("@@rank diff {} > {}", rank, entry);
+					logger.trace("@@rank diff {} > {}", rank, entry);
 					
 					RankKeyword rankKeyword = new RankKeyword(entry.getKey(), rank++, entry.getCount());
 					result.add(rankKeyword);

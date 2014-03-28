@@ -72,6 +72,30 @@
 		order by timeId asc
 	</select>
 	
+	<select id="getAllTypeEntryListBetween" parameterType="map" resultType="Map">
+		select
+		categoryId,
+		'-' as keyword,
+		case typeId when 'category' then dtype else '-' end as d0,
+		case typeId when 'page' then dtype else '-' end as d1,
+		case typeId when 'sort' then dtype else '-' end as d2,
+		case typeId when 'age' then dtype else '-' end as d3,
+		case typeId when 'service' then dtype else '-' end as d4,
+		case typeId when 'login' then dtype else '-' end as d5,
+		case typeId when 'gender' then dtype else '-' end as d6,
+		hit
+		from ${siteId}_type_hit 
+		<where>
+			<if test="from != null and from != ''">
+				and timeId &gt;= #{from} 
+			</if>
+			<if test="to != null and to !=''">
+				and timeId &lt;= #{to}
+			</if>
+		</where>
+		order by categoryId, timeId, dtype 
+	</select>
+	
 	<select id="getTypeCountListBetween" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchTypeHitVO">
 		select dtype, sum(hit) as hit from ${siteId}_type_hit 
 		<where>

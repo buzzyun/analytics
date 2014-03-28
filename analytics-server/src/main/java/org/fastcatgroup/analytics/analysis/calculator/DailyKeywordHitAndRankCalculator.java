@@ -18,7 +18,7 @@ import org.fastcatgroup.analytics.analysis.handler.UpdateSearchHitHandler;
 import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
 
-public class DailyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
+public class DailyKeywordHitAndRankCalculator extends Calculator<SearchLog> implements KeywordHitAndRankInterface {
 	
 	private File prevDir;
 	private Set<String> banWords;
@@ -43,10 +43,6 @@ public class DailyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		int maxKeywordLength = SearchStatisticsProperties.maxKeywordLength;
 		int runKeySize = SearchStatisticsProperties.runKeySize;
 
-		String KEY_COUNT_FILENAME = "key-count.log";
-		String KEY_COUNT_RANK_FILENAME = "key-count-rank.log";
-		String POPULAR_FILENAME = "popular.log";
-		
 		logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
 		KeyCountRunEntryParser entryParser = new KeyCountRunEntryParser();
 		CategoryProcess<SearchLog> categoryProcess = new CategoryProcess<SearchLog>(categoryId);

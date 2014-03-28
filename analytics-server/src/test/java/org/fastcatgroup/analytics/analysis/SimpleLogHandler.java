@@ -26,7 +26,7 @@ public class SimpleLogHandler extends CategoryLogHandler<SearchLog> {
 			c = new Counter(1);
 			map.put(keyword, c);
 		} else {
-			c.increment();
+			c.increment(logData.getCount());
 		}
 	}
 

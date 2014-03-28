@@ -51,6 +51,23 @@ public class PostSearchLogAction extends ServiceAction {
 			String keyword = request.getParameter("keyword");
 			String prevKeyword = request.getParameter("prev");
 			String reponseTime = request.getParameter("resptime");
+			
+			//keyword가 null이거나 20보다 크면 버린다.
+			//tab글자는 space로 치환한다.
+			if(keyword == null || keyword.length() > 20){
+				keyword = "";
+			}else{
+				if(keyword.contains("\t")){
+					keyword = keyword.replaceAll("\t", " ");
+				}
+			}
+			if(prevKeyword == null || prevKeyword.length() > 20){
+				prevKeyword = "";
+			}else{
+				if(prevKeyword.contains("\t")){
+					prevKeyword = prevKeyword.replaceAll("\t", " ");
+				}
+			}
 			if(reponseTime == null || reponseTime.length() == 0){
 				reponseTime = "0";
 			}

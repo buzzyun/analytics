@@ -32,6 +32,11 @@ public class RelateSearchLog extends LogData {
 	}
 	
 	@Override
+	public int getCount() {
+		return 1;
+	}
+	
+	@Override
 	public String toString(){
 		return categoryId + "\t" + keyword + "\t" + previousKeyword;
 	}

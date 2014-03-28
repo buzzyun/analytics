@@ -25,14 +25,14 @@ import org.fastcatgroup.analytics.db.mapper.SearchHitMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchKeywordHitMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchKeywordRankMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchTypeHitMapper;
+import org.fastcatgroup.analytics.db.mapper.UserAccountMapper;
+import org.fastcatgroup.analytics.db.vo.UserAccountVO;
 import org.fastcatgroup.analytics.env.Environment;
 import org.fastcatgroup.analytics.env.Settings;
 import org.fastcatgroup.analytics.exception.AnalyticsException;
 import org.fastcatgroup.analytics.service.ServiceManager;
 
 public class AnalyticsDBService extends AbstractDBService {
-
-	protected static AnalyticsDBService instance;
 
 	String[] rankList;
 	String[] typeList;
@@ -43,7 +43,9 @@ public class AnalyticsDBService extends AbstractDBService {
 		, RelateKeywordMapper.class
 		, RelateKeywordValueMapper.class
 		, SearchTypeHitMapper.class
-		, SearchKeywordRankMapper.class };
+		, SearchKeywordRankMapper.class 
+		, UserAccountMapper.class
+	};
 
 	public AnalyticsDBService(Environment environment, Settings settings, ServiceManager serviceManager) {
 		super(environment, settings, serviceManager);
@@ -103,7 +105,7 @@ public class AnalyticsDBService extends AbstractDBService {
 					logger.debug("valiadte {}, {}", siteId, clazz.getSimpleName());
 					managedMapper.validateTable(siteId);
 				} catch (Exception e) {
-					logger.error("valid error", e);
+//					logger.error("valid error", e);
 					try {
 						logger.debug("drop {}, {}", siteId, clazz.getSimpleName());
 						managedMapper.dropTable(siteId);
@@ -117,7 +119,11 @@ public class AnalyticsDBService extends AbstractDBService {
 						logger.debug("create index {}, {}", siteId, clazz.getSimpleName());
 						managedMapper.createIndex(siteId);
 						mapperSession.commit();
-
+						
+						if(managedMapper instanceof UserAccountMapper) {
+							UserAccountMapper mapper = (UserAccountMapper)managedMapper;
+							mapper.putEntry(new UserAccountVO(UserAccountVO.ADMIN_USER_NAME, UserAccountVO.ADMIN_USER_ID, "1111", "", ""));
+						}
 					} catch (Exception e2) {
 						logger.error("", e2);
 					}
@@ -125,8 +131,6 @@ public class AnalyticsDBService extends AbstractDBService {
 
 			}
 			mapperSession.closeSession();
-			
-
 		}
 
 	}

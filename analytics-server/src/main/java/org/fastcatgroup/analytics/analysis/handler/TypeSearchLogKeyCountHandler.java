@@ -42,7 +42,7 @@ public class TypeSearchLogKeyCountHandler extends CategoryLogHandler<TypeSearchL
 					if(typeCouterList.length > i) {
 						counter = typeCouterList[i].get(type);
 						if (counter == null) {
-							counter = new Counter(1);
+							counter = new Counter(logData.getCount());
 							typeCouterList[i].put(type, counter);
 						} else {
 							counter.increment(logData.getCount());

@@ -45,16 +45,18 @@ public class YearlyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchLo
 		
 		//1년치의 월별 로그를 데이터베이스를 사용하여 머징한다.
 		
-		String prevTimeId = SearchStatisticsProperties.getTimeId(prevCalendar, Calendar.YEAR);
+		String prevTimeId = SearchStatisticsProperties.getTimeId(prevCalendar, Calendar.MONTH);
 		
-		String currTimeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.YEAR);
+		String currTimeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.MONTH);
 		
 		logger.debug("calculating {} ~ {}", prevTimeId, currTimeId);
 		
 		AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
 		
 		try {
-			logReader = new TypeSearchDatabaseReader(dbService.getMapperSession(SearchTypeHitMapper.class), siteId, prevTimeId, currTimeId);
+			logReader = new TypeSearchDatabaseReader(
+					dbService.getMapperSession(SearchTypeHitMapper.class),
+					siteId, typeList, prevTimeId, currTimeId);
 		} catch (Exception e) {
 			logger.error("", e);
 		}

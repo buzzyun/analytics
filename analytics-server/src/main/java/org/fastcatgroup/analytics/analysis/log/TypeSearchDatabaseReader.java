@@ -13,12 +13,15 @@ public class TypeSearchDatabaseReader extends DatabaseLogReader<TypeSearchLog, S
 	private String siteId;
 	private String from;
 	private String to;
+	private String[] typeList;
 
 	public TypeSearchDatabaseReader(
 			MapperSession<SearchTypeHitMapper> mapperSession, String siteId,
+			String[] typeList,
 			String from, String to) throws IOException {
 		super(mapperSession);
 		this.siteId = siteId;
+		this.typeList = typeList;
 		this.from = from;
 		this.to = to;
 	}
@@ -39,22 +42,22 @@ public class TypeSearchDatabaseReader extends DatabaseLogReader<TypeSearchLog, S
 	}
 
 	@Override
-	protected TypeSearchLog makeLog(Map<String, Object> data) {
+	protected TypeSearchLog makeLog(Map<String, Object> dataMap) {
 		int count = 0;
 		try {
-			count = (Integer)(data.get("hit"));
+			count = (Integer)(dataMap.get("hit"));
 		} catch (NumberFormatException ignore) { };
 		
-		TypeSearchLog typeSearchLog = new TypeSearchLog(new String[] { 
-				(String)data.get("category"),
-				(String)data.get("keyword"),
-				(String)data.get("d0"),
-				(String)data.get("d1"),
-				(String)data.get("d2"),
-				(String)data.get("d3"),
-				(String)data.get("d4"),
-				(String)data.get("d5"),
-				(String)data.get("d6") }, count);
+		String[] data = new String[ 2 + typeList.length ];
+		
+		data[0] = (String)dataMap.get("categoryId");
+		data[1] = (String)dataMap.get("keyword");
+		
+		for(int inx=0; inx<typeList.length; inx ++) {
+			data[inx + 2] = (String)dataMap.get("d"+inx);
+		}
+		
+		TypeSearchLog typeSearchLog = new TypeSearchLog(data, count);
 		logger.debug("make log : {} : {}", typeSearchLog, count);
 		return typeSearchLog;
 	}

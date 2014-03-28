@@ -148,20 +148,9 @@ String timeTo = (String) request.getAttribute("timeTo");
 				<div class="row row-bg row-bg-sm">
 					<!-- .row-bg -->
 					<form method="get">
-						<div class="row">
 						<div class="col-md-5 bottom-space">
 							<div class="form-inline bottom-space">
 								<select id="select_category" name="categoryId" class="select_flat fcol2"></select>
-								<!-- <input type="button" class="btn btn-sm btn-warning" value="DAY"> 
-								<input type="button" class="btn btn-sm btn-default" value="WEEK">
-								<input type="button" class="btn btn-sm btn-default" value="MONTH">
-								<input type="button" class="btn btn-sm btn-default" value="YEAR"> -->
-								<!-- <select name="timeType" class="select_flat select_flat-sm fcol1">
-									<option value="D">Day</option>
-									<option value="W">Week</option>
-									<option value="M">Month</option>
-									<option value="Y">Year</option>
-								</select> -->
 								<span>
 								<input class="form-control fcol1-2 " size="16" type="text" name="timeFrom" value="<%=timeFrom %>" >
 								- <input class="form-control fcol1-2 " size="16" type="text" name="timeTo" value="<%=timeTo %>" >
@@ -182,16 +171,7 @@ String timeTo = (String) request.getAttribute("timeTo");
 						</div>
 						<div class="col-md-7 bottom-space">
 							<div id="date1"></div>
-							<div class="form-inline">
 						</div>
-						
-						</div>
-						<!-- <div class="col-md-12">
-							<div class="form-inline">
-								<input type="submit" class="btn btn-primary" value="Submit">
-							</div>
-						</div> -->
-						
 						
 					</form>
 				</div>

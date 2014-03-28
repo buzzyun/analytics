@@ -22,8 +22,10 @@ import org.springframework.web.servlet.ModelAndView;
 public class SearchProgressController extends AbstractController {
 
 	@RequestMapping("/index")
-	public ModelAndView index(@PathVariable String siteId, @RequestParam(defaultValue="_root") String categoryId
-			, @RequestParam(required=false) String timeFrom, @RequestParam(required=false) String timeTo) {
+	public ModelAndView index(@PathVariable String siteId,
+			@RequestParam(defaultValue = "_root") String categoryId,
+			@RequestParam(required = false) String timeFrom,
+			@RequestParam(required = false) String timeTo) {
 
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/progress/index");
@@ -47,6 +49,19 @@ public class SearchProgressController extends AbstractController {
 				String defaultTimeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DATE);
 				timeTo = defaultTimeId;
 			}
+			
+			char timeType = timeFrom.charAt(0);
+			int timeTypeCode = Calendar.DATE;
+			
+			if(timeType == 'W') {
+				timeTypeCode = Calendar.WEEK_OF_YEAR;
+			} else if(timeType=='M') {
+				timeTypeCode = Calendar.MONTH;
+			} else if(timeType=='Y') {
+				timeTypeCode = Calendar.YEAR;
+			}
+			
+			logger.debug("time:{}:{}~{}", timeFrom, timeTo);
 				
 			Calendar startTime = SearchStatisticsProperties.parseTimeId(timeFrom);
 			Calendar endTime = SearchStatisticsProperties.parseTimeId(timeTo);
@@ -60,7 +75,9 @@ public class SearchProgressController extends AbstractController {
 				SearchHitVO newVO = null;
 				
 				for (int timeInx = 0; startTime.getTimeInMillis() <= endTime.getTimeInMillis(); timeInx++) {
-					String timeId = SearchStatisticsProperties.getTimeId(startTime, Calendar.DATE);
+					String timeId = SearchStatisticsProperties.getTimeId(startTime, timeTypeCode);
+					
+					logger.debug("timeId:{}", timeId);
 					int hit = 0;
 					
 					if(list.size() > timeInx) {
@@ -92,7 +109,16 @@ public class SearchProgressController extends AbstractController {
 						newVO.setHit(hit);
 						list.add(newVO);
 					}
-					startTime.add(Calendar.DATE, 1);
+					
+					if(timeType=='D') {
+						startTime.add(Calendar.DATE, 1);
+					} else if(timeType=='W') {
+						startTime.add(Calendar.WEEK_OF_YEAR, 1);
+					} else if(timeType=='M') {
+						startTime.add(Calendar.MONTH, 1);
+					} else if(timeType=='Y') {
+						startTime.add(Calendar.YEAR, 1);
+					}
 				}
 			}
 			mav.addObject("categoryId", categoryId);

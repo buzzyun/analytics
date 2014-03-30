@@ -66,10 +66,10 @@
 						href="<c:url value="/${siteId}/report/rank/searchKeywordDown.html"/>">
 							<i class="icon-angle-right"></i> Down Keyword
 					</a></li>
-					<%-- <li class="<%=(lcatCurrent && "emptyKeyword".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/rank/searchKeywordNo.html"/>">
-							<i class="icon-angle-right"></i> No Result
-					</a></li> --%>
+					<li class="<%=(lcatCurrent && "empty".equals(mcat)) ? "current" : "" %>"><a
+						href="<c:url value="/${siteId}/report/rank/searchKeywordEmpty.html"/>">
+							<i class="icon-angle-right"></i> Empty Keyword
+					</a></li>
 				</ul>
 			</li>
 			

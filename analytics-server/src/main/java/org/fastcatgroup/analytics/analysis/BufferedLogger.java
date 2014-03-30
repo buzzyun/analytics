@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -29,7 +31,8 @@ public class BufferedLogger {
 	private String encoding;
 	private List<String[]> memoryData;
 	private Timer flushTimer;
-
+	private SimpleDateFormat hourMinuteTimeFormat;
+	
 	public BufferedLogger(File file) {
 		this(file, false);
 	}
@@ -46,6 +49,7 @@ public class BufferedLogger {
 		this.encoding = encoding;
 		this.delimiter = delimiter;
 		this.memoryData = newMemoryData();
+		this.hourMinuteTimeFormat = new SimpleDateFormat("HH:mm");
 		flushTimer = new Timer();
 		FlushTask task = new FlushTask();
 		flushTimer.schedule(task, period, period);
@@ -85,6 +89,7 @@ public class BufferedLogger {
 	}
 
 	public void flush() {
+		logger.debug("flush memoryData > {} ", memoryData);
 		if (memoryData.size() == 0) {
 			return;
 		}
@@ -95,11 +100,18 @@ public class BufferedLogger {
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, true), encoding));
 			List<String[]> oldData = memoryData;
 			this.memoryData = newMemoryData();
+			String timeFormatString = hourMinuteTimeFormat.format(new Date()); 
+			logger.debug("flush data > {} : {}", oldData, file.getAbsolutePath());
 			for (String[] data : oldData) {
+				
+				writer.append(timeFormatString);
+				writer.append(delimiter);
+				
 				for (int i = 0; i < data.length; i++) {
-					if (i > 0) {
-						writer.append(delimiter);
-					}
+//					if (i > 0) {
+//						writer.append(delimiter);
+//					}
+					writer.append(delimiter);
 					writer.append(data[i]);
 				}
 				writer.append("\n");

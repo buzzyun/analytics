@@ -50,6 +50,7 @@ public class PostSearchLogAction extends ServiceAction {
 			}
 			String keyword = request.getParameter("keyword");
 			String prevKeyword = request.getParameter("prev");
+			String resultCount = request.getParameter("resultCount");
 			String reponseTime = request.getParameter("resptime");
 			
 			//keyword가 null이거나 20보다 크면 버린다.
@@ -68,10 +69,13 @@ public class PostSearchLogAction extends ServiceAction {
 					prevKeyword = prevKeyword.replaceAll("\t", " ");
 				}
 			}
+			if(resultCount == null || resultCount.length() == 0){
+				resultCount = "0";
+			}
 			if(reponseTime == null || reponseTime.length() == 0){
 				reponseTime = "0";
 			}
-			service.addLog(type, siteId, categoryId, keyword, prevKeyword, reponseTime);
+			service.addLog(type, siteId, categoryId, keyword, prevKeyword, resultCount, reponseTime);
 
 			/* 2. type_raw.log */
 			String typeCategory = request.getParameter("category");

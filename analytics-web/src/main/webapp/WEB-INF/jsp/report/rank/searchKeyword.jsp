@@ -12,21 +12,14 @@ int start = (Integer) request.getAttribute("start");
 int length = (Integer) request.getAttribute("length");
 int pageNo = (Integer) request.getAttribute("pageNo");
 
-String timeId = (String) request.getAttribute("timeId");
+String time = (String) request.getAttribute("time");
+String timeViewType = (String) request.getAttribute("timeViewType");
+
 int totalCount = (Integer) request.getAttribute("totalCount");
 List<RankKeywordVO> list = (List<RankKeywordVO>) request.getAttribute("list");
 
-String menuId = (String) request.getAttribute("menuId");
-String pageTitle = "";
-if(menuId.equals("all")){
-	pageTitle = "All Keyword Rank";
-}else if(menuId.equals("new")){
-	pageTitle = "New Keyword Rank";
-}else if(menuId.equals("hot")){
-	pageTitle = "Hot Keyword Rank";
-}else if(menuId.equals("down")){
-	pageTitle = "Down Keyword Rank";
-}
+String keywordType = (String) request.getAttribute("keywordType");
+
 %>
 <c:set var="ROOT_PATH" value="../.." />
 
@@ -41,22 +34,45 @@ function goPage(uri, pageNo){
 	form[0].pageNo.value=pageNo;
 	form.submit();
 }
-	
+
+function showKeywordTab(keywordType){
+	var form = $("#pagenationForm");
+	form[0].keywordType.value=keywordType;
+	form.submit();
+}
+
+function changeCalendar(formated){
+	$("#timeInputText").val(formated);
+}
+
 $(document).ready(function(){
 	fillCategoryList('${siteId}', $("#select_category"), '<%=categoryId %>');
 	
 	
 	$('#date1').DatePicker({
 		flat: true,
-		date: new Date(),
+		date: '<%=time%>',
 		calendars: 3,
 		//mode: 'range',
+		format: 'Y.m.d',
 		view: 'days',
 		//lselect: 'days',
 		starts: 1,
-		onChange: function(formated) {
-			$('#select_days').text(formated[0] +' ~ ' + formated[1]);
-		}
+		onChange: changeCalendar
+	});
+	
+	$("#timeViewTypeList button").on("click", function(){
+		$(this).addClass("btn-primary");
+		$(this).removeClass("btn-default");
+		
+		$(this).siblings().addClass("btn-default");
+		$(this).siblings().removeClass("btn-primary");
+		
+		$("#timeViewTypeList input[name=timeViewType]").val($(this).text().charAt(0));
+		
+		//TODO 달력의 날짜를 확인하여, 주,월,년의 경우 시작/끝 날짜를 조정해준다.
+		
+		
 	});
 });
 </script>
@@ -78,25 +94,15 @@ $(document).ready(function(){
 					<ul id="breadcrumbs" class="breadcrumb">
 						<li><i class="icon-home"></i> <a href="javascript:void(0);">Report</a></li>
 						<li><a href="#">Keyword Rank</a></li>
-						<li><a href="#">
-						<%=pageTitle %>
-						
-						</a></li>
+						<li><a href="#">Search Keyword</a></li>
 					</ul>
-					<!-- <ul class="crumb-buttons">
-						<li class="range">
-							<a href="#"> <i class="icon-calendar"></i>
-								<span></span> <i class="icon-angle-down"></i>
-						</a>
-						</li>
-					</ul> -->
 				</div>
 				<!-- /Breadcrumbs line -->
 
 				<!--=== Page Header ===-->
 				<div class="page-header">
 					<div class="page-title page-title-sm">
-						<h3><%=pageTitle %></h3>
+						<h3>Search Keyword</h3>
 					</div>
 				</div>
 				<!-- /Page Header -->
@@ -106,15 +112,16 @@ $(document).ready(function(){
 						<div class="col-md-5">
 							<div class="form-inline bottom-space">
 								<select id="select_category" name="categoryId" class="select_flat fcol2"></select>
-								<input class="form-control fcol1-2 " size="16" type="text" name="timeId" value="<%=timeId %>" >
+								<input class="form-control fcol1-2 " size="16" type="text" id="timeInputText" name="time" value="<%=time %>" >
 							</div>
 							
-							<div class="btn-group bottom-space">
-								<button type="button" class="btn btn-default disabled">Hourly</button>
-								<button type="button" class="btn btn-primary">Daily</button>
-								<button type="button" class="btn btn-default">Weekly</button>
-								<button type="button" class="btn btn-default">Monthly</button>
-								<button type="button" class="btn btn-default disabled">Yearly</button>
+							<div id="timeViewTypeList" class="btn-group bottom-space">
+								<button type="button" class="btn <%="H".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Hourly</button>
+								<button type="button" class="btn <%="D".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Daily</button>
+								<button type="button" class="btn <%="W".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Weekly</button>
+								<button type="button" class="btn <%="M".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Monthly</button>
+								<button type="button" class="btn <%="Y".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Yearly</button>
+								<input type="hidden" name="timeViewType" value="<%=timeViewType %>">
 							</div>
 							
 							<div class="form-inline">
@@ -126,69 +133,89 @@ $(document).ready(function(){
 						</div>
 					</form>
 				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<div class="widget">
-							<div class="widget-header">
-								<h4>
-									<i class="icon-calendar"></i> Period : <%=timeId %>
-								</h4>
-							</div>
-							<div class="widget-content">
-							Total: <%=totalCount %>
-								<table class="table table-striped table-bordered table-condensed">
-									<thead>
-										<tr>
-											<th>#</th>
-											<th>KEYWORD</th>
-											<th>COUNT</th>
-											<th>RANK CHANGE</th>
-											<th>COUNT CHANGE</th>
-										</tr>
-									</thead>
-									<tbody>
-										<%
-										for(int i = 0;i < list.size(); i++){
-											RankKeywordVO vo = list.get(i);
-										%>
-										<tr>
-											<td><%=(pageNo -1) * length + i + 1 %></td>
-											<td><%=vo.getKeyword() %></td>
-											<td><%=vo.getCount() %></td>
-											<td><%=vo.getRankDiffType() %>
-											
-											<%=vo.getRankDiffType() == RankDiffType.NEW ? "" : vo.getRankDiff() %></td>
-											<td><%=vo.getCountDiff() %></td>
-										</tr>
-										<%
-										}
-										%>
-									</tbody>
-								</table>
-								<%
-								
-								request.setAttribute("pageSize", 10);
-								
-								%>
-								<div class="table-footer">
-									<div class="col-md-12">
-									Rows 
-									<% if(list.size() > 0) { %>
-									<%=start + 1 %> - <%=start + list.size() %> of <%=totalCount %> 
-									<% } else { %>
-									Empty
-									<% } %>
-									
-									<jsp:include page="../../inc/pagenation.jsp" >
-									 	<jsp:param name="pageNo" value="${pageNo }"/>
-									 	<jsp:param name="totalSize" value="<%=totalCount %>" />
-										<jsp:param name="pageSize" value="${pageSize }" />
-										<jsp:param name="width" value="5" />
-										<jsp:param name="callback" value="goPage" />
-										<jsp:param name="requestURI" value="" />
-									 </jsp:include>
+				
+				
+				<div class="tabbable tabbable-custom tabbable-full-width" id="schema_tabs">
+					<ul class="nav nav-tabs">
+						<li class="<%=keywordType.equals("all") ? "active" : "" %>"><a href="javascript:showKeywordTab('all')">All</a></li>
+						<li class="<%=keywordType.equals("new") ? "active" : "" %>"><a href="javascript:showKeywordTab('new')">New</a></li>
+						<li class="<%=keywordType.equals("hot") ? "active" : "" %>"><a href="javascript:showKeywordTab('hot')">Hot</a></li>
+						<li class="<%=keywordType.equals("down") ? "active" : "" %>"><a href="javascript:showKeywordTab('down')">Down</a></li>
+						<li class="<%=keywordType.equals("empty") ? "active" : "" %>"><a href="javascript:showKeywordTab('empty')">Empty</a></li>
+					</ul>
+					<div class="tab-content row">
+						
+						<!--=== fields tab ===-->
+						<div class="tab-pane active">
+							<div class="col-md-12">
+								<div class="widget">
+									<div class="widget-header">
+										<h4>
+											<i class="icon-calendar"></i> Period : <%=time %>
+										</h4>
 									</div>
-								</div>	
+
+									<div class="widget-content">
+				
+										Total: <%=totalCount %>
+										<table class="table table-striped table-bordered table-condensed">
+											<thead>
+												<tr>
+													<th>#</th>
+													<th>KEYWORD</th>
+													<th>COUNT</th>
+													<th>RANK CHANGE</th>
+													<th>COUNT CHANGE</th>
+												</tr>
+											</thead>
+											<tbody>
+												<%
+												for(int i = 0;i < list.size(); i++){
+													RankKeywordVO vo = list.get(i);
+												%>
+												<tr>
+													<td><%=(pageNo -1) * length + i + 1 %></td>
+													<td><%=vo.getKeyword() %></td>
+													<td><%=vo.getCount() %></td>
+													<td><%=vo.getRankDiffType() %>
+													
+													<%=vo.getRankDiffType() == RankDiffType.NEW ? "" : vo.getRankDiff() %></td>
+													<td><%=vo.getCountDiff() %></td>
+												</tr>
+												<%
+												}
+												%>
+											</tbody>
+										</table>
+										<%
+										
+										request.setAttribute("pageSize", 10);
+										
+										%>
+										<div class="table-footer">
+											<div class="col-md-12">
+											Rows 
+											<% if(list.size() > 0) { %>
+											<%=start + 1 %> - <%=start + list.size() %> of <%=totalCount %> 
+											<% } else { %>
+											Empty
+											<% } %>
+											
+											<jsp:include page="../../inc/pagenation.jsp" >
+											 	<jsp:param name="pageNo" value="${pageNo }"/>
+											 	<jsp:param name="totalSize" value="<%=totalCount %>" />
+												<jsp:param name="pageSize" value="${pageSize }" />
+												<jsp:param name="width" value="5" />
+												<jsp:param name="callback" value="goPage" />
+												<jsp:param name="requestURI" value="" />
+											 </jsp:include>
+											</div>
+										</div>
+									</div>
+								</div>
+									
+									
+									
 							</div>
 						</div>
 					</div>
@@ -198,7 +225,9 @@ $(document).ready(function(){
 	</div>
 	<form id="pagenationForm">
 	<input type="hidden" name="categoryId" value="${categoryId }"/>
-	<input type="hidden" name="timeId" value="${timeId }"/>
+	<input type="hidden" name="keywordType" value="${keywordType }"/>
+	<input type="hidden" name="timeViewType" value="${timeViewType }"/>
+	<input type="hidden" name="time" value="${time }"/>
 	<input type="hidden" name="pageNo" value="${pageNo }"/>
 	<input type="hidden" name="start" value="${start }"/>
 	<input type="hidden" name="length" value="${length }"/>

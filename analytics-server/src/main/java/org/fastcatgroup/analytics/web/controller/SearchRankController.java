@@ -38,193 +38,94 @@ public class SearchRankController extends AbstractController {
 		return mav;
 	}
 
-	@RequestMapping("/searchKeywordAll")
+	@RequestMapping("/searchKeyword")
 	public ModelAndView searchKeywordAll(@PathVariable String siteId, @RequestParam(defaultValue="_root") String categoryId
-			, @RequestParam(required=false) String timeId, @RequestParam(defaultValue="1") int pageNo
-			, @RequestParam(defaultValue="0") int start, @RequestParam(defaultValue="10") int length) {
+			, @RequestParam(required=false) String time, @RequestParam(required=false) String keywordType, @RequestParam(defaultValue="1") int pageNo
+			, @RequestParam(defaultValue="0") int start, @RequestParam(defaultValue="10") int length, @RequestParam(required = false) String timeViewType) {
 		int rankDiffOver = 0;
 		String rankDiffType = null;
-		String menuId = "all";
-		return searchKeywordPopular(siteId, categoryId, timeId, menuId, rankDiffType, rankDiffOver, start, length, pageNo);
-	}
-	
-	@RequestMapping("/searchKeywordNew")
-	public ModelAndView searchKeywordNew(@PathVariable String siteId, @RequestParam(defaultValue="_root") String categoryId
-			, @RequestParam(required=false) String timeId, @RequestParam(defaultValue="1") int pageNo
-			, @RequestParam(defaultValue="0") int start, @RequestParam(defaultValue="10") int length) {
+		if(keywordType == null || keywordType.length() == 0){
+			keywordType = "all";
+		}else if(keywordType.equals("new")){
+			rankDiffOver = 0;
+			rankDiffType = RankDiffType.NEW.name();
+		}else if(keywordType.equals("hot")){
+			rankDiffOver = 30;
+			rankDiffType = RankDiffType.UP.name();
+		}else if(keywordType.equals("down")){
+			rankDiffOver = 30;
+			rankDiffType = RankDiffType.DN.name();
+		}else if(keywordType.equals("empty")){
+			//do nothing
+		}
 		
-		int rankDiffOver = 0;
-		String rankDiffType = RankDiffType.NEW.name();
-		String menuId = "new";
-		return searchKeywordPopular(siteId, categoryId, timeId, menuId, rankDiffType, rankDiffOver, start, length, pageNo);
-	}
-	
-	@RequestMapping("/searchKeywordHot")
-	public ModelAndView searchKeywordHot(@PathVariable String siteId, @RequestParam(defaultValue="_root") String categoryId
-			, @RequestParam(required=false) String timeId, @RequestParam(defaultValue="1") int pageNo
-			, @RequestParam(defaultValue="0") int start, @RequestParam(defaultValue="10") int length) {
-		int rankDiffOver = 30;
-		String rankDiffType = RankDiffType.UP.name();
-		String menuId = "hot";
-		return searchKeywordPopular(siteId, categoryId, timeId, menuId, rankDiffType, rankDiffOver, start, length, pageNo);
-	}
-	
-	@RequestMapping("/searchKeywordDown")
-	public ModelAndView searchKeywordDown(@PathVariable String siteId, @RequestParam(defaultValue="_root") String categoryId
-			, @RequestParam(required=false) String timeId, @RequestParam(defaultValue="1") int pageNo
-			, @RequestParam(defaultValue="0") int start, @RequestParam(defaultValue="10") int length) {
-		int rankDiffOver = 30;
-		String rankDiffType = RankDiffType.DN.name();
-		String menuId = "down";
-		return searchKeywordPopular(siteId, categoryId, timeId, menuId, rankDiffType, rankDiffOver, start, length, pageNo);
-	}
-	
-	@RequestMapping("/searchKeywordEmpty")
-	public ModelAndView searchKeywordEmpty(@PathVariable String siteId, @RequestParam(defaultValue="_root") String categoryId
-			, @RequestParam(required=false) String timeId, @RequestParam(defaultValue="1") int pageNo
-			, @RequestParam(defaultValue="0") int start, @RequestParam(defaultValue="10") int length) {
-		String menuId = "empty";
+		int timeTypeCode = Calendar.DATE;
 		
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName("report/rank/searchKeyword");
+		if("H".equalsIgnoreCase(timeViewType)) {
+			timeTypeCode = Calendar.HOUR_OF_DAY;
+		} else if("W".equalsIgnoreCase(timeViewType)) {
+			timeTypeCode = Calendar.WEEK_OF_YEAR;
+		} else if("M".equalsIgnoreCase(timeViewType)) {
+			timeTypeCode = Calendar.MONTH;
+		} else if("Y".equalsIgnoreCase(timeViewType)) {
+			timeTypeCode = Calendar.YEAR;
+		} else {
+			timeViewType = "D";
+		}
 		
+		if(time == null){
+			Calendar calendar = Calendar.getInstance();
+			calendar.add(Calendar.DATE, -1);
+			time = SearchStatisticsProperties.toDatetimeString(calendar);
+		}
+		
+		Calendar calendar = SearchStatisticsProperties.parseDatetimeString(time);
+		String timeId = SearchStatisticsProperties.getTimeId(calendar, timeTypeCode);
+		
+		MapperSession<SearchKeywordRankMapper> keywordRankMapperSession = null;
+		MapperSession<SearchKeywordEmptyMapper> keywordEmptyMapperSession = null;
+		int totalCount = 0;
 		AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
-		MapperSession<SearchKeywordEmptyMapper> mapperSession = dbService.getMapperSession(SearchKeywordEmptyMapper.class);
+		ModelAndView mav = new ModelAndView();
 		try {
-			SearchKeywordEmptyMapper mapper = mapperSession.getMapper();
-			
 			start = (pageNo - 1) * length;
-			
-			if(timeId == null){
-				Calendar calendar = Calendar.getInstance();
-				calendar.add(Calendar.DATE, -1);
-				timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DATE);
+			List<RankKeywordVO> list = null;
+			if("empty".equals(keywordType)){
+				keywordEmptyMapperSession = dbService.getMapperSession(SearchKeywordEmptyMapper.class);
+				SearchKeywordEmptyMapper mapper = keywordEmptyMapperSession.getMapper();
+				totalCount = mapper.getCount(siteId, categoryId, timeId);
+				list = mapper.getEntryList(siteId, categoryId, timeId, start, length);
+			}else{
+				keywordRankMapperSession = dbService.getMapperSession(SearchKeywordRankMapper.class);
+				SearchKeywordRankMapper mapper = keywordRankMapperSession.getMapper();
+				totalCount = mapper.getCount(siteId, categoryId, timeId, rankDiffType, rankDiffOver);
+				list = mapper.getEntryList(siteId, categoryId, timeId, rankDiffType, rankDiffOver, start, length);
 			}
 			
-			int totalCount = mapper.getCount(siteId, categoryId, timeId);
-			List<RankKeywordVO> list = mapper.getEntryList(siteId, categoryId, timeId, start, length);
-			
+			mav.setViewName("report/rank/searchKeyword");
 			mav.addObject("categoryId", categoryId);
 			mav.addObject("start", start);
 			mav.addObject("length", length);
 			mav.addObject("pageNo", pageNo);
-			mav.addObject("timeId", timeId);
+			mav.addObject("time", time);
 			mav.addObject("categoryId", categoryId);
-			mav.addObject("menuId", menuId);
+			mav.addObject("keywordType", keywordType);
 			mav.addObject("totalCount", totalCount);
+			mav.addObject("timeViewType", timeViewType);
 			mav.addObject("list", list);
 			
 		} catch (Exception e) {
 			logger.error("", e);
 		} finally {
-			if (mapperSession != null) {
-				mapperSession.closeSession();
+			if (keywordRankMapperSession != null) {
+				keywordRankMapperSession.closeSession();
+			}
+			if (keywordEmptyMapperSession != null) {
+				keywordEmptyMapperSession.closeSession();
 			}
 		}
 		
 		return mav;
 	}
-	
-	
-	
-	private ModelAndView searchKeywordPopular(String siteId, String categoryId, String timeId, String menuId
-			, String rankDiffType, int rankDiffOver, int start, int length, int pageNo) {
-		
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName("report/rank/searchKeyword");
-		
-		AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
-		MapperSession<SearchKeywordRankMapper> mapperSession = dbService.getMapperSession(SearchKeywordRankMapper.class);
-		try {
-			SearchKeywordRankMapper mapper = mapperSession.getMapper();
-			
-			start = (pageNo - 1) * length;
-			
-			if(timeId == null){
-				Calendar calendar = Calendar.getInstance();
-				calendar.add(Calendar.DATE, -1);
-				timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DATE);
-			}
-			
-			int totalCount = mapper.getCount(siteId, categoryId, timeId, rankDiffType, rankDiffOver);
-			List<RankKeywordVO> list = mapper.getEntryList(siteId, categoryId, timeId, rankDiffType, rankDiffOver, start, length);
-			
-			mav.addObject("categoryId", categoryId);
-			mav.addObject("start", start);
-			mav.addObject("length", length);
-			mav.addObject("pageNo", pageNo);
-			mav.addObject("timeId", timeId);
-			mav.addObject("categoryId", categoryId);
-			mav.addObject("menuId", menuId);
-			mav.addObject("totalCount", totalCount);
-			mav.addObject("list", list);
-			
-		} catch (Exception e) {
-			logger.error("", e);
-		} finally {
-			if (mapperSession != null) {
-				mapperSession.closeSession();
-			}
-		}
-		
-		return mav;
-	}
-	
-	//@RequestMapping("/searchKeyword")
-	/*
-	public ModelAndView searchKeyword(@PathVariable String siteId, @RequestParam(defaultValue="_root") String categoryId
-			, @RequestParam(required=false) String timeId, @RequestParam(required=false, defaultValue="all") String typeId
-			, @RequestParam(defaultValue="0") int start, @RequestParam(defaultValue="10") int length) {
-		
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName("report/rank/searchKeyword");
-		
-		AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
-		MapperSession<SearchKeywordRankMapper> mapperSession = dbService.getMapperSession(SearchKeywordRankMapper.class);
-		try {
-			SearchKeywordRankMapper mapper = mapperSession.getMapper();
-			if(timeId == null){
-				Calendar calendar = Calendar.getInstance();
-				calendar.add(Calendar.DATE, -1);
-				timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DATE);
-			}
-			
-			int rankDiffOver = 0;
-			String rankDiffType = null;
-			if(typeId.equals("all")){
-				rankDiffType = null;
-			} else if(typeId.equals("new")){
-				rankDiffType = RankDiffType.NEW.name();
-			} else if(typeId.equals("hot")){
-				rankDiffType = RankDiffType.UP.name();
-				rankDiffOver = 30;
-			} else if(typeId.equals("down")){
-				rankDiffType = RankDiffType.DN.name();
-				rankDiffOver = 30;
-			}
-			
-			int totalCount = mapper.getCount(siteId, categoryId, timeId, rankDiffType, rankDiffOver);
-			List<RankKeywordVO> list = mapper.getEntryList(siteId, categoryId, timeId, rankDiffType, rankDiffOver, start, length);
-			
-			mav.addObject("categoryId", categoryId);
-			mav.addObject("start", start);
-			mav.addObject("length", length);
-			mav.addObject("timeId", timeId);
-			mav.addObject("typeId", typeId);
-			mav.addObject("totalCount", totalCount);
-			mav.addObject("list", list);
-			
-		} catch (Exception e) {
-			logger.error("", e);
-		} finally {
-			if (mapperSession != null) {
-				mapperSession.closeSession();
-			}
-		}
-
-		
-		return mav;
-	}
-	*/
 	
 }

@@ -10,11 +10,11 @@ List<SearchHitVO> list = (List<SearchHitVO>) request.getAttribute("list");
 String keyword = request.getParameter("keyword");
 String timeFrom = (String) request.getAttribute("timeFrom");
 String timeTo = (String) request.getAttribute("timeTo");
+String timeViewType = (String) request.getAttribute("timeViewType");
 
 if(keyword == null){
 	keyword = "";
 }
-
 %>
 <c:set var="ROOT_PATH" value="../.." />
 
@@ -23,53 +23,54 @@ if(keyword == null){
 <head>
 <c:import url="${ROOT_PATH}/inc/header.jsp" />
 <script>
-	$(document).ready(function() {
-		
-		fillCategoryList('${siteId}', $("#select_category"), '<%=categoryId %>');
 
+function changeCalendar(formated){
+	$("#timeFromInputText").val(formated[0]);
+	$("#timeToInputText").val(formated[1]);
+}
+
+$(document).ready(function() {
+	
+	fillCategoryList('${siteId}', $("#select_category"), '<%=categoryId %>');
+
+	<%
+	if(list != null){
+	%>
+	// Sample Data
+	var d1 = [
 		<%
-		if(list != null){
-		%>
-		
-		// Sample Data
-		var d1 = [
-			<%
-			if(list != null){
-				for(int i=0;i<list.size();i++){
-					SearchHitVO vo = list.get(i);
-					if(i > 0){
-					%>,<%
-					}
-				%>
-				[ <%=i %>, <%=vo.getHit() %> ]
-				<%
-				}
+		for(int i=0;i<list.size();i++){
+			SearchHitVO vo = list.get(i);
+			if(i > 0){
+			%>,<%
 			}
-			%>
-		];
+		%>
+		[ <%=i %>, <%=vo.getHit() %> ]
+		<%
+		}
+		%>
+	];
+	
+	var ticks = [
+		<%
+		for(int i=0;i<list.size();i++){
+			SearchHitVO vo = list.get(i);
+			if(i > 0){
+			%>,<%
+			}
+		%>
+		[ <%=i %>, '<%=vo.getTimeId() %>' ]
+		<%
+		}
+		%>
+	];
 
-		var ticks = [
- 			<%
- 			if(list != null){
- 				for(int i=0;i<list.size();i++){
- 					SearchHitVO vo = list.get(i);
- 					if(i > 0){
- 					%>,<%
- 					}
- 				%>
- 				[ <%=i %>, '<%=vo.getTimeId() %>' ]
- 				<%
- 				}
- 			}
- 			%>
- 		];
-		
-		var data = [ {
-			data : d1,
-			color : '#eb8544'
-		}];
+	var data = [ {
+		data : d1,
+		color : '#eb8544'
+	}];
 
-		$.plot("#chart_dashboard_main", data, $.extend(true, {}, Plugins.getFlotDefaults(), 
+	$.plot("#chart_dashboard_main", data, $.extend(true, {}, Plugins.getFlotDefaults(), 
 		{
 			xaxis: {
 				ticks :ticks
@@ -104,13 +105,41 @@ if(keyword == null){
 			tooltipOpts : {
 				content : '%s: %y'
 			}
-		}));
-		
-		<%
-		}
-		%>
-			
+	}));
+	<%
+	}
+	%>
+	
+	
+	
+	$('#date1').DatePicker({
+		flat: true,
+		date: ['<%=timeFrom%>', '<%=timeTo%>'],
+		calendars: 3,
+		mode: 'range',
+		format: 'Y.m.d',
+		view: 'days',
+		//lselect: 'days',
+		starts: 1,
+		onChange: changeCalendar
 	});
+	
+	
+	$("#timeViewTypeList button").on("click", function(){
+		$(this).addClass("btn-primary");
+		$(this).removeClass("btn-default");
+		
+		$(this).siblings().addClass("btn-default");
+		$(this).siblings().removeClass("btn-primary");
+		
+		$("#timeViewTypeList input[name=timeViewType]").val($(this).text().charAt(0));
+		
+		//TODO 달력의 날짜를 확인하여, 주,월,년의 경우 시작/끝 날짜를 조정해준다.
+		
+		
+	});
+	
+});
 </script>
 
 </head>
@@ -120,7 +149,7 @@ if(keyword == null){
 	<div id="container">
 		<c:import url="${ROOT_PATH}/report/sideMenu.jsp">
 			<c:param name="lcat" value="hitProgress" />
-			<c:param name="mcat" value="keyword" />
+			<c:param name="mcat" value="all" />
 		</c:import>
 		<div id="content">
 			<div class="container">
@@ -128,51 +157,49 @@ if(keyword == null){
 				<div class="crumbs">
 					<ul id="breadcrumbs" class="breadcrumb">
 						<li><i class="icon-home"></i> <a href="javascript:void(0);">Report</a></li>
-						<li><a href="#">Keyword Hit Progress</a></li>
+						<li><a href="#">Hit Progress</a></li>
 					</ul>
-					<!-- <ul class="crumb-buttons">
-						<li class="range">
-							<a href="#"> <i class="icon-calendar"></i>
-								<span></span> <i class="icon-angle-down"></i>
-						</a>
-						</li>
-					</ul> -->
 				</div>
 				<!-- /Breadcrumbs line -->
 
 				<!--=== Page Header ===-->
 				<div class="page-header">
 					<div class="page-title page-title-sm">
-						<h3>Keyword Hit Progress</h3>
+						<h3>Hit Progress</h3>
 					</div>
 				</div>
 				<!-- /Page Header -->
 				<div class="row row-bg row-bg-sm">
 					<!-- .row-bg -->
 					<form method="get">
-						<div class="col-md-12 bottom-space">
-							<div class="form-inline">
-								<select id="select_category" name="categoryId" class="select_flat select_flat-sm fcol2"></select>
-								<!-- <input type="button" class="btn btn-sm btn-warning" value="DAY"> 
-								<input type="button" class="btn btn-sm btn-default" value="WEEK">
-								<input type="button" class="btn btn-sm btn-default" value="MONTH">
-								<input type="button" class="btn btn-sm btn-default" value="YEAR"> -->
-								<select name="timeType" class="select_flat select_flat-sm fcol1">
-									<option value="D">Day</option>
-									<!-- <option value="W">Week</option>
-									<option value="M">Month</option>
-									<option value="Y">Year</option> -->
-								</select>
-								<input class="form-control fcol1-2 " size="16" type="text" name="timeFrom" value="<%=timeFrom %>" >
-								- <input class="form-control fcol1-2 " size="16" type="text" name="timeTo" value="<%=timeTo %>" >
+						<div class="col-md-5 bottom-space">
+							<div class="form-inline bottom-space">
+								<select id="select_category" name="categoryId" class="select_flat fcol2"></select>
+								<span>
+								<input class="form-control fcol1-2 " size="16" type="text" name="timeFrom" id="timeFromInputText" value="<%=timeFrom %>" >
+								- <input class="form-control fcol1-2 " size="16" type="text" name="timeTo" id="timeToInputText" value="<%=timeTo %>" >
+								</span>
 							</div>
-						</div>
-						<div class="col-md-12">
+							
+							<div id="timeViewTypeList" class="btn-group bottom-space">
+								<button type="button" class="btn <%="H".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Hourly</button>
+								<button type="button" class="btn <%="D".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Daily</button>
+								<button type="button" class="btn <%="W".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Weekly</button>
+								<button type="button" class="btn <%="M".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Monthly</button>
+								<button type="button" class="btn <%="Y".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Yearly</button>
+								<input type="hidden" name="timeViewType" value="<%=timeViewType %>">
+							</div>
+							
+							
 							<div class="form-inline">
-								<input type="text" name="keyword" class="form-control fcol2" placeholder="Keyword.." value="<%=keyword %>">
+								<input type="text" name="keyword" class="form-control fcol2" placeholder="Keyword" value="<%=keyword %>">
 								<input type="submit" class="btn btn-primary" value="Submit">
 							</div>
 						</div>
+						<div class="col-md-7 bottom-space">
+							<div id="date1"></div>
+						</div>
+						
 					</form>
 				</div>
 				

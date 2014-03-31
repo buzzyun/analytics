@@ -145,11 +145,10 @@ $(document).ready(function() {
 								</div>
 								
 								<div class="btn-group bottom-space">
-									<button type="button" class="btn btn-default">Hourly</button>
 									<button type="button" class="btn btn-primary">Daily</button>
 									<button type="button" class="btn btn-default">Weekly</button>
 									<button type="button" class="btn btn-default">Monthly</button>
-									<button type="button" class="btn btn-default disabled">Yearly</button>
+									<button type="button" class="btn btn-default">Yearly</button>
 								</div>
 							
 								<div class="form-inline">

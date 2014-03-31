@@ -81,7 +81,7 @@ public class MainInterceptor extends HandlerInterceptorAdapter {
 			}
 		}
 		
-		logger.debug("siteList:{}", siteList);
+//		logger.debug("siteList:{}", siteList);
 		
 		modelAndView.addObject("_siteList", siteList);
 

@@ -14,6 +14,8 @@ import org.fastcatgroup.analytics.analysis.handler.UpdateRelateKeywordHandler;
 import org.fastcatgroup.analytics.analysis.log.RelateKeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.log.RelateSearchLog;
 
+import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.*;
+
 /**
  * 연관검색어 계산기.
  * */
@@ -36,9 +38,6 @@ public class DailyRelateKeywordCalculator extends Calculator<RelateSearchLog> {
 		
 		int runKeySize = SearchStatisticsProperties.runKeySize;
 
-		String RELATE_KEY_COUNT_FILENAME = "relate-key-count.log";
-		String RELATE_KEY_COUNT_RANK_FILENAME = "relate-key-count-rank.log";
-		
 		logger.debug("Process Dir = {}", workingDir.getAbsolutePath());
 		RelateKeyCountRunEntryParser entryParser = new RelateKeyCountRunEntryParser();
 		RelateSearchLogValidator logValidator = new RelateSearchLogValidator(banWords);

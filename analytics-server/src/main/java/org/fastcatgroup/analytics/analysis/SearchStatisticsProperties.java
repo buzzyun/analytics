@@ -3,10 +3,7 @@ package org.fastcatgroup.analytics.analysis;
 import java.io.File;
 import java.util.Calendar;
 
-import javax.swing.CellEditor;
-
 public class SearchStatisticsProperties {
-	public static final String KEY_COUNT_LOG_FILENAME = "key-count.log";
 	public static final String encoding = "utf-8";
 	public static int runKeySize = 10 * 10000;
 	public static int realtimeSearchLogLimit = 6; //이전 타임 6개까지 저장.

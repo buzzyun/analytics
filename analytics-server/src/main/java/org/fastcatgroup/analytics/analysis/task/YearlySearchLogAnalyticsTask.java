@@ -1,27 +1,26 @@
 package org.fastcatgroup.analytics.analysis.task;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.calculator.Calculator;
-import org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankInterface;
 import org.fastcatgroup.analytics.analysis.calculator.YearlyKeywordHitAndRankCalculator;
 import org.fastcatgroup.analytics.analysis.log.CategoryKeyLogReader;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
 import org.fastcatgroup.analytics.analysis.schedule.Schedule;
 
+import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.*;
+
 /**
  * 일별 검색로그 계산 task 내부에 인기검색어, 검색횟수 calculator를 가지고 있다.
  * 
  * */
-public class YearlySearchLogAnalyticsTask extends AnalyticsTask<SearchLog>  implements KeywordHitAndRankInterface {
+public class YearlySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 
 	private static final long serialVersionUID = 4212969890908932929L;
 

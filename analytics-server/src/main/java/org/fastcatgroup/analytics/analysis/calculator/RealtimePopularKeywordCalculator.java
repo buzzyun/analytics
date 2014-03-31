@@ -19,6 +19,8 @@ import org.fastcatgroup.analytics.analysis.handler.UpdateRealtimePopularKeywordH
 import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
 
+import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.*;
+
 /**
  * 실시간 인기검색어 계산기.
  * 
@@ -41,11 +43,6 @@ public class RealtimePopularKeywordCalculator extends Calculator<SearchLog> {
 		String encoding = SearchStatisticsProperties.encoding;
 		File workingDir = new File(baseDir, categoryId);
 		int runKeySize = SearchStatisticsProperties.runKeySize;
-
-		String KEY_COUNT_FILENAME = "key-count.log";
-		String KEY_COUNT_RANK_FILENAME = "key-count-rank.log";
-		String KEY_COUNT_RANK_PREV_FILENAME = "key-count-rank-prev.log";
-		String REALTIME_POPULAR_FILENAME = "popular.log";
 
 		File storeDir = new File(workingDir, "store");
 		String tmpLogFilename = "0.log";

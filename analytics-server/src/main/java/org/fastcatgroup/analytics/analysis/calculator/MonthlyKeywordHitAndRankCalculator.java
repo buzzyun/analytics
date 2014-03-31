@@ -20,7 +20,9 @@ import org.fastcatgroup.analytics.analysis.handler.UpdateSearchHitHandler;
 import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
 
-public class MonthlyKeywordHitAndRankCalculator extends Calculator<SearchLog> implements KeywordHitAndRankInterface {
+import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.*;
+
+public class MonthlyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 	
 	private File prevDir;
 	private Set<String> banWords;

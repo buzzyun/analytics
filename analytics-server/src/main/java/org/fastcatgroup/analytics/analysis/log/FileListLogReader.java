@@ -91,7 +91,9 @@ public abstract class FileListLogReader<LogType extends LogData> implements Sour
 				//end of current-file
 				
 				if(reader!=null) {
-					logger.debug("close reader..{} [{}/{}]", files[currentInx - 1], currentInx - 1, files.length);
+					if(currentInx <= files.length) {
+						logger.debug("close reader..{} [{}/{}]", files[currentInx - 1], currentInx - 1, files.length);
+					}
 					reader.close();
 					reader = null;
 				}

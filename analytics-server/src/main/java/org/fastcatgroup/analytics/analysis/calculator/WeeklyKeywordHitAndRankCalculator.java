@@ -33,6 +33,8 @@ public class WeeklyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 	
 	public WeeklyKeywordHitAndRankCalculator(String name, Calendar calendar, Calendar prevCalendar, File baseDir, String siteId, List<String> categoryIdList, Set<String> banWords, int minimumHitCount, int topCount) {
 		super(name, calendar, baseDir, siteId, categoryIdList);
+java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+logger.debug("calculating weeks {} ~ {}", sdf.format(calendar.getTime()), sdf.format(prevCalendar.getTime()));
 		this.prevCalendar = prevCalendar;
 		this.banWords = banWords;
 		this.minimumHitCount = minimumHitCount;

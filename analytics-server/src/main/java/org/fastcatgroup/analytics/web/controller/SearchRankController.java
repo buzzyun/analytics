@@ -80,6 +80,16 @@ public class SearchRankController extends AbstractController {
 		return abstractSearchKeyword(siteId, categoryId, timeId, menuId, rankDiffType, rankDiffOver, start, length, pageNo);
 	}
 	
+	@RequestMapping("/searchKeywordEmpty")
+	public ModelAndView searchKeywordEmpty(@PathVariable String siteId, @RequestParam(defaultValue="_root") String categoryId
+			, @RequestParam(required=false) String timeId, @RequestParam(defaultValue="1") int pageNo
+			, @RequestParam(defaultValue="0") int start, @RequestParam(defaultValue="10") int length) {
+		int rankDiffOver = 0;
+		String rankDiffType = null;
+		String menuId = "empty";
+		return abstractSearchKeyword(siteId, categoryId, timeId, menuId, rankDiffType, rankDiffOver, start, length, pageNo);
+	}
+	
 	public ModelAndView abstractSearchKeyword(String siteId, String categoryId, String timeId, String menuId
 			, String rankDiffType, int rankDiffOver, int start, int length, int pageNo) {
 		

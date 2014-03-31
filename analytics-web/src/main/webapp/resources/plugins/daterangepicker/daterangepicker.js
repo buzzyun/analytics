@@ -164,8 +164,10 @@
                 for (var range in this.ranges) {
                     list += '<li>' + range + '</li>';
                 }
-                list += '<li>Year <select><option>2013</option><option>2014</option></select></li>';
-                list += '<li>' + this.locale.customRangeLabel + '</li>';
+               // list += '<li>Year <select><option>2013</option><option>2014</option></select></li>';
+                list += '<li>Month Calendar</li>';
+                list += '<li>Year Calendar</li>';
+                //list += '<li>' + this.locale.customRangeLabel + '</li>';
                 list += '</ul>';
                 this.container.find('.ranges').prepend(list);
             }

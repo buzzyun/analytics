@@ -44,6 +44,20 @@ function goPage(uri, pageNo){
 	
 $(document).ready(function(){
 	fillCategoryList('${siteId}', $("#select_category"), '<%=categoryId %>');
+	
+	
+	$('#date1').DatePicker({
+		flat: true,
+		date: new Date(),
+		calendars: 3,
+		//mode: 'range',
+		view: 'days',
+		//lselect: 'days',
+		starts: 1,
+		onChange: function(formated) {
+			$('#select_days').text(formated[0] +' ~ ' + formated[1]);
+		}
+	});
 });
 </script>
 
@@ -89,24 +103,27 @@ $(document).ready(function(){
 				<div class="row row-bg row-bg-sm">
 					<!-- .row-bg -->
 					<form method="get">
-						<div class="col-md-12">
-							<div class="form-inline">
+						<div class="col-md-5">
+							<div class="form-inline bottom-space">
 								<select id="select_category" name="categoryId" class="select_flat fcol2"></select>
-								<!-- <input type="button" class="btn btn-sm btn-warning" value="DAY"> 
-								<input type="button" class="btn btn-sm btn-default" value="WEEK">
-								<input type="button" class="btn btn-sm btn-default" value="MONTH">
-								<input type="button" class="btn btn-sm btn-default" value="YEAR"> -->
 								<input class="form-control fcol1-2 " size="16" type="text" name="timeId" value="<%=timeId %>" >
+							</div>
+							
+							<div class="btn-group bottom-space">
+								<button type="button" class="btn btn-default disabled">Hourly</button>
+								<button type="button" class="btn btn-primary">Daily</button>
+								<button type="button" class="btn btn-default">Weekly</button>
+								<button type="button" class="btn btn-default">Monthly</button>
+								<button type="button" class="btn btn-default disabled">Yearly</button>
+							</div>
+							
+							<div class="form-inline">
 								<input type="submit" class="btn btn-primary" value="Submit">
 							</div>
 						</div>
-						<!-- <div class="bottom-space"></div>
-						<div class="col-md-12">
-							<div class="form-inline">
-								<input type="text" class="form-control fcol3" placeholder="Keyword..">
-								<input type="submit" class="btn btn-primary" value="Submit">
-							</div>
-						</div> -->
+						<div class="col-md-7 bottom-space">
+							<div id="date1"></div>
+						</div>
 					</form>
 				</div>
 				<div class="row">

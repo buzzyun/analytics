@@ -178,15 +178,15 @@ public class DBMapperTest {
 						mapper.putEntry(site, category, "m201313", "키워드", 12);
 						session.commit();
 						
-						vo = mapper.getMinEntry(site, category, "d", "키워드");
-						assertEquals(vo.getTimeId(), "d20131201");
-						vo = mapper.getMaxEntry(site, category, "d", "키워드");
-						assertEquals(vo.getTimeId(), "d20131203");
-						
-						vo = mapper.getMinEntry(site, category, "d", "");
-						assertEquals(vo.getTimeId(), "d20131101");
-						vo = mapper.getMaxEntry(site, category, "d", "");
-						assertEquals(vo.getTimeId(), "d20131204");
+//						vo = mapper.getMinEntry(site, category, "d", "키워드");
+//						assertEquals(vo.getTimeId(), "d20131201");
+//						vo = mapper.getMaxEntry(site, category, "d", "키워드");
+//						assertEquals(vo.getTimeId(), "d20131203");
+//						
+//						vo = mapper.getMinEntry(site, category, "d", "");
+//						assertEquals(vo.getTimeId(), "d20131101");
+//						vo = mapper.getMaxEntry(site, category, "d", "");
+//						assertEquals(vo.getTimeId(), "d20131204");
 						
 //						keywordList = mapper.searchKeyword(site, category, "", "d20131202", "d20131204");
 //						for(String keyword : keywordList) {
@@ -219,14 +219,14 @@ public class DBMapperTest {
 //							logger.debug("entry : {} / {}", entry.getTimeId(), entry.getKeyword());
 //						}
 						
-						int count = mapper.getCountBetween(site, category, "m", "키워드", "", "");
-						assertEquals(count, 2);
-						
-						count = mapper.getCountBetween(site, category, "d", "", "d20131101", "d20131204");
-						assertEquals(count, 9);
-						
-						int sum = mapper.getSumBetween(site, category, "키워드", "d20131101", "d20131204");
-						assertEquals(sum, 15);
+//						int count = mapper.getCountBetween(site, category, "m", "키워드", "", "");
+//						assertEquals(count, 2);
+//						
+//						count = mapper.getCountBetween(site, category, "d", "", "d20131101", "d20131204");
+//						assertEquals(count, 9);
+//						
+//						int sum = mapper.getSumBetween(site, category, "키워드", "d20131101", "d20131204");
+//						assertEquals(sum, 15);
 						
 					} finally {
 						mapper.dropTable(site);

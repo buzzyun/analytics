@@ -24,19 +24,9 @@
 			<%
 				lcatCurrent = "hitProgress".equals(lcat);
 			%>
-			<li class="<%=lcatCurrent ? "current" :"" %>"><a href="<c:url value="/${siteId}/report/progress/index.html"/>">
+			<li class="<%=lcatCurrent ? "current" :"" %>"><a href="<c:url value="/${siteId}/report/progress/hit.html"/>">
 							<i class="icon-bar-chart"></i> Hit Progress
 					</a>
-				<ul class="sub-menu">
-					<li class="<%=(lcatCurrent && "all".equals(mcat)) ? "current" : "" %>">
-					<a href="<c:url value="/${siteId}/report/progress/index.html"/>">
-							<i class="icon-angle-right"></i> All
-					</a></li> 
-					<li class="<%=(lcatCurrent && "keyword".equals(mcat)) ? "current" : "" %>">
-					<a href="<c:url value="/${siteId}/report/progress/keyword.html"/>">
-							<i class="icon-angle-right"></i> Keyword
-					</a></li> 
-				</ul>
 			</li>
 			
 			<%
@@ -48,13 +38,13 @@
 				<ul class="sub-menu">
 					<li class="<%=(lcatCurrent && "realtimeSearchKeyword".equals(mcat)) ? "current" : "" %>"><a
 						href="<c:url value="/${siteId}/report/rank/realtimeSearchKeyword.html"/>">
-							<i class="icon-angle-right"></i> Realtime Rank
+							<i class="icon-angle-right"></i> Realtime Keyword
 					</a></li>
 					<li class="<%=(lcatCurrent && "all".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/rank/searchKeywordAll.html"/>">
-							<i class="icon-angle-right"></i> All Keyword
+						href="<c:url value="/${siteId}/report/rank/searchKeyword.html"/>">
+							<i class="icon-angle-right"></i> Search Keyword
 					</a></li> 
-					<li class="<%=(lcatCurrent && "new".equals(mcat)) ? "current" : "" %>"><a
+					<%-- <li class="<%=(lcatCurrent && "new".equals(mcat)) ? "current" : "" %>"><a
 						href="<c:url value="/${siteId}/report/rank/searchKeywordNew.html"/>">
 							<i class="icon-angle-right"></i> New Keyword
 					</a></li>
@@ -69,7 +59,7 @@
 					<li class="<%=(lcatCurrent && "empty".equals(mcat)) ? "current" : "" %>"><a
 						href="<c:url value="/${siteId}/report/rank/searchKeywordEmpty.html"/>">
 							<i class="icon-angle-right"></i> Empty Keyword
-					</a></li>
+					</a></li> --%>
 				</ul>
 			</li>
 			

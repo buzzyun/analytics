@@ -70,11 +70,6 @@ $(document).ready(function(){
 				<div class="row">
 					<div class="col-md-12">
 						<div class="widget">
-							<div class="widget-header">
-								<h4>
-									<i class="icon-calendar"></i> Period : 현재시각
-								</h4>
-							</div>
 							<div class="widget-content">
 								<div>
 									<table class="table table-striped table-bordered table-condensed">

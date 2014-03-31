@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.fastcatgroup.analytics.db.mapper.SearchKeywordEmptyMapper">
+
+	<update id="createTable" parameterType="map">
+		create table ${siteId}_empty_keyword (
+			categoryId varchar(64),
+			timeId varchar(11),
+			rank int,
+			keyword varchar(64),
+			count int,
+			countDiff int,
+			rankDiffType varchar(3),
+			rankDiff int,
+			primary key (categoryId, timeId, rank)
+		) ENGINE=InnoDB, CHARACTER SET=utf8 COLLATE utf8_unicode_ci;
+	</update>
+	
+	<update id="createIndex" parameterType="map">
+		create index category_time_index on ${siteId}_empty_keyword(categoryId, timeId)
+	</update>
+	
+	<select id="validateTable" parameterType="map" resultType="map">
+		select categoryId, timeId, rank, keyword, count, countDiff, rankDiffType, rankDiff
+		from ${siteId}_empty_keyword
+		limit 1
+	</select>
+
+	<update id="dropTable" parameterType="map">
+		drop table ${siteId}_empty_keyword
+	</update>
+		
+	<delete id="truncate" parameterType="map">
+		truncate table ${siteId}_empty_keyword
+	</delete>
+	
+	<select id="getEntryList" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.RankKeywordVO">
+		select *
+		from ${siteId}_empty_keyword
+		where categoryId = #{categoryId}
+		and timeId = #{timeId}
+		order by rank asc
+		limit #{start}, #{length}
+	</select>
+	
+	<select id="getCount" parameterType="map" resultType="int">
+		select count(*)
+		from ${siteId}_empty_keyword
+		where categoryId = #{categoryId}
+		and timeId = #{timeId}
+	</select>
+	
+	<insert id="putEntry" parameterType="map">
+		insert into ${siteId}_empty_keyword
+		(categoryId, timeId, rank, keyword, count, countDiff, rankDiffType, rankDiff)
+		values (#{vo.categoryId}, #{vo.timeId}, #{vo.rank}, #{vo.keyword}, #{vo.count}, #{vo.countDiff}, #{vo.rankDiffType}, #{vo.rankDiff})
+	</insert>
+	
+	<update id="updateEntry" parameterType="map">
+		update ${siteId}_empty_keyword 
+		set 
+		rank = #{vo.rank},
+		keyword = #{vo.keyword},
+		count = #{vo.count},
+		countDiff = #{vo.countDiff},
+		rankDiffType = #{vo.rankDiffType},
+		rankDiff = #{vo.rankDiff}
+		where categoryId = #{vo.categoryId}
+		and timeId = #{vo.timeId}
+	</update>
+	
+	<update id="updateClean" parameterType="map">
+		delete
+		from ${siteId}_empty_keyword
+		where categoryId = #{categoryId}
+		and timeId = #{timeId}
+	</update>
+
+</mapper>

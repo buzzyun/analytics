@@ -2,15 +2,17 @@ package org.fastcatgroup.analytics.analysis.log;
 
 public class SearchLog extends LogData {
 
+	protected String time;
 	protected String categoryId;
 	protected String keyword;
 	protected int count;
 	
-	public SearchLog(String categoryId, String keyword) {
-		this(categoryId, keyword, "1");
+	public SearchLog(String time, String categoryId, String keyword) {
+		this(time, categoryId, keyword, "1");
 	}
 	
-	public SearchLog(String categoryId, String keyword, String count) {
+	public SearchLog(String time, String categoryId, String keyword, String count) {
+		this.time = time;
 		this.categoryId = categoryId;
 		this.keyword = keyword;
 		try {
@@ -19,6 +21,10 @@ public class SearchLog extends LogData {
 			}
 		} catch (NumberFormatException ignore) {
 		}
+	}
+	
+	public String getTime() {
+		return time;
 	}
 
 	public String categoryId() {

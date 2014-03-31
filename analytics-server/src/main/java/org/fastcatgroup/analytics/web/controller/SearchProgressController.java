@@ -49,6 +49,9 @@ public class SearchProgressController extends AbstractController {
 				String defaultTimeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DATE);
 				timeTo = defaultTimeId;
 			}
+				
+			Calendar startTime = SearchStatisticsProperties.parseTimeId(timeFrom);
+			Calendar endTime = SearchStatisticsProperties.parseTimeId(timeTo);
 			
 			char timeType = timeFrom.charAt(0);
 			int timeTypeCode = Calendar.DATE;
@@ -61,10 +64,10 @@ public class SearchProgressController extends AbstractController {
 				timeTypeCode = Calendar.YEAR;
 			}
 			
+			timeFrom = SearchStatisticsProperties.getTimeId(startTime, timeType);
+			timeTo = SearchStatisticsProperties.getTimeId(endTime, timeType);
+			
 			logger.debug("time:{}:{}~{}", timeFrom, timeTo);
-				
-			Calendar startTime = SearchStatisticsProperties.parseTimeId(timeFrom);
-			Calendar endTime = SearchStatisticsProperties.parseTimeId(timeTo);
 			
 			list = mapper.getEntryListBetween(siteId, categoryId, timeFrom, timeTo);
 			

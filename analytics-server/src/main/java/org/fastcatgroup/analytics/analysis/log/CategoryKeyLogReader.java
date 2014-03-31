@@ -12,6 +12,6 @@ public class CategoryKeyLogReader extends FileListLogReader<SearchLog> {
 	@Override
 	protected SearchLog makeLog(String[] el) {
 //		logger.debug("log>>> {}, {}", el.length, el);
-		return new SearchLog(categoryId(), el[0], el[1]);
+		return new SearchLog("", categoryId(), el[0], el[1]);
 	}
 }

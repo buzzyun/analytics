@@ -10,26 +10,30 @@ public class TypeSearchLog extends LogData {
 		this.el = el;
 		this.count = count;
 	}
-
-	public String categoryId() {
+	
+	public String getTime() {
 		return el[0];
 	}
 
-	public String keyword() {
+	public String categoryId() {
 		return el[1];
 	}
 
+	public String keyword() {
+		return el[2];
+	}
+
 	public String getType(int i){
-		return el[i + 2];
+		return el[i + 3];
 	}
 	
 	public int typeLength(){
-		return el.length - 2;
+		return el.length - 3;
 	}
 	
 	@Override
 	public String getKey() {
-		return el[0];
+		return el[1];
 	}
 	
 	@Override

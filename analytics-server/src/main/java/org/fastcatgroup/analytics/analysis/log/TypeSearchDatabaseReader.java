@@ -48,10 +48,11 @@ public class TypeSearchDatabaseReader extends DatabaseLogReader<TypeSearchLog, S
 			count = (Integer)(dataMap.get("hit"));
 		} catch (NumberFormatException ignore) { };
 		
-		String[] data = new String[ 2 + typeList.length ];
+		String[] data = new String[ 3 + typeList.length ];
 		
-		data[0] = (String)dataMap.get("categoryId");
-		data[1] = (String)dataMap.get("keyword");
+		data[0] = "";
+		data[1] = (String)dataMap.get("categoryId");
+		data[2] = (String)dataMap.get("keyword");
 		
 		for(int inx=0; inx<typeList.length; inx ++) {
 			data[inx + 2] = (String)dataMap.get("d"+inx);

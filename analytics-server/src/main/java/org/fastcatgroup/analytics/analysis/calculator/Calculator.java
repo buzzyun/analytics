@@ -61,7 +61,6 @@ public abstract class Calculator<LogType extends LogData> {
 		for (CategoryProcess<LogType> process : categoryProcessList) {
 			try {
 				nextStack.clear();
-				
 				Object parameter = process.logHandler().done();
 				logger.debug("#### calculate category {} > {}:{}:{}", getClass().getSimpleName(), siteId, process.categoryId(), process.getClass().getSimpleName());
 				ProcessHandler next = process.processHandler();

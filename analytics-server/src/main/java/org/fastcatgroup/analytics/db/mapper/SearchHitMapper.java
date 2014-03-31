@@ -6,8 +6,6 @@ import org.apache.ibatis.annotations.Param;
 import org.fastcatgroup.analytics.db.vo.SearchHitVO;
 /**
  * 
- * timeType은 범위로 query시 서로다른 타입이 범위에 포함될수 있으므로, 이를 방지하기 위해 도입되었다.
- * 즉, D,W,M,Y의 timeType이 있는데, 
  * */
 public interface SearchHitMapper extends AnalyticsMapper {
 	

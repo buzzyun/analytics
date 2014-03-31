@@ -2,6 +2,7 @@ package org.fastcatgroup.analytics.analysis;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import org.junit.Test;
 
@@ -53,4 +54,35 @@ public class SearchStatisticsPropertiesTest {
 		
 	}
 
+	@Test
+	public void testCorrectedTimeId() {
+		int type = Calendar.WEEK_OF_YEAR;
+		Calendar startTime = null;
+		Calendar endTime = null;
+		
+		startTime = SearchStatisticsProperties.getCorrectedStartTime(Calendar.getInstance(Locale.GERMAN), type);
+		endTime = SearchStatisticsProperties.getCorrectedEndTime(Calendar.getInstance(Locale.GERMAN), type);
+		
+		System.out.println("start = " + startTime.getTime());
+		System.out.println("end = " + endTime.getTime());
+		
+		String startTimeId = SearchStatisticsProperties.getTimeId(startTime, type);
+		String endTimeId = SearchStatisticsProperties.getTimeId(endTime, type);
+		
+		System.out.println("start = " + startTimeId);
+		System.out.println("end = " + endTimeId);
+	}
+	
+	@Test
+	public void testCalendarLocale() {
+		Calendar today = Calendar.getInstance();
+		System.out.println("default > " + today.getFirstDayOfWeek() + " > " + today.getTime() + " : " + today.get(Calendar.DAY_OF_WEEK));
+		today.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+		System.out.println(">>> " + today.getTime() + " : " + today.get(Calendar.WEEK_OF_YEAR));	
+	
+		today = Calendar.getInstance(Locale.GERMAN);
+		System.out.println("Locale.GERMAN > " + today.getFirstDayOfWeek() + " > " + today.getTime() + " : " + today.get(Calendar.DAY_OF_WEEK));
+		today.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+		System.out.println(">>> " + today.getTime() + " : " + today.get(Calendar.WEEK_OF_YEAR));
+	}
 }

@@ -10,7 +10,7 @@ List<SearchHitVO> list = (List<SearchHitVO>) request.getAttribute("list");
 
 String timeFrom = (String) request.getAttribute("timeFrom");
 String timeTo = (String) request.getAttribute("timeTo");
-
+String timeViewType = (String) request.getAttribute("timeViewType");
 %>
 <c:set var="ROOT_PATH" value="../.." />
 
@@ -115,6 +115,21 @@ String timeTo = (String) request.getAttribute("timeTo");
 			}
 		});
 		
+		
+		$("#timeViewTypeList button").on("click", function(){
+			$(this).addClass("btn-primary");
+			$(this).removeClass("btn-default");
+			
+			$(this).siblings().addClass("btn-default");
+			$(this).siblings().removeClass("btn-primary");
+			
+			$("#timeViewTypeList input[name=timeViewType]").val($(this).text().charAt(0));
+			
+			//TODO 달력의 날짜를 확인하여, 주,월,년의 경우 시작/끝 날짜를 조정해준다.
+			
+			
+		});
+		
 	});
 </script>
 
@@ -157,13 +172,15 @@ String timeTo = (String) request.getAttribute("timeTo");
 								</span>
 							</div>
 							
-							<div class="btn-group bottom-space">
-								<button type="button" class="btn btn-default">Hourly</button>
-								<button type="button" class="btn btn-primary">Daily</button>
-								<button type="button" class="btn btn-default">Weekly</button>
-								<button type="button" class="btn btn-default">Monthly</button>
-								<button type="button" class="btn btn-default disabled">Yearly</button>
+							<div id="timeViewTypeList" class="btn-group bottom-space">
+								<button type="button" class="btn <%="H".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Hourly</button>
+								<button type="button" class="btn <%="D".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Daily</button>
+								<button type="button" class="btn <%="W".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Weekly</button>
+								<button type="button" class="btn <%="M".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Monthly</button>
+								<button type="button" class="btn <%="Y".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Yearly</button>
+								<input type="hidden" name="timeViewType" value="<%=timeViewType %>">
 							</div>
+							
 							
 							<div class="form-inline">
 								<input type="submit" class="btn btn-primary" value="Submit">

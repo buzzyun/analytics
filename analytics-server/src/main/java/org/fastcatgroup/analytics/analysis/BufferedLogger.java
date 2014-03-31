@@ -89,7 +89,7 @@ public class BufferedLogger {
 	}
 
 	public void flush() {
-		logger.trace("flush memoryData > {} ", memoryData);
+		//logger.debug("flush memoryData > {} ", memoryData);
 		if (memoryData.size() == 0) {
 			return;
 		}
@@ -105,12 +105,8 @@ public class BufferedLogger {
 			for (String[] data : oldData) {
 				
 				writer.append(timeFormatString);
-				writer.append(delimiter);
 				
 				for (int i = 0; i < data.length; i++) {
-//					if (i > 0) {
-//						writer.append(delimiter);
-//					}
 					writer.append(delimiter);
 					writer.append(data[i]);
 				}

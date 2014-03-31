@@ -27,7 +27,7 @@ public class MergeKeyCountProcessHandler extends ProcessHandler {
 
 	@Override
 	public Object process(Object parameter) {
-logger.debug("start process.. ");
+		//logger.debug("start process.. ");
 		
 		File keyCountFile = new File(resultDir, outFileName);
 		

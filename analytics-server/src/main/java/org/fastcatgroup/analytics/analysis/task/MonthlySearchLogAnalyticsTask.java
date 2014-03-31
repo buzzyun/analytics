@@ -1,16 +1,13 @@
 package org.fastcatgroup.analytics.analysis.task;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.calculator.Calculator;
 import org.fastcatgroup.analytics.analysis.calculator.MonthlyKeywordHitAndRankCalculator;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
-import org.fastcatgroup.analytics.analysis.log.SearchLogReader;
 import org.fastcatgroup.analytics.analysis.schedule.Schedule;
 
 /**
@@ -28,41 +25,19 @@ public class MonthlySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 	@Override
 	protected void prepare(Calendar calendar) {
 		// baseDir : statistics/search/date/Y####/M##/data/{siteId} 경로
-		File dir = environment.filePaths().getStatisticsRoot().file("search", "date");
+		File baseDir = environment.filePaths().getStatisticsRoot().file("search", "date");
 		
-		//주의 최초로 되돌린다.
+		//월의 최초로 되돌린다.
 		calendar.add(Calendar.MONTH, 1);
 		calendar.add(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) * -1);
 		Calendar prevCalendar = (Calendar) calendar.clone();
 		prevCalendar.add(Calendar.MONTH, -1);
-		File baseDir = new File(SearchStatisticsProperties.getMonthDataDir(dir, calendar), siteId);
-		File prevDir = new File(SearchStatisticsProperties.getMonthDataDir(dir, prevCalendar), siteId);
 		Set<String> banWords = null;
 		int minimumHitCount = 1;
 		int topCount = 10;
 		
-		String encoding = SearchStatisticsProperties.encoding;
-		
-		int diff = SearchStatisticsProperties.getDateDiff(prevCalendar, calendar);
-		
-		//일주일치의 일자별 raw.log를 머징한다.
-		File[] files = new File[diff];
-		Calendar dailyCalendar = (Calendar) calendar.clone();
-		for(int inx=0;inx < diff; inx++) {
-			File dailyBaseDir = new File(SearchStatisticsProperties.getDayDataDir(dir, dailyCalendar), siteId);
-			files[inx] = new File(dailyBaseDir, "raw.log");
-			dailyCalendar.add(Calendar.DAY_OF_MONTH, -1);
-		}
-		
-		logger.debug("calculating{} {}", "",files);
-		
-		try {
-			logReader = new SearchLogReader(files, encoding);
-		} catch (IOException e) {
-			logger.error("", e);
-		}
 		// calc를 카테고리별로 모두 만든다.
-		Calculator<SearchLog> popularKeywordCalculator = new MonthlyKeywordHitAndRankCalculator("Monthly popular keyword calculator", calendar, baseDir, prevDir, siteId, categoryIdList, banWords, minimumHitCount, topCount);
+		Calculator<SearchLog> popularKeywordCalculator = new MonthlyKeywordHitAndRankCalculator("Weekly popular keyword calculator", calendar, prevCalendar, baseDir, siteId, categoryIdList, banWords, minimumHitCount, topCount);
 		addCalculator(popularKeywordCalculator);
 	}
 }

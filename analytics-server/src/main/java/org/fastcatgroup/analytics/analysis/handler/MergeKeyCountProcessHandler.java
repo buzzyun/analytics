@@ -45,6 +45,8 @@ public class MergeKeyCountProcessHandler extends ProcessHandler {
 				resultDir.mkdirs();
 			}
 			
+			logger.debug("writing key-count file : {}", keyCountFile);
+			
 			AggregationResultFileWriter writer = new AggregationResultFileWriter(keyCountFile, encoding);
 			WeightedSortedRunFileMerger merger = new WeightedSortedRunFileMerger(inFileList, weightList, encoding, writer, entryParser);
 			merger.merge();

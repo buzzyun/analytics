@@ -10,7 +10,9 @@ import org.apache.commons.io.FileUtils;
 import org.fastcatgroup.analytics.analysis.SearchLogValidator;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.handler.KeyCountLogSortHandler;
+import org.fastcatgroup.analytics.analysis.handler.KeyCountProcessHandler;
 import org.fastcatgroup.analytics.analysis.handler.KeywordRankDiffHandler;
+import org.fastcatgroup.analytics.analysis.handler.MergeKeyCountProcessHandler;
 import org.fastcatgroup.analytics.analysis.handler.PopularKeywordResultHandler;
 import org.fastcatgroup.analytics.analysis.handler.ProcessHandler;
 import org.fastcatgroup.analytics.analysis.handler.SearchLogKeyCountHandler;
@@ -24,14 +26,14 @@ import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankCo
 
 public class MonthlyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 	
-	private File prevDir;
+	private Calendar prevCalendar;
 	private Set<String> banWords;
 	private int minimumHitCount;
 	private int topCount;
 	
-	public MonthlyKeywordHitAndRankCalculator(String name, Calendar calendar, File baseDir, File prevDir, String siteId, List<String> categoryIdList, Set<String> banWords, int minimumHitCount, int topCount) {
+	public MonthlyKeywordHitAndRankCalculator(String name, Calendar calendar, Calendar prevCalendar, File baseDir, String siteId, List<String> categoryIdList, Set<String> banWords, int minimumHitCount, int topCount) {
 		super(name, calendar, baseDir, siteId, categoryIdList);
-		this.prevDir = prevDir;
+		this.prevCalendar = prevCalendar;
 		this.banWords = banWords;
 		this.minimumHitCount = minimumHitCount;
 		this.topCount = topCount;
@@ -40,8 +42,11 @@ public class MonthlyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 	@Override
 	protected CategoryProcess<SearchLog> newCategoryProcess(String categoryId){
 		String encoding = SearchStatisticsProperties.encoding;
-		File workingDir = new File(baseDir, categoryId);
-		File prevWorkingDir = new File(prevDir, categoryId);
+		
+		int diff = SearchStatisticsProperties.getDateDiff(prevCalendar, calendar);
+		
+		File workingDir = new File(new File(SearchStatisticsProperties.getMonthDataDir(baseDir, calendar), siteId), categoryId);
+		File prevWorkingDir = new File(new File(SearchStatisticsProperties.getMonthDataDir(baseDir, prevCalendar), siteId), categoryId);
 		
 		if(!workingDir.exists()) {
 			try {
@@ -58,15 +63,34 @@ public class MonthlyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		String timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.MONTH);
 		int maxKeywordLength = SearchStatisticsProperties.maxKeywordLength;
 		int runKeySize = SearchStatisticsProperties.runKeySize;
-
-		logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
-		KeyCountRunEntryParser entryParser = new KeyCountRunEntryParser();
+		
+		//logger.debug("daily calendar : {}", new java.text.SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()));
+		File[] files = new File[diff];
+		Calendar dailyCalendar = (Calendar) calendar.clone();
+		for(int inx=0;inx < diff; inx++) {
+			files[inx] = new File(new File(new File(
+				SearchStatisticsProperties.getDayDataDir(baseDir,
+				dailyCalendar), siteId), categoryId),
+				KEY_COUNT_FILENAME);
+			dailyCalendar.add(Calendar.DAY_OF_MONTH, -1);
+		}
+		
+		
+		//1달치의 일자별 key-count log들을 머징한다.
 		CategoryProcess<SearchLog> categoryProcess = new CategoryProcess<SearchLog>(categoryId);
+		KeyCountRunEntryParser entryParser = new KeyCountRunEntryParser();
+		
+		logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
 		SearchLogValidator logValidator = new SearchLogValidator(banWords, maxKeywordLength);
 		new SearchLogKeyCountHandler(categoryId, workingDir, KEY_COUNT_FILENAME, minimumHitCount, logValidator, entryParser).attachLogHandlerTo(categoryProcess);
 		
+		ProcessHandler mergeKeyCount = new MergeKeyCountProcessHandler(files, workingDir, KEY_COUNT_FILENAME, encoding, entryParser).attachProcessTo(categoryProcess);
+		
+		ProcessHandler hitCounter = new KeyCountProcessHandler(workingDir, KEY_COUNT_FILENAME, encoding).appendTo(mergeKeyCount);
+		
 		/* 0. 갯수를 db로 저장한다. */
-		ProcessHandler updateSearchHitHandler = new UpdateSearchHitHandler(siteId, categoryId, timeId).attachProcessTo(categoryProcess);
+		ProcessHandler updateSearchHitHandler = new UpdateSearchHitHandler(siteId, categoryId, timeId).appendTo(hitCounter);
+		
 		/* 1. count로 정렬하여 key-count-rank.log로 저장. */
 		ProcessHandler logSort = new KeyCountLogSortHandler(workingDir, KEY_COUNT_FILENAME, KEY_COUNT_RANK_FILENAME, encoding, runKeySize, entryParser).appendTo(updateSearchHitHandler);
 		/* 2. 이전일과 비교하여 diff 생성. */

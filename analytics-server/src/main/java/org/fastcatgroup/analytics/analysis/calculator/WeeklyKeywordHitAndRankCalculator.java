@@ -9,7 +9,6 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.fastcatgroup.analytics.analysis.SearchLogValidator;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
-import org.fastcatgroup.analytics.analysis.handler.CheckFileEmptyHandler;
 import org.fastcatgroup.analytics.analysis.handler.KeyCountLogSortHandler;
 import org.fastcatgroup.analytics.analysis.handler.KeyCountProcessHandler;
 import org.fastcatgroup.analytics.analysis.handler.KeywordRankDiffHandler;
@@ -44,7 +43,6 @@ public class WeeklyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 	protected CategoryProcess<SearchLog> newCategoryProcess(String categoryId){
 		String encoding = SearchStatisticsProperties.encoding;
 		
-//		File baseDir = environment.filePaths().getStatisticsRoot().file("search", "date");
 		int diff = SearchStatisticsProperties.getDateDiff(prevCalendar, calendar);
 		
 		File workingDir = new File(new File(SearchStatisticsProperties.getWeekDataDir(baseDir, calendar), siteId), categoryId);
@@ -91,9 +89,6 @@ public class WeeklyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		
 		/* 0. 갯수를 db로 저장한다. */
 		ProcessHandler updateSearchHitHandler = new UpdateSearchHitHandler(siteId, categoryId, timeId).appendTo(hitCounter);
-		
-//		// key-count가 비어있으면 중지.
-//		ProcessHandler checkKeyCountFile = new CheckFileEmptyHandler(new File(workingDir, KEY_COUNT_FILENAME)).appendTo(updateSearchHitHandler);
 		
 		/* 1. count로 정렬하여 key-count-rank.log로 저장. */
 		ProcessHandler logSort = new KeyCountLogSortHandler(workingDir, KEY_COUNT_FILENAME, KEY_COUNT_RANK_FILENAME, encoding, runKeySize, entryParser).appendTo(updateSearchHitHandler);

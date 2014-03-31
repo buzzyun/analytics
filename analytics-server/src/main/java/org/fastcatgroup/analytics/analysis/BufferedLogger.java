@@ -105,12 +105,8 @@ public class BufferedLogger {
 			for (String[] data : oldData) {
 				
 				writer.append(timeFormatString);
-				writer.append(delimiter);
 				
 				for (int i = 0; i < data.length; i++) {
-//					if (i > 0) {
-//						writer.append(delimiter);
-//					}
 					writer.append(delimiter);
 					writer.append(data[i]);
 				}

@@ -1,9 +1,17 @@
 package org.fastcatgroup.analytics.analysis;
 
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SearchStatisticsProperties {
+	private static Logger logger = LoggerFactory.getLogger(SearchStatisticsProperties.class);
+	
 	public static final String encoding = "utf-8";
 	public static int runKeySize = 10 * 10000;
 	public static int realtimeSearchLogLimit = 6; //이전 타임 6개까지 저장.
@@ -80,15 +88,53 @@ public class SearchStatisticsProperties {
 	}
 	
 	
-	public static String getTimeId(Calendar calendar, int type) {
-		String timeId = null;
-		
+	//type 에 따라 날짜를 변경한다. 예를들어, week type의 경우 입력날짜가 일요일이 아니더라도 일요일로 리턴한다.
+	public static Calendar getCorrectedStartTime(Calendar calendar, int type) {
+		if(type == Calendar.HOUR_OF_DAY){
+			//금일 0시.
+			calendar.set(Calendar.HOUR_OF_DAY, 0);
+		}else if(type == Calendar.DAY_OF_MONTH){
+			//변경안함.
+		}else if(type == Calendar.WEEK_OF_YEAR){
+			//해당 week의 월요일로 변경.
+			calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONTH);
+		}else if(type == Calendar.MONTH){
+			//1월 1일 0시로 변경.
+			calendar.set(Calendar.DAY_OF_MONTH, 1);
+		}else if(type == Calendar.YEAR){
+			//변경안함.
+		}
+		return calendar;
+	}
+	
+	public static Calendar getCorrectedEndTime(Calendar calendar, int type) {
+		if(type == Calendar.HOUR_OF_DAY){
+			//금일 0시.
+			calendar.set(Calendar.HOUR_OF_DAY, 23);
+		}else if(type == Calendar.DAY_OF_MONTH){
+			//변경안함.
+		}else if(type == Calendar.WEEK_OF_YEAR){
+			//해당 week의 일요일로 변경.
+			calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+		}else if(type == Calendar.MONTH){
+			//1월 1일 0시로 변경.
+			calendar.set(Calendar.DAY_OF_MONTH, 1);
+		}else if(type == Calendar.YEAR){
+			//변경안함.
+		}
+		return calendar;
+	}
+	
+	public static String[] getTimeComponent(Calendar calendar) {
 		int year = calendar.get(Calendar.YEAR);
 		int month = calendar.get(Calendar.MONTH) + 1;
 		int day = calendar.get(Calendar.DAY_OF_MONTH);
 		int hour = calendar.get(Calendar.HOUR_OF_DAY);
 		int week = calendar.get(Calendar.WEEK_OF_YEAR);
 		
+		String[] component = new String[5];
+		
+		String yearString = String.valueOf(year);
 		String monthString = null;
 		String dayString = null;
 		String hourString = null;
@@ -109,27 +155,95 @@ public class SearchStatisticsProperties {
 		} else {
 			hourString = "" + hour;
 		}
+		
+		//일요일을 주의 마지막으로 간주한다.
+		
+		
+		
 		if (week < 10) {
 			weekString = "0" + week;
 		} else {
 			weekString = "" + week;
 		}
 		
+		int i = 0;
+		component[i++] = yearString;
+		component[i++] = monthString;
+		component[i++] = dayString;
+		component[i++] = hourString;
+		component[i++] = weekString;
+		
+		return component;
+	}
+	
+	public static String getTimeId(Calendar calendar, int type) {
+		String timeId = null;
+		
+		String[] timeComponent = getTimeComponent(calendar);
+		
+		String yearString = timeComponent[0];
+		String monthString = timeComponent[1];
+		String dayString = timeComponent[2];
+		String hourString = timeComponent[3];
+		String weekString = timeComponent[4];
+		
 		if(type == Calendar.HOUR_OF_DAY){
-			timeId = "H" + year + monthString + dayString + hourString;
-		}else if(type == Calendar.DATE){
-			timeId = "D" + year + monthString + dayString;
+			timeId = "H" + yearString + monthString + dayString + hourString;
+		}else if(type == Calendar.DAY_OF_MONTH){
+			timeId = "D" + yearString + monthString + dayString;
 		}else if(type == Calendar.WEEK_OF_YEAR){
-			timeId = "W" + year + weekString;
+			timeId = "W" + yearString + weekString;
 		}else if(type == Calendar.MONTH){
-			timeId = "M" + year + monthString;
+			timeId = "M" + yearString + monthString;
 		}else if(type == Calendar.YEAR){
-			timeId = "Y" + year;
+			timeId = "Y" + yearString;
 		}
 		
 		return timeId;
 	}
 	
+	static SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy.MM.dd");
+	
+	public static Calendar parseDatetimeString(String timeString) {
+		try {
+			Calendar calendar = Calendar.getInstance(Locale.GERMAN);
+			calendar.setTime(dateTimeFormat.parse(timeString));
+			return calendar;
+		} catch (ParseException e) {
+			logger.error("", e);
+		}
+		return null;
+	}
+	
+	public static String toDatetimeString(Calendar calendar) {
+		return toDatetimeString(calendar, Calendar.DAY_OF_MONTH);
+	}
+	
+	static SimpleDateFormat hourDateFormat = new SimpleDateFormat("yyyy.MM.dd HH");
+	static SimpleDateFormat dayDateFormat = new SimpleDateFormat("yyyy.MM.dd");
+	static SimpleDateFormat weekDateFormat = new SimpleDateFormat("yyyy.ww");
+	static SimpleDateFormat monthDateFormat = new SimpleDateFormat("yyyy.MM");
+	static SimpleDateFormat yearDateFormat = new SimpleDateFormat("yyyy");
+	
+	public static String toDatetimeString(Calendar calendar, int type) {
+		if(type == Calendar.HOUR_OF_DAY){
+			return hourDateFormat.format(calendar.getTime());
+		}else if(type == Calendar.DAY_OF_MONTH){
+			return dayDateFormat.format(calendar.getTime());
+		}else if(type == Calendar.WEEK_OF_YEAR){
+			return weekDateFormat.format(calendar.getTime());
+		}else if(type == Calendar.MONTH){
+			return monthDateFormat.format(calendar.getTime());
+		}else if(type == Calendar.YEAR){
+			return yearDateFormat.format(calendar.getTime());
+		}
+		
+		return dateTimeFormat.format(calendar.getTime());
+	}
+	
+	
+	
+	///한주의 시작을 월요일로 만드는 Locale.GERMAN 을 사용한다.
 	public static Calendar parseTimeId(String timeId) {
 		char type = timeId.charAt(0);
 		if(type == 'H'){
@@ -137,7 +251,7 @@ public class SearchStatisticsProperties {
 			int month = Integer.parseInt(timeId.substring(5,7)) - 1;
 			int day = Integer.parseInt(timeId.substring(7,9));
 			int hour = Integer.parseInt(timeId.substring(9,11));
-			Calendar calendar = Calendar.getInstance();
+			Calendar calendar = Calendar.getInstance(Locale.GERMAN);
 			calendar.set(Calendar.YEAR, year);
 			calendar.set(Calendar.MONTH, month);
 			calendar.set(Calendar.DAY_OF_MONTH, day);
@@ -150,7 +264,7 @@ public class SearchStatisticsProperties {
 			int year = Integer.parseInt(timeId.substring(1,5));
 			int month = Integer.parseInt(timeId.substring(5,7)) - 1;
 			int day = Integer.parseInt(timeId.substring(7,9));
-			Calendar calendar = Calendar.getInstance();
+			Calendar calendar = Calendar.getInstance(Locale.GERMAN);
 			calendar.set(Calendar.YEAR, year);
 			calendar.set(Calendar.MONTH, month);
 			calendar.set(Calendar.DAY_OF_MONTH, day);
@@ -162,7 +276,7 @@ public class SearchStatisticsProperties {
 		}else if(type == 'W'){
 			int year = Integer.parseInt(timeId.substring(1,5));
 			int week = Integer.parseInt(timeId.substring(5,7));
-			Calendar calendar = Calendar.getInstance();
+			Calendar calendar = Calendar.getInstance(Locale.GERMAN);
 			calendar.set(Calendar.YEAR, year);
 			calendar.set(Calendar.WEEK_OF_YEAR, week);
 			calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
@@ -173,7 +287,7 @@ public class SearchStatisticsProperties {
 		}else if(type == 'M'){
 			int year = Integer.parseInt(timeId.substring(1,5));
 			int month = Integer.parseInt(timeId.substring(5,7)) - 1;
-			Calendar calendar = Calendar.getInstance();
+			Calendar calendar = Calendar.getInstance(Locale.GERMAN);
 			calendar.set(Calendar.YEAR, year);
 			calendar.set(Calendar.MONTH, month);
 			calendar.set(Calendar.DAY_OF_MONTH, 1);
@@ -184,7 +298,7 @@ public class SearchStatisticsProperties {
 			return calendar;
 		}else if(type == 'Y'){
 			int year = Integer.parseInt(timeId.substring(1,5));
-			Calendar calendar = Calendar.getInstance();
+			Calendar calendar = Calendar.getInstance(Locale.GERMAN);
 			calendar.set(Calendar.YEAR, year);
 			calendar.set(Calendar.MONTH, 0);
 			calendar.set(Calendar.DAY_OF_MONTH, 1);
@@ -196,5 +310,43 @@ public class SearchStatisticsProperties {
 		}
 		
 		return null;
+	}
+
+	public static boolean isEquals(Calendar startTime, Calendar timeCurrent, int type) {
+		if(startTime.get(Calendar.YEAR) == timeCurrent.get(Calendar.YEAR)){
+			if(type == Calendar.YEAR){
+				return true;
+			}
+			
+			if(startTime.get(Calendar.MONTH) == timeCurrent.get(Calendar.MONTH)){
+				if(type == Calendar.MONTH){
+					return true;
+				}
+				
+				if(startTime.get(Calendar.WEEK_OF_YEAR) == timeCurrent.get(Calendar.WEEK_OF_YEAR)){
+					if(type == Calendar.WEEK_OF_YEAR){
+						return true;
+					}
+					
+				}
+				
+				if(startTime.get(Calendar.DAY_OF_MONTH) == timeCurrent.get(Calendar.DAY_OF_MONTH)){
+					if(type == Calendar.DAY_OF_MONTH){
+						return true;
+					}
+					
+					if(startTime.get(Calendar.HOUR_OF_DAY) == timeCurrent.get(Calendar.HOUR_OF_DAY)){
+						if(type == Calendar.HOUR_OF_DAY){
+							return true;
+						}
+						
+					}
+				}
+			}
+			
+		}
+		
+		return false;
+		
 	}
 }

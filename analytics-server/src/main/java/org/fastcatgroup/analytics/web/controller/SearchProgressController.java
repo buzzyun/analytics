@@ -24,8 +24,9 @@ public class SearchProgressController extends AbstractController {
 	@RequestMapping("/index")
 	public ModelAndView index(@PathVariable String siteId,
 			@RequestParam(defaultValue = "_root") String categoryId,
-			@RequestParam(required = false) String timeFrom,
-			@RequestParam(required = false) String timeTo) {
+			@RequestParam(required = false) String timeFrom, //2014.03.20
+			@RequestParam(required = false) String timeTo, //2014.03.25
+			@RequestParam(required = false) String timeViewType) {
 
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/progress/index");
@@ -40,36 +41,41 @@ public class SearchProgressController extends AbstractController {
 			if(timeFrom == null){
 				Calendar calendar = Calendar.getInstance();
 				calendar.add(Calendar.DATE, -7);
-				String defaultTimeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DATE);
-				timeFrom = defaultTimeId;
+				timeFrom = SearchStatisticsProperties.toDatetimeString(calendar);
 			}
 			if(timeTo == null){
 				Calendar calendar = Calendar.getInstance();
 				calendar.add(Calendar.DATE, -1);
-				String defaultTimeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DATE);
-				timeTo = defaultTimeId;
+				timeTo = SearchStatisticsProperties.toDatetimeString(calendar);
 			}
-				
-			Calendar startTime = SearchStatisticsProperties.parseTimeId(timeFrom);
-			Calendar endTime = SearchStatisticsProperties.parseTimeId(timeTo);
+
+			Calendar startTime = SearchStatisticsProperties.parseDatetimeString(timeFrom);
+			Calendar endTime = SearchStatisticsProperties.parseDatetimeString(timeTo);
 			
-			char timeType = timeFrom.charAt(0);
 			int timeTypeCode = Calendar.DATE;
 			
-			if(timeType == 'W') {
+			if("H".equalsIgnoreCase(timeViewType)) {
+				timeTypeCode = Calendar.HOUR_OF_DAY;
+			} else if("W".equalsIgnoreCase(timeViewType)) {
 				timeTypeCode = Calendar.WEEK_OF_YEAR;
-			} else if(timeType=='M') {
+			} else if("M".equalsIgnoreCase(timeViewType)) {
 				timeTypeCode = Calendar.MONTH;
-			} else if(timeType=='Y') {
+			} else if("Y".equalsIgnoreCase(timeViewType)) {
 				timeTypeCode = Calendar.YEAR;
+			} else {
+				timeViewType = "D";
 			}
 			
-			timeFrom = SearchStatisticsProperties.getTimeId(startTime, timeType);
-			timeTo = SearchStatisticsProperties.getTimeId(endTime, timeType);
+			//이미 달력을 통해 수정되어 들어왔다고 가정한다. 
+//			startTime = SearchStatisticsProperties.getCorrectedStartTime(startTime, timeTypeCode);
+//			endTime = SearchStatisticsProperties.getCorrectedEndTime(endTime, timeTypeCode);
 			
-			logger.debug("time:{}:{}~{}", timeFrom, timeTo);
+			String startTimeId = SearchStatisticsProperties.getTimeId(startTime, timeTypeCode);
+			String endTimeId = SearchStatisticsProperties.getTimeId(endTime, timeTypeCode);
 			
-			list = mapper.getEntryListBetween(siteId, categoryId, timeFrom, timeTo);
+			logger.debug("New time id >> {} ~ {} > {}", startTimeId, endTimeId, timeViewType);
+			
+			list = mapper.getEntryListBetween(siteId, categoryId, startTimeId, endTimeId);
 			
 			if (list != null && list.size() > 0) {
 				Calendar timeCurrent = null;
@@ -78,27 +84,26 @@ public class SearchProgressController extends AbstractController {
 				SearchHitVO newVO = null;
 				
 				for (int timeInx = 0; startTime.getTimeInMillis() <= endTime.getTimeInMillis(); timeInx++) {
-					String timeId = SearchStatisticsProperties.getTimeId(startTime, timeTypeCode);
+					String timeString = SearchStatisticsProperties.toDatetimeString(startTime, timeTypeCode);
 					
-					logger.debug("timeId:{}", timeId);
+					logger.debug("timeString > {}", timeString);
 					int hit = 0;
 					
-					if(list.size() > timeInx) {
+					if(timeInx < list.size()) {
 
 						vo = list.get(timeInx);
 						timeCurrent = SearchStatisticsProperties.parseTimeId(vo.getTimeId());
-
-						long timeStartMillis = startTime.getTimeInMillis();
-						long timeCurrentMillis = timeCurrent.getTimeInMillis();
-
-						if (timeStartMillis == timeCurrentMillis) {
+						logger.debug("startTime > {} : timeCurrent > {}", startTime.getTime(), timeCurrent.getTime());
+						
+						if (SearchStatisticsProperties.isEquals(startTime, timeCurrent, timeTypeCode)) {
 							hit = vo.getHit();
+							vo.setTimeId(timeString);
 							timeCurrent = null;
 						} else {
 							newVO = new SearchHitVO();
-							newVO.setTimeId(timeId);
+							newVO.setTimeId(timeString);
 							newVO.setHit(hit);
-							if (timeStartMillis < timeCurrentMillis) {
+							if (startTime.before(timeCurrent)) {
 								// 목적일보다 작으므로 앞에 더해준다.
 								list.add(timeInx, newVO);
 							} else {
@@ -107,26 +112,20 @@ public class SearchProgressController extends AbstractController {
 							}
 						}
 					} else {
+						//데이터가 모자라면 빈데이터로 채워준다.
 						newVO = new SearchHitVO();
-						newVO.setTimeId(timeId);
+						newVO.setTimeId(timeString);
 						newVO.setHit(hit);
 						list.add(newVO);
 					}
 					
-					if(timeType=='D') {
-						startTime.add(Calendar.DATE, 1);
-					} else if(timeType=='W') {
-						startTime.add(Calendar.WEEK_OF_YEAR, 1);
-					} else if(timeType=='M') {
-						startTime.add(Calendar.MONTH, 1);
-					} else if(timeType=='Y') {
-						startTime.add(Calendar.YEAR, 1);
-					}
+					startTime.add(timeTypeCode, 1);
 				}
 			}
 			mav.addObject("categoryId", categoryId);
 			mav.addObject("timeFrom", timeFrom);
 			mav.addObject("timeTo", timeTo);
+			mav.addObject("timeViewType", timeViewType);
 			mav.addObject("list", list);
 			
 		} catch (Exception e) {

@@ -101,7 +101,7 @@ public class BufferedLogger {
 			List<String[]> oldData = memoryData;
 			this.memoryData = newMemoryData();
 			String timeFormatString = hourMinuteTimeFormat.format(new Date()); 
-			logger.debug("flush data > {} : {}", oldData, file.getAbsolutePath());
+//			logger.debug("flush data > {} : {}", oldData, file.getAbsolutePath());
 			for (String[] data : oldData) {
 				
 				writer.append(timeFormatString);

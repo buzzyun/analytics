@@ -2,42 +2,46 @@ package org.fastcatgroup.analytics.analysis.handler;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.util.AggregationResultFileWriter;
 import org.fastcatgroup.analytics.analysis.util.WeightedSortedRunFileMerger;
 
-public class MergeKeyCountProcessHandler extends ProcessHandler {
+/**
+ * o.log, 1.log.. 들을 가중치 합산한 key-count.log로 만든다.
+ * */
+public class MergeRealtimeKeyCountProcessHandler extends ProcessHandler {
 
+	File baseDir;
 	File resultDir;
 	String outFileName;
 	int fileLimitCount;
 	String encoding;
 	KeyCountRunEntryParser entryParser;
-	File[] inFileList;
 	
-	public MergeKeyCountProcessHandler(File[] inFileList, File resultDir, String outFileName, String encoding, KeyCountRunEntryParser entryParser) {
+	public MergeRealtimeKeyCountProcessHandler(File baseDir, File resultDir, String outFileName, String encoding, int fileLimitCount, KeyCountRunEntryParser entryParser) {
+		this.baseDir = baseDir;
 		this.resultDir = resultDir;
 		this.outFileName = outFileName;
+		this.fileLimitCount = fileLimitCount;
 		this.encoding = encoding;
 		this.entryParser = entryParser;
-		this.inFileList = inFileList;
 	}
 
 	@Override
 	public Object process(Object parameter) {
-logger.debug("start process.. ");
+		File[] inFileList = new File[fileLimitCount];
+		float[] weightList = new float[fileLimitCount];
+		for (int i = 0; i < fileLimitCount; i++) {
+			inFileList[i] = new File(baseDir, i + ".log");
+			weightList[i] = (float) (fileLimitCount - i) / (float) fileLimitCount;
+		}
 		
 		File keyCountFile = new File(resultDir, outFileName);
-		
-		float[] weightList = new float[inFileList.length];
-		Arrays.fill(weightList, 1.0f);
-		
 		try {
 
 			if (inFileList == null || inFileList.length == 0) {
-				logger.warn("skip making keyword process due to no working log files at {}");
+				logger.warn("skip making realtime popular keyword due to no working log files at {}");
 				return null;
 			}
 

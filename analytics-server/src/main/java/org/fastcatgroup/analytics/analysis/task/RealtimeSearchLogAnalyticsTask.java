@@ -14,6 +14,8 @@ import org.fastcatgroup.analytics.analysis.log.SearchLog;
 import org.fastcatgroup.analytics.analysis.log.SearchLogReader;
 import org.fastcatgroup.analytics.analysis.schedule.Schedule;
 
+import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.*;
+
 /**
  * 실시간 인기검색어 통계용 task
  * 
@@ -40,7 +42,7 @@ public class RealtimeSearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 		minimumHitCount = 1;
 		int topCount = 10;
 
-		File logFile = new File(baseDir, "raw.log");
+		File logFile = new File(baseDir, RAW_LOG_FILENAME);
 		String encoding = SearchStatisticsProperties.encoding;
 		try {
 			logReader = new SearchLogReader(new File[] { logFile }, encoding);

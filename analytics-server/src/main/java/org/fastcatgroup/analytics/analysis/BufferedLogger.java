@@ -89,7 +89,7 @@ public class BufferedLogger {
 	}
 
 	public void flush() {
-		logger.debug("flush memoryData > {} ", memoryData);
+		logger.trace("flush memoryData > {} ", memoryData);
 		if (memoryData.size() == 0) {
 			return;
 		}

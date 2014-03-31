@@ -31,12 +31,12 @@ public class UpdateSearchHitHandler extends ProcessHandler {
 			Calendar cal = Calendar.getInstance();
 			cal.add(Calendar.DAY_OF_MONTH, -1);
 
-			logger.debug("#### UpdateSearchHit {} >> {} > {}", timeId, categoryId, count);
+			logger.debug("#### UpdateSearchHit {} >> {} > {} / {}", timeId, categoryId, count, mapper);
 			
 			SearchHitVO vo = mapper.getEntry(siteId, categoryId, timeId);
 			if(vo != null){
 				mapper.updateEntry(siteId, categoryId, timeId, count);
-			}else{
+			} else {
 				mapper.putEntry(siteId, categoryId, timeId, count);
 			}
 			

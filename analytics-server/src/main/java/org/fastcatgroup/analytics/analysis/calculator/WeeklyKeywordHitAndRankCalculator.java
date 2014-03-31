@@ -61,7 +61,7 @@ public class WeeklyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 			} catch (IOException ignore) { }
 		}
 		
-		String timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.MONTH);
+		String timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.WEEK_OF_YEAR);
 		int maxKeywordLength = SearchStatisticsProperties.maxKeywordLength;
 		int runKeySize = SearchStatisticsProperties.runKeySize;
 		
@@ -87,11 +87,11 @@ public class WeeklyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		SearchLogValidator logValidator = new SearchLogValidator(banWords, maxKeywordLength);
 		new SearchLogKeyCountHandler(categoryId, workingDir, KEY_COUNT_FILENAME, minimumHitCount, logValidator, entryParser).attachLogHandlerTo(categoryProcess);
 		
-		// key-count가 비어있으면 중지.
-		ProcessHandler checkKeyCountFile = new CheckFileEmptyHandler(new File(workingDir, KEY_COUNT_FILENAME)).appendTo(mergeKeyCount);
-		
+//		// key-count가 비어있으면 중지.
+//		ProcessHandler checkKeyCountFile = new CheckFileEmptyHandler(new File(workingDir, KEY_COUNT_FILENAME)).appendTo(mergeKeyCount);
+//		
 		/* 0. 갯수를 db로 저장한다. */
-		ProcessHandler updateSearchHitHandler = new UpdateSearchHitHandler(siteId, categoryId, timeId).appendTo(checkKeyCountFile);
+		ProcessHandler updateSearchHitHandler = new UpdateSearchHitHandler(siteId, categoryId, timeId).attachProcessTo(categoryProcess);
 		/* 1. count로 정렬하여 key-count-rank.log로 저장. */
 		ProcessHandler logSort = new KeyCountLogSortHandler(workingDir, KEY_COUNT_FILENAME, KEY_COUNT_RANK_FILENAME, encoding, runKeySize, entryParser).appendTo(updateSearchHitHandler);
 		/* 2. 이전일과 비교하여 diff 생성. */

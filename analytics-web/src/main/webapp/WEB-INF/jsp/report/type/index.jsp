@@ -6,10 +6,9 @@
 <%
 String categoryId = (String) request.getAttribute("categoryId");
 List<SearchTypeHitVO> list = (List<SearchTypeHitVO>) request.getAttribute("list");
-
 String typeId = (String) request.getAttribute("typeId");
-String timeFrom = (String) request.getAttribute("timeFrom");
-String timeTo = (String) request.getAttribute("timeTo");
+String timeText = (String) request.getAttribute("timeText");
+String timeViewType = (String) request.getAttribute("timeViewType");
 
 %>
 <c:set var="ROOT_PATH" value="../.." />
@@ -29,7 +28,7 @@ $(document).ready(function() {
 	
 	<%	
 	int totalCount = 0;
-	if(list != null){
+	if(list != null && list.size() > 0){
 		for(int i=0;i<list.size(); i++){
 			SearchTypeHitVO vo = list.get(i);
 			totalCount += vo.getHit();
@@ -72,19 +71,29 @@ $(document).ready(function() {
 	%>
 	
 	
-	$('#date1').DatePicker({
-		flat: true,
-		date: new Date(),
+	var pickmenup_options = {
 		calendars: 3,
 		mode: 'range',
-		view: 'days',
-		//lselect: 'days',
-		starts: 1,
-		onChange: function(formated) {
-			//$('#select_days').text(formated[0] +' ~ ' + formated[1]);
-		}
-	});
+		format: 'Y.m.d',
+		first_day: 1,
+		position: 'right',
+		hide_on_select	: false
+	};
+	$("#timeText").pickmeup(pickmenup_options);
 
+	$("#timeViewTypeList button").on("click", function(){
+		$(this).addClass("btn-primary");
+		$(this).removeClass("btn-default");
+		
+		$(this).siblings().addClass("btn-default");
+		$(this).siblings().removeClass("btn-primary");
+		
+		$("#timeViewTypeList input[name=timeViewType]").val($(this).text().charAt(0));
+		
+		//TODO 달력의 날짜를 확인하여, 주,월,년의 경우 시작/끝 날짜를 조정해준다.
+		
+		
+	});
 });
 
 
@@ -138,17 +147,15 @@ $(document).ready(function() {
 								<%
 								}
 								%>
-								<span>
-								<input class="form-control fcol1-2 " size="16" type="text" name="timeFrom" value="<%=timeFrom %>" >
-								- <input class="form-control fcol1-2 " size="16" type="text" name="timeTo" value="<%=timeTo %>" >
-								</span>
+									<input class="form-control fcol2-1 " type="text" name="timeText" id="timeText" value="<%=timeText %>" >
 								</div>
 								
-								<div class="btn-group bottom-space">
-									<button type="button" class="btn btn-primary">Daily</button>
-									<button type="button" class="btn btn-default">Weekly</button>
-									<button type="button" class="btn btn-default">Monthly</button>
-									<button type="button" class="btn btn-default">Yearly</button>
+								<div id="timeViewTypeList" class="btn-group bottom-space">
+									<button type="button" class="btn <%="D".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Daily</button>
+									<button type="button" class="btn <%="W".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Weekly</button>
+									<button type="button" class="btn <%="M".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Monthly</button>
+									<button type="button" class="btn <%="Y".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Yearly</button>
+									<input type="hidden" name="timeViewType" value="<%=timeViewType %>">
 								</div>
 							
 								<div class="form-inline">
@@ -166,77 +173,77 @@ $(document).ready(function() {
 				if(list != null){
 				%>
 				
-				<div class="row">
-					<div class="col-md-12">
-						<div class="widget">
-							<div class="widget-header">
-								<h4>
-									<i class="icon-calendar"></i> Period : <%=timeFrom %> - <%=timeTo %>
-								</h4>
-								<!-- <div class="toolbar no-padding">
-									<div class="btn-group">
-										<span class="btn btn-xs"><i class="icos-word-document"></i></span>
-									</div>
-								</div> -->
-							</div>
-						</div>
-
-					</div>
-				</div>
-				
-				
-				<div class="row">
-					<div class="col-md-12">
-						<div class="widget box">
-							<div class="widget-header">
-								<h4>${typeId} ratio</h4>
-							</div>
-							<div class="widget-content">
-								<div id="chart_category_rate" class="chart"></div>
-							</div>
-							<div class="divider"></div>
-							<div class="widget-content">
-								<div>
-									<table class="table table-striped table-bordered table-condensed">
-										<thead>
-											<tr>
-												<th>Rank</th>
-												<th>Type</th>
-												<th>Hit Count</th>
-												<th>Ratio</th>
-											</tr>
-										</thead>
-										<tbody>
-											<%
-											for(int i=0;i<list.size(); i++){
-												SearchTypeHitVO vo = list.get(i);
-												float ratio = (((float)vo.getHit() / (float)totalCount) * 100.0f);
-											%>
-											<tr>
-											<td><%=i + 1 %></td>
-											<td><%=vo.getDtype() %></td>
-											<td><%=vo.getHit() %></td>
-											<td><%=String.format("%.1f", ratio) %>%</td>
-											</tr>
-											<%
-											}
-											%>
-											<tr>
-												<td>Summary</td>
-												<td></td>
-												<td><%=totalCount %></td>
-												<td>100.0%</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-							
-							</div>
-						</div>
+				<div class="tabbable tabbable-custom tabbable-full-width" id="schema_tabs">
+					<ul class="nav nav-tabs">
+						<li class="<%=typeId.equals("category") ? "active" : "" %>"><a href="javascript:showKeywordTab('all')">category</a></li>
+						<li class="<%=typeId.equals("page") ? "active" : "" %>"><a href="javascript:showKeywordTab('new')">page</a></li>
+						<li class="<%=typeId.equals("sort") ? "active" : "" %>"><a href="javascript:showKeywordTab('hot')">sort</a></li>
+						<li class="<%=typeId.equals("age") ? "active" : "" %>"><a href="javascript:showKeywordTab('down')">age</a></li>
+						<li class="<%=typeId.equals("service") ? "active" : "" %>"><a href="javascript:showKeywordTab('empty')">service</a></li>
+						<li class="<%=typeId.equals("login") ? "active" : "" %>"><a href="javascript:showKeywordTab('empty')">login</a></li>
+						<li class="<%=typeId.equals("gender") ? "active" : "" %>"><a href="javascript:showKeywordTab('empty')">gender</a></li>
+					</ul>
+					<div class="tab-content row">
+						
+						<!--=== fields tab ===-->
+						<div class="tab-pane active">
 					
+				
+				
+							<div class="row">
+								<div class="col-md-12">
+									<div class="widget box">
+										<div class="widget-header">
+											<h4>${typeId} ratio</h4>
+										</div>
+										<div class="widget-content">
+											<div id="chart_category_rate" class="chart"></div>
+										</div>
+										<div class="divider"></div>
+										<div class="widget-content">
+											<div>
+												<table class="table table-striped table-bordered table-condensed">
+													<thead>
+														<tr>
+															<th>Rank</th>
+															<th>Type</th>
+															<th>Hit Count</th>
+															<th>Ratio</th>
+														</tr>
+													</thead>
+													<tbody>
+														<%
+														for(int i=0;i<list.size(); i++){
+															SearchTypeHitVO vo = list.get(i);
+															float ratio = (((float)vo.getHit() / (float)totalCount) * 100.0f);
+														%>
+														<tr>
+														<td><%=i + 1 %></td>
+														<td><%=vo.getDtype() %></td>
+														<td><%=vo.getHit() %></td>
+														<td><%=String.format("%.1f", ratio) %>%</td>
+														</tr>
+														<%
+														}
+														%>
+														<tr>
+															<td>Summary</td>
+															<td></td>
+															<td><%=totalCount %></td>
+															<td>100.0%</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										
+										</div>
+									</div>
+								
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
-				
 				
 				<%
 				}

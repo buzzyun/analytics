@@ -8,8 +8,7 @@
 String categoryId = request.getParameter("categoryId");
 List<SearchHitVO> list = (List<SearchHitVO>) request.getAttribute("list");
 String keyword = request.getParameter("keyword");
-String timeFrom = (String) request.getAttribute("timeFrom");
-String timeTo = (String) request.getAttribute("timeTo");
+String timeText = (String) request.getAttribute("timeText");
 String timeViewType = (String) request.getAttribute("timeViewType");
 
 if(keyword == null){
@@ -24,17 +23,12 @@ if(keyword == null){
 <c:import url="${ROOT_PATH}/inc/header.jsp" />
 <script>
 
-function changeCalendar(formated){
-	$("#timeFromInputText").val(formated[0]);
-	$("#timeToInputText").val(formated[1]);
-}
-
 $(document).ready(function() {
 	
 	fillCategoryList('${siteId}', $("#select_category"), '<%=categoryId %>');
 
 	<%
-	if(list != null){
+	if(list != null && list.size() > 0){
 	%>
 	// Sample Data
 	var d1 = [
@@ -65,6 +59,7 @@ $(document).ready(function() {
 		%>
 	];
 
+	
 	var data = [ {
 		data : d1,
 		color : '#eb8544'
@@ -111,19 +106,15 @@ $(document).ready(function() {
 	%>
 	
 	
-	
-	$('#date1').DatePicker({
-		flat: true,
-		date: ['<%=timeFrom%>', '<%=timeTo%>'],
+	var pickmenup_options = {
 		calendars: 3,
 		mode: 'range',
 		format: 'Y.m.d',
-		view: 'days',
-		//lselect: 'days',
-		starts: 1,
-		onChange: changeCalendar
-	});
-	
+		first_day: 1,
+		position: 'right',
+		hide_on_select	: false
+	};
+	$("#timeText").pickmeup(pickmenup_options);
 	
 	$("#timeViewTypeList button").on("click", function(){
 		$(this).addClass("btn-primary");
@@ -171,14 +162,11 @@ $(document).ready(function() {
 				<!-- /Page Header -->
 				<div class="row row-bg row-bg-sm">
 					<!-- .row-bg -->
-					<form method="get">
-						<div class="col-md-5 bottom-space">
+					<form method="get" autocomplete="off">
+						<div class="col-md-12 bottom-space">
 							<div class="form-inline bottom-space">
 								<select id="select_category" name="categoryId" class="select_flat fcol2"></select>
-								<span>
-								<input class="form-control fcol1-2 " size="16" type="text" name="timeFrom" id="timeFromInputText" value="<%=timeFrom %>" >
-								- <input class="form-control fcol1-2 " size="16" type="text" name="timeTo" id="timeToInputText" value="<%=timeTo %>" >
-								</span>
+								<input class="form-control fcol2-1 " type="text" name="timeText" id="timeText" value="<%=timeText %>" >
 							</div>
 							
 							<div id="timeViewTypeList" class="btn-group bottom-space">
@@ -196,10 +184,6 @@ $(document).ready(function() {
 								<input type="submit" class="btn btn-primary" value="Submit">
 							</div>
 						</div>
-						<div class="col-md-7 bottom-space">
-							<div id="date1"></div>
-						</div>
-						
 					</form>
 				</div>
 				
@@ -215,7 +199,7 @@ $(document).ready(function() {
 						<div class="widget">
 							<div class="widget-header">
 								<h4>
-									<i class="icon-calendar"></i> Period : <%=timeFrom %> - <%=timeTo %>
+									<i class="icon-calendar"></i> Period : <%=timeText %>
 								</h4>
 							</div>
 						</div>

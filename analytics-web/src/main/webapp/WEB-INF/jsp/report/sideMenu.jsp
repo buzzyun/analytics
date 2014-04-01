@@ -40,7 +40,7 @@
 						href="<c:url value="/${siteId}/report/rank/realtimeSearchKeyword.html"/>">
 							<i class="icon-angle-right"></i> Realtime Keyword
 					</a></li>
-					<li class="<%=(lcatCurrent && "all".equals(mcat)) ? "current" : "" %>"><a
+					<li class="<%=(lcatCurrent && "searchKeyword".equals(mcat)) ? "current" : "" %>"><a
 						href="<c:url value="/${siteId}/report/rank/searchKeyword.html"/>">
 							<i class="icon-angle-right"></i> Search Keyword
 					</a></li> 

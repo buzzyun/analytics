@@ -22,34 +22,64 @@ public class SearchTypeController extends AbstractController {
 	//카테고리별 비율보기.
 	@RequestMapping("/{typeId}")
 	public ModelAndView viewCategory(@PathVariable String siteId, @RequestParam(defaultValue="_root") String categoryId
-			, @PathVariable String typeId, @RequestParam(required=false) String timeFrom, @RequestParam(required=false) String timeTo) {
+			, @PathVariable String typeId, @RequestParam(required=false) String timeText
+			, @RequestParam(required = false) String timeViewType) {
 
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/type/index");
 		
+		if(timeText == null){
+			Calendar calendar = Calendar.getInstance();
+			calendar.add(Calendar.DATE, -1);
+			String timeTo = SearchStatisticsProperties.toDatetimeString(calendar);
+			timeText = timeTo + " - " + timeTo;
+		}
+		
+		int timeTypeCode = Calendar.DATE;
+		
+		if("H".equalsIgnoreCase(timeViewType)) {
+			timeTypeCode = Calendar.HOUR_OF_DAY;
+		} else if("W".equalsIgnoreCase(timeViewType)) {
+			timeTypeCode = Calendar.WEEK_OF_YEAR;
+		} else if("M".equalsIgnoreCase(timeViewType)) {
+			timeTypeCode = Calendar.MONTH;
+		} else if("Y".equalsIgnoreCase(timeViewType)) {
+			timeTypeCode = Calendar.YEAR;
+		} else {
+			timeViewType = "D";
+		}
+		
+		String[] timeRanges = timeText.split("-");
+		logger.debug("timeRanges > {} >> {}", timeRanges, timeText);
+		
+		String timeFrom = null;
+		String timeTo = null;
+		if(timeRanges.length == 1){
+			timeFrom = timeRanges[0];
+			timeTo = timeFrom;
+		}else if(timeRanges.length == 2){
+			timeFrom = timeRanges[0];
+			timeTo = timeRanges[1];
+		}else{
+			//error
+		}
+		logger.debug("timeFrom > {} ~~ {}", timeFrom, timeTo);
+		Calendar startTime = SearchStatisticsProperties.parseDatetimeString(timeFrom);
+		Calendar endTime = SearchStatisticsProperties.parseDatetimeString(timeTo);
+		String startTimeId = SearchStatisticsProperties.getTimeId(startTime, timeTypeCode);
+		String endTimeId = SearchStatisticsProperties.getTimeId(endTime, timeTypeCode);
+		logger.debug("New time id >> {} ~ {} > {}", startTimeId, endTimeId, timeViewType);
+		
 		AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
 		MapperSession<SearchTypeHitMapper> mapperSession = dbService.getMapperSession(SearchTypeHitMapper.class);
 		
-		
 		try {
 			SearchTypeHitMapper mapper = mapperSession.getMapper();
-			List<SearchTypeHitVO> list = null;
-			
-			Calendar calendar = Calendar.getInstance();
-			calendar.add(Calendar.DATE, -1);
-			String defaultTimeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DATE);
-			if(timeFrom == null){
-				timeFrom = defaultTimeId;
-			}
-			if(timeTo == null){
-				timeTo = defaultTimeId;
-			}
-			
-			list = mapper.getTypeCountListBetween(siteId, categoryId, typeId, timeFrom, timeTo);
+			List<SearchTypeHitVO> list = mapper.getTypeCountListBetween(siteId, categoryId, typeId, timeFrom, timeTo);
 			
 			mav.addObject("categoryId", categoryId);
-			mav.addObject("timeFrom", timeFrom);
-			mav.addObject("timeTo", timeTo);
+			mav.addObject("timeText", timeText);
+			mav.addObject("timeViewType", timeViewType);
 			mav.addObject("list", list);
 			
 		} catch (Exception e) {

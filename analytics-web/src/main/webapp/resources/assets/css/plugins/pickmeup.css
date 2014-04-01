@@ -7,7 +7,7 @@
  * @license		MIT License, see license.txt
  */
 .pickmeup {
-  z-index: 10;
+  z-index: 100;
   background: black;
   border-radius: 0.4em;
   display: none;

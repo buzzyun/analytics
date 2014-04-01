@@ -1,10 +1,12 @@
 package org.fastcatgroup.analytics.analysis.calculator;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.fastcatgroup.analytics.analysis.SearchLogValidator;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.handler.KeyCountLogSortHandler;
@@ -40,6 +42,18 @@ public class DailyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		String encoding = SearchStatisticsProperties.encoding;
 		File workingDir = new File(baseDir, categoryId);
 		File prevWorkingDir = new File(prevDir, categoryId);
+		
+		if(!workingDir.exists()) {
+			try {
+				FileUtils.forceMkdir(workingDir);
+			} catch (IOException ignore) { }
+		}
+		
+		if(!prevWorkingDir.exists()) {
+			try {
+				FileUtils.forceMkdir(prevWorkingDir);
+			} catch (IOException ignore) { }
+		}
 		
 		String timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DATE);
 		int maxKeywordLength = SearchStatisticsProperties.maxKeywordLength;

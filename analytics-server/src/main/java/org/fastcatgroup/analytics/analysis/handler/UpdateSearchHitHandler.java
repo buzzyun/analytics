@@ -33,12 +33,14 @@ public class UpdateSearchHitHandler extends ProcessHandler {
 
 			logger.debug("#### UpdateSearchHit {} >> {} > {} / {}", timeId, categoryId, count, mapper);
 			
-			SearchHitVO vo = mapper.getEntry(siteId, categoryId, timeId);
-			if(vo != null){
-				mapper.updateEntry(siteId, categoryId, timeId, count);
-			} else {
-				mapper.putEntry(siteId, categoryId, timeId, count);
-			}
+			//synchronized(mapperSession) {
+				SearchHitVO vo = mapper.getEntry(siteId, categoryId, timeId);
+				if(vo != null){
+					mapper.updateEntry(siteId, categoryId, timeId, count);
+				} else {
+					mapper.putEntry(siteId, categoryId, timeId, count);
+				}
+			//}
 			
 		} finally {
 			if (mapperSession != null) {

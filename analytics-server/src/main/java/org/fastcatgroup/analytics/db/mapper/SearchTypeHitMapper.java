@@ -21,10 +21,6 @@ public interface SearchTypeHitMapper extends AnalyticsMapper {
 	public List<SearchTypeHitVO> getEntryListBetween(@Param("siteId") String siteId, @Param("categoryId") String categoryId, 
 			@Param("typeId") String typeId, @Param("from") String from, @Param("to") String to)	throws Exception;
 	
-	public List<Map<String, Object>> getAllTypeEntryListBetween(
-			@Param("siteId") String siteId, @Param("from") String from,
-			@Param("to") String to) throws Exception;
-	
 	public List<SearchTypeHitVO> getTypeCountListBetween(@Param("siteId") String siteId, @Param("categoryId") String categoryId, 
 			@Param("typeId") String typeId, @Param("from") String from, @Param("to") String to)	throws Exception;
 	
@@ -34,5 +30,8 @@ public interface SearchTypeHitMapper extends AnalyticsMapper {
 	
 	public int updateClear(@Param("siteId") String siteId, @Param("categoryId") String categoryId, 
 			@Param("timeId") String timeId,	@Param("typeId") String typeId) throws Exception;
-	
+
+	public List<SearchTypeHitVO> getEntryListGroupByType(@Param("siteId") String siteId,
+			@Param("categoryId") String categoryId,
+			@Param("timeFrom") String timeFrom, @Param("timeTo") String timeTo);
 }

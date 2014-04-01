@@ -25,7 +25,8 @@ public class UpdateSearchTypeHitHandler extends ProcessHandler {
 
 	@Override
 	public Object process(Object parameter) throws Exception {
-		Map<String, Counter>[] typeCouterList = (Map<String, Counter>[]) parameter;
+		@SuppressWarnings("unchecked")
+		Map<String, Counter>[] typeCounterList = (Map<String, Counter>[]) parameter;
 
 		AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
 		MapperSession<SearchTypeHitMapper> mapperSession = dbService.getMapperSession(SearchTypeHitMapper.class);
@@ -37,7 +38,7 @@ public class UpdateSearchTypeHitHandler extends ProcessHandler {
 
 			for (int i = 0; i < typeList.length; i++) {
 				String typeId = typeList[i];
-				Map<String, Counter> typeCounterMap = typeCouterList[i];
+				Map<String, Counter> typeCounterMap = typeCounterList[i];
 
 				int count = mapper.getCount(siteId, categoryId, timeId, typeId);
 				if (count > 0) {
@@ -47,7 +48,7 @@ public class UpdateSearchTypeHitHandler extends ProcessHandler {
 				for (Entry<String, Counter> entry : typeCounterMap.entrySet()) {
 					String dtype = entry.getKey();
 					Counter counter = entry.getValue();
-					logger.debug("Update Type hit {} : {} : {}", typeId, dtype, counter.value());
+					//logger.debug("Update Type hit {} : {} : {}", typeId, dtype, counter.value());
 					mapper.putEntry(siteId, categoryId, timeId, typeId, dtype, counter.value());
 				}
 			}

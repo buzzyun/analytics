@@ -22,11 +22,9 @@ public class WeightedSortedRunFileMerger extends SortedRunFileMerger {
 
 	@Override
 	protected List<RunEntryReader<KeyCountRunEntry>> getReaderList(File[] fileList) throws IOException {
-logger.debug("OK get reader list {} {}","", fileList);
 		List<RunEntryReader<KeyCountRunEntry>> list = new ArrayList<RunEntryReader<KeyCountRunEntry>>();
 		for (int i = 0; i < fileList.length; i++) {
 			File f = fileList[i];
-logger.debug("merging file : {}", f);
 			if (f.exists()) {
 				WeightedKeyCountRunEntryReader r = new WeightedKeyCountRunEntryReader(f, encoding, weightList[i], entryParser);
 				r.next();

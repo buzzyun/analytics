@@ -65,8 +65,8 @@ public abstract class Calculator<LogType extends LogData> {
 				logger.debug("#### calculate category {} > {}:{}:{}", getClass().getSimpleName(), siteId, process.categoryId(), process.getClass().getSimpleName());
 				ProcessHandler next = process.processHandler();
 				while (next != null) {
-
-					logger.debug("############### calculate process {} > {}:{}:{}", getClass().getSimpleName(), siteId, process.categoryId(), next.getClass().getSimpleName());
+					
+					//logger.debug("############### calculate process {} > {}:{}:{}", getClass().getSimpleName(), siteId, process.categoryId(), next.getClass().getSimpleName());
 					
 					try{
 						parameter = next.process(parameter);

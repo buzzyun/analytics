@@ -69,7 +69,9 @@ public abstract class AbstractLogAggregator<LogType extends LogData> {
 	
 	private void flushRun() throws IOException {
 		TreeMap<String, Counter> sortedMap = new TreeMap<String, Counter>();
-		sortedMap.putAll(aggregateMap);
+		//synchronized(aggregateMap) {
+			sortedMap.putAll(aggregateMap);
+		//}
 		aggregateMap.clear();
 		AggregationResultWriter logWriter = newRunWriter(outputEncoding, flushCount++);
 		try {

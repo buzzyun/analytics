@@ -28,8 +28,6 @@ public interface SearchHitMapper extends AnalyticsMapper {
 	public SearchHitVO getMaxEntry(@Param("siteId") String siteId,
 			@Param("categoryId") String categoryId, @Param("dFilter") String dFilter)
 			throws Exception;
-
-	
 	
 	public int getCountBetween(@Param("siteId") String siteId,
 			@Param("categoryId") String categoryId, @Param("dFilter") String dFilter,
@@ -41,11 +39,11 @@ public interface SearchHitMapper extends AnalyticsMapper {
 	
 	public int putEntry(@Param("siteId") String siteId,
 			@Param("categoryId") String categoryId, @Param("timeId") String timeId,
-			@Param("hit") int hit);
+			@Param("hit") int hit, @Param("hit") int avgTime, @Param("hit") int maxTime);
 	
 	public int updateEntry(@Param("siteId") String siteId,
 			@Param("categoryId") String categoryId, @Param("timeId") String timeId,
-			@Param("hit") int hit);
+			@Param("hit") int hit, @Param("hit") int avgTime, @Param("hit") int maxTime);
 	
 	public int deleteEntry(@Param("siteId") String siteId,
 			@Param("categoryId") String categoryId, @Param("timeId") String timeId);

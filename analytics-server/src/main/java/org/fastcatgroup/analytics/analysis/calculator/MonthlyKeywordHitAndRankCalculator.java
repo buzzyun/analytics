@@ -89,6 +89,12 @@ public class MonthlyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		ProcessHandler hitCounter = new KeyCountProcessHandler(workingDir, KEY_COUNT_FILENAME, encoding).appendTo(mergeKeyCount);
 		
 		/* 0. 갯수를 db로 저장한다. */
+		/**
+		 * 
+		 * TODO 응답시간은 key-count.log에 없으므로, 응답시간 합산이 불가능하다. 
+		 * 그러므로 db를 읽어서 평균과 max를 계산하도록 한다.
+		 * 
+		 */
 		ProcessHandler updateSearchHitHandler = new UpdateSearchHitHandler(siteId, categoryId, timeId).appendTo(hitCounter);
 		
 		/* 1. count로 정렬하여 key-count-rank.log로 저장. */

@@ -2,6 +2,7 @@ package org.fastcatgroup.analytics.analysis.handler;
 
 import java.util.Calendar;
 
+import org.fastcatgroup.analytics.analysis.log.SearchLogResult;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
 import org.fastcatgroup.analytics.db.mapper.SearchHitMapper;
@@ -21,9 +22,13 @@ public class UpdateSearchHitHandler extends ProcessHandler {
 
 	@Override
 	public Object process(Object parameter) throws Exception {
-		Integer count = (Integer) parameter;
+		SearchLogResult searchLogResult = (SearchLogResult) parameter;
 		
 		AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
+		
+		/*
+		 * 1. 검색횟수기록.
+		 */
 		MapperSession<SearchHitMapper> mapperSession = dbService.getMapperSession(SearchHitMapper.class);
 		try {
 			SearchHitMapper mapper = mapperSession.getMapper();
@@ -31,22 +36,21 @@ public class UpdateSearchHitHandler extends ProcessHandler {
 			Calendar cal = Calendar.getInstance();
 			cal.add(Calendar.DAY_OF_MONTH, -1);
 
-			logger.debug("#### UpdateSearchHit {} >> {} > {} / {}", timeId, categoryId, count, mapper);
+			logger.debug("#### UpdateSearchHit {} >> {} > {} / {}", timeId, categoryId, searchLogResult, mapper);
 			
-			//synchronized(mapperSession) {
-				SearchHitVO vo = mapper.getEntry(siteId, categoryId, timeId);
-				if(vo != null){
-					mapper.updateEntry(siteId, categoryId, timeId, count);
-				} else {
-					mapper.putEntry(siteId, categoryId, timeId, count);
-				}
-			//}
+			SearchHitVO vo = mapper.getEntry(siteId, categoryId, timeId);
+			if(vo != null){
+				mapper.updateEntry(siteId, categoryId, timeId, searchLogResult.getSearchCount(), searchLogResult.getAverageResponseTime(), searchLogResult.getMaxResponseTime());
+			} else {
+				mapper.putEntry(siteId, categoryId, timeId, searchLogResult.getSearchCount(), searchLogResult.getAverageResponseTime(), searchLogResult.getMaxResponseTime());
+			}
 			
 		} finally {
 			if (mapperSession != null) {
 				mapperSession.closeSession();
 			}
 		}
+		
 		
 		return null;
 	}

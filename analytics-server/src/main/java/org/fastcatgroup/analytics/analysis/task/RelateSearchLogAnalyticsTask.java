@@ -40,7 +40,7 @@ public class RelateSearchLogAnalyticsTask extends AnalyticsTask<RelateSearchLog>
 
 				@Override
 				protected RelateSearchLog makeLog(String[] el) {
-					return new RelateSearchLog(el[0], el[1], el.length >= 3 ? el[2] : "");
+					return new RelateSearchLog(el[1], el[2], el.length >= 4 ? el[3] : "");
 				}
 				
 			};

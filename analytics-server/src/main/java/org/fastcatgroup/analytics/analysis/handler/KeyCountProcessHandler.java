@@ -5,12 +5,13 @@ import java.io.IOException;
 
 import org.fastcatgroup.analytics.analysis.log.KeyCountLog;
 import org.fastcatgroup.analytics.analysis.log.KeyCountLogReader;
+import org.fastcatgroup.analytics.analysis.log.SearchLogResult;
 
 public class KeyCountProcessHandler extends ProcessHandler {
 
 	private File baseDir;
-	String inFileName;
-	String encoding;
+	private String inFileName;
+	private String encoding;
 
 	public KeyCountProcessHandler(File baseDir, String inFileName, String encoding) {
 		this.baseDir = baseDir;
@@ -38,6 +39,11 @@ public class KeyCountProcessHandler extends ProcessHandler {
 				reader.close();
 			}
 		}
-		return totalCount;
+//		return totalCount;
+		
+		
+		//FIXME max, avgtime을 어떻게 얻어올까?
+		
+		return new SearchLogResult(totalCount, 0, 0);
 	}
 }

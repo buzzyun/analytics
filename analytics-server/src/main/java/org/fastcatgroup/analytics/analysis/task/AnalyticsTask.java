@@ -2,7 +2,7 @@ package org.fastcatgroup.analytics.analysis.task;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.Collections;
 import java.util.List;
 
 import org.fastcatgroup.analytics.analysis.calculator.Calculator;
@@ -77,7 +77,7 @@ public abstract class AnalyticsTask<LogType extends LogData> extends Job impleme
 //						logger.debug("logReader.readLog() {} : {}", n++, logData);
 //						logger.debug("Task calculatorList {}", calculatorList);
 						for (Calculator<LogType> c : calculatorList) {
-//							logger.debug("offer log to  {} < {}", c, logData);
+							//logger.debug("offer log to  {} < {}", c, logData);
 							c.offerLog(logData);
 						}
 					}

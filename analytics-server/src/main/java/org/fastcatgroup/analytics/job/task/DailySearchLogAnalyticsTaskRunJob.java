@@ -74,9 +74,6 @@ public class DailySearchLogAnalyticsTaskRunJob extends Job {
 				DailySearchLogAnalyticsTask task = new DailySearchLogAnalyticsTask(siteId, categoryIdList, schedule, 0, null);
 				taskRunner.addTask(task);
 				
-				task.setEnvironment(environment);
-				JobService.getInstance().offer(task);
-				
 				/* 2. type_raw.log */
 				TimeSchedule schedule2 = new TimeSchedule(calendar.getTimeInMillis(), 0);
 				DailyTypeSearchLogAnalyticsTask task2 = new DailyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule2, 1, null);

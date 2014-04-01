@@ -37,22 +37,18 @@ public class UpdatePopularKeywordHandler extends ProcessHandler {
 
 				int count = mapper.getCount(siteId, categoryId, timeId, null, 0);
 				if(count > 0){
-					synchronized(mapper) {
-						mapper.updateClean(siteId, categoryId, timeId);
-					}
+					mapper.updateClean(siteId, categoryId, timeId);
 				}
 				logger.debug("result size : {}", keywordList.size());
-				synchronized(mapper) {
-					for (int inx = 0; inx < keywordList.size(); inx++) {
-						RankKeyword rankKeyword  = keywordList.get(inx);
-						RankKeywordVO vo = new RankKeywordVO(categoryId, timeId, rankKeyword.getKeyword(), rankKeyword.getCount(), rankKeyword.getRank(),
-								rankKeyword.getCountDiff(), rankKeyword.getRankDiffType(), rankKeyword.getRankDiff());
-						logger.trace("put {} rankKeyword daily {}-{}-{}", inx, categoryId,timeId, vo.getRank());
-						try {
-								mapper.putEntry(siteId, vo);
-						} catch (Exception e) {
-							logger.error("", e);
-						}
+				for (int inx = 0; inx < keywordList.size(); inx++) {
+					RankKeyword rankKeyword  = keywordList.get(inx);
+					RankKeywordVO vo = new RankKeywordVO(categoryId, timeId, rankKeyword.getKeyword(), rankKeyword.getCount(), rankKeyword.getRank(),
+							rankKeyword.getCountDiff(), rankKeyword.getRankDiffType(), rankKeyword.getRankDiff());
+					logger.trace("put {} rankKeyword daily {}-{}-{}", inx, categoryId,timeId, vo.getRank());
+					try {
+						mapper.putEntry(siteId, vo);
+					} catch (Exception e) {
+						logger.error("", e);
 					}
 				}
 			} finally {

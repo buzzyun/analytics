@@ -20,9 +20,9 @@ import org.springframework.web.servlet.ModelAndView;
 public class SearchTypeController extends AbstractController {
 
 	//카테고리별 비율보기.
-	@RequestMapping("/{typeId}")
+	@RequestMapping("/index")
 	public ModelAndView viewCategory(@PathVariable String siteId, @RequestParam(defaultValue="_root") String categoryId
-			, @PathVariable String typeId, @RequestParam(required=false) String timeText
+			, @RequestParam(defaultValue="category") String typeId, @RequestParam(required=false) String timeText
 			, @RequestParam(required = false) String timeViewType) {
 
 		ModelAndView mav = new ModelAndView();
@@ -80,6 +80,7 @@ public class SearchTypeController extends AbstractController {
 			mav.addObject("categoryId", categoryId);
 			mav.addObject("timeText", timeText);
 			mav.addObject("timeViewType", timeViewType);
+			mav.addObject("typeId", typeId);
 			mav.addObject("list", list);
 			
 		} catch (Exception e) {

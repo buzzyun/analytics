@@ -68,10 +68,10 @@
 				lcatCurrent = "typeProgress".equals(lcat);
 			%>
 			<li class="<%=lcatCurrent ? "current" :"" %>"><a
-				href="javascript:void(0);"> <i class="icon-bar-chart"></i>
+				href="<c:url value="/${siteId}/report/type/index.html"/>"> <i class="icon-bar-chart"></i>
 					Type Ratio
 			</a>
-				<ul class="sub-menu">
+				<%-- <ul class="sub-menu">
 					<li class="<%=(lcatCurrent && "category".equals(mcat)) ? "current" : "" %>"><a
 						href="<c:url value="/${siteId}/report/type/category.html"/>">
 							<i class="icon-angle-right"></i> Category
@@ -100,7 +100,7 @@
 						href="<c:url value="/${siteId}/report/type/gender.html"/>">
 							<i class="icon-angle-right"></i> Gender
 					</a></li>
-				</ul>
+				</ul> --%>
 			</li>
 			
 			<%-- <%

@@ -76,7 +76,7 @@ $(document).ready(function() {
 		mode: 'range',
 		format: 'Y.m.d',
 		first_day: 1,
-		position: 'right',
+		position: 'bottom',
 		hide_on_select	: false
 	};
 	$("#timeText").pickmeup(pickmenup_options);
@@ -96,7 +96,10 @@ $(document).ready(function() {
 	});
 });
 
-
+function showRatioTab(typeId){
+	$("#tabForm input[name=typeId]").val(typeId);
+	$("#tabForm").submit();
+}
 </script>
 </head>
 <body>
@@ -135,38 +138,33 @@ $(document).ready(function() {
 				<!-- /Page Header -->
 				<div class="row row-bg row-bg-sm">
 					<!-- .row-bg -->
-					
-					<div class="col-md-12">
-						<form class="form-inline" method="get">
-							<div class="col-md-5 bottom-space">
-								<div class="form-inline bottom-space">
-								<%
-								if(!typeId.equals("category")){
-								%>
-									<select id="select_category" name="categoryId" class="select_flat select_flat-sm fcol2"></select>
-								<%
-								}
-								%>
-									<input class="form-control fcol2-1 " type="text" name="timeText" id="timeText" value="<%=timeText %>" >
-								</div>
-								
-								<div id="timeViewTypeList" class="btn-group bottom-space">
+					<form method="get">
+						<div class="col-md-12">
+							<div class="form-inline">
+							<%
+							if(!typeId.equals("category")){
+							%>
+								<select id="select_category" name="categoryId" class="select_flat fcol2" disabled></select>
+							<%
+							}else{
+							%>
+								<select name="categoryId" class="select_flat fcol2" disabled></select>
+							<%
+							}
+							%>
+								<input class="form-control fcol2-1 " type="text" name="timeText" id="timeText" value="<%=timeText %>" >
+								<div id="timeViewTypeList" class="btn-group">
 									<button type="button" class="btn <%="D".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Daily</button>
 									<button type="button" class="btn <%="W".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Weekly</button>
 									<button type="button" class="btn <%="M".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Monthly</button>
 									<button type="button" class="btn <%="Y".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Yearly</button>
 									<input type="hidden" name="timeViewType" value="<%=timeViewType %>">
 								</div>
-							
-								<div class="form-inline">
-									<input type="submit" class="btn btn-primary" value="Submit">
-								</div>
+								<input type="hidden" name="typeId" value="<%=typeId %>">
+								<input type="submit" class="btn btn-primary" value="Submit">
 							</div>
-							<div class="col-md-7 bottom-space">
-								<div id="date1"></div>
-							</div>
-						</form>
-					</div>
+						</div>
+					</form>
 				</div>
 				
 				<%
@@ -175,72 +173,58 @@ $(document).ready(function() {
 				
 				<div class="tabbable tabbable-custom tabbable-full-width" id="schema_tabs">
 					<ul class="nav nav-tabs">
-						<li class="<%=typeId.equals("category") ? "active" : "" %>"><a href="javascript:showKeywordTab('all')">category</a></li>
-						<li class="<%=typeId.equals("page") ? "active" : "" %>"><a href="javascript:showKeywordTab('new')">page</a></li>
-						<li class="<%=typeId.equals("sort") ? "active" : "" %>"><a href="javascript:showKeywordTab('hot')">sort</a></li>
-						<li class="<%=typeId.equals("age") ? "active" : "" %>"><a href="javascript:showKeywordTab('down')">age</a></li>
-						<li class="<%=typeId.equals("service") ? "active" : "" %>"><a href="javascript:showKeywordTab('empty')">service</a></li>
-						<li class="<%=typeId.equals("login") ? "active" : "" %>"><a href="javascript:showKeywordTab('empty')">login</a></li>
-						<li class="<%=typeId.equals("gender") ? "active" : "" %>"><a href="javascript:showKeywordTab('empty')">gender</a></li>
+						<li class="<%=typeId.equals("category") ? "active" : "" %>"><a href="javascript:showRatioTab('category')">category</a></li>
+						<li class="<%=typeId.equals("page") ? "active" : "" %>"><a href="javascript:showRatioTab('page')">page</a></li>
+						<li class="<%=typeId.equals("sort") ? "active" : "" %>"><a href="javascript:showRatioTab('sort')">sort</a></li>
+						<li class="<%=typeId.equals("age") ? "active" : "" %>"><a href="javascript:showRatioTab('age')">age</a></li>
+						<li class="<%=typeId.equals("service") ? "active" : "" %>"><a href="javascript:showRatioTab('service')">service</a></li>
+						<li class="<%=typeId.equals("login") ? "active" : "" %>"><a href="javascript:showRatioTab('login')">login</a></li>
+						<li class="<%=typeId.equals("gender") ? "active" : "" %>"><a href="javascript:showRatioTab('gender')">gender</a></li>
 					</ul>
 					<div class="tab-content row">
 						
 						<!--=== fields tab ===-->
 						<div class="tab-pane active">
 					
-				
-				
-							<div class="row">
-								<div class="col-md-12">
-									<div class="widget box">
-										<div class="widget-header">
-											<h4>${typeId} ratio</h4>
-										</div>
-										<div class="widget-content">
-											<div id="chart_category_rate" class="chart"></div>
-										</div>
-										<div class="divider"></div>
-										<div class="widget-content">
-											<div>
-												<table class="table table-striped table-bordered table-condensed">
-													<thead>
-														<tr>
-															<th>Rank</th>
-															<th>Type</th>
-															<th>Hit Count</th>
-															<th>Ratio</th>
-														</tr>
-													</thead>
-													<tbody>
-														<%
-														for(int i=0;i<list.size(); i++){
-															SearchTypeHitVO vo = list.get(i);
-															float ratio = (((float)vo.getHit() / (float)totalCount) * 100.0f);
-														%>
-														<tr>
-														<td><%=i + 1 %></td>
-														<td><%=vo.getDtype() %></td>
-														<td><%=vo.getHit() %></td>
-														<td><%=String.format("%.1f", ratio) %>%</td>
-														</tr>
-														<%
-														}
-														%>
-														<tr>
-															<td>Summary</td>
-															<td></td>
-															<td><%=totalCount %></td>
-															<td>100.0%</td>
-														</tr>
-													</tbody>
-												</table>
-											</div>
-										
-										</div>
-									</div>
-								
+							<div class="col-md-12">
+								<div id="chart_category_rate" class="chart"></div>
+								<div>
+									<table class="table table-striped table-bordered table-condensed">
+										<thead>
+											<tr>
+												<th>Rank</th>
+												<th>Type</th>
+												<th>Hit Count</th>
+												<th>Ratio</th>
+											</tr>
+										</thead>
+										<tbody>
+											<%
+											for(int i=0;i<list.size(); i++){
+												SearchTypeHitVO vo = list.get(i);
+												float ratio = (((float)vo.getHit() / (float)totalCount) * 100.0f);
+											%>
+											<tr>
+											<td><%=i + 1 %></td>
+											<td><%=vo.getDtype() %></td>
+											<td><%=vo.getHit() %></td>
+											<td><%=String.format("%.1f", ratio) %>%</td>
+											</tr>
+											<%
+											}
+											%>
+											<tr>
+												<td>Summary</td>
+												<td></td>
+												<td><%=totalCount %></td>
+												<td>100.0%</td>
+											</tr>
+										</tbody>
+									</table>
 								</div>
+									
 							</div>
+								
 						</div>
 					</div>
 				</div>
@@ -252,5 +236,12 @@ $(document).ready(function() {
 			</div>
 		</div>
 	</div>
+	
+	<form id="tabForm">
+	<input type="hidden" name="categoryId" value="${categoryId }"/>
+	<input type="hidden" name="typeId" value="${typeId }"/>
+	<input type="hidden" name="timeViewType" value="${timeViewType }"/>
+	<input type="hidden" name="timeText" value="${timeText }"/>
+	</form>
 </body>
 </html>

@@ -111,7 +111,7 @@ $(document).ready(function() {
 		mode: 'range',
 		format: 'Y.m.d',
 		first_day: 1,
-		position: 'right',
+		position: 'bottom',
 		hide_on_select	: false
 	};
 	$("#timeText").pickmeup(pickmenup_options);
@@ -163,23 +163,18 @@ $(document).ready(function() {
 				<div class="row row-bg row-bg-sm">
 					<!-- .row-bg -->
 					<form method="get" autocomplete="off">
-						<div class="col-md-12 bottom-space">
-							<div class="form-inline bottom-space">
+						<div class="col-md-12">
+							<div class="form-inline">
 								<select id="select_category" name="categoryId" class="select_flat fcol2"></select>
 								<input class="form-control fcol2-1 " type="text" name="timeText" id="timeText" value="<%=timeText %>" >
-							</div>
-							
-							<div id="timeViewTypeList" class="btn-group bottom-space">
-								<button type="button" class="btn <%="H".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Hourly</button>
-								<button type="button" class="btn <%="D".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Daily</button>
-								<button type="button" class="btn <%="W".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Weekly</button>
-								<button type="button" class="btn <%="M".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Monthly</button>
-								<button type="button" class="btn <%="Y".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Yearly</button>
-								<input type="hidden" name="timeViewType" value="<%=timeViewType %>">
-							</div>
-							
-							
-							<div class="form-inline">
+								<div id="timeViewTypeList" class="btn-group">
+									<button type="button" class="btn <%="H".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Hourly</button>
+									<button type="button" class="btn <%="D".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Daily</button>
+									<button type="button" class="btn <%="W".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Weekly</button>
+									<button type="button" class="btn <%="M".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Monthly</button>
+									<button type="button" class="btn <%="Y".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Yearly</button>
+									<input type="hidden" name="timeViewType" value="<%=timeViewType %>">
+								</div>
 								<input type="text" name="keyword" class="form-control fcol2" placeholder="Keyword" value="<%=keyword %>">
 								<input type="submit" class="btn btn-primary" value="Submit">
 							</div>

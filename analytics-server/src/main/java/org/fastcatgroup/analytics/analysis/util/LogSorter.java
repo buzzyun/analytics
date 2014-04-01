@@ -107,21 +107,21 @@ public class LogSorter<EntryType extends RunEntry> {
 
 	private void flush(File workDir, int flushCount, List<EntryType> list, Comparator<EntryType> comparator) throws IOException {
 		File runFile = getRunFile(workDir, flushCount);
-		BufferedWriter writer = null;
-		try {
-			//if(runFile.exists()) {
+		synchronized(runFile) {
+			BufferedWriter writer = null;
+			try {
 				writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(runFile), encoding));
 				Collections.sort(list, comparator);
 				for (EntryType entry : list) {
 					writer.write(entry.getRawLine());
 					writer.write("\n");
 				}
-			//}
-		} finally {
-			if (writer != null) {
-				writer.close();
+			} finally {
+				if (writer != null) {
+					writer.close();
+				}
+				list.clear();
 			}
-			list.clear();
 		}
 	}
 

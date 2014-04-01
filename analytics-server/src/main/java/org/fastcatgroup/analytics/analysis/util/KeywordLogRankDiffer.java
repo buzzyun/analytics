@@ -102,6 +102,7 @@ public class KeywordLogRankDiffer {
 			logger.error("", e);
 			return null;
 		}
+logger.debug("result size : {}", result.size());
 		return result;
 	}
 }

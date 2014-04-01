@@ -65,13 +65,12 @@ public abstract class AbstractLogAggregator<LogType extends LogData> {
 			flushRun();
 		}
 	}
-
 	
 	private void flushRun() throws IOException {
 		TreeMap<String, Counter> sortedMap = new TreeMap<String, Counter>();
-		//synchronized(aggregateMap) {
+		synchronized(this) {
 			sortedMap.putAll(aggregateMap);
-		//}
+		}
 		aggregateMap.clear();
 		AggregationResultWriter logWriter = newRunWriter(outputEncoding, flushCount++);
 		try {

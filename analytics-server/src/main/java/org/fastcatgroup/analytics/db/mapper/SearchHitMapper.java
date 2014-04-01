@@ -39,11 +39,11 @@ public interface SearchHitMapper extends AnalyticsMapper {
 	
 	public int putEntry(@Param("siteId") String siteId,
 			@Param("categoryId") String categoryId, @Param("timeId") String timeId,
-			@Param("hit") int hit, @Param("hit") int avgTime, @Param("hit") int maxTime);
+			@Param("hit") int hit, @Param("avgTime") int avgTime, @Param("maxTime") int maxTime);
 	
 	public int updateEntry(@Param("siteId") String siteId,
 			@Param("categoryId") String categoryId, @Param("timeId") String timeId,
-			@Param("hit") int hit, @Param("hit") int avgTime, @Param("hit") int maxTime);
+			@Param("hit") int hit, @Param("avgTime") int avgTime, @Param("maxTime") int maxTime);
 	
 	public int deleteEntry(@Param("siteId") String siteId,
 			@Param("categoryId") String categoryId, @Param("timeId") String timeId);

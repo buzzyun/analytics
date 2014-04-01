@@ -45,6 +45,20 @@ $(document).ready(function() {
 		%>
 	];
 	
+	var avgTime = [
+  		<%
+  		for(int i=0;i<list.size();i++){
+  			SearchHitVO vo = list.get(i);
+  			if(i > 0){
+  			%>,<%
+  			}
+  		%>
+  		[ <%=i %>, <%=vo.getAverageTime() %> ]
+  		<%
+  		}
+  		%>
+  	];
+	
 	var ticks = [
 		<%
 		for(int i=0;i<list.size();i++){
@@ -60,20 +74,31 @@ $(document).ready(function() {
 	];
 
 	
-	var data = [ {
-		data : d1,
-		color : '#eb8544'
-	}];
+	var data = [
+		{data : d1, color : '#eb8544', label: 'Hit count'},
+		{data : avgTime, color : 'blue', yaxis: 2, label: 'Response time'}
+	];
 
+	function yFormatter(v, axis) {
+		return v + " ms";
+	}
+	
 	$.plot("#chart_dashboard_main", data, $.extend(true, {}, Plugins.getFlotDefaults(), 
 		{
 			xaxis: {
 				ticks :ticks
 			},
-			yaxis: {
+			/* yaxis: {
 				ticks: 20,
 				min: 0,
-			},
+			}, */
+			yaxes: [ { min: 0 }, {
+				alignTicksWithAxis: 1,
+				position: 'right',
+				min: 0,
+				ticks: 1,
+				tickFormatter: yFormatter
+			} ],
 			series : {
 				lines : {
 					show: true,
@@ -149,7 +174,6 @@ $(document).ready(function() {
 					<ul id="breadcrumbs" class="breadcrumb">
 						<li><i class="icon-home"></i> <a href="javascript:void(0);">Report</a></li>
 						<li><a href="#">Search Progress</a></li>
-						<li><a href="#">Hit Count</a></li>
 					</ul>
 				</div>
 				<!-- /Breadcrumbs line -->
@@ -157,7 +181,7 @@ $(document).ready(function() {
 				<!--=== Page Header ===-->
 				<div class="page-header">
 					<div class="page-title page-title-sm">
-						<h3>Hit Count</h3>
+						<h3>Search Progress</h3>
 					</div>
 				</div>
 				<!-- /Page Header -->

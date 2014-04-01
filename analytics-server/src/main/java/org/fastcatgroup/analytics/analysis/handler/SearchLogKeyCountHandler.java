@@ -67,6 +67,6 @@ public class SearchLogKeyCountHandler extends CategoryLogHandler<SearchLog> {
 	@Override
 	public Object done() throws IOException {
 		aggregator.done();
-		return new SearchLogResult(searchCount, (int) (sumResponseTime / count), maxResponseTime);
+		return new SearchLogResult(searchCount, count > 0 ? (int) (sumResponseTime / count) : 0, maxResponseTime);
 	}
 }

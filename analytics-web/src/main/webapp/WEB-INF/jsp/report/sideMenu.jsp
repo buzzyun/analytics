@@ -24,17 +24,7 @@
 				lcatCurrent = "searchProgress".equals(lcat);
 			%>
 			<li class="<%=lcatCurrent ? "current" :"" %>">
-				<a href="javascript:void(0)"><i class="icon-bar-chart"></i> Search Progress</a>
-				<ul class="sub-menu">
-					<li class="<%=(lcatCurrent && "hitCount".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/progress/hitCount.html"/>">
-							<i class="icon-angle-right"></i> Hit Count
-					</a></li>
-					<li class="<%=(lcatCurrent && "responseTime".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/progress/responseTime.html"/>">
-							<i class="icon-angle-right"></i> Response Time
-					</a></li>
-				</ul>
+				<a href="<c:url value="/${siteId}/report/progress/hitCount.html"/>"><i class="icon-bar-chart"></i> Search Progress</a>
 			</li>
 			
 			<%

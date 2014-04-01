@@ -24,22 +24,22 @@ public class SearchProgressController extends AbstractController {
 	public ModelAndView index(@PathVariable String siteId,
 			@RequestParam(defaultValue = "_root") String categoryId,
 			@RequestParam(required = false) String keyword,
-			@RequestParam(required = false) String timeFrom, //2014.03.20
-			@RequestParam(required = false) String timeTo, //2014.03.25
+			@RequestParam(required = false) String timeText, //2014.03.20 - 2014.03.25
 			@RequestParam(required = false) String timeViewType) {
 
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/progress/hit");
 		
-		if(timeFrom == null){
+		if(timeText == null){
 			Calendar calendar = Calendar.getInstance();
 			calendar.add(Calendar.DATE, -7);
-			timeFrom = SearchStatisticsProperties.toDatetimeString(calendar);
-		}
-		if(timeTo == null){
-			Calendar calendar = Calendar.getInstance();
+			String timeFrom = SearchStatisticsProperties.toDatetimeString(calendar);
+			
+			calendar = Calendar.getInstance();
 			calendar.add(Calendar.DATE, -1);
-			timeTo = SearchStatisticsProperties.toDatetimeString(calendar);
+			String timeTo = SearchStatisticsProperties.toDatetimeString(calendar);
+			
+			timeText = timeFrom + " - " + timeTo;
 		}
 		
 		int timeTypeCode = Calendar.DATE;
@@ -56,6 +56,21 @@ public class SearchProgressController extends AbstractController {
 			timeViewType = "D";
 		}
 		
+		String[] timeRanges = timeText.split("-");
+		logger.debug("timeRanges > {} >> {}", timeRanges, timeText);
+		
+		String timeFrom = null;
+		String timeTo = null;
+		if(timeRanges.length == 1){
+			timeFrom = timeRanges[0];
+			timeTo = timeFrom;
+		}else if(timeRanges.length == 2){
+			timeFrom = timeRanges[0];
+			timeTo = timeRanges[1];
+		}else{
+			//error
+		}
+		logger.debug("timeFrom > {} ~~ {}", timeFrom, timeTo);
 		Calendar startTime = SearchStatisticsProperties.parseDatetimeString(timeFrom);
 		Calendar endTime = SearchStatisticsProperties.parseDatetimeString(timeTo);
 		String startTimeId = SearchStatisticsProperties.getTimeId(startTime, timeTypeCode);

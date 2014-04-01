@@ -287,6 +287,7 @@ span.red {
 .navbar {
   background: #eb8544;
   min-height: 48px;
+  height: 49px;
   filter: none;
   top: 0;
   right: 0;

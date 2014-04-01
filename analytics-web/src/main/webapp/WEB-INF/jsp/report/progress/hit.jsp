@@ -139,8 +139,8 @@ $(document).ready(function() {
 
 	<div id="container">
 		<c:import url="${ROOT_PATH}/report/sideMenu.jsp">
-			<c:param name="lcat" value="hitProgress" />
-			<c:param name="mcat" value="all" />
+			<c:param name="lcat" value="searchProgress" />
+			<c:param name="mcat" value="hitCount" />
 		</c:import>
 		<div id="content">
 			<div class="container">
@@ -148,7 +148,8 @@ $(document).ready(function() {
 				<div class="crumbs">
 					<ul id="breadcrumbs" class="breadcrumb">
 						<li><i class="icon-home"></i> <a href="javascript:void(0);">Report</a></li>
-						<li><a href="#">Hit Progress</a></li>
+						<li><a href="#">Search Progress</a></li>
+						<li><a href="#">Hit Count</a></li>
 					</ul>
 				</div>
 				<!-- /Breadcrumbs line -->
@@ -156,7 +157,7 @@ $(document).ready(function() {
 				<!--=== Page Header ===-->
 				<div class="page-header">
 					<div class="page-title page-title-sm">
-						<h3>Hit Progress</h3>
+						<h3>Hit Count</h3>
 					</div>
 				</div>
 				<!-- /Page Header -->

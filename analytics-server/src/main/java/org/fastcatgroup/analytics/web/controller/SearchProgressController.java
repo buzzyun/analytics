@@ -20,7 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/{siteId}/report/progress")
 public class SearchProgressController extends AbstractController {
 
-	@RequestMapping("/hit")
+	@RequestMapping("/hitCount")
 	public ModelAndView index(@PathVariable String siteId,
 			@RequestParam(defaultValue = "_root") String categoryId,
 			@RequestParam(required = false) String keyword,

@@ -135,8 +135,7 @@ public class SearchProgressController extends AbstractController {
 				}
 			}
 			mav.addObject("categoryId", categoryId);
-			mav.addObject("timeFrom", timeFrom);
-			mav.addObject("timeTo", timeTo);
+			mav.addObject("timeText", timeText);
 			mav.addObject("timeViewType", timeViewType);
 			mav.addObject("list", list);
 			

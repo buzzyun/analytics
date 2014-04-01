@@ -12,7 +12,7 @@ int start = (Integer) request.getAttribute("start");
 int length = (Integer) request.getAttribute("length");
 int pageNo = (Integer) request.getAttribute("pageNo");
 
-String time = (String) request.getAttribute("time");
+String timeText = (String) request.getAttribute("timeText");
 String timeViewType = (String) request.getAttribute("timeViewType");
 
 int totalCount = (Integer) request.getAttribute("totalCount");
@@ -41,25 +41,19 @@ function showKeywordTab(keywordType){
 	form.submit();
 }
 
-function changeCalendar(formated){
-	$("#timeInputText").val(formated);
-}
-
 $(document).ready(function(){
 	fillCategoryList('${siteId}', $("#select_category"), '<%=categoryId %>');
 	
 	
-	$('#date1').DatePicker({
-		flat: true,
-		date: '<%=time%>',
+	var pickmenup_options = {
 		calendars: 3,
-		//mode: 'range',
+		mode: 'days',
 		format: 'Y.m.d',
-		view: 'days',
-		//lselect: 'days',
-		starts: 1,
-		onChange: changeCalendar
-	});
+		first_day: 1,
+		position: 'right',
+		hide_on_select	: false
+	};
+	$("#timeText").pickmeup(pickmenup_options);
 	
 	$("#timeViewTypeList button").on("click", function(){
 		$(this).addClass("btn-primary");
@@ -84,7 +78,7 @@ $(document).ready(function(){
 	<div id="container">
 		<c:import url="${ROOT_PATH}/report/sideMenu.jsp">
 			<c:param name="lcat" value="rank" />
-			<c:param name="mcat" value="${menuId}" />
+			<c:param name="mcat" value="searchKeyword" />
 		</c:import>
 
 		<div id="content">
@@ -109,10 +103,10 @@ $(document).ready(function(){
 				<div class="row row-bg row-bg-sm">
 					<!-- .row-bg -->
 					<form method="get">
-						<div class="col-md-5">
+						<div class="col-md-12">
 							<div class="form-inline bottom-space">
 								<select id="select_category" name="categoryId" class="select_flat fcol2"></select>
-								<input class="form-control fcol1-2 " size="16" type="text" id="timeInputText" name="time" value="<%=time %>" >
+								<input class="form-control fcol1-2 " size="16" type="text" id="timeText" name="timeText" value="<%=timeText %>" >
 							</div>
 							
 							<div id="timeViewTypeList" class="btn-group bottom-space">
@@ -127,9 +121,6 @@ $(document).ready(function(){
 							<div class="form-inline">
 								<input type="submit" class="btn btn-primary" value="Submit">
 							</div>
-						</div>
-						<div class="col-md-7 bottom-space">
-							<div id="date1"></div>
 						</div>
 					</form>
 				</div>
@@ -151,7 +142,7 @@ $(document).ready(function(){
 								<div class="widget">
 									<div class="widget-header">
 										<h4>
-											<i class="icon-calendar"></i> Period : <%=time %>
+											<i class="icon-calendar"></i> Period : <%=timeText %>
 										</h4>
 									</div>
 
@@ -227,7 +218,7 @@ $(document).ready(function(){
 	<input type="hidden" name="categoryId" value="${categoryId }"/>
 	<input type="hidden" name="keywordType" value="${keywordType }"/>
 	<input type="hidden" name="timeViewType" value="${timeViewType }"/>
-	<input type="hidden" name="time" value="${time }"/>
+	<input type="hidden" name="timeText" value="${timeText }"/>
 	<input type="hidden" name="pageNo" value="${pageNo }"/>
 	<input type="hidden" name="start" value="${start }"/>
 	<input type="hidden" name="length" value="${length }"/>

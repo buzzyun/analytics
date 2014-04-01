@@ -40,7 +40,7 @@ public class SearchRankController extends AbstractController {
 
 	@RequestMapping("/searchKeyword")
 	public ModelAndView searchKeywordAll(@PathVariable String siteId, @RequestParam(defaultValue="_root") String categoryId
-			, @RequestParam(required=false) String time, @RequestParam(required=false) String keywordType, @RequestParam(defaultValue="1") int pageNo
+			, @RequestParam(required=false) String timeText, @RequestParam(required=false) String keywordType, @RequestParam(defaultValue="1") int pageNo
 			, @RequestParam(defaultValue="0") int start, @RequestParam(defaultValue="10") int length, @RequestParam(required = false) String timeViewType) {
 		int rankDiffOver = 0;
 		String rankDiffType = null;
@@ -73,15 +73,15 @@ public class SearchRankController extends AbstractController {
 			timeViewType = "D";
 		}
 		
-		if(time == null){
+		if(timeText == null){
 			Calendar calendar = Calendar.getInstance();
 			calendar.add(Calendar.DATE, -1);
-			time = SearchStatisticsProperties.toDatetimeString(calendar);
+			timeText = SearchStatisticsProperties.toDatetimeString(calendar);
 		}
 		
-		Calendar calendar = SearchStatisticsProperties.parseDatetimeString(time);
+		Calendar calendar = SearchStatisticsProperties.parseDatetimeString(timeText);
 		String timeId = SearchStatisticsProperties.getTimeId(calendar, timeTypeCode);
-		
+		logger.debug(">> timeText> {}, timeId > {}", timeText, timeId);
 		MapperSession<SearchKeywordRankMapper> keywordRankMapperSession = null;
 		MapperSession<SearchKeywordEmptyMapper> keywordEmptyMapperSession = null;
 		int totalCount = 0;
@@ -107,7 +107,7 @@ public class SearchRankController extends AbstractController {
 			mav.addObject("start", start);
 			mav.addObject("length", length);
 			mav.addObject("pageNo", pageNo);
-			mav.addObject("time", time);
+			mav.addObject("timeText", timeText);
 			mav.addObject("categoryId", categoryId);
 			mav.addObject("keywordType", keywordType);
 			mav.addObject("totalCount", totalCount);

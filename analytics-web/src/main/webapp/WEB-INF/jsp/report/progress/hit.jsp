@@ -8,9 +8,7 @@
 String categoryId = request.getParameter("categoryId");
 List<SearchHitVO> list = (List<SearchHitVO>) request.getAttribute("list");
 String keyword = request.getParameter("keyword");
-String timeText = request.getParameter("timeText");
-String timeFrom = (String) request.getAttribute("timeFrom");
-String timeTo = (String) request.getAttribute("timeTo");
+String timeText = (String) request.getAttribute("timeText");
 String timeViewType = (String) request.getAttribute("timeViewType");
 
 if(keyword == null){
@@ -107,21 +105,15 @@ $(document).ready(function() {
 	}
 	%>
 	
-	function changeCalendar(formated){
-		console.log("formated > ", formated);
-		$("#timeFromInputText").val(formated[0]);
-		$("#timeToInputText").val(formated[1]);
-	}
 	
 	var pickmenup_options = {
-			calendars: 3,
-			mode: 'range',
-			format: 'Y.m.d',
-			first_day: 1,
-			position: 'right',
-			hide_on_select	: false,
-			change: changeCalendar
-		}
+		calendars: 3,
+		mode: 'range',
+		format: 'Y.m.d',
+		first_day: 1,
+		position: 'right',
+		hide_on_select	: false
+	};
 	$("#timeText").pickmeup(pickmenup_options);
 	
 	$("#timeViewTypeList button").on("click", function(){
@@ -207,7 +199,7 @@ $(document).ready(function() {
 						<div class="widget">
 							<div class="widget-header">
 								<h4>
-									<i class="icon-calendar"></i> Period : <%=timeFrom %> - <%=timeTo %>
+									<i class="icon-calendar"></i> Period : <%=timeText %>
 								</h4>
 							</div>
 						</div>

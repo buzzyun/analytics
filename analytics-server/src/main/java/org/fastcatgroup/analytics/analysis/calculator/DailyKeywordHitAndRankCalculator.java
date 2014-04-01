@@ -14,7 +14,7 @@ import org.fastcatgroup.analytics.analysis.handler.KeywordRankDiffHandler;
 import org.fastcatgroup.analytics.analysis.handler.PopularKeywordResultHandler;
 import org.fastcatgroup.analytics.analysis.handler.ProcessHandler;
 import org.fastcatgroup.analytics.analysis.handler.SearchLogKeyCountHandler;
-import org.fastcatgroup.analytics.analysis.handler.UpdateDailyPopularKeywordHandler;
+import org.fastcatgroup.analytics.analysis.handler.UpdatePopularKeywordHandler;
 import org.fastcatgroup.analytics.analysis.handler.UpdateKeywordHitHandler;
 import org.fastcatgroup.analytics.analysis.handler.UpdateSearchHitHandler;
 import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
@@ -92,7 +92,7 @@ public class DailyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		ProcessHandler popularKeywordResultHandler = new PopularKeywordResultHandler(popularKeywordLogFile, encoding).appendTo(rankDiff);
 		
 		/* 4. 인기검색어 객체 업데이트 */
-		new UpdateDailyPopularKeywordHandler(siteId, categoryId, timeId).appendTo(popularKeywordResultHandler);
+		new UpdatePopularKeywordHandler(siteId, categoryId, timeId).appendTo(popularKeywordResultHandler);
 		
 		return categoryProcess;
 	}

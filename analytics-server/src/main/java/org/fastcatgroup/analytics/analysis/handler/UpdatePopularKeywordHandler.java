@@ -11,13 +11,13 @@ import org.fastcatgroup.analytics.db.mapper.SearchKeywordRankMapper;
 import org.fastcatgroup.analytics.db.vo.RankKeywordVO;
 import org.fastcatgroup.analytics.service.ServiceManager;
 
-public class UpdateDailyPopularKeywordHandler extends ProcessHandler {
+public class UpdatePopularKeywordHandler extends ProcessHandler {
 
 	String siteId;
 	String categoryId;
 	String timeId;
 	
-	public UpdateDailyPopularKeywordHandler(String siteId, String categoryId, String timeId) {
+	public UpdatePopularKeywordHandler(String siteId, String categoryId, String timeId) {
 		this.siteId = siteId;
 		this.categoryId = categoryId;
 		this.timeId = timeId;

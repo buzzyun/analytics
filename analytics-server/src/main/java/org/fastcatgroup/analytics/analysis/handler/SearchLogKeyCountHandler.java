@@ -8,6 +8,7 @@ import org.fastcatgroup.analytics.analysis.LogValidator;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
+import org.fastcatgroup.analytics.analysis.log.SearchLogResult;
 
 /**
  * search log를 읽어들여 key-count를 계산한다.
@@ -17,6 +18,9 @@ public class SearchLogKeyCountHandler extends CategoryLogHandler<SearchLog> {
 	private KeyCountLogAggregator<SearchLog> aggregator;
 	LogValidator<SearchLog> logValidator;
 	int count;
+	int searchCount;
+	int maxResponseTime;
+	long sumResponseTime;
 	
 	public SearchLogKeyCountHandler(String categoryId, File baseDir, String targetFilename, int minimumHitCount, LogValidator<SearchLog> logValidator,
 			KeyCountRunEntryParser entryParser) {
@@ -39,13 +43,23 @@ public class SearchLogKeyCountHandler extends CategoryLogHandler<SearchLog> {
 				if (logValidator != null && logValidator.isValid(logData)) {
 					aggregator.handleLog(logData);
 				}
-				count+=logData.getCount();
+				count++;
+				searchCount += logData.getCount();
+				sumResponseTime += logData.getResponseTime();
+				if(logData.getResponseTime() > maxResponseTime){
+					maxResponseTime = logData.getResponseTime();
+				}
 			} else if (categoryId.equals("_root")) {
 				// root는 모두다.
 				if (logValidator != null && logValidator.isValid(logData)) {
 					aggregator.handleLog(logData);
 				}
-				count+=logData.getCount();
+				count++;
+				searchCount += logData.getCount();
+				sumResponseTime += logData.getResponseTime();
+				if(logData.getResponseTime() > maxResponseTime){
+					maxResponseTime = logData.getResponseTime();
+				}
 			}
 		}
 	}
@@ -53,6 +67,6 @@ public class SearchLogKeyCountHandler extends CategoryLogHandler<SearchLog> {
 	@Override
 	public Object done() throws IOException {
 		aggregator.done();
-		return count;
+		return new SearchLogResult(searchCount, count > 0 ? (int) (sumResponseTime / count) : 0, maxResponseTime);
 	}
 }

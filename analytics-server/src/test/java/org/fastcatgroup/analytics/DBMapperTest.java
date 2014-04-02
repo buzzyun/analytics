@@ -109,15 +109,15 @@ public class DBMapperTest {
 						mapper.createIndex(site);
 						mapper.validateTable(site);
 						//입력자료 설정
-						mapper.putEntry(site, category, "m201311", 200);
-						mapper.putEntry(site, category, "d20131225", 1);
-						mapper.putEntry(site, category, "m201312", 100);
-						mapper.putEntry(site, category, "d20131226", 2);
-						mapper.putEntry(site, category, "d20131227", 3);
-						mapper.putEntry(site, category, "d20131228", 4);
-						mapper.putEntry(site, category, "d20131229", 5);
-						mapper.putEntry(site, category, "d20131230", 6);
-						mapper.putEntry(site, category, "d20131231", 7);
+						mapper.putEntry(site, category, "m201311", 200, 100, 10);
+						mapper.putEntry(site, category, "d20131225", 1, 100, 10);
+						mapper.putEntry(site, category, "m201312", 100, 100, 10);
+						mapper.putEntry(site, category, "d20131226", 2, 100, 10);
+						mapper.putEntry(site, category, "d20131227", 3, 100, 10);
+						mapper.putEntry(site, category, "d20131228", 4, 100, 10);
+						mapper.putEntry(site, category, "d20131229", 5, 100, 10);
+						mapper.putEntry(site, category, "d20131230", 6, 100, 10);
+						mapper.putEntry(site, category, "d20131231", 7, 100, 10);
 						session.commit();
 						
 						//최古 항목

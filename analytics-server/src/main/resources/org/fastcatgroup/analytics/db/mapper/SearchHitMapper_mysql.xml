@@ -10,12 +10,14 @@
 			categoryId varchar(30), 
 			timeId varchar(11),
 			hit int,
+			avgTime int,
+			maxTime int,
 			primary key (categoryId, timeId)
 		) ENGINE=InnoDB, CHARACTER SET=utf8 COLLATE utf8_unicode_ci;
 	</update>
 	
 	<select id="validateTable" parameterType="map" resultType="map">
-		select categoryId, timeId, hit
+		select categoryId, timeId, hit, avgTime, maxTime
 		from ${siteId}_hit
 		where categoryId = ''
 	</select>
@@ -46,18 +48,18 @@
 	
 	<insert id="putEntry" parameterType="map">
 		insert into ${siteId}_hit 
-		(categoryId, timeId, hit) values (#{categoryId}, #{timeId}, #{hit})
+		(categoryId, timeId, hit, avgTime, maxTime) values (#{categoryId}, #{timeId}, #{hit}, #{avgTime}, #{maxTime})
 	</insert>
 	
 	<update id="updateEntry" parameterType="map">
-		update ${siteId}_hit set hit = #{hit} 
+		update ${siteId}_hit set hit = #{hit}, avgTime = #{avgTime}, maxTime = #{maxTime}
 		where 
 		categoryId=#{categoryId} 
 		and timeId = #{timeId}
 	</update>
 	
 	<delete id="deleteEntry" parameterType="map">
-		delete ${siteId}_hit set hit = #{hit} 
+		delete from ${siteId}_hit
 		where 
 		categoryId=#{categoryId}
 		and timeId = #{timeId}
@@ -65,7 +67,7 @@
 	
 	<!-- from and to is required -->
 	<delete id="deleteEntryBetween" parameterType="map">
-		delete ${siteId}_hit set hit = #{hit} 
+		delete from ${siteId}_hit 
 		where 
 		categoryId=#{categoryId}
 		and timeId between #{from} and #{to} 

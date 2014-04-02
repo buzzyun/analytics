@@ -3,7 +3,6 @@ package org.fastcatgroup.analytics.analysis.handler;
 import java.io.File;
 import java.io.IOException;
 
-import org.fastcatgroup.analytics.analysis.KeyCountLogAggregator;
 import org.fastcatgroup.analytics.analysis.LogValidator;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
@@ -20,6 +19,7 @@ public class SearchHourLogKeyCountHandler extends CategoryLogHandler<SearchLog> 
 	private int[] searchLogMaxTime;
 	private int[] searchLogSumTime;
 	private int[] searchLogCount;
+	private int[] searchResultCount;
 	
 	public SearchHourLogKeyCountHandler(String categoryId, File baseDir, String targetFilename, int minimumHitCount, LogValidator<SearchLog> logValidator,
 			KeyCountRunEntryParser entryParser) {
@@ -49,6 +49,7 @@ public class SearchHourLogKeyCountHandler extends CategoryLogHandler<SearchLog> 
 					if (categoryId.equals(logData.categoryId())) {
 						// 해당 카테고리만
 						searchLogCount[hour] ++;
+						searchResultCount[hour] += logData.getCount();
 						searchLogSumTime[hour] += logData.getResponseTime();
 						if(logData.getResponseTime() > searchLogMaxTime[hour]){
 							searchLogMaxTime[hour] = logData.getResponseTime();
@@ -56,6 +57,7 @@ public class SearchHourLogKeyCountHandler extends CategoryLogHandler<SearchLog> 
 					} else if (categoryId.equals("_root")) {
 						// root는 모두다.
 						searchLogCount[hour] ++;
+						searchResultCount[hour] += logData.getCount();
 						searchLogSumTime[hour] += logData.getResponseTime();
 						if(logData.getResponseTime() > searchLogMaxTime[hour]){
 							searchLogMaxTime[hour] = logData.getResponseTime();
@@ -75,10 +77,10 @@ public class SearchHourLogKeyCountHandler extends CategoryLogHandler<SearchLog> 
 		
 		for (int inx = 0; inx < searchLogCount.length; inx++) {
 			if(searchLogCount[inx] != 0) {
-				result[inx] = new SearchLogResult(searchLogCount[inx],
+				result[inx] = new SearchLogResult(searchResultCount[inx],
 						searchLogSumTime[inx] / searchLogCount[inx],
 						searchLogMaxTime[inx]);
-			} 
+			}
 		}
 		return result;
 	}

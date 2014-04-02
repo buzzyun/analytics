@@ -44,6 +44,6 @@ public class KeyCountProcessHandler extends ProcessHandler {
 		
 		//FIXME max, avgtime을 어떻게 얻어올까?
 		
-		return new SearchLogResult(totalCount, 0, 0);
+		return new SearchLogResult(totalCount, 0, 0, 0);
 	}
 }

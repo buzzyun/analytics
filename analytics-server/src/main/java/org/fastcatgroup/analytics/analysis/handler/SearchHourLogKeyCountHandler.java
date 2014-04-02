@@ -30,6 +30,7 @@ public class SearchHourLogKeyCountHandler extends CategoryLogHandler<SearchLog> 
 		searchLogCount = new int[24];
 		searchLogMaxTime = new int[24];
 		searchLogSumTime = new int[24];
+		searchResultCount = new int[24];
 	}
 	
 
@@ -77,9 +78,9 @@ public class SearchHourLogKeyCountHandler extends CategoryLogHandler<SearchLog> 
 		
 		for (int inx = 0; inx < searchLogCount.length; inx++) {
 			if(searchLogCount[inx] != 0) {
-				result[inx] = new SearchLogResult(searchResultCount[inx],
-						searchLogSumTime[inx] / searchLogCount[inx],
-						searchLogMaxTime[inx]);
+				result[inx] = new SearchLogResult(searchLogCount[inx],
+						searchResultCount[inx], searchLogSumTime[inx]
+						/ searchLogCount[inx], searchLogMaxTime[inx]);
 			}
 		}
 		return result;

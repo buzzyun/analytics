@@ -6,15 +6,23 @@ public class SearchLog extends LogData {
 	protected String categoryId;
 	protected String keyword;
 	protected int count;
+	protected int resultCount;
 	protected int responseTime;
 	
-	public SearchLog(String time, String categoryId, String keyword, String count, String responseTime) {
+	public SearchLog(String time, String categoryId, String keyword, String count, String resultCount, String responseTime) {
 		this.time = time;
 		this.categoryId = categoryId;
 		this.keyword = keyword;
 		try {
 			if(count!=null && !"".equals(count)) {
 				this.count = Integer.parseInt(count);
+			}
+		} catch (NumberFormatException ignore) {
+		}
+		
+		try {
+			if(resultCount!=null && !"".equals(resultCount)) {
+				this.resultCount = Integer.parseInt(resultCount);
 			}
 		} catch (NumberFormatException ignore) {
 		}
@@ -47,6 +55,10 @@ public class SearchLog extends LogData {
 	@Override
 	public String getKey() {
 		return keyword;
+	}
+	
+	public int getResultCount() {
+		return this.getResultCount();
 	}
 	
 	public int getResponseTime() {

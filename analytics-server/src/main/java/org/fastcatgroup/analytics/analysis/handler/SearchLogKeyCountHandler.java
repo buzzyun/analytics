@@ -43,8 +43,8 @@ public class SearchLogKeyCountHandler extends CategoryLogHandler<SearchLog> {
 				if (logValidator != null && logValidator.isValid(logData)) {
 					aggregator.handleLog(logData);
 				}
-				count++;
-				searchCount += logData.getCount();
+				count+= logData.getCount();
+				searchCount += logData.getResultCount();
 				sumResponseTime += logData.getResponseTime();
 				if(logData.getResponseTime() > maxResponseTime){
 					maxResponseTime = logData.getResponseTime();
@@ -54,8 +54,8 @@ public class SearchLogKeyCountHandler extends CategoryLogHandler<SearchLog> {
 				if (logValidator != null && logValidator.isValid(logData)) {
 					aggregator.handleLog(logData);
 				}
-				count++;
-				searchCount += logData.getCount();
+				count+=logData.getCount();
+				searchCount += logData.getResultCount();
 				sumResponseTime += logData.getResponseTime();
 				if(logData.getResponseTime() > maxResponseTime){
 					maxResponseTime = logData.getResponseTime();

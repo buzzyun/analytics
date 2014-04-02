@@ -5,10 +5,6 @@ public class KeyCountLog extends LogData {
 	private String keyword;
 	private int count;
 	
-	public KeyCountLog(String keyword) {
-		this(keyword, "1");
-	}
-	
 	public KeyCountLog(String keyword, String count) {
 		this.keyword = keyword;
 		try {

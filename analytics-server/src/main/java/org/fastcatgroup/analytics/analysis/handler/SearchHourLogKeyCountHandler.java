@@ -49,16 +49,16 @@ public class SearchHourLogKeyCountHandler extends CategoryLogHandler<SearchLog> 
 				if (keyword != null && keyword.length() > 0) {
 					if (categoryId.equals(logData.categoryId())) {
 						// 해당 카테고리만
-						searchLogCount[hour] ++;
-						searchResultCount[hour] += logData.getCount();
+						searchLogCount[hour] += logData.getCount();
+						searchResultCount[hour] += logData.getResultCount();
 						searchLogSumTime[hour] += logData.getResponseTime();
 						if(logData.getResponseTime() > searchLogMaxTime[hour]){
 							searchLogMaxTime[hour] = logData.getResponseTime();
 						}
 					} else if (categoryId.equals("_root")) {
 						// root는 모두다.
-						searchLogCount[hour] ++;
-						searchResultCount[hour] += logData.getCount();
+						searchLogCount[hour] += logData.getCount();
+						searchResultCount[hour] += logData.getResultCount();
 						searchLogSumTime[hour] += logData.getResponseTime();
 						if(logData.getResponseTime() > searchLogMaxTime[hour]){
 							searchLogMaxTime[hour] = logData.getResponseTime();

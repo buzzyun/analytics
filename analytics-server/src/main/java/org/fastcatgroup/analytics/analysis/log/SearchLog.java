@@ -8,10 +8,6 @@ public class SearchLog extends LogData {
 	protected int count;
 	protected int responseTime;
 	
-	public SearchLog(String time, String categoryId, String keyword) {
-		this(time, categoryId, keyword, "1", "0");
-	}
-	
 	public SearchLog(String time, String categoryId, String keyword, String count, String responseTime) {
 		this.time = time;
 		this.categoryId = categoryId;

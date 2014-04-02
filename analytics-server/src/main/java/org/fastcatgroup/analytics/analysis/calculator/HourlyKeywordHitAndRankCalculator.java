@@ -1,22 +1,15 @@
 package org.fastcatgroup.analytics.analysis.calculator;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
 import org.fastcatgroup.analytics.analysis.SearchLogValidator;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
-import org.fastcatgroup.analytics.analysis.handler.KeyCountLogSortHandler;
-import org.fastcatgroup.analytics.analysis.handler.KeywordRankDiffHandler;
-import org.fastcatgroup.analytics.analysis.handler.PopularKeywordResultHandler;
 import org.fastcatgroup.analytics.analysis.handler.ProcessHandler;
-import org.fastcatgroup.analytics.analysis.handler.SearchLogKeyCountHandler;
-import org.fastcatgroup.analytics.analysis.handler.UpdatePopularKeywordHandler;
-import org.fastcatgroup.analytics.analysis.handler.UpdateKeywordHitHandler;
-import org.fastcatgroup.analytics.analysis.handler.UpdateSearchHitHandler;
+import org.fastcatgroup.analytics.analysis.handler.SearchHourLogKeyCountHandler;
+import org.fastcatgroup.analytics.analysis.handler.UpdateHourlySearchHitHandler;
 import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
 
@@ -39,8 +32,17 @@ public class HourlyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 	protected CategoryProcess<SearchLog> newCategoryProcess(String categoryId){
 		String encoding = SearchStatisticsProperties.encoding;
 		File workingDir = new File(baseDir, categoryId);
+		
+		int maxKeywordLength = SearchStatisticsProperties.maxKeywordLength;
+		int runKeySize = SearchStatisticsProperties.runKeySize;
+		
+		KeyCountRunEntryParser entryParser = new KeyCountRunEntryParser();
 		CategoryProcess<SearchLog> categoryProcess = new CategoryProcess<SearchLog>(categoryId);
-		//각 raw-log를 돌면서 시간대별로 기록한다.
+		SearchLogValidator logValidator = new SearchLogValidator(banWords, maxKeywordLength);
+		new SearchHourLogKeyCountHandler(categoryId, workingDir, KEY_COUNT_FILENAME, minimumHitCount, logValidator, entryParser).attachLogHandlerTo(categoryProcess);
+		
+		ProcessHandler hourlySearchLogKeyCountHandler = new UpdateHourlySearchHitHandler(siteId, categoryId, calendar).attachProcessTo(categoryProcess);
+		
 		return categoryProcess;
 	}
 	

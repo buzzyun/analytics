@@ -14,6 +14,7 @@ import org.fastcatgroup.analytics.analysis.schedule.SimpleTaskRunner;
 import org.fastcatgroup.analytics.analysis.schedule.TimeSchedule;
 import org.fastcatgroup.analytics.analysis.task.DailySearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.DailyTypeSearchLogAnalyticsTask;
+import org.fastcatgroup.analytics.analysis.task.HourlySearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.MonthlySearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.MonthlyTypeSearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.WeeklySearchLogAnalyticsTask;
@@ -68,11 +69,16 @@ public class DailySearchLogAnalyticsTaskRunJob extends Job {
 //				case 'D':
 			
 				SimpleTaskRunner taskRunner = new SimpleTaskRunner("search-log-task-runner", JobService.getInstance(), environment);
-			
+				
 				/* 1. raw.log */
 				TimeSchedule schedule = new TimeSchedule(calendar.getTimeInMillis(), 0);
-				DailySearchLogAnalyticsTask task = new DailySearchLogAnalyticsTask(siteId, categoryIdList, schedule, 0, null);
+				HourlySearchLogAnalyticsTask task = new HourlySearchLogAnalyticsTask(siteId, categoryIdList, schedule, 0, null);
 				taskRunner.addTask(task);
+			
+				/* 1. raw.log */
+				TimeSchedule schedule1 = new TimeSchedule(calendar.getTimeInMillis(), 0);
+				DailySearchLogAnalyticsTask task1 = new DailySearchLogAnalyticsTask(siteId, categoryIdList, schedule1, 0, null);
+				taskRunner.addTask(task1);
 				
 				/* 2. type_raw.log */
 				TimeSchedule schedule2 = new TimeSchedule(calendar.getTimeInMillis(), 0);

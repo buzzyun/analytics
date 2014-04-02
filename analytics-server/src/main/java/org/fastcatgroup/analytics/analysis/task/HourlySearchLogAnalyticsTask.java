@@ -35,7 +35,9 @@ public class HourlySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 	@Override
 	protected void prepare(Calendar calendar) {
 		// baseDir : statistics/search/date/Y####/M##/D##/data/{siteId} 경로
-		File baseDir = environment.filePaths().getStatisticsRoot().file("search", "date");
+		File dir = environment.filePaths().getStatisticsRoot().file("search", "date");
+		
+		File baseDir = new File(SearchStatisticsProperties.getDayDataDir(dir, calendar), siteId);
 		
 		Set<String> banWords = null;
 		int minimumHitCount = 1;
@@ -46,6 +48,7 @@ public class HourlySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 		String encoding = SearchStatisticsProperties.encoding;
 		try {
 			logReader = new SearchLogReader(new File[] { logFile }, encoding);
+			//logger.debug("logReader:{}", logReader);
 		} catch (IOException e) {
 			logger.error("", e);
 		}

@@ -10,6 +10,7 @@ import org.fastcatgroup.analytics.analysis.DailyRawLogger;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.calculator.Calculator;
 import org.fastcatgroup.analytics.analysis.calculator.DailyKeywordHitAndRankCalculator;
+import org.fastcatgroup.analytics.analysis.calculator.HourlyKeywordHitAndRankCalculator;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
 import org.fastcatgroup.analytics.analysis.log.SearchLogReader;
 import org.fastcatgroup.analytics.analysis.schedule.Schedule;
@@ -17,16 +18,16 @@ import org.fastcatgroup.analytics.analysis.schedule.Schedule;
 import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.*;
 
 /**
- * 일별 검색로그 계산 task 내부에 인기검색어, 검색횟수 calculator를 가지고 있다.
- * 
+ * 시간대별 검색로그 계산 task 내부에 인기검색어, 검색횟수 calculator를 가지고 있다.
+ * 이미 raw-log 를 가지고 있으므로 데이터베이스에만 뿌려준다.
  * */
-public class DailySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
+public class HourlySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 
 	private static final long serialVersionUID = 4212969890908932929L;
 
 	DailyRawLogger dailyRawLogger;
 	
-	public DailySearchLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority, DailyRawLogger dailyRawLogger) {
+	public HourlySearchLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority, DailyRawLogger dailyRawLogger) {
 		super(siteId, categoryIdList, schedule, priority);
 		this.dailyRawLogger = dailyRawLogger;
 	}
@@ -34,16 +35,13 @@ public class DailySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 	@Override
 	protected void prepare(Calendar calendar) {
 		// baseDir : statistics/search/date/Y####/M##/D##/data/{siteId} 경로
-		File dir = environment.filePaths().getStatisticsRoot().file("search", "date");
+		File baseDir = environment.filePaths().getStatisticsRoot().file("search", "date");
 		
-		Calendar prevCalendar = (Calendar) calendar.clone();
-		prevCalendar.add(Calendar.DAY_OF_MONTH, -1);
-		File baseDir = new File(SearchStatisticsProperties.getDayDataDir(dir, calendar), siteId);
-		File prevDir = new File(SearchStatisticsProperties.getDayDataDir(dir, prevCalendar), siteId);
 		Set<String> banWords = null;
 		int minimumHitCount = 1;
 		int topCount = 10;
 
+		//당일치 로그만 이용한다.
 		File logFile = new File(baseDir, RAW_LOG_FILENAME);
 		String encoding = SearchStatisticsProperties.encoding;
 		try {
@@ -53,7 +51,7 @@ public class DailySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 		}
 
 		// calc를 카테고리별로 모두 만든다.
-		Calculator<SearchLog> popularKeywordCalculator = new DailyKeywordHitAndRankCalculator("Daily popular keyword calculator", calendar, baseDir, prevDir, siteId, categoryIdList, banWords, minimumHitCount, topCount);
+		Calculator<SearchLog> popularKeywordCalculator = new HourlyKeywordHitAndRankCalculator("Hourly popular keyword calculator", calendar, baseDir, siteId, categoryIdList, banWords, minimumHitCount, topCount);
 		addCalculator(popularKeywordCalculator);
 		
 	}

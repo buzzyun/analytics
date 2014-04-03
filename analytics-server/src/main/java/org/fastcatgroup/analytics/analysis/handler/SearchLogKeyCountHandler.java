@@ -3,9 +3,8 @@ package org.fastcatgroup.analytics.analysis.handler;
 import java.io.File;
 import java.io.IOException;
 
-import org.fastcatgroup.analytics.analysis.KeyCountLogAggregator;
+import org.fastcatgroup.analytics.analysis.AbstractLogAggregator;
 import org.fastcatgroup.analytics.analysis.LogValidator;
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
 import org.fastcatgroup.analytics.analysis.log.SearchLogResult;
@@ -15,19 +14,17 @@ import org.fastcatgroup.analytics.analysis.log.SearchLogResult;
  * */
 public class SearchLogKeyCountHandler extends CategoryLogHandler<SearchLog> {
 
-	private KeyCountLogAggregator<SearchLog> aggregator;
+	private AbstractLogAggregator<SearchLog> aggregator;
 	LogValidator<SearchLog> logValidator;
 	int count;
 	int searchCount;
 	int maxResponseTime;
 	long sumResponseTime;
 	
-	public SearchLogKeyCountHandler(String categoryId, File baseDir, String targetFilename, int minimumHitCount, LogValidator<SearchLog> logValidator,
+	public SearchLogKeyCountHandler(String categoryId, AbstractLogAggregator<SearchLog> aggregator, LogValidator<SearchLog> logValidator,
 			KeyCountRunEntryParser entryParser) {
 		super(categoryId);
-		int runKeySize = SearchStatisticsProperties.runKeySize;
-		String encoding = SearchStatisticsProperties.encoding;
-		aggregator = new KeyCountLogAggregator<SearchLog>(baseDir, targetFilename, runKeySize, encoding, minimumHitCount, entryParser);
+		this.aggregator = aggregator;
 		this.logValidator = logValidator;
 	}
 

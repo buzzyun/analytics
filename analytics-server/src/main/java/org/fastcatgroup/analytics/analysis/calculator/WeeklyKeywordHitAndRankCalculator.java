@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.fastcatgroup.analytics.analysis.KeyCountLogAggregator;
 import org.fastcatgroup.analytics.analysis.SearchLogValidator;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.handler.KeyCountLogSortHandler;
@@ -86,7 +87,9 @@ logger.debug("calculating weeks {}:{} ~ {}:{} / timeId:{}", sdf.format(calendar.
 		
 		logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
 		SearchLogValidator logValidator = new SearchLogValidator(banWords, maxKeywordLength);
-		new SearchLogKeyCountHandler(categoryId, workingDir, KEY_COUNT_FILENAME, minimumHitCount, logValidator, entryParser).attachLogHandlerTo(categoryProcess);
+		
+		KeyCountLogAggregator<SearchLog> aggregator = new KeyCountLogAggregator<SearchLog>(baseDir, KEY_COUNT_FILENAME, runKeySize, encoding, minimumHitCount, entryParser);
+		new SearchLogKeyCountHandler(categoryId, aggregator, logValidator, entryParser).attachLogHandlerTo(categoryProcess);
 		
 		ProcessHandler mergeKeyCount = new MergeKeyCountProcessHandler(files, workingDir, KEY_COUNT_FILENAME, encoding, entryParser).attachProcessTo(categoryProcess);
 		

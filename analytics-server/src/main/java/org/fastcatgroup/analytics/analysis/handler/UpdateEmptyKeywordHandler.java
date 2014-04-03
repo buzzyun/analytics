@@ -6,17 +6,18 @@ import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
+import org.fastcatgroup.analytics.db.mapper.SearchKeywordEmptyMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchKeywordRankMapper;
 import org.fastcatgroup.analytics.db.vo.RankKeywordVO;
 import org.fastcatgroup.analytics.service.ServiceManager;
 
-public class UpdatePopularKeywordHandler extends ProcessHandler {
+public class UpdateEmptyKeywordHandler extends ProcessHandler {
 
 	String siteId;
 	String categoryId;
 	String timeId;
 	
-	public UpdatePopularKeywordHandler(String siteId, String categoryId, String timeId) {
+	public UpdateEmptyKeywordHandler(String siteId, String categoryId, String timeId) {
 		this.siteId = siteId;
 		this.categoryId = categoryId;
 		this.timeId = timeId;
@@ -26,15 +27,14 @@ public class UpdatePopularKeywordHandler extends ProcessHandler {
 	public Object process(Object parameter) throws Exception {
 		if (parameter != null) {
 			List<RankKeyword> keywordList = (List<RankKeyword>) parameter;
-			StatisticsService statisticsService = ServiceManager.getInstance().getService(StatisticsService.class);
 			// db입력.
 			
 			AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
-			MapperSession<SearchKeywordRankMapper> mapperSession = dbService.getMapperSession(SearchKeywordRankMapper.class);
+			MapperSession<SearchKeywordEmptyMapper> mapperSession = dbService.getMapperSession(SearchKeywordEmptyMapper.class);
 			try {
-				SearchKeywordRankMapper mapper = mapperSession.getMapper();
+				SearchKeywordEmptyMapper mapper = mapperSession.getMapper();
 
-				int count = mapper.getCount(siteId, categoryId, timeId, null, 0);
+				int count = mapper.getCount(siteId, categoryId, timeId);
 				if(count > 0){
 					mapper.updateClean(siteId, categoryId, timeId);
 				}
@@ -55,9 +55,6 @@ public class UpdatePopularKeywordHandler extends ProcessHandler {
 					mapperSession.closeSession();
 				}
 			}
-			
-			//이전에 셋팅된 메모리 객체를 없앤다. 다음에 최초 호출시 메모리에 다시 로드된다.
-			statisticsService.clearPopularKeywordList();
 		}
 		return null;
 	}

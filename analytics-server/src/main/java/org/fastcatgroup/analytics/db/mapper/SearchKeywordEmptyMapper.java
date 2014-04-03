@@ -20,6 +20,5 @@ public interface SearchKeywordEmptyMapper extends AnalyticsMapper {
 	
 	public void updateEntry(@Param("siteId") String siteId, @Param("vo") RankKeywordVO vo);
 	
-	public int updateClean(@Param("siteId") String siteId, @Param("categoryId") String categoryId, @Param("timeId") String timeId) throws Exception;
-	
+	public void updateClean(@Param("siteId") String siteId, @Param("categoryId") String categoryId, @Param("timeId") String timeId) throws Exception;
 }

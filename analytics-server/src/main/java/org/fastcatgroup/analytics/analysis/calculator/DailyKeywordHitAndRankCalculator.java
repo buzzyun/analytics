@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.fastcatgroup.analytics.analysis.KeyCountEmptyLogAggregator;
+import org.fastcatgroup.analytics.analysis.KeyCountLogAggregator;
+import org.fastcatgroup.analytics.analysis.LogAggregatorContainer;
 import org.fastcatgroup.analytics.analysis.SearchLogValidator;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.handler.KeyCountLogSortHandler;
@@ -14,6 +17,7 @@ import org.fastcatgroup.analytics.analysis.handler.KeywordRankDiffHandler;
 import org.fastcatgroup.analytics.analysis.handler.PopularKeywordResultHandler;
 import org.fastcatgroup.analytics.analysis.handler.ProcessHandler;
 import org.fastcatgroup.analytics.analysis.handler.SearchLogKeyCountHandler;
+import org.fastcatgroup.analytics.analysis.handler.UpdateEmptyKeywordHandler;
 import org.fastcatgroup.analytics.analysis.handler.UpdatePopularKeywordHandler;
 import org.fastcatgroup.analytics.analysis.handler.UpdateKeywordHitHandler;
 import org.fastcatgroup.analytics.analysis.handler.UpdateSearchHitHandler;
@@ -63,7 +67,13 @@ public class DailyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		KeyCountRunEntryParser entryParser = new KeyCountRunEntryParser();
 		CategoryProcess<SearchLog> categoryProcess = new CategoryProcess<SearchLog>(categoryId);
 		SearchLogValidator logValidator = new SearchLogValidator(banWords, maxKeywordLength);
-		new SearchLogKeyCountHandler(categoryId, workingDir, KEY_COUNT_FILENAME, minimumHitCount, logValidator, entryParser).attachLogHandlerTo(categoryProcess);
+		
+		LogAggregatorContainer<SearchLog> aggregator = new LogAggregatorContainer<SearchLog>();
+		
+		aggregator.addAggregator(new KeyCountLogAggregator<SearchLog>(workingDir, KEY_COUNT_FILENAME, runKeySize, encoding, minimumHitCount, entryParser));
+		aggregator.addAggregator(new KeyCountEmptyLogAggregator<SearchLog>(workingDir, KEY_COUNT_EMPTY_FILENAME, runKeySize, encoding, minimumHitCount, entryParser));
+		
+		new SearchLogKeyCountHandler(categoryId, aggregator, logValidator, entryParser).attachLogHandlerTo(categoryProcess);
 		
 		/* 0. 갯수를 db로 저장한다. */
 		ProcessHandler updateSearchHitHandler = new UpdateSearchHitHandler(siteId, categoryId, timeId).attachProcessTo(categoryProcess);
@@ -71,10 +81,17 @@ public class DailyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		/* 1. count로 정렬하여 key-count-rank.log로 저장. */
 		ProcessHandler logSort = new KeyCountLogSortHandler(workingDir, KEY_COUNT_FILENAME, KEY_COUNT_RANK_FILENAME, encoding, runKeySize, entryParser).appendTo(updateSearchHitHandler);
 		
+		//결과없음 검색순위 정렬
+		new KeyCountLogSortHandler(workingDir, KEY_COUNT_EMPTY_FILENAME, KEY_COUNT_EMPTY_RANK_FILENAME, encoding, runKeySize, entryParser).appendTo(updateSearchHitHandler);
+		
 		/* 2. 이전일과 비교하여 diff 생성. */
 		File rankLogFile = new File(workingDir, KEY_COUNT_RANK_FILENAME);
 		File compareRankLogFile = new File(prevWorkingDir, KEY_COUNT_RANK_FILENAME);
 		File popularKeywordLogFile = new File(workingDir, POPULAR_FILENAME);
+		
+		File rankEmptyLogFile = new File(workingDir, KEY_COUNT_EMPTY_RANK_FILENAME);
+		File compareEmptyRankLogFile = new File(prevWorkingDir, KEY_COUNT_EMPTY_RANK_FILENAME);
+		File popularEmptyKeywordLogFile = new File(workingDir, POPULAR_EMPTY_FILENAME);
 		
 		//카테고리가 _root이면 10000개, 나머지는 100개씩.
 		if(categoryId.equals("_root")){
@@ -94,7 +111,11 @@ public class DailyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		/* 4. 인기검색어 객체 업데이트 */
 		new UpdatePopularKeywordHandler(siteId, categoryId, timeId).appendTo(popularKeywordResultHandler);
 		
+		//결과없음 순위결정
+		rankDiff = new KeywordRankDiffHandler(rankEmptyLogFile, compareEmptyRankLogFile, topCount, encoding, entryParser).appendTo(logSort);
+		popularKeywordResultHandler = new PopularKeywordResultHandler(popularEmptyKeywordLogFile, encoding).appendTo(rankDiff);
+		new UpdateEmptyKeywordHandler(siteId, categoryId, timeId).appendTo(popularKeywordResultHandler);
+		
 		return categoryProcess;
 	}
-	
 }

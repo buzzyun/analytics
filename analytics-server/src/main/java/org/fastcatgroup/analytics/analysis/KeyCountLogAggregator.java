@@ -1,7 +1,6 @@
 package org.fastcatgroup.analytics.analysis;
 
 import java.io.File;
-import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.fastcatgroup.analytics.analysis.log.LogData;
@@ -17,8 +16,8 @@ import org.fastcatgroup.analytics.analysis.util.SortedRunFileMerger;
  * */
 public class KeyCountLogAggregator<LogType extends LogData> extends AbstractLogAggregator<LogType> {
 
-	private File runTmpDir;
-	private File destFile;
+	protected File runTmpDir;
+	protected File destFile;
 	EntryParser<KeyCountRunEntry> entryParser;
 	
 	public KeyCountLogAggregator(File targetDir, String targetFilename, int runKeySize, String outputEncoding, int minimumHitCount, EntryParser<KeyCountRunEntry> entryParser) {
@@ -31,7 +30,6 @@ public class KeyCountLogAggregator<LogType extends LogData> extends AbstractLogA
 			targetDir.mkdir();
 		}
 	}
-
 	
 	@Override
 	protected AggregationResultWriter newRunWriter(String encoding, int flushId) {
@@ -43,8 +41,7 @@ public class KeyCountLogAggregator<LogType extends LogData> extends AbstractLogA
 	}
 
 	@Override
-	protected RunMerger newFinalMerger(String encoding, int flushCount) {
-
+	public RunMerger newFinalMerger(String encoding, int flushCount) {
 		File[] runFileList = new File[flushCount];
 		for (int i = 0; i < flushCount; i++) {
 			runFileList[i] = getRunFile(i);
@@ -55,11 +52,11 @@ public class KeyCountLogAggregator<LogType extends LogData> extends AbstractLogA
 	}
 
 	@Override
-	protected void doDone() {
+	public void doDone() {
 		FileUtils.deleteQuietly(runTmpDir);
 	}
 
-	private File getRunFile(int i) {
+	protected File getRunFile(int i) {
 		return new File(runTmpDir, Integer.valueOf(i) + ".run");
 	}
 }

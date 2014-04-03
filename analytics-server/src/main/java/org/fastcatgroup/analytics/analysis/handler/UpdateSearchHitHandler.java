@@ -48,7 +48,7 @@ public class UpdateSearchHitHandler extends ProcessHandler {
 		}
 		
 		
-		return null;
+		return parameter;
 	}
 
 }

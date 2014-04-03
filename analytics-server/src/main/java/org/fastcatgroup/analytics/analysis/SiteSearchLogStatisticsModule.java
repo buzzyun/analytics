@@ -35,6 +35,8 @@ import org.fastcatgroup.analytics.env.Settings;
 import org.fastcatgroup.analytics.module.AbstractModule;
 import org.fastcatgroup.analytics.module.ModuleException;
 
+import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.*;
+
 public class SiteSearchLogStatisticsModule extends AbstractModule {
 	File fileHome;
 	String siteId;
@@ -70,7 +72,7 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 			for (File categoryDir : categoryDirList) {
 				String categoryId = categoryDir.getName();
 				logger.debug("Search stat categoryDir {}", categoryDir.getAbsolutePath() );
-				File f = new File(categoryDir, "popular.log");
+				File f = new File(categoryDir, POPULAR_FILENAME);
 				logger.debug("Search stat popular keyword > {}, {}", f.exists(), f.getAbsolutePath());
 				if (f.exists()) {
 					// load keyword file to dictionary.
@@ -81,8 +83,8 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 			}
 		}
 
-		String logFileName = "raw.log";
-		String typeLogFileName = "type_raw.log";
+		String logFileName = RAW_LOG_FILENAME;
+		String typeLogFileName = TYPE_RAW_FILENAME;
 		
 		realtimeRawLogger = new RollingRawLogger(realtimeKeywordBaseDir, siteId, logFileName);
 		dailyRawLogger = new DailyRawLogger(SearchStatisticsProperties.getCalendar(), dateKeywordBaseDir, siteId, logFileName);

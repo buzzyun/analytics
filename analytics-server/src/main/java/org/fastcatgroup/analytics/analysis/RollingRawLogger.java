@@ -11,6 +11,9 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.*;
+
+import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.*;
 /**
  * 분 단위의 짧은 로그 데이터를 기록하는 로거.
  * */
@@ -115,7 +118,7 @@ public class RollingRawLogger {
 	}
 
 	private File getTempFile(int index) {
-		return new File(baseDir, index + ".tmp.log");
+		return new File(baseDir, index + "."+TMP_LOG_FILENAME);
 	}
 
 	public void rolling() {

@@ -13,6 +13,7 @@ import org.fastcatgroup.analytics.analysis.log.TypeSearchLog;
 import org.fastcatgroup.analytics.analysis.log.TypeSearchLogReader;
 import org.fastcatgroup.analytics.analysis.schedule.Schedule;
 
+import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.*;
 /**
  * 일별 검색로그 계산. 검색 type별 hit수. 
  * 
@@ -39,7 +40,7 @@ public class DailyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchLog
 		prevCalendar.add(Calendar.DAY_OF_MONTH, -1);
 		File baseDir = new File(SearchStatisticsProperties.getDayDataDir(dir, calendar), siteId);
 
-		File logFile = new File(baseDir, "type_raw.log");
+		File logFile = new File(baseDir, TYPE_RAW_FILENAME);
 		String encoding = SearchStatisticsProperties.encoding;
 		try {
 			if(logFile.exists()){

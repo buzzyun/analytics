@@ -13,6 +13,7 @@ import org.fastcatgroup.analytics.analysis.log.FileListLogReader;
 import org.fastcatgroup.analytics.analysis.log.RelateSearchLog;
 import org.fastcatgroup.analytics.analysis.schedule.Schedule;
 
+import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.*;
 /**
  * 일별 연관검색어 계산 task.
  * 
@@ -33,7 +34,7 @@ public class RelateSearchLogAnalyticsTask extends AnalyticsTask<RelateSearchLog>
 		Set<String> banWords = null;
 		int minimumHitCount = 5;
 
-		File logFile = new File(baseDir, "raw.log");
+		File logFile = new File(baseDir, RAW_LOG_FILENAME);
 		String encoding = SearchStatisticsProperties.encoding;
 		try {
 			logReader = new FileListLogReader<RelateSearchLog>(new File[] {logFile}, encoding){

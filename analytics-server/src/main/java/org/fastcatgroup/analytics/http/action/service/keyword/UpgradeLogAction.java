@@ -16,6 +16,7 @@ import org.fastcatgroup.analytics.http.action.ActionRequest;
 import org.fastcatgroup.analytics.http.action.ActionResponse;
 import org.fastcatgroup.analytics.http.action.ServiceAction;
 import org.fastcatgroup.analytics.util.ResponseWriter;
+import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.*;
 
 @ActionMapping("/test/upgrade-log")
 @Deprecated
@@ -49,8 +50,8 @@ public class UpgradeLogAction extends ServiceAction {
 													
 													File basedir = new File(dir, name);
 
-													File rawlog = new File(basedir, "raw.log");
-													File typelog = new File(basedir, "type_raw.log");
+													File rawlog = new File(basedir, RAW_LOG_FILENAME);
+													File typelog = new File(basedir, TYPE_RAW_FILENAME);
 
 													File rawlogNew = new File(basedir, "raw.new");
 													File typelogNew = new File(basedir, "type_raw.new");

@@ -9,4 +9,6 @@ public class KeywordHitAndRankConstants {
 	public static final String RELATE_KEY_COUNT_FILENAME = "relate-key-count.log";
 	public static final String RELATE_KEY_COUNT_RANK_FILENAME = "relate-key-count-rank.log";
 	public static final String RAW_LOG_FILENAME = "raw.log";
+	public static final String TYPE_RAW_FILENAME = "type_raw.log";
+	public static final String TMP_LOG_FILENAME = "tmp.log";
 }

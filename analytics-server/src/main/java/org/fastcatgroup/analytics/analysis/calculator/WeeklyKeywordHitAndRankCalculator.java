@@ -33,8 +33,6 @@ public class WeeklyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 	
 	public WeeklyKeywordHitAndRankCalculator(String name, Calendar calendar, Calendar prevCalendar, File baseDir, String siteId, List<String> categoryIdList, Set<String> banWords, int minimumHitCount, int topCount) {
 		super(name, calendar, baseDir, siteId, categoryIdList);
-java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
-logger.debug("calculating weeks {} ~ {}", sdf.format(calendar.getTime()), sdf.format(prevCalendar.getTime()));
 		this.prevCalendar = prevCalendar;
 		this.banWords = banWords;
 		this.minimumHitCount = minimumHitCount;
@@ -63,6 +61,8 @@ logger.debug("calculating weeks {} ~ {}", sdf.format(calendar.getTime()), sdf.fo
 		}
 		
 		String timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.WEEK_OF_YEAR);
+java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+logger.debug("calculating weeks {}:{} ~ {}:{} / timeId:{}", sdf.format(calendar.getTime()), calendar.get(Calendar.WEEK_OF_YEAR), sdf.format(prevCalendar.getTime()), prevCalendar.get(Calendar.WEEK_OF_YEAR), timeId);
 		int maxKeywordLength = SearchStatisticsProperties.maxKeywordLength;
 		int runKeySize = SearchStatisticsProperties.runKeySize;
 		

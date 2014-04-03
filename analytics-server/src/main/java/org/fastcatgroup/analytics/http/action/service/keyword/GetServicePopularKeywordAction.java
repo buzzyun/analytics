@@ -33,7 +33,7 @@ public class GetServicePopularKeywordAction extends ServiceAction {
 
 		try {
 			String timeId = null;
-			Calendar calendar = Calendar.getInstance();
+			Calendar calendar = SearchStatisticsProperties.getCalendar();
 			List<RankKeyword> list = null;
 			if ("D".equalsIgnoreCase(timeType)) {
 				calendar.add(Calendar.DATE, -interval);

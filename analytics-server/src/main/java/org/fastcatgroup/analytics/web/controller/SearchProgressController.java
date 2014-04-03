@@ -31,11 +31,11 @@ public class SearchProgressController extends AbstractController {
 		mav.setViewName("report/progress/hit");
 		
 		if(timeText == null){
-			Calendar calendar = Calendar.getInstance();
+			Calendar calendar = SearchStatisticsProperties.getCalendar();
 			calendar.add(Calendar.DATE, -7);
 			String timeFrom = SearchStatisticsProperties.toDatetimeString(calendar);
 			
-			calendar = Calendar.getInstance();
+			calendar = SearchStatisticsProperties.getCalendar();
 			calendar.add(Calendar.DATE, -1);
 			String timeTo = SearchStatisticsProperties.toDatetimeString(calendar);
 			

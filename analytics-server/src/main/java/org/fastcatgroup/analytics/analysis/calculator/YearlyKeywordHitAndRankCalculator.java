@@ -78,6 +78,9 @@ public class YearlyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 			dailyCalendar.add(Calendar.MONTH, -1);
 		}
 		
+		String dateFrom = SearchStatisticsProperties.getTimeId(dailyCalendar, Calendar.DAY_OF_MONTH);
+		String dateTo = SearchStatisticsProperties.getTimeId(calendar, Calendar.DAY_OF_MONTH);
+		
 		//12달치 파일을 돌면서 key-count / key-count-rank / popular 를 머징한다.
 		CategoryProcess<SearchLog> categoryProcess = new CategoryProcess<SearchLog>(categoryId);
 		KeyCountRunEntryParser entryParser = new KeyCountRunEntryParser();
@@ -88,7 +91,9 @@ public class YearlyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		
 		ProcessHandler mergeKeyCount = new MergeKeyCountProcessHandler(files, workingDir, KEY_COUNT_FILENAME, encoding, entryParser).attachProcessTo(categoryProcess);
 		
-		ProcessHandler hitCounter = new KeyCountProcessHandler(workingDir, KEY_COUNT_FILENAME, encoding).appendTo(mergeKeyCount);
+		ProcessHandler hitCounter = new KeyCountProcessHandler(siteId,
+				categoryId, workingDir, KEY_COUNT_FILENAME, dateFrom, dateTo,
+				encoding).appendTo(mergeKeyCount);
 		
 		/* 0. 갯수를 db로 저장한다. */
 		ProcessHandler updateSearchHitHandler = new UpdateSearchHitHandler(siteId, categoryId, timeId).appendTo(hitCounter);

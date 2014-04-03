@@ -11,7 +11,7 @@ public class SearchStatisticsPropertiesTest {
 	@Test
 	public void test() {
 		
-		Calendar calendar = Calendar.getInstance();
+		Calendar calendar = SearchStatisticsProperties.getCalendar();
 		int type = Calendar.HOUR_OF_DAY;
 		String timeId = SearchStatisticsProperties.getTimeId(calendar, type);
 		System.out.println("HOUR_OF_DAY :" + timeId);
@@ -75,7 +75,7 @@ public class SearchStatisticsPropertiesTest {
 	
 	@Test
 	public void testCalendarLocale() {
-		Calendar today = Calendar.getInstance();
+		Calendar today = SearchStatisticsProperties.getCalendar();
 		System.out.println("default > " + today.getFirstDayOfWeek() + " > " + today.getTime() + " : " + today.get(Calendar.DAY_OF_WEEK));
 		today.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 		System.out.println(">>> " + today.getTime() + " : " + today.get(Calendar.WEEK_OF_YEAR));	

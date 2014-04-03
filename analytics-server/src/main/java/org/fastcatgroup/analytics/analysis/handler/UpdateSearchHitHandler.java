@@ -32,10 +32,6 @@ public class UpdateSearchHitHandler extends ProcessHandler {
 		MapperSession<SearchHitMapper> mapperSession = dbService.getMapperSession(SearchHitMapper.class);
 		try {
 			SearchHitMapper mapper = mapperSession.getMapper();
-			// 기준시각.
-			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.DAY_OF_MONTH, -1);
-
 			logger.debug("#### UpdateSearchHit {} >> {} > {} / {}", timeId, categoryId, searchLogResult, mapper);
 			
 			SearchHitVO vo = mapper.getEntry(siteId, categoryId, timeId);

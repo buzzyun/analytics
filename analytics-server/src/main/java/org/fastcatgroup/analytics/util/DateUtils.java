@@ -2,6 +2,8 @@ package org.fastcatgroup.analytics.util;
 
 import java.util.Calendar;
 
+import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+
 public class DateUtils {
 	
 	
@@ -9,7 +11,7 @@ public class DateUtils {
 	 * 현 시각을 기준으로 가장 가까운 이전 정각 시간을 구한다.
 	 * */
 	public static Calendar getLatestOnTimeSmallerThanNow(){
-		Calendar calendar = Calendar.getInstance();
+		Calendar calendar = SearchStatisticsProperties.getCalendar();
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);
 		calendar.set(Calendar.MILLISECOND, 0);
@@ -19,7 +21,7 @@ public class DateUtils {
 	 * 현 시각을 기준으로 가장 가까운 다음 정각 시간을 구한다.
 	 * */
 	public static Calendar getLatestOnTimeLargerThanNow(){
-		Calendar calendar = Calendar.getInstance();
+		Calendar calendar = SearchStatisticsProperties.getCalendar();
 		calendar.add(Calendar.HOUR_OF_DAY, 1);
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);
@@ -31,7 +33,7 @@ public class DateUtils {
 	 * 현 시각을 기준으로 다음날 hourOfDay시를 구한다.
 	 * */
 	public static Calendar getNextDayHour(int hourOfDay){
-		Calendar calendar = Calendar.getInstance();
+		Calendar calendar = SearchStatisticsProperties.getCalendar();
 		calendar.add(Calendar.DATE, 1);
 		calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
 		calendar.set(Calendar.MINUTE, 0);
@@ -44,12 +46,12 @@ public class DateUtils {
 	 * 0분을 기준으로 minutes분 단위로 증가할때 현재보다 큰 다음 시각을 구한다. 
 	 * */
 	public static Calendar getLatestTimeLargerThanNow(int minutes){
-		Calendar calendar = Calendar.getInstance();
+		Calendar calendar = SearchStatisticsProperties.getCalendar();
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);
 		calendar.set(Calendar.MILLISECOND, 0);
 		
-		Calendar now = Calendar.getInstance();
+		Calendar now = SearchStatisticsProperties.getCalendar();
 		while (calendar.before(now)){
 			calendar.add(Calendar.MINUTE, minutes);
 		}

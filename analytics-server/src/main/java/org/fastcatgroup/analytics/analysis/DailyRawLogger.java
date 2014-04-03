@@ -21,12 +21,12 @@ public class DailyRawLogger {
 		this.baseDir = baseDir;
 		this.siteId = siteId;
 		this.fileName = fileName;
-		this.writer = newLogger(Calendar.getInstance());
+		this.writer = newLogger(SearchStatisticsProperties.getCalendar());
 	}
 
 	public void rolling() {
 		BufferedLogger prevWriter = writer;
-		writer = newLogger(Calendar.getInstance());
+		writer = newLogger(SearchStatisticsProperties.getCalendar());
 		
 		if (prevWriter != null) {
 			prevWriter.close();

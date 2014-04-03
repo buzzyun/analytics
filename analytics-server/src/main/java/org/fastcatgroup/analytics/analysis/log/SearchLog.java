@@ -58,7 +58,7 @@ public class SearchLog extends LogData {
 	}
 	
 	public int getResultCount() {
-		return this.getResultCount();
+		return resultCount;
 	}
 	
 	public int getResponseTime() {

@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
+import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.calculator.Calculator;
 import org.fastcatgroup.analytics.analysis.log.LogData;
 import org.fastcatgroup.analytics.analysis.log.SourceLogReader;
@@ -62,7 +63,7 @@ public abstract class AnalyticsTask<LogType extends LogData> extends Job impleme
 			calculatorList.clear();
 			
 			preProcess();
-			Calendar calendar = Calendar.getInstance();
+			Calendar calendar = SearchStatisticsProperties.getCalendar();
 			calendar.setTimeInMillis(getBaseTime());
 			
 			prepare(calendar);

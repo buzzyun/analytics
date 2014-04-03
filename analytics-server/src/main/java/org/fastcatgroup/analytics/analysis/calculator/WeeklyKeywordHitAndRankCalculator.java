@@ -77,6 +77,9 @@ logger.debug("calculating weeks {} ~ {}", sdf.format(calendar.getTime()), sdf.fo
 			dailyCalendar.add(Calendar.DAY_OF_MONTH, -1);
 		}
 		
+		String dateFrom = SearchStatisticsProperties.getTimeId(dailyCalendar, Calendar.DAY_OF_MONTH);
+		String dateTo = SearchStatisticsProperties.getTimeId(calendar, Calendar.DAY_OF_MONTH);
+		
 		//일주일치의 일자별 key-count log들을 머징한다.
 		CategoryProcess<SearchLog> categoryProcess = new CategoryProcess<SearchLog>(categoryId);
 		KeyCountRunEntryParser entryParser = new KeyCountRunEntryParser();
@@ -87,7 +90,9 @@ logger.debug("calculating weeks {} ~ {}", sdf.format(calendar.getTime()), sdf.fo
 		
 		ProcessHandler mergeKeyCount = new MergeKeyCountProcessHandler(files, workingDir, KEY_COUNT_FILENAME, encoding, entryParser).attachProcessTo(categoryProcess);
 		
-		ProcessHandler hitCounter = new KeyCountProcessHandler(workingDir, KEY_COUNT_FILENAME, encoding).appendTo(mergeKeyCount);
+		ProcessHandler hitCounter = new KeyCountProcessHandler(siteId,
+				categoryId, workingDir, KEY_COUNT_FILENAME, dateFrom, dateTo,
+				encoding).appendTo(mergeKeyCount);
 		
 		/* 0. 갯수를 db로 저장한다. */
 		ProcessHandler updateSearchHitHandler = new UpdateSearchHitHandler(siteId, categoryId, timeId).appendTo(hitCounter);

@@ -38,10 +38,6 @@ public class UpdateKeywordHitHandler extends ProcessHandler {
 		MapperSession<SearchKeywordHitMapper> mapperSession = dbService.getMapperSession(SearchKeywordHitMapper.class);
 		try {
 			SearchKeywordHitMapper mapper = mapperSession.getMapper();
-			// 기준시각.
-			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.DAY_OF_MONTH, -1);
-			
 			int count = mapper.getCount(siteId, categoryId, timeId);
 			if(count > 0){
 				mapper.updateClear(siteId, categoryId, timeId);

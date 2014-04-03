@@ -1,6 +1,7 @@
 package org.fastcatgroup.analytics.db.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.fastcatgroup.analytics.db.vo.SearchHitVO;
@@ -28,6 +29,10 @@ public interface SearchHitMapper extends AnalyticsMapper {
 	public SearchHitVO getMaxEntry(@Param("siteId") String siteId,
 			@Param("categoryId") String categoryId, @Param("dFilter") String dFilter)
 			throws Exception;
+	
+	public Map<String, Object> getCalcHitAndTime(@Param("siteId") String siteId,
+			@Param("categoryId") String categoryId, @Param("from") String from,
+			@Param("to") String to);
 	
 	public int getCountBetween(@Param("siteId") String siteId,
 			@Param("categoryId") String categoryId, @Param("dFilter") String dFilter,

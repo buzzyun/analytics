@@ -24,7 +24,7 @@ public class ScheduledTasksTest {
 		File f = new File("/Users/swsong/tmp/test.log");
 		String siteId = "a";
 		List<String> categoryIdList = null;
-		Calendar calendar = Calendar.getInstance();
+		Calendar calendar = SearchStatisticsProperties.getCalendar();
 		Schedule schedule = new EveryMinuteSchedule(1);
 		AnalyticsTask<SearchLog> task = new TestAnalyticsTask("1111", siteId, categoryIdList, schedule, 1);
 		taskRunner.addTask(task);
@@ -44,7 +44,7 @@ public class ScheduledTasksTest {
 		
 		ScheduledTaskRunner taskRunner = new ScheduledTaskRunner("test", new TestJobExecutor(), new Environment("."));
 		File f = new File("/Users/swsong/tmp/test.log");
-		Schedule schedule = new FixedSchedule(Calendar.getInstance(), 2, 1);
+		Schedule schedule = new FixedSchedule(SearchStatisticsProperties.getCalendar(), 2, 1);
 		AnalyticsTask<SearchLog> task = null;
 		String categoryId = "cat1";
 		taskRunner.addTask(task);

@@ -29,7 +29,7 @@ public class SearchTypeController extends AbstractController {
 		mav.setViewName("report/type/index");
 		
 		if(timeText == null){
-			Calendar calendar = Calendar.getInstance();
+			Calendar calendar = SearchStatisticsProperties.getCalendar();
 			calendar.add(Calendar.DATE, -1);
 			String timeTo = SearchStatisticsProperties.toDatetimeString(calendar);
 			timeText = timeTo + " - " + timeTo;

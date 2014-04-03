@@ -206,7 +206,7 @@ public class SearchStatisticsProperties {
 	
 	public static Calendar parseDatetimeString(String timeString) {
 		try {
-			Calendar calendar = Calendar.getInstance(Locale.GERMAN);
+			Calendar calendar = SearchStatisticsProperties.getCalendar();
 			calendar.setTime(dateTimeFormat.parse(timeString));
 			return calendar;
 		} catch (ParseException e) {
@@ -215,6 +215,10 @@ public class SearchStatisticsProperties {
 		return null;
 	}
 	
+	public static Calendar getCalendar() {
+		return Calendar.getInstance(Locale.GERMAN);
+	}
+
 	public static String toDatetimeString(Calendar calendar) {
 		return toDatetimeString(calendar, Calendar.DAY_OF_MONTH);
 	}
@@ -251,7 +255,7 @@ public class SearchStatisticsProperties {
 			int month = Integer.parseInt(timeId.substring(5,7)) - 1;
 			int day = Integer.parseInt(timeId.substring(7,9));
 			int hour = Integer.parseInt(timeId.substring(9,11));
-			Calendar calendar = Calendar.getInstance(Locale.GERMAN);
+			Calendar calendar = SearchStatisticsProperties.getCalendar();
 			calendar.set(Calendar.YEAR, year);
 			calendar.set(Calendar.MONTH, month);
 			calendar.set(Calendar.DAY_OF_MONTH, day);
@@ -264,7 +268,7 @@ public class SearchStatisticsProperties {
 			int year = Integer.parseInt(timeId.substring(1,5));
 			int month = Integer.parseInt(timeId.substring(5,7)) - 1;
 			int day = Integer.parseInt(timeId.substring(7,9));
-			Calendar calendar = Calendar.getInstance(Locale.GERMAN);
+			Calendar calendar = SearchStatisticsProperties.getCalendar();
 			calendar.set(Calendar.YEAR, year);
 			calendar.set(Calendar.MONTH, month);
 			calendar.set(Calendar.DAY_OF_MONTH, day);
@@ -276,7 +280,7 @@ public class SearchStatisticsProperties {
 		}else if(type == 'W'){
 			int year = Integer.parseInt(timeId.substring(1,5));
 			int week = Integer.parseInt(timeId.substring(5,7));
-			Calendar calendar = Calendar.getInstance(Locale.GERMAN);
+			Calendar calendar = SearchStatisticsProperties.getCalendar();
 			calendar.set(Calendar.YEAR, year);
 			calendar.set(Calendar.WEEK_OF_YEAR, week);
 			calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
@@ -287,7 +291,7 @@ public class SearchStatisticsProperties {
 		}else if(type == 'M'){
 			int year = Integer.parseInt(timeId.substring(1,5));
 			int month = Integer.parseInt(timeId.substring(5,7)) - 1;
-			Calendar calendar = Calendar.getInstance(Locale.GERMAN);
+			Calendar calendar = SearchStatisticsProperties.getCalendar();
 			calendar.set(Calendar.YEAR, year);
 			calendar.set(Calendar.MONTH, month);
 			calendar.set(Calendar.DAY_OF_MONTH, 1);
@@ -298,7 +302,7 @@ public class SearchStatisticsProperties {
 			return calendar;
 		}else if(type == 'Y'){
 			int year = Integer.parseInt(timeId.substring(1,5));
-			Calendar calendar = Calendar.getInstance(Locale.GERMAN);
+			Calendar calendar = SearchStatisticsProperties.getCalendar();
 			calendar.set(Calendar.YEAR, year);
 			calendar.set(Calendar.MONTH, 0);
 			calendar.set(Calendar.DAY_OF_MONTH, 1);

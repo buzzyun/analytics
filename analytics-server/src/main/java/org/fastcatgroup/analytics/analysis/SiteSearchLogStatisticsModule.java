@@ -85,10 +85,10 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		String typeLogFileName = "type_raw.log";
 		
 		realtimeRawLogger = new RollingRawLogger(realtimeKeywordBaseDir, siteId, logFileName);
-		dailyRawLogger = new DailyRawLogger(Calendar.getInstance(), dateKeywordBaseDir, siteId, logFileName);
-		dailyTypeRawLogger = new DailyRawLogger(Calendar.getInstance(), dateKeywordBaseDir, siteId, typeLogFileName);
+		dailyRawLogger = new DailyRawLogger(SearchStatisticsProperties.getCalendar(), dateKeywordBaseDir, siteId, logFileName);
+		dailyTypeRawLogger = new DailyRawLogger(SearchStatisticsProperties.getCalendar(), dateKeywordBaseDir, siteId, typeLogFileName);
 		
-		Calendar cal = Calendar.getInstance();
+		Calendar cal = SearchStatisticsProperties.getCalendar();
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.MILLISECOND, 0);

@@ -62,7 +62,7 @@ public class CategoryStatistics {
 		/*
 		 * 1. register 1 minute task.
 		 * */
-		Calendar cal = Calendar.getInstance();
+		Calendar cal = SearchStatisticsProperties.getCalendar();
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.MILLISECOND, 0);
 		cal.add(Calendar.MINUTE, 1); // 다음 1분후.

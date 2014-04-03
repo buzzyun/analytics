@@ -46,7 +46,7 @@ public class ConfigurationMainController extends AbstractController {
 		}
 		
 		if(timeId == null){
-			Calendar calendar = Calendar.getInstance();
+			Calendar calendar = SearchStatisticsProperties.getCalendar();
 			calendar.add(Calendar.DATE, -1);
 			timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DATE);
 		}

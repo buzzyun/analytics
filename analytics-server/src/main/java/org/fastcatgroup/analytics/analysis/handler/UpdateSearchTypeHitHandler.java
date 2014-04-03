@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
 import org.fastcatgroup.analytics.db.mapper.SearchTypeHitMapper;
@@ -33,7 +34,7 @@ public class UpdateSearchTypeHitHandler extends ProcessHandler {
 		try {
 			SearchTypeHitMapper mapper = mapperSession.getMapper();
 			// 기준시각.
-			Calendar cal = Calendar.getInstance();
+			Calendar cal = SearchStatisticsProperties.getCalendar();
 			cal.add(Calendar.DAY_OF_MONTH, -1);
 
 			for (int i = 0; i < typeList.length; i++) {

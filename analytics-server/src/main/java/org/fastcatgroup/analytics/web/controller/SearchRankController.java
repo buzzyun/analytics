@@ -74,7 +74,7 @@ public class SearchRankController extends AbstractController {
 		}
 		
 		if(timeText == null){
-			Calendar calendar = Calendar.getInstance();
+			Calendar calendar = SearchStatisticsProperties.getCalendar();
 			calendar.add(Calendar.DATE, -1);
 			timeText = SearchStatisticsProperties.toDatetimeString(calendar);
 		}

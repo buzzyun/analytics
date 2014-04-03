@@ -126,5 +126,15 @@
 		categoryId=#{categoryId}
 		and timeId between #{from} and #{to}
 	</select>
-
+	
+	<select id="getCalcHitAndTime" parameterType="map" resultType="map">
+		select 
+		sum(hit) as hit, 
+		round(sum(avgTime * hit) / sum(hit)) as avgTime, 
+		max(maxTime) as maxTime 
+		from ${siteId}_hit 
+		where
+		categoryId=#{categoryId} 
+		and timeId between #{from} and #{to}
+	</select>
 </mapper>

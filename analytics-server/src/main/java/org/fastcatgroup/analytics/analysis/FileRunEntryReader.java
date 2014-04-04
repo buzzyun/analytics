@@ -26,10 +26,10 @@ public class FileRunEntryReader<EntryType extends RunEntry> extends RunEntryRead
 	}
 
 	public FileRunEntryReader(File file, String encoding, EntryParser<EntryType> entryParser) throws IOException {
-		//if (file != null && file.exists()) {
+		if (file != null && file.exists()) {
 			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), encoding));
 			this.entryParser = entryParser;
-		//}
+		}
 	}
 
 	@Override

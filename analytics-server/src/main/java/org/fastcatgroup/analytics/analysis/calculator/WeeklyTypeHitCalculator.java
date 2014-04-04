@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.Calendar;
 import java.util.List;
 
-import org.fastcatgroup.analytics.analysis.EmptyLogHandler;
+import org.fastcatgroup.analytics.analysis.NullLogHandler;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.handler.SearchTypeDatabaseProcessHandler;
 import org.fastcatgroup.analytics.analysis.handler.ProcessHandler;
@@ -33,7 +33,7 @@ public class WeeklyTypeHitCalculator extends Calculator<TypeSearchLog> {
 		//1주일치의 일별 로그를 데이터베이스를 사용하여 머징한다.
 		CategoryProcess<TypeSearchLog> categoryProcess = new CategoryProcess<TypeSearchLog>(categoryId);
 		
-		new EmptyLogHandler(categoryId).attachLogHandlerTo(categoryProcess);
+		new NullLogHandler(categoryId).attachLogHandlerTo(categoryProcess);
 		
 		ProcessHandler mergeTypeHandler = new SearchTypeDatabaseProcessHandler(
 				siteId, categoryId, prevTimeId, currTimeId, typeList).attachProcessTo(categoryProcess);

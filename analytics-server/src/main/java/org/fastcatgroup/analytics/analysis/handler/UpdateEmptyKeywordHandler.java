@@ -2,12 +2,10 @@ package org.fastcatgroup.analytics.analysis.handler;
 
 import java.util.List;
 
-import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
 import org.fastcatgroup.analytics.db.mapper.SearchKeywordEmptyMapper;
-import org.fastcatgroup.analytics.db.mapper.SearchKeywordRankMapper;
 import org.fastcatgroup.analytics.db.vo.RankKeywordVO;
 import org.fastcatgroup.analytics.service.ServiceManager;
 
@@ -26,6 +24,7 @@ public class UpdateEmptyKeywordHandler extends ProcessHandler {
 	@Override
 	public Object process(Object parameter) throws Exception {
 		if (parameter != null) {
+			@SuppressWarnings("unchecked")
 			List<RankKeyword> keywordList = (List<RankKeyword>) parameter;
 			// db입력.
 			

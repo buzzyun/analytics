@@ -3,7 +3,6 @@ package org.fastcatgroup.analytics.analysis.task;
 import java.io.File;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Set;
 
 import org.fastcatgroup.analytics.analysis.calculator.Calculator;
 import org.fastcatgroup.analytics.analysis.calculator.YearlyKeywordHitAndRankCalculator;
@@ -34,12 +33,10 @@ public class YearlySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 		calendar.add(Calendar.YEAR, 1);
 		Calendar prevCalendar = (Calendar) calendar.clone();
 		prevCalendar.add(Calendar.YEAR, -1);
-		Set<String> banWords = null;
-		int minimumHitCount = 1;
 		int topCount = 10;
 		
 		// calc를 카테고리별로 모두 만든다.
-		Calculator<SearchLog> popularKeywordCalculator = new YearlyKeywordHitAndRankCalculator("Yearly popular keyword calculator", calendar, prevCalendar, baseDir, siteId, categoryIdList, banWords, minimumHitCount, topCount);
+		Calculator<SearchLog> popularKeywordCalculator = new YearlyKeywordHitAndRankCalculator("Yearly popular keyword calculator", calendar, prevCalendar, baseDir, siteId, categoryIdList, topCount);
 		addCalculator(popularKeywordCalculator);
 	}
 }

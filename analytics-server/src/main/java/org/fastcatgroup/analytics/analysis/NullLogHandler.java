@@ -5,15 +5,14 @@ import java.io.IOException;
 import org.fastcatgroup.analytics.analysis.handler.CategoryLogHandler;
 import org.fastcatgroup.analytics.analysis.log.LogData;
 
-@SuppressWarnings("rawtypes")
-public class EmptyLogHandler extends CategoryLogHandler {
+public class NullLogHandler<LogType extends LogData> extends CategoryLogHandler<LogType> {
 
-	public EmptyLogHandler(String categoryId) {
+	public NullLogHandler(String categoryId) {
 		super(categoryId);
 	}
 
 	@Override
-	public void handleLog(LogData logData) throws IOException { }
+	public void handleLog(LogType logData) throws IOException { }
 
 	@Override
 	public Object done() throws IOException { return null; }

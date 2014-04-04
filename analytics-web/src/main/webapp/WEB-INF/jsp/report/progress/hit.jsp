@@ -133,59 +133,11 @@ $(document).ready(function() {
 	
 	var pickmenup_options = {
 		calendars: 3,
-		mode: "single",
-		format: "Y.m.d",
+		mode: 'range',
+		format: 'Y.m.d',
 		first_day: 1,
-		position: "bottom",
-		hide_on_select	: false,
-		change : function(date) {
-			console.log(date);
-			console.log(date.length);
-// 			var dateStr1 = date[0];
-// 			var dateStr2 = date[1];
-// 			var dateSrc1 = date[0].split(".");
-// 			var dateSrc2 = date[1].split(".");
-// 			var dateObj1 = new Date(dateSrc1[0], dateSrc1[1] - 1, dateSrc1[2]);
-// 			var dateObj2 = new Date(dateSrc2[0], dateSrc2[1] - 1, dateSrc2[2]);
-			
-// 			var timeViewType = $(this).data("pickmeup-options").timeViewType;
-			
-			
-// 			var tmp = $(this).pickmeup("get_date");
-// 			console.log("TMP:"+tmp[0].getFullYear()+"-"+(tmp[0].getMonth()+1)+"-"+tmp[0].getDate());
-			
-// 			if(timeViewType == "D") {
-// 				console.log(date[0]+":"+date[1]);
-// 			} else if(timeViewType == "W") {
-// 				console.log(date[0]+":"+date[1]);
-// 				dateObj1.setDate( dateObj1.getDate() - ( ( dateObj1.getDay() + 6 ) % 7 ) );
-// 				dateObj2 = new Date(dateObj1.getFullYear(), dateObj1.getMonth(), dateObj1.getDate());
-// 				dateObj2.setDate( dateObj2.getDate() + 6 );
-// 				dateStr1 = dateObj1.getFullYear()+"."+(dateObj1.getMonth()+1)+"."+dateObj1.getDate();
-// 				dateStr2 = dateObj2.getFullYear()+"."+(dateObj2.getMonth()+1)+"."+dateObj2.getDate();
-// 			} else if(timeViewType == "M") {
-// 				console.log(date[0]+":"+date[1]);
-// 			} else if(timeViewType == "Y") {
-// 				console.log(date[0]+":"+date[1]);
-// 			}
-			
-// 			console.log("PICKUP : "+dateStr1+" ~ "+dateStr2);
-			
-// 			$(this).pickmeup("set_date",new Array(dateStr1,dateStr2));
-			
-			
-			
-// 			//console.log(date[0]+"-"+date[1]);
-// 			//var datechar = date[0].split(".");
-// 			//console.log(datechar[0]+"-"+datechar[1]+"-"+datechar[2]);
-// 			//var dateobj = new Date(datechar[0], datechar[1] - 1, datechar[2]);//Date.parse(datechar[0]+"-"+datechar[1]+"-"+datechar[2]);
-// 			//console.log(dateobj.getDay());
-// 			//var dates = date.split(",");
-// 			//$(this).pickmeup("set_date",new Array("2014.04.10","2014.05.10"));
-// 			//$("#timeText").pickmeup("set_date","2014.04.10,2014.05.10");
-		}//, 
-		//timeViewType:"D"
-		
+		position: 'bottom',
+		hide_on_select	: false
 	};
 	$("#timeText").pickmeup(pickmenup_options);
 	
@@ -196,11 +148,11 @@ $(document).ready(function() {
 		$(this).siblings().addClass("btn-default");
 		$(this).siblings().removeClass("btn-primary");
 		
-		var timeViewType = $(this).text().charAt(0);
-		$("#timeViewTypeList input[name=timeViewType]").val(timeViewType);
-		$("#timeText").data('pickmeup-options').timeViewType = timeViewType;
+		$("#timeViewTypeList input[name=timeViewType]").val($(this).text().charAt(0));
 		
 		//TODO 달력의 날짜를 확인하여, 주,월,년의 경우 시작/끝 날짜를 조정해준다.
+		
+		
 	});
 	
 });

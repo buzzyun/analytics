@@ -133,58 +133,93 @@ $(document).ready(function() {
 	
 	var pickmenup_options = {
 		calendars: 3,
-		mode: "single",
+		mode: "range",
 		format: "Y.m.d",
 		first_day: 1,
 		position: "bottom",
 		hide_on_select	: false,
 		change : function(date) {
-			console.log(date);
-			console.log(date.length);
-// 			var dateStr1 = date[0];
-// 			var dateStr2 = date[1];
-// 			var dateSrc1 = date[0].split(".");
-// 			var dateSrc2 = date[1].split(".");
-// 			var dateObj1 = new Date(dateSrc1[0], dateSrc1[1] - 1, dateSrc1[2]);
-// 			var dateObj2 = new Date(dateSrc2[0], dateSrc2[1] - 1, dateSrc2[2]);
+			var options = $(this).data("pickmeup-options");
+			var dateStr1 = date[0];
+			var dateStr2 = date[1];
+			var dateObj1 = options.parseDate(date[0]);
+			var dateObj2 = options.parseDate(date[1]);
 			
-// 			var timeViewType = $(this).data("pickmeup-options").timeViewType;
+			var timeViewType = options.timeViewType;
 			
+			if(timeViewType == "D") {
+				console.log(date[0]+":"+date[1]);
+			} else if(timeViewType == "W") {
+				console.log(date[0]+":"+date[1]);
+				
+				var prevDate = $(this).attr("prev-date");
+				if(date[0] == date[1]) {
+					dateObj1.setDate( dateObj1.getDate() - ( ( dateObj1.getDay() + 6 ) % 7 ) );
+					dateObj2 = options.cloneDate(dateObj1);
+					dateObj2.setDate( dateObj2.getDate() + 6 );
+					
+					dateStr1 = options.formatDate(dateObj1);
+					dateStr2 = options.formatDate(dateObj2);
+					
+					if(prevDate) {
+						$(this).attr("prev-date",null);
+					} else {
+						$(this).attr("prev-date",dateStr1);
+					}
+				} else {
+					
+					console.log("prevDate : "+prevDate);
+					
+					if(prevDate == dateStr1) {
+						console.log("1");
+						dateObj2.setDate( dateObj2.getDate() - ( ( dateObj2.getDay() + 6 ) % 7 ) );
+					} else if(prevDate == dateStr2) {
+						console.log("2");
+						dateObj1.setDate( dateObj1.getDate() - ( ( dateObj1.getDay() + 6 ) % 7 ) );
+						dateObj2 = options.parseDate(prevDate);
+					}
+					
+					dateObj2.setDate( dateObj2.getDate() + 6 );
+					dateStr1 = options.formatDate(dateObj1);
+					dateStr2 = options.formatDate(dateObj2);
+					$(this).attr("prev-date",null);
+				}
+				
+			} else if(timeViewType == "M") {
+				console.log(date[0]+":"+date[1]);
+			} else if(timeViewType == "Y") {
+				console.log(date[0]+":"+date[1]);
+			}
 			
-// 			var tmp = $(this).pickmeup("get_date");
-// 			console.log("TMP:"+tmp[0].getFullYear()+"-"+(tmp[0].getMonth()+1)+"-"+tmp[0].getDate());
+			console.log("PICKUP : "+dateStr1+" ~ "+dateStr2);
 			
-// 			if(timeViewType == "D") {
-// 				console.log(date[0]+":"+date[1]);
-// 			} else if(timeViewType == "W") {
-// 				console.log(date[0]+":"+date[1]);
-// 				dateObj1.setDate( dateObj1.getDate() - ( ( dateObj1.getDay() + 6 ) % 7 ) );
-// 				dateObj2 = new Date(dateObj1.getFullYear(), dateObj1.getMonth(), dateObj1.getDate());
-// 				dateObj2.setDate( dateObj2.getDate() + 6 );
-// 				dateStr1 = dateObj1.getFullYear()+"."+(dateObj1.getMonth()+1)+"."+dateObj1.getDate();
-// 				dateStr2 = dateObj2.getFullYear()+"."+(dateObj2.getMonth()+1)+"."+dateObj2.getDate();
-// 			} else if(timeViewType == "M") {
-// 				console.log(date[0]+":"+date[1]);
-// 			} else if(timeViewType == "Y") {
-// 				console.log(date[0]+":"+date[1]);
-// 			}
+			$(this).pickmeup("set_date",new Array(dateStr1,dateStr2));
 			
-// 			console.log("PICKUP : "+dateStr1+" ~ "+dateStr2);
-			
-// 			$(this).pickmeup("set_date",new Array(dateStr1,dateStr2));
-			
-			
-			
-// 			//console.log(date[0]+"-"+date[1]);
-// 			//var datechar = date[0].split(".");
-// 			//console.log(datechar[0]+"-"+datechar[1]+"-"+datechar[2]);
-// 			//var dateobj = new Date(datechar[0], datechar[1] - 1, datechar[2]);//Date.parse(datechar[0]+"-"+datechar[1]+"-"+datechar[2]);
-// 			//console.log(dateobj.getDay());
-// 			//var dates = date.split(",");
-// 			//$(this).pickmeup("set_date",new Array("2014.04.10","2014.05.10"));
-// 			//$("#timeText").pickmeup("set_date","2014.04.10,2014.05.10");
-		}//, 
-		//timeViewType:"D"
+			//console.log(date[0]+"-"+date[1]);
+			//var datechar = date[0].split(".");
+			//console.log(datechar[0]+"-"+datechar[1]+"-"+datechar[2]);
+			//var dateobj = new Date(datechar[0], datechar[1] - 1, datechar[2]);//Date.parse(datechar[0]+"-"+datechar[1]+"-"+datechar[2]);
+			//console.log(dateobj.getDay());
+			//var dates = date.split(",");
+			//$(this).pickmeup("set_date",new Array("2014.04.10","2014.05.10"));
+			//$("#timeText").pickmeup("set_date","2014.04.10,2014.05.10");
+		}, cloneDate:function(date) {
+			return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+		}, parseDate:function(dateStr) {
+			src = dateStr.split(".");
+			return new Date(src[0], src[1] - 1, src[2]);
+		}, formatDate:function(dateObj) {
+			var year = dateObj.getFullYear();
+			var month = (dateObj.getMonth() + 1);
+			var date = dateObj.getDate();
+			if(month < 10) {
+				month = "0"+month;
+			}
+			if(date < 10) {
+				date = "0"+date;
+			}
+			return year+"."+month+"."+date;
+		}, timeViewType:"D"
 		
 	};
 	$("#timeText").pickmeup(pickmenup_options);

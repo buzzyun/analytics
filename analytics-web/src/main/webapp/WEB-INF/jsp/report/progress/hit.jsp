@@ -131,28 +131,174 @@ $(document).ready(function() {
 	%>
 	
 	
-	var pickmenup_options = {
+	var pickmeupOptions = {
 		calendars: 3,
-		mode: 'range',
-		format: 'Y.m.d',
+		mode: "range",
+		format: "Y.m.d",
 		first_day: 1,
-		position: 'bottom',
-		hide_on_select	: false
+		position: "bottom",
+		hide_on_select	: false,
+		change : function(date) {
+			var options = $(this).data("pickmeup-options");
+			var dateStr1 = date[0];
+			var dateStr2 = date[1];
+			var dateObj1 = options.parseDate(date[0]);
+			var dateObj2 = options.parseDate(date[1]);
+			
+			var timeViewType = options.timeViewType;
+			var prevDate = $(this).attr("prev-date");
+			
+			if(timeViewType == "D") {
+				console.log(date[0]+":"+date[1]);
+			} else if(timeViewType == "W") {
+				console.log(date[0]+":"+date[1]);
+				if(date[0] == date[1]) {
+					dateObj1 = options.firstDayOfWeek(dateObj1);
+					dateObj2 = options.cloneDate(dateObj1);
+					dateObj2.setDate( dateObj2.getDate() + 6 );
+					dateStr1 = options.formatDate(dateObj1);
+					dateStr2 = options.formatDate(dateObj2);
+					if(prevDate) {
+						$(this).attr("prev-date",null);
+					} else {
+						$(this).attr("prev-date",dateStr1);
+					};
+				} else {
+					if(prevDate == dateStr1) {
+						dateObj2 = options.firstDayOfWeek(dateObj2);
+					} else if(prevDate == dateStr2) {
+						dateObj1 = options.firstDayOfWeek(dateObj1);
+						dateObj2 = options.parseDate(prevDate);
+					}
+					
+					dateObj2.setDate( dateObj2.getDate() + 6 );
+					dateStr1 = options.formatDate(dateObj1);
+					dateStr2 = options.formatDate(dateObj2);
+					$(this).attr("prev-date",null);
+				};
+			} else if(timeViewType == "M") {
+				console.log(date[0]+":"+date[1]);
+				if(date[0] == date[1]) {
+					dateObj1 = options.firstDayOfMonth(dateObj1);
+					dateObj2 = options.lastDayOfMonth(dateObj1);
+					dateStr1 = options.formatDate(dateObj1);
+					dateStr2 = options.formatDate(dateObj2);
+					if(prevDate) {
+						$(this).attr("prev-date",null);
+					} else {
+						$(this).attr("prev-date",dateStr1);
+					};
+				} else {
+					if(prevDate == dateStr1) {
+						dateObj2 = options.firstDayOfMonth(dateObj2);
+					} else if(prevDate == dateStr2) {
+						dateObj1 = options.firstDayOfMonth(dateObj1);
+						dateObj2 = options.parseDate(prevDate);
+					}
+					
+					dateObj2 = options.lastDayOfMonth(dateObj2);
+					dateStr1 = options.formatDate(dateObj1);
+					dateStr2 = options.formatDate(dateObj2);
+					$(this).attr("prev-date",null);
+				};
+				
+			} else if(timeViewType == "Y") {
+				console.log(date[0]+":"+date[1]);
+				if(date[0] == date[1]) {
+					dateObj1 = options.firstDayOfYear(dateObj1);
+					dateObj2 = options.lastDayOfYear(dateObj1);
+					dateStr1 = options.formatDate(dateObj1);
+					dateStr2 = options.formatDate(dateObj2);
+					if(prevDate) {
+						$(this).attr("prev-date",null);
+					} else {
+						$(this).attr("prev-date",dateStr1);
+					};
+				} else {
+					if(prevDate == dateStr1) {
+						dateObj2 = options.firstDayOfYear(dateObj2);
+					} else if(prevDate == dateStr2) {
+						dateObj1 = options.firstDayOfYear(dateObj1);
+						dateObj2 = options.parseDate(prevDate);
+					}
+					
+					dateObj2 = options.lastDayOfYear(dateObj2);
+					dateStr1 = options.formatDate(dateObj1);
+					dateStr2 = options.formatDate(dateObj2);
+					$(this).attr("prev-date",null);
+				};
+			}
+			
+			console.log("PICKUP : "+dateStr1+" ~ "+dateStr2);
+			$(this).val(dateStr1+" - "+dateStr2);
+			$(this).pickmeup("set_date",new Array(dateStr1,dateStr2));
+			
+		}, cloneDate:function(date) {
+			return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+		}, firstDayOfWeek:function(date) {
+			var newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+			newDate.setDate( newDate.getDate() - ( ( newDate.getDay() + 6 ) % 7 ) );
+			return newDate;
+		}, firstDayOfMonth:function(date) {
+			return new Date(date.getFullYear(), date.getMonth(), 1);
+		}, lastDayOfMonth:function(date) {
+			return new Date(date.getFullYear(), date.getMonth() + 1, 0);
+		}, firstDayOfYear:function(date) {
+			return new Date(date.getFullYear(), 0, 1);
+		}, lastDayOfYear:function(date) {
+			return new Date(date.getFullYear(), 11, 31);
+		}, parseDate:function(dateStr) {
+			src = dateStr.split(".");
+			return new Date(src[0], src[1] - 1, src[2]);
+		}, formatDate:function(dateObj) {
+			var year = dateObj.getFullYear();
+			var month = (dateObj.getMonth() + 1);
+			var date = dateObj.getDate();
+			if(month < 10) { month = "0"+month; }
+			if(date < 10) { date = "0"+date; }
+			return year+"."+month+"."+date;
+		}, timeViewType:"D"
+		
 	};
-	$("#timeText").pickmeup(pickmenup_options);
+	$("#timeText").pickmeup(pickmeupOptions);
 	
 	$("#timeViewTypeList button").on("click", function(){
+		var timeElement = $("#timeText");
+		var options = timeElement.data("pickmeup-options");
+		
 		$(this).addClass("btn-primary");
 		$(this).removeClass("btn-default");
 		
 		$(this).siblings().addClass("btn-default");
 		$(this).siblings().removeClass("btn-primary");
 		
-		$("#timeViewTypeList input[name=timeViewType]").val($(this).text().charAt(0));
+		var timeViewType = $(this).text().charAt(0);
+		$(this).find("input[name=timeViewType]").val(timeViewType);
+		options.timeViewType = timeViewType;
 		
+		var dates = timeElement.val().split(" - ");
+		dates[0] = options.parseDate(dates[0]);
+		dates[1] = options.parseDate(dates[1]);
+		
+		if(timeViewType == "D") {
+		} else if(timeViewType == "W") {
+			var fdate = options.firstDayOfWeek(dates[0]);
+			var tdate = options.firstDayOfWeek(dates[1]);
+			tdate.setDate(tdate.getDate() + 6);
+			timeElement.val(options.formatDate(fdate)+" - "+options.formatDate(tdate));
+		} else if(timeViewType == "M") {
+			var fdate = options.firstDayOfMonth(dates[0]);
+			var tdate = options.lastDayOfMonth(dates[1]);
+			timeElement.val(options.formatDate(fdate)+" - "+options.formatDate(tdate));
+		} else if(timeViewType == "Y") {
+			var fdate = options.firstDayOfYear(dates[0]);
+			var tdate = options.lastDayOfYear(dates[1]);
+			timeElement.val(options.formatDate(fdate)+" - "+options.formatDate(tdate));
+		}
+		
+		//alert(options.formatDate(new Date()));
+		//$("#timeText").val("");
 		//TODO 달력의 날짜를 확인하여, 주,월,년의 경우 시작/끝 날짜를 조정해준다.
-		
-		
 	});
 	
 });

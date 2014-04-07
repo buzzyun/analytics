@@ -235,10 +235,11 @@ public class LogGenerator {
 	}
 
 	private void insertLog(File baseDir, Calendar calendar, String data, boolean create) {
-		//System.out.println(data);
+		System.out.println(data);
 		String[] rawData = data.split("\t");
 		BufferedWriter writer = null;
 		try {
+			
 			File dateDir  = new File(baseDir, "date");
 			
 			int year = calendar.get(Calendar.YEAR);
@@ -249,13 +250,17 @@ public class LogGenerator {
 			dateDir = new File(dateDir, "M"+(month<10?"0"+month:month));
 			dateDir = new File(dateDir, "D"+(date<10?"0"+date:date));
 			
-			File file = new File(dateDir, "data");
-			file = new File(file, rawData[0]);
+			File dataDir = new File(dateDir, "data");
+			dataDir = new File(dataDir, rawData[0]);
 			
-			if(!file.exists()) {
-				file.mkdirs();
+			if(!dataDir.exists()) {
+				dataDir.mkdirs();
 			}
-			file = new File(file, "raw.log");
+			
+			File file = null;
+			
+			//raw log
+			file = new File(dataDir, "raw.log");
 			if(create && file.exists()) {
 				file.delete();
 			}
@@ -263,6 +268,23 @@ public class LogGenerator {
 			writer.append(rawData[1]).append("\t").append(rawData[2]).append("\t")
 				.append(rawData[3]).append("\t").append(rawData[4]).append("\t")
 				.append(rawData[5]).append("\t").append(rawData[6]);
+			writer.append("\n");
+			
+			writer.close();
+			
+			//type log
+			file = new File(dataDir, "type_raw.log");
+			if(create && file.exists()) {
+				file.delete();
+			}
+			writer = new BufferedWriter(new FileWriter(file, true));
+			writer.append(rawData[1]).append("\t").append(rawData[2]).append("\t")
+				.append(rawData[3]).append("\t");
+			
+			//각 타입별 로그
+			for (int inx = 7; inx < rawData.length; inx++) {
+				writer.append("\t").append(rawData[inx]);
+			}
 			writer.append("\n");
 			
 		} catch (IOException e) {

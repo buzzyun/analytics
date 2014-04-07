@@ -1,38 +1,46 @@
 package org.fastcatgroup.analytics.util.test;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
-
 public class LogGenerator {
-	
-	
-	
 	public static void main(String[] args) {
 		if (args.length != 7) {
-			System.out.println("Usage: LogGenerator [uri] [site id] [keyword file path] [duration minutes] [max interval millis] [category list] [type list]");
-			System.out.println("   ex: > LogGenerator http://localhost:8050/service/keyword/hit/post.json total ../keyword.txt 10 200 cat1,cat2 category<cat1|cate2>,page<1|2|3|4|5>,sort<score|date|price>,age<0|10|20|30|40|50>,service<autocomplete|catelist>,login<Y|N>,gender<M|F|U>");
+			System.out.println("Usage: LogGenerator [analytics-path] [site id] [keyword file path] [min,max qty] [from,to date] [category list] [type list]");
+			System.out.println("   ex: > LogGenerator /home/fastcat/analytics total ../keyword.txt 1000,10000 20140102,20150102 cat1,cat2 category<cat1|cate2>,page<1|2|3|4|5>,sort<score|date|price>,age<0|10|20|30|40|50>,service<autocomplete|catelist>,login<Y|N>,gender<M|F|U>");
 			System.exit(1);
 		}
-		String uri = args[0];
+		String homePath = args[0];
 		String siteId = args[1];
 		String keywordFilePath = args[2];
-		int duration = Integer.parseInt(args[3]); // 분.
-		int maxInterval = Integer.parseInt(args[4]); // 로그 생성 간격 (ms).
+		String[] minMax = args[3].split(",");
+		if(minMax.length < 2) {
+			//default value
+			minMax = new String[] { "1000", "10000" };
+		}
+		
+		int minQty = Integer.parseInt(minMax[0]);
+		int maxQty = Integer.parseInt(minMax[1]);
+		
+		String[] fromTo = args[4].split(",");
+		
+		System.out.println("from:"+fromTo[0]+" ~ to:"+fromTo[1]);
+		Calendar fromDate = parseDate(fromTo[0]);
+		Calendar toDate = parseDate(fromTo[1]);
+		
 		String[] categoryList = args[5].split(",");
 		String typeList = args[6]; // category,page,sort,age,service,login,gender
 
@@ -57,15 +65,14 @@ public class LogGenerator {
 			}
 		}
 		
+		File home = new File(homePath, "statistics");
+		home = new File(home, "search");
 
-		new LogGenerator().generate(uri, siteId, file, duration, maxInterval, categoryList, types, typeValues);
+		new LogGenerator().generate(home, siteId, file, minQty, maxQty, fromDate, toDate, categoryList, types, typeValues);
 	}
-
 	
-	
-	private void generate(String uri, String siteId, File file, long duration, int maxInterval, String[] categoryList, String[] types, List<String>[] typeValues) {
+	private void generate(File home, String siteId, File file, int minQty, int maxQty, Calendar fromDate, Calendar toDate, String[] categoryList, String[] types, List<String>[] typeValues) {
 		List<String> keywordList = new ArrayList<String>();
-
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
@@ -74,7 +81,6 @@ public class LogGenerator {
 				line = line.trim();
 				keywordList.add(line);
 			}
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -89,135 +95,185 @@ public class LogGenerator {
 
 		System.out.println("Loaded " + keywordList.size() + " words.");
 		Random r = new Random(System.nanoTime());
-		long durationNanotime = duration * 60 * 1000 * 1000000;
+		
+		int[] qtyGenerate = new int[24];
+		
 		long st = System.nanoTime();
 		
-		HttpClientBuilder builder = HttpClientBuilder.create();
-		CloseableHttpClient httpClient = null;
 		try {
-			httpClient = builder.build();
-
+			
 			String[] typeValue = new String[types.length];
 			int count = 0;
-			while (true) {
-				long lap = System.nanoTime() - st;
-				if(lap >  durationNanotime){
-					System.out.println("Generation finished. " + count+ " logs inserted during " + duration + " minutes. lap = " + lap+ " : "+ durationNanotime);
-					break;
+			
+			Calendar calendar = (Calendar) fromDate.clone();
+			
+			while (calendar.before(toDate)) {
+				
+				//하루동안 입력될 데이터의 총갯수를 정한다.
+				int qtyTotalGenerate = minQty;
+				if(maxQty > minQty) {
+					qtyTotalGenerate += r.nextInt(maxQty - minQty);
 				}
-
-				long interval = r.nextInt(maxInterval) + 100;
-
-				Thread.sleep(interval);
-				
-				String categoryId = "_root";
-				int cateIndex = r.nextInt(categoryList.length + 1);
-				if(cateIndex < categoryList.length){
-					categoryId = categoryList[cateIndex];
+				int qtyTotal = qtyTotalGenerate;
+				int avgQty = qtyTotalGenerate / qtyGenerate.length;
+				//우선은 시간별 평균값으로 분배한다.
+				for(int inx=0;inx < qtyGenerate.length; inx++) {
+					qtyGenerate[inx] = avgQty;
+					qtyTotal -= avgQty;
 				}
+				qtyGenerate[0] += qtyTotal; //자투리를 더해준다.
 				
-				int keyword0 = r.nextInt(keywordList.size());
-				int keyword1 = r.nextInt(keywordList.size());
+				System.out.println("qtyTotal="+qtyTotalGenerate+".. / shffling..");
 				
-				String keyword = keywordList.get(keyword0);
-				String prevKeyword = keywordList.get(keyword1);
-				for (int i = 0; i < typeValue.length; i++) {
-					typeValue[i] = typeValues[i].get(r.nextInt(typeValues[i].size()));
-				}
-				
-				// 1/10 의 확률로 결과없음이 나온다.
-				int resultCount = 0;
-				if(r.nextInt(10) > 0){
-					resultCount = r.nextInt(2000000);
-				}
-				int resptime = r.nextInt(4000) + 100;
-				
-				
-				String url = makeUri(uri, siteId, categoryId, keyword, prevKeyword, resultCount, resptime, types, typeValue);
-				
-				insertLog(httpClient, url);
-				count++;
-				
-				if(count % 100 == 0){
-					System.out.println("log " + count + "...");
+				//난수로 갯수를 섞는다.
+				int randomCount = r.nextInt(10000);
+				for(int inx=0;inx< randomCount; inx++) {
+					int randomInxF = r.nextInt(24);
+					int randomInxT = r.nextInt(24);
+					int delta = r.nextInt(qtyGenerate[randomInxF]);
+					qtyGenerate[randomInxF] -= delta;
+					qtyGenerate[randomInxT] += delta;
 				}
 				
-
+				//for (int inx = 0; inx < qtyGenerate.length; inx++) {
+				//	System.out.println("generate count["+inx+"] = "+qtyGenerate[inx]);
+				//}
+				
+				for(int inx=0;inx<qtyGenerate.length;inx++) {
+					
+					for(int inx2=0;inx2<qtyGenerate[inx];inx2++) {
+		
+						String categoryId = "_root";
+						int cateIndex = r.nextInt(categoryList.length + 1);
+						if(cateIndex < categoryList.length){
+							categoryId = categoryList[cateIndex];
+						}
+				
+						int keyword0 = r.nextInt(keywordList.size());
+						int keyword1 = r.nextInt(keywordList.size());
+						String keyword = keywordList.get(keyword0);
+						String prevKeyword = keywordList.get(keyword1);
+						for (int i = 0; i < typeValue.length; i++) {
+							typeValue[i] = typeValues[i].get(r.nextInt(typeValues[i].size()));
+						}
+						
+						// 1/10 의 확률로 결과없음이 나온다.
+						int resultCount = 0;
+						if(r.nextInt(10) > 0){
+							resultCount = r.nextInt(2000000);
+						}
+						int resptime = r.nextInt(4000) + 100;
+						
+						int minute = inx2 * 60 / qtyGenerate[inx];
+						
+						String timeId = (inx<10?"0"+inx:inx)+":"+(minute<10?"0"+minute:minute);
+						
+						String data = makeData(siteId, timeId, categoryId, keyword, prevKeyword, resultCount, resptime, types, typeValue);
+						insertLog(home, calendar, data, (inx==0 && inx2==0));
+						count++;
+						
+						if(count % 100 == 0){
+							System.out.println("log " + count + "...");
+						}
+					}
+				}
+				
+				calendar.add(Calendar.DAY_OF_MONTH, 1);
 			}
-		} catch (InterruptedException e) {
-			e.printStackTrace();
 		} finally {
-			if(httpClient != null){
-				try {
-					httpClient.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
 		}
 
 	}
+	
+	private static Calendar parseDate(String dateStr) {
+		Calendar calendar = Calendar.getInstance(Locale.GERMAN);
+		if(!(dateStr == null || "".equals(dateStr))) {
+			SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmssS");
+			try {
+				dateStr = dateStr.replaceAll("[-.:/]", "");
+				for(int inx=dateStr.length();inx < 17; inx++) {
+					dateStr+="0";
+				}
+				Date date = format.parse(dateStr);
+				calendar.setTime(date);
+			} catch (ParseException ignore) {
+				ignore.printStackTrace();
+			}
+		}
+		return calendar;
+	}
 
-	private String makeUri(String uri, String siteId, String categoryId, String keyword, String prevKeyword, int resultCount, int resptime, String[] types, String[] typeValue) {
+	private String makeData(String siteId, String categoryId, String time, String keyword, String prevKeyword, int resultCount, int resptime, String[] types, String[] typeValue) {
 		
 		StringBuffer sb = new StringBuffer();
 		try{
-		sb.append(uri);
-		sb.append("?type=search&siteId=");
-		sb.append(siteId);
-		sb.append("&categoryId=");
-		sb.append(categoryId);
-		
-		sb.append("&keyword=");
-		sb.append(URLEncoder.encode(keyword, "utf-8"));
-		
-		sb.append("&prev=");
-		sb.append(URLEncoder.encode(prevKeyword, "utf-8"));
-		
-		sb.append("&resultCount=");
-		sb.append(resultCount);
-		
-		sb.append("&resptime=");
-		sb.append(resptime);
-		
-		if (typeValue != null) {
-			for (int i = 0; i < types.length; i++) {
-				String type = types[i];
-				String value = typeValue[i];
-				sb.append("&");
-				sb.append(type);
-				sb.append("=");
-				sb.append(URLEncoder.encode(value, "utf-8"));
+			sb.append(siteId);
+			sb.append("\t");
+			sb.append(categoryId);
+			sb.append("\t");
+			sb.append(time);
+			sb.append("\t");
+			sb.append(keyword);
+			sb.append("\t");
+			sb.append(prevKeyword);
+			sb.append("\t");
+			sb.append(resultCount);
+			sb.append("\t");
+			sb.append(resptime);
+			if (typeValue != null) {
+				for (int i = 0; i < types.length; i++) {
+					String value = typeValue[i];
+					sb.append("\t");
+					sb.append(value);
+				}
 			}
-		}
-		
+			
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		return sb.toString();
 	}
 
-	private void insertLog(CloseableHttpClient httpClient, String url) {
-		System.out.println(url);
-		HttpUriRequest request = new HttpGet(url);
-		CloseableHttpResponse response = null;
+	private void insertLog(File baseDir, Calendar calendar, String data, boolean create) {
+		//System.out.println(data);
+		String[] rawData = data.split("\t");
+		BufferedWriter writer = null;
 		try {
-			response = httpClient.execute(request);
-			int statusCode = response.getStatusLine().getStatusCode();
+			File dateDir  = new File(baseDir, "date");
 			
-			if(statusCode != 200){
-				String responseString = EntityUtils.toString(response.getEntity(), "UTF-8");
-				System.err.println("Error >> " + responseString);
+			int year = calendar.get(Calendar.YEAR);
+			int month = calendar.get(Calendar.MONTH) + 1;
+			int date = calendar.get(Calendar.DAY_OF_MONTH);
+			
+			dateDir = new File(dateDir, "Y"+(year<10?"0"+year:year));
+			dateDir = new File(dateDir, "M"+(month<10?"0"+month:month));
+			dateDir = new File(dateDir, "D"+(date<10?"0"+date:date));
+			
+			File file = new File(dateDir, "data");
+			file = new File(file, rawData[0]);
+			
+			if(!file.exists()) {
+				file.mkdirs();
 			}
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
+			file = new File(file, "raw.log");
+			if(create && file.exists()) {
+				file.delete();
+			}
+			writer = new BufferedWriter(new FileWriter(file, true));
+			writer.append(rawData[1]).append("\t").append(rawData[2]).append("\t")
+				.append(rawData[3]).append("\t").append(rawData[4]).append("\t")
+				.append(rawData[5]).append("\t").append(rawData[6]);
+			writer.append("\n");
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				EntityUtils.consume(response.getEntity());
-			} catch (IOException e) {
-				e.printStackTrace();
+			if(writer!=null) {
+				try {
+					writer.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}

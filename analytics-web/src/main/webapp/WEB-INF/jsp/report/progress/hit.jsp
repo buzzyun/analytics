@@ -294,7 +294,7 @@ $(document).ready(function() {
 			var fdate = options.firstDayOfYear(dates[0]);
 			var tdate = options.lastDayOfYear(dates[1]);
 			timeElement.val(options.formatDate(fdate)+" - "+options.formatDate(tdate));
-		}
+		};
 		
 		//alert(options.formatDate(new Date()));
 		//$("#timeText").val("");

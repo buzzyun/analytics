@@ -3,12 +3,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page import="org.fastcatgroup.analytics.analysis.vo.*"%>
 <%@page import="org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.*"%>
+<%@page import="org.fastcatgroup.analytics.analysis.SearchStatisticsProperties" %>
+<%@page import="java.text.SimpleDateFormat" %>
 <%@page import="java.util.*"%>
 <%
 List<SiteCategoryConfig> siteCategoryList = (List<SiteCategoryConfig>) request.getAttribute("siteCategoryList");
 List<RankKeyword> rankList = (List<RankKeyword>) request.getAttribute("rankList");
 String categoryId = request.getParameter("categoryId");
-String timeId = (String) request.getAttribute("timeId");
+String date = (String) request.getAttribute("date");
+
 %>
 <c:set var="ROOT_PATH" value="../.." />
 
@@ -19,6 +22,17 @@ String timeId = (String) request.getAttribute("timeId");
 <script>
 $(document).ready(function(){
 	
+	var pickmeupOptions = {
+		calendars: 3,
+		format: "Y.m.d",
+		first_day: 1,
+		position: "bottom",
+		hide_on_select	: false,
+		change : function(date) {
+		}, cloneDate:function(date) {
+		}, timeViewType:"D"
+	};
+	$("input[name=date]").pickmeup(pickmeupOptions);
 });
 </script>
 </head>
@@ -70,7 +84,7 @@ $(document).ready(function(){
 								<option value="M">Month</option>
 								<option value="Y">Year</option> -->
 							</select>
-							<input class="form-control fcol1-2 " size="16" type="text" name="timeId" value="<%=timeId %>" >
+							<input class="form-control fcol1-2 " size="16" type="text" name="date" autocomplete="off" value="<%=date %>" >
 							<input type="submit" class="btn btn-sm btn-primary" value="Run">
 						</form>
 					</div>

@@ -1,14 +1,9 @@
 package org.fastcatgroup.analytics.web.controller;
 
 import java.util.Calendar;
-import java.util.Map;
 
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.control.JobService;
-import org.fastcatgroup.analytics.http.action.ActionRequest;
-import org.fastcatgroup.analytics.http.action.ActionResponse;
-import org.fastcatgroup.analytics.http.action.ServiceAction;
-import org.fastcatgroup.analytics.http.action.ServiceAction.Type;
 import org.fastcatgroup.analytics.job.Job;
 import org.fastcatgroup.analytics.job.task.DailySearchLogAnalyticsTaskRunJob;
 import org.springframework.stereotype.Controller;
@@ -31,26 +26,31 @@ public class ConfigurationMainController extends AbstractController {
 	}
 	
 	@RequestMapping("/management/run")
-	public ModelAndView run(@PathVariable String siteId, @RequestParam(required = false) String taskType, @RequestParam(required = false) String timeId) throws Exception {
+	public ModelAndView run(@PathVariable String siteId, @RequestParam(required = false) String taskType, @RequestParam(required = false) String date) throws Exception {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("configuration/management/run");
 		
+		Calendar calendar = null;
 		
-		if("searchStatictics".equals(taskType)) {
-			Job job = new DailySearchLogAnalyticsTaskRunJob(siteId, timeId);
-			JobService.getInstance().offer(job);	
-		} else if("relateKeyword".equals(taskType)) {
-//			action = new RelateSearchLogAnalyticsTaskRunAction();
-		} else if("realtimeKeyword".equals(taskType)) {
-//			action = new RealtimeSearchLogAnalyticsTaskRunAction();
-		}
+		String timeId = "";
+		if(date!=null && !"".equals(date)) {
+			calendar = SearchStatisticsProperties.parseDatetimeString(date);
+			timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DAY_OF_MONTH);
+			if("searchStatictics".equals(taskType)) {
+				Job job = new DailySearchLogAnalyticsTaskRunJob(siteId, timeId);
+				JobService.getInstance().offer(job);	
+			} else if("relateKeyword".equals(taskType)) {
+//				action = new RelateSearchLogAnalyticsTaskRunAction();
+			} else if("realtimeKeyword".equals(taskType)) {
+//				action = new RealtimeSearchLogAnalyticsTaskRunAction();
+			}
 		
-		if(timeId == null){
-			Calendar calendar = SearchStatisticsProperties.getCalendar();
+		} else {
+			calendar = SearchStatisticsProperties.getCalendar();
 			calendar.add(Calendar.DATE, -1);
-			timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DATE);
 		}
-		mav.addObject("timeId", timeId);
+		
+		mav.addObject("date", SearchStatisticsProperties.toDatetimeString(calendar));
 		return mav;
 	}
 }

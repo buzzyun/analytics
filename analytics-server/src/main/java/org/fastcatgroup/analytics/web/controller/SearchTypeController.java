@@ -64,8 +64,8 @@ public class SearchTypeController extends AbstractController {
 			//error
 		}
 		logger.debug("timeFrom > {} ~~ {}", timeFrom, timeTo);
-		Calendar startTime = SearchStatisticsProperties.parseDatetimeString(timeFrom);
-		Calendar endTime = SearchStatisticsProperties.parseDatetimeString(timeTo);
+		Calendar startTime = SearchStatisticsProperties.parseDatetimeString(timeFrom, true);
+		Calendar endTime = SearchStatisticsProperties.parseDatetimeString(timeTo, false);
 		String startTimeId = SearchStatisticsProperties.getTimeId(startTime, timeTypeCode);
 		String endTimeId = SearchStatisticsProperties.getTimeId(endTime, timeTypeCode);
 		logger.debug("New time id >> {} ~ {} > {}", startTimeId, endTimeId, timeViewType);

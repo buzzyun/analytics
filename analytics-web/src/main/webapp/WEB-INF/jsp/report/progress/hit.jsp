@@ -140,19 +140,38 @@ $(document).ready(function() {
 		hide_on_select	: false,
 		change : function(date) {
 			var options = $(this).data("pickmeup-options");
-			var dateStr1 = date[0];
-			var dateStr2 = date[1];
-			var dateObj1 = options.parseDate(date[0]);
-			var dateObj2 = options.parseDate(date[1]);
-			
 			var timeViewType = options.timeViewType;
+			var dateStr1 = "";
+			var dateStr2 = "";
+			
+			if(timeViewType == "H") {
+				date = /([0-9]{4}[.][0-9]{2}[.][0-9]{2})/.exec(date)[0];
+				dateStr1 = dateStr2 = date;
+			} else {
+				dateStr1 = date[0];
+				dateStr2 = date[1];
+			}
+			var dateObj1 = options.parseDate(dateStr1);
+			var dateObj2 = options.parseDate(dateStr2);
+			
 			var prevDate = $(this).attr("prev-date");
 			
-			if(timeViewType == "D") {
-				console.log(date[0]+":"+date[1]);
+			if(timeViewType == "H") {
+				console.log(dateStr1+":"+dateStr2);
+			} else if(timeViewType == "D") {
+				console.log(dateStr1+":"+dateStr2);
+				if(dateStr1 == dateStr2) {
+					if(prevDate) {
+						$(this).attr("prev-date",null);
+					} else {
+						$(this).attr("prev-date",dateStr1);
+					};
+				} else {
+					$(this).attr("prev-date",null);
+				};
 			} else if(timeViewType == "W") {
-				console.log(date[0]+":"+date[1]);
-				if(date[0] == date[1]) {
+				console.log(dateStr1+":"+dateStr2);
+				if(dateStr1 == dateStr2) {
 					dateObj1 = options.firstDayOfWeek(dateObj1);
 					dateObj2 = options.cloneDate(dateObj1);
 					dateObj2.setDate( dateObj2.getDate() + 6 );
@@ -177,8 +196,8 @@ $(document).ready(function() {
 					$(this).attr("prev-date",null);
 				};
 			} else if(timeViewType == "M") {
-				console.log(date[0]+":"+date[1]);
-				if(date[0] == date[1]) {
+				console.log(dateStr1+":"+dateStr2);
+				if(dateStr1 == dateStr2) {
 					dateObj1 = options.firstDayOfMonth(dateObj1);
 					dateObj2 = options.lastDayOfMonth(dateObj1);
 					dateStr1 = options.formatDate(dateObj1);
@@ -203,8 +222,8 @@ $(document).ready(function() {
 				};
 				
 			} else if(timeViewType == "Y") {
-				console.log(date[0]+":"+date[1]);
-				if(date[0] == date[1]) {
+				console.log(dateStr1+":"+dateStr2);
+				if(dateStr1 == dateStr2) {
 					dateObj1 = options.firstDayOfYear(dateObj1);
 					dateObj2 = options.lastDayOfYear(dateObj1);
 					dateStr1 = options.formatDate(dateObj1);
@@ -229,10 +248,18 @@ $(document).ready(function() {
 				};
 			}
 			
-			console.log("PICKUP : "+dateStr1+" ~ "+dateStr2);
-			$(this).val(dateStr1+" - "+dateStr2);
-			$(this).pickmeup("set_date",new Array(dateStr1,dateStr2));
-			
+			console.log("PICKUP : "+dateStr1+" ~ "+dateStr2+" / "+$(this).attr("prev-date"));
+			if(timeViewType != "H") {
+				$(this).val(dateStr1+" - "+dateStr2);
+				$(this).pickmeup("set_date",new Array(dateStr1,dateStr2));
+				if(!$(this).attr("prev-date")) {
+					$(this).pickmeup("hide");
+				}
+			} else {
+				$(this).val(dateStr1);
+				$(this).pickmeup("set_date",dateStr1);
+				$(this).pickmeup("hide");
+			};
 		}, cloneDate:function(date) {
 			return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 		}, firstDayOfWeek:function(date) {
@@ -248,17 +275,21 @@ $(document).ready(function() {
 		}, lastDayOfYear:function(date) {
 			return new Date(date.getFullYear(), 11, 31);
 		}, parseDate:function(dateStr) {
-			src = dateStr.split(".");
-			return new Date(src[0], src[1] - 1, src[2]);
-		}, formatDate:function(dateObj) {
+			if(!$.isArray(dateStr)) {
+				src = dateStr.split("."); src = dateStr.split(".");
+				return new Date(src[0], src[1] - 1, src[2]);
+			};
+		}, formatDate:function(dateObj, failValue) {
+			if(dateObj==null) {
+				dateObj = failValue;
+			}
 			var year = dateObj.getFullYear();
 			var month = (dateObj.getMonth() + 1);
 			var date = dateObj.getDate();
 			if(month < 10) { month = "0"+month; }
 			if(date < 10) { date = "0"+date; }
 			return year+"."+month+"."+date;
-		}, timeViewType:"D"
-		
+		}, timeViewType:"${timeViewType}"
 	};
 	$("#timeText").pickmeup(pickmeupOptions);
 	
@@ -273,27 +304,38 @@ $(document).ready(function() {
 		$(this).siblings().removeClass("btn-primary");
 		
 		var timeViewType = $(this).text().charAt(0);
-		$(this).find("input[name=timeViewType]").val(timeViewType);
+		$(this).parents("div").find("input[name=timeViewType]").val(timeViewType);
 		options.timeViewType = timeViewType;
 		
 		var dates = timeElement.val().split(" - ");
+console.log("6");
 		dates[0] = options.parseDate(dates[0]);
-		dates[1] = options.parseDate(dates[1]);
+		if(timeViewType != "H") {
+console.log("7");
+			dates[1] = dates[1]?options.parseDate(dates[1]):dates[0];
+		}
 		
-		if(timeViewType == "D") {
-		} else if(timeViewType == "W") {
-			var fdate = options.firstDayOfWeek(dates[0]);
-			var tdate = options.firstDayOfWeek(dates[1]);
-			tdate.setDate(tdate.getDate() + 6);
+		if(timeViewType == "H") {
+			timeElement.val(options.formatDate(dates[0]));
+			options.mode="single";
+		} else {
+			var fdate = null;
+			if(timeViewType == "D") {
+				fdate = dates[0];
+				tdate = dates[1];
+			} else if(timeViewType == "W") {
+				fdate = options.firstDayOfWeek(dates[0]);
+				tdate = options.firstDayOfWeek(dates[1]);
+				tdate.setDate(tdate.getDate() + 6);
+			} else if(timeViewType == "M") {
+				fdate = options.firstDayOfMonth(dates[0]);
+				tdate = options.lastDayOfMonth(dates[1]);
+			} else if(timeViewType == "Y") {
+				fdate = options.firstDayOfYear(dates[0]);
+				tdate = options.lastDayOfYear(dates[1]);
+			}
 			timeElement.val(options.formatDate(fdate)+" - "+options.formatDate(tdate));
-		} else if(timeViewType == "M") {
-			var fdate = options.firstDayOfMonth(dates[0]);
-			var tdate = options.lastDayOfMonth(dates[1]);
-			timeElement.val(options.formatDate(fdate)+" - "+options.formatDate(tdate));
-		} else if(timeViewType == "Y") {
-			var fdate = options.firstDayOfYear(dates[0]);
-			var tdate = options.lastDayOfYear(dates[1]);
-			timeElement.val(options.formatDate(fdate)+" - "+options.formatDate(tdate));
+			options.mode="range";
 		};
 		
 		//alert(options.formatDate(new Date()));

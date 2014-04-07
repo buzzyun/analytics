@@ -79,7 +79,7 @@ public class SearchRankController extends AbstractController {
 			timeText = SearchStatisticsProperties.toDatetimeString(calendar);
 		}
 		
-		Calendar calendar = SearchStatisticsProperties.parseDatetimeString(timeText);
+		Calendar calendar = SearchStatisticsProperties.parseDatetimeString(timeText, true);
 		String timeId = SearchStatisticsProperties.getTimeId(calendar, timeTypeCode);
 		logger.debug(">> timeText> {}, timeId > {}", timeText, timeId);
 		MapperSession<SearchKeywordRankMapper> keywordRankMapperSession = null;

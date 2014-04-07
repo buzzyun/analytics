@@ -139,6 +139,8 @@ public class LogGenerator {
 				//	System.out.println("generate count["+inx+"] = "+qtyGenerate[inx]);
 				//}
 				
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+				
 				for(int inx=0;inx<qtyGenerate.length;inx++) {
 					
 					for(int inx2=0;inx2<qtyGenerate[inx];inx2++) {
@@ -172,8 +174,8 @@ public class LogGenerator {
 						insertLog(home, calendar, data, (inx==0 && inx2==0));
 						count++;
 						
-						if(count % 100 == 0){
-							System.out.println("log " + count + "...");
+						if(count % 10000 == 0){
+							System.out.println("log " + count + "... / " + format.format(calendar.getTime()) );
 						}
 					}
 				}
@@ -235,7 +237,7 @@ public class LogGenerator {
 	}
 
 	private void insertLog(File baseDir, Calendar calendar, String data, boolean create) {
-		System.out.println(data);
+		//System.out.println(data);
 		String[] rawData = data.split("\t");
 		BufferedWriter writer = null;
 		try {

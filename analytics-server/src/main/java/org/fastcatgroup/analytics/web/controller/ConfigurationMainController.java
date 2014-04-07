@@ -34,7 +34,7 @@ public class ConfigurationMainController extends AbstractController {
 		
 		String timeId = "";
 		if(date!=null && !"".equals(date)) {
-			calendar = SearchStatisticsProperties.parseDatetimeString(date);
+			calendar = SearchStatisticsProperties.parseDatetimeString(date, true);
 			timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DAY_OF_MONTH);
 			if("searchStatictics".equals(taskType)) {
 				Job job = new DailySearchLogAnalyticsTaskRunJob(siteId, timeId);

@@ -327,6 +327,9 @@ public class SearchStatisticsProperties {
 	}
 
 	public static boolean isEquals(Calendar startTime, Calendar timeCurrent, int type) {
+		if(startTime == null || timeCurrent == null) {
+			return false;
+		}
 		if(startTime.get(Calendar.YEAR) == timeCurrent.get(Calendar.YEAR)){
 			if(type == Calendar.YEAR){
 				return true;

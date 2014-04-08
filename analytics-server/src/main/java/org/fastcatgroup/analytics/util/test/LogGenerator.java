@@ -281,7 +281,7 @@ public class LogGenerator {
 			}
 			writer = new BufferedWriter(new FileWriter(file, true));
 			writer.append(rawData[1]).append("\t").append(rawData[2]).append("\t")
-				.append(rawData[3]).append("\t");
+				.append(rawData[3]);
 			
 			//각 타입별 로그
 			for (int inx = 7; inx < rawData.length; inx++) {

@@ -69,6 +69,9 @@ public class ReportMainController extends AbstractController {
 			//일주일치와 그 전주의 일자별 데이터를 가져온다.
 			Calendar calendar = SearchStatisticsProperties.getCalendar();
 			Calendar fromDate = SearchStatisticsProperties.getFirstDayOfWeek(calendar);
+			if(fromDate.get(Calendar.DAY_OF_WEEK) == 1 ) {
+				
+			}
 			Calendar toDate = SearchStatisticsProperties.getLastDayOfWeek(calendar);
 			
 			String fromDateStr = SearchStatisticsProperties.getTimeId(fromDate, Calendar.DAY_OF_MONTH);

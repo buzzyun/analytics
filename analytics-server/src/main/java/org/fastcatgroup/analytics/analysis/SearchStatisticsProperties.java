@@ -335,16 +335,16 @@ public class SearchStatisticsProperties {
 				return true;
 			}
 			
-			if(startTime.get(Calendar.MONTH) == timeCurrent.get(Calendar.MONTH)){
-				if(type == Calendar.MONTH){
+			if(startTime.get(Calendar.WEEK_OF_YEAR) == timeCurrent.get(Calendar.WEEK_OF_YEAR)){
+				if(type == Calendar.WEEK_OF_YEAR){
 					return true;
 				}
 				
-				if(startTime.get(Calendar.WEEK_OF_YEAR) == timeCurrent.get(Calendar.WEEK_OF_YEAR)){
-					if(type == Calendar.WEEK_OF_YEAR){
-						return true;
-					}
-					
+			}
+			
+			if(startTime.get(Calendar.MONTH) == timeCurrent.get(Calendar.MONTH)){
+				if(type == Calendar.MONTH){
+					return true;
 				}
 				
 				if(startTime.get(Calendar.DAY_OF_MONTH) == timeCurrent.get(Calendar.DAY_OF_MONTH)){

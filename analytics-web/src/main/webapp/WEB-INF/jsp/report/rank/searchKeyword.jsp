@@ -51,7 +51,7 @@ $(document).ready(function(){
 		format: 'Y.m.d',
 		first_day: 1,
 		position: 'bottom',
-		hide_on_select	: false
+		hide_on_select	: true 
 	};
 	$("#timeText").pickmeup(pickmenup_options);
 	

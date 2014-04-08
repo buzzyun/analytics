@@ -29,6 +29,8 @@ $(document).ready(function() {
 
 	<%
 	if(list != null && list.size() > 0){
+	int delta = list.size() / 10;
+	if(delta == 0) { delta = 1; }
 	%>
 	// Sample Data
 	var d1 = [
@@ -53,7 +55,7 @@ $(document).ready(function() {
   			%>,<%
   			}
   		%>
-  		[ <%=i %>, <%=vo.getAverageTime() %> ]
+  		[ <%=i %>, <%=vo.getAvgTime() %> ]
   		<%
   		}
   		%>
@@ -61,13 +63,14 @@ $(document).ready(function() {
 	
 	var ticks = [
 		<%
+		//tick 의 갯수는 항상 10 개 이하로 유지하도록 한다.
 		for(int i=0;i<list.size();i++){
 			SearchHitVO vo = list.get(i);
 			if(i > 0){
 			%>,<%
 			}
 		%>
-		[ <%=i %>, '<%=vo.getTimeId() %>' ]
+		[ <%=i %>, '<%=(i%delta==0)?vo.getTimeId():"" %>' ]
 		<%
 		}
 		%>
@@ -80,7 +83,7 @@ $(document).ready(function() {
 	];
 
 	function yFormatter(v, axis) {
-		return v + " ms";
+		return Math.ceil(v) + " ms";
 	}
 	
 	$.plot("#chart_dashboard_main", data, $.extend(true, {}, Plugins.getFlotDefaults(), 
@@ -137,7 +140,7 @@ $(document).ready(function() {
 		format: "Y.m.d",
 		first_day: 1,
 		position: "bottom",
-		hide_on_select	: false,
+		hide_on_select	: true,
 		change : function(date) {
 			var options = $(this).data("pickmeup-options");
 			var timeViewType = options.timeViewType;
@@ -252,13 +255,9 @@ $(document).ready(function() {
 			if(timeViewType != "H") {
 				$(this).val(dateStr1+" - "+dateStr2);
 				$(this).pickmeup("set_date",new Array(dateStr1,dateStr2));
-				if(!$(this).attr("prev-date")) {
-					$(this).pickmeup("hide");
-				}
 			} else {
 				$(this).val(dateStr1);
 				$(this).pickmeup("set_date",dateStr1);
-				$(this).pickmeup("hide");
 			};
 		}, cloneDate:function(date) {
 			return new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -308,10 +307,8 @@ $(document).ready(function() {
 		options.timeViewType = timeViewType;
 		
 		var dates = timeElement.val().split(" - ");
-console.log("6");
 		dates[0] = options.parseDate(dates[0]);
 		if(timeViewType != "H") {
-console.log("7");
 			dates[1] = dates[1]?options.parseDate(dates[1]):dates[0];
 		}
 		
@@ -337,10 +334,6 @@ console.log("7");
 			timeElement.val(options.formatDate(fdate)+" - "+options.formatDate(tdate));
 			options.mode="range";
 		};
-		
-		//alert(options.formatDate(new Date()));
-		//$("#timeText").val("");
-		//TODO 달력의 날짜를 확인하여, 주,월,년의 경우 시작/끝 날짜를 조정해준다.
 	});
 	
 });

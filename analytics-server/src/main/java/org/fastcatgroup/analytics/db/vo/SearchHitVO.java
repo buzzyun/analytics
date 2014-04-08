@@ -5,7 +5,7 @@ public class SearchHitVO {
 	protected String categoryId;
 	protected String timeId;
 	protected int hit;
-	protected int averageTime;
+	protected int avgTime;
 	protected int maxTime;
 
 	public String getTimeId() {
@@ -32,12 +32,12 @@ public class SearchHitVO {
 		this.hit = hit;
 	}
 
-	public int getAverageTime() {
-		return averageTime;
+	public int getAvgTime() {
+		return avgTime;
 	}
 
-	public void setAverageTime(int averageTime) {
-		this.averageTime = averageTime;
+	public void setAvgTime(int avgTime) {
+		this.avgTime = avgTime;
 	}
 
 	public int getMaxTime() {
@@ -47,8 +47,4 @@ public class SearchHitVO {
 	public void setMaxTime(int maxTime) {
 		this.maxTime = maxTime;
 	}
-	
-	
-	
-	
 }

@@ -10,6 +10,7 @@ import org.fastcatgroup.analytics.env.Settings;
 import org.fastcatgroup.analytics.exception.AnalyticsException;
 import org.fastcatgroup.analytics.service.AbstractService;
 import org.fastcatgroup.analytics.service.ServiceManager;
+import org.fastcatgroup.analytics.web.controller.AbstractController;
 
 public class WebAdminService extends AbstractService {
 
@@ -59,6 +60,7 @@ public class WebAdminService extends AbstractService {
 		webapp.setWar(warFilePath);
 		webapp.setTempDirectory(tempDir);
 		webapp.setParentLoaderPriority(true);
+		webapp.setAttribute(AbstractController.ENVIRONMENT, environment);
 		server.setHandler(webapp);
 		
 		try {

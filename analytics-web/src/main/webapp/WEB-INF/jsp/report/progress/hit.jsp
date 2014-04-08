@@ -88,13 +88,7 @@ $(document).ready(function() {
 	
 	$.plot("#chart_dashboard_main", data, $.extend(true, {}, Plugins.getFlotDefaults(), 
 		{
-			xaxis: {
-				ticks :ticks
-			},
-			/* yaxis: {
-				ticks: 20,
-				min: 0,
-			}, */
+			xaxis: { ticks :ticks },
 			yaxes: [ { min: 0 }, {
 				alignTicksWithAxis: 1,
 				position: 'right',
@@ -424,6 +418,8 @@ $(document).ready(function() {
 										<tr>
 											<th>Time</th>
 											<th>Count</th>
+											<th>Max Time</th>
+											<th>Averate Time</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -434,6 +430,8 @@ $(document).ready(function() {
 										<tr>
 											<td><%=vo.getTimeId() %></td>
 											<td><%=vo.getHit() %></td>
+											<td><%=vo.getMaxTime() %> ms</td>
+											<td><%=vo.getAvgTime() %> ms</td>
 										</tr>
 										<%
 											}

@@ -3,11 +3,16 @@ package org.fastcatgroup.analytics.web.controller;
 import java.io.Writer;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig;
 import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig;
+import org.fastcatgroup.analytics.env.Environment;
 import org.fastcatgroup.analytics.http.action.ServiceAction.Type;
 import org.fastcatgroup.analytics.service.ServiceManager;
 import org.fastcatgroup.analytics.util.JSONPResponseWriter;
@@ -17,14 +22,18 @@ import org.fastcatgroup.analytics.util.XMLResponseWriter;
 import org.jboss.netty.handler.codec.http.HttpResponseStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
-public class AbstractController {
+public class AbstractController implements WebApplicationInitializer {
 	public static final String DEFAULT_ROOT_ELEMENT = "response";
 	public static final String DEFAULT_CHARSET = "utf-8";
+	public static final String ENVIRONMENT = "ENVIRONMENT";
 	
 	protected Type resultType = Type.json;
+	
+	protected Environment environment;
 	
 	protected static Logger logger = LoggerFactory.getLogger(AbstractController.class);
 	
@@ -81,5 +90,12 @@ public class AbstractController {
 		} else {
 			response.setContentType("application/json; charset=" + responseCharset);
 		}
+	}
+
+	@Override
+	public void onStartup(ServletContext servletContext)
+			throws ServletException {
+		
+		this.environment = (Environment)servletContext.getAttribute(ENVIRONMENT);
 	}
 }

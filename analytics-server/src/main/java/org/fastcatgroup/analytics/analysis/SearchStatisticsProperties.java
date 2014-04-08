@@ -325,6 +325,18 @@ public class SearchStatisticsProperties {
 		
 		return null;
 	}
+	
+	public static Calendar getFirstDayOfWeek(Calendar calendar) {
+		Calendar ret = (Calendar) calendar.clone();
+		ret.add(Calendar.DAY_OF_MONTH, -((ret.get(Calendar.DAY_OF_WEEK) + 5) % 7));
+		return ret;
+	}
+	
+	public static Calendar getLastDayOfWeek(Calendar calendar) {
+		Calendar ret = (Calendar) calendar.clone();
+		ret.add(Calendar.DAY_OF_MONTH, (8 - ret.get(Calendar.DAY_OF_WEEK)) % 7);
+		return ret;
+	}
 
 	public static boolean isEquals(Calendar startTime, Calendar timeCurrent, int type) {
 		if(startTime == null || timeCurrent == null) {

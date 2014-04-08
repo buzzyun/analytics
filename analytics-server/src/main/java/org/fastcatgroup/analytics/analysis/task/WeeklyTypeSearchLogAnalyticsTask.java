@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Calendar;
 import java.util.List;
 
+import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.calculator.Calculator;
 import org.fastcatgroup.analytics.analysis.calculator.WeeklyTypeHitCalculator;
 import org.fastcatgroup.analytics.analysis.log.TypeSearchLog;
@@ -29,8 +30,7 @@ public class WeeklyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchLo
 		
 		String[] typeList = environment.settingManager().getSystemSettings().getStringArray("db.typeList", ",");
 		//주의 최초로 되돌린다.
-		calendar.add(Calendar.DAY_OF_MONTH, (8 - calendar.get(Calendar.DAY_OF_WEEK)) % 7);
-		Calendar prevCalendar = (Calendar) calendar.clone();
+		Calendar prevCalendar = SearchStatisticsProperties.getLastDayOfWeek(calendar);
 		prevCalendar.add(Calendar.DAY_OF_MONTH, -7);
 
 		// calc를 카테고리별로 모두 만든다.

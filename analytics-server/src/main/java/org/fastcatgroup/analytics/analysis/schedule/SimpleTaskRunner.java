@@ -41,6 +41,12 @@ public class SimpleTaskRunner extends Thread {
 		this.interrupt();
 		isCanceled = true;
 	}
+	
+	public int queueSize() {
+		synchronized(priorityJobQueue) {
+			return priorityJobQueue.size();
+		}
+	}
 
 	@Override
 	public void run() {

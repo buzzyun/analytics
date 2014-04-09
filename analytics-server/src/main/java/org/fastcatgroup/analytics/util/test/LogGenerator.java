@@ -67,7 +67,7 @@ public class LogGenerator {
 		
 		File home = new File(homePath, "statistics");
 		home = new File(home, "search");
-
+		System.out.println("generating...");
 		new LogGenerator().generate(home, siteId, file, minQty, maxQty, fromDate, toDate, categoryList, types, typeValues);
 	}
 	
@@ -263,23 +263,34 @@ public class LogGenerator {
 			
 			//raw log
 			file = new File(dataDir, "raw.log");
+			//System.out.println(file.getAbsolutePath());
 			if(create && file.exists()) {
+				System.out.println("deleting.."+file.getAbsolutePath());
 				file.delete();
+				writer = new BufferedWriter(new FileWriter(file));
+			} else {
+				writer = new BufferedWriter(new FileWriter(file, true));
 			}
-			writer = new BufferedWriter(new FileWriter(file, true));
 			writer.append(rawData[1]).append("\t").append(rawData[2]).append("\t")
 				.append(rawData[3]).append("\t").append(rawData[4]).append("\t")
 				.append(rawData[5]).append("\t").append(rawData[6]);
 			writer.append("\n");
+			writer.flush();
 			
 			writer.close();
 			
 			//type log
 			file = new File(dataDir, "type_raw.log");
+			//System.out.println(file.getAbsolutePath());
 			if(create && file.exists()) {
+				System.out.println("deleting.."+file.getAbsolutePath());
 				file.delete();
+				writer = new BufferedWriter(new FileWriter(file));
+			} else {
+				writer = new BufferedWriter(new FileWriter(file, true));
+				
 			}
-			writer = new BufferedWriter(new FileWriter(file, true));
+			
 			writer.append(rawData[1]).append("\t").append(rawData[2]).append("\t")
 				.append(rawData[3]);
 			
@@ -288,6 +299,7 @@ public class LogGenerator {
 				writer.append("\t").append(rawData[inx]);
 			}
 			writer.append("\n");
+			writer.flush();
 			
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -30,14 +30,28 @@ public class ConfigurationMainController extends AbstractController {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("configuration/management/run");
 		
-		Calendar calendar = null;
+		Calendar calendar1 = null;
+		Calendar calendar2 = null;
 		
-		String timeId = "";
+		String timeId1 = "";
+		String timeId2 = "";
+		
 		if(date!=null && !"".equals(date)) {
-			calendar = SearchStatisticsProperties.parseDatetimeString(date, true);
-			timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DAY_OF_MONTH);
+			
+			String[] dateArr = date.split(" - ");
+			
+			
+			calendar1 = SearchStatisticsProperties.parseDatetimeString(dateArr[0], true);
+			
+			if(dateArr.length > 0) {
+				calendar2 = SearchStatisticsProperties.parseDatetimeString(dateArr[1], false);
+			} else {
+				calendar2 = calendar1;
+			}
+			timeId1 = SearchStatisticsProperties.getTimeId(calendar1, Calendar.DAY_OF_MONTH);
+			timeId2 = SearchStatisticsProperties.getTimeId(calendar2, Calendar.DAY_OF_MONTH);
 			if("searchStatictics".equals(taskType)) {
-				Job job = new DailySearchLogAnalyticsTaskRunJob(siteId, timeId);
+				Job job = new DailySearchLogAnalyticsTaskRunJob(siteId, timeId1, timeId2);
 				JobService.getInstance().offer(job);	
 			} else if("relateKeyword".equals(taskType)) {
 //				action = new RelateSearchLogAnalyticsTaskRunAction();
@@ -46,11 +60,11 @@ public class ConfigurationMainController extends AbstractController {
 			}
 		
 		} else {
-			calendar = SearchStatisticsProperties.getCalendar();
-			calendar.add(Calendar.DATE, -1);
+			calendar1 = SearchStatisticsProperties.getCalendar();
+			calendar1.add(Calendar.DATE, -1);
 		}
 		
-		mav.addObject("date", SearchStatisticsProperties.toDatetimeString(calendar));
+		mav.addObject("date", SearchStatisticsProperties.toDatetimeString(calendar1));
 		return mav;
 	}
 }

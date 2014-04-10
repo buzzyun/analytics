@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -19,21 +18,22 @@ import org.fastcatgroup.analytics.util.JSONPResponseWriter;
 import org.fastcatgroup.analytics.util.JSONResponseWriter;
 import org.fastcatgroup.analytics.util.ResponseWriter;
 import org.fastcatgroup.analytics.util.XMLResponseWriter;
-import org.jboss.netty.handler.codec.http.HttpResponseStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.WebApplicationInitializer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
-public class AbstractController implements WebApplicationInitializer {
+@Controller
+public class AbstractController {
 	public static final String DEFAULT_ROOT_ELEMENT = "response";
 	public static final String DEFAULT_CHARSET = "utf-8";
 	public static final String ENVIRONMENT = "ENVIRONMENT";
 	
 	protected Type resultType = Type.json;
-	
-	protected Environment environment;
+	protected static Environment environment;
+	private ServletContext context;
 	
 	protected static Logger logger = LoggerFactory.getLogger(AbstractController.class);
 	
@@ -47,6 +47,19 @@ public class AbstractController implements WebApplicationInitializer {
 		model.addObject("exception", ex);
 		return model;
  
+	}
+
+	@Autowired
+	public void setSpringTestService(ServletContext context) {
+		this.context = context;
+	}
+
+	@PostConstruct
+	protected void init() {
+		if(environment == null) {
+			environment = (Environment)context.getAttribute(ENVIRONMENT);
+			logger.info("environment : {}", environment);
+		}
 	}
 	
 	protected StatisticsService getStatisticsService(){
@@ -90,12 +103,5 @@ public class AbstractController implements WebApplicationInitializer {
 		} else {
 			response.setContentType("application/json; charset=" + responseCharset);
 		}
-	}
-
-	@Override
-	public void onStartup(ServletContext servletContext)
-			throws ServletException {
-		
-		this.environment = (Environment)servletContext.getAttribute(ENVIRONMENT);
 	}
 }

@@ -24,7 +24,7 @@
 				lcatCurrent = "".equals(lcat);
 			%>
 			<li class="<%=lcatCurrent ? "current" :"" %>">
-				<a href="<c:url value="/settings/configuration.html"/>"><i class="icon-cog"></i> Engine Configuration</a>
+				<a href="<c:url value="/settings/configuration.html"/>"><i class="icon-cog"></i> System Configuration</a>
 			</li>
 			
 			<%

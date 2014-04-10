@@ -111,7 +111,7 @@ function update(formId, mode) {
 				<!--=== Page Header ===-->
 				<div class="page-header">
 					<div class="page-title">
-						<h3>Settings</h3>
+						<h3>User Settings</h3>
 					</div>
 				</div>
 				<!-- /Page Header -->

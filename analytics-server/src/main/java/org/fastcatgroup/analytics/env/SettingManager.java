@@ -65,7 +65,7 @@ public class SettingManager {
 		try {
 			os = new FileOutputStream(configFilepath);
 			properties.store(os, new Date().toString());
-			settingCache.put(configFilepath, properties);
+			settingCache.put(configFilepath, new Settings(properties));
 			return true;
 		} catch (IOException e) {
 			logger.error(e.getMessage(), e);

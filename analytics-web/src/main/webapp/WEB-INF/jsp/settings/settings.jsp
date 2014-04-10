@@ -60,7 +60,7 @@ $(document).ready(function(){
 						<%
 						}
 						%>
-						<li class=""><a href="javascript:{}"><span class="icon-plus-sign"></span> New Site </a></li>
+						<li class=""><a href="javascript:{}"><span class="icon-plus"></span> New Site </a></li>
 					</ul>
 					<div class="tab-content">
 						<div class="tab-pane active" id="tab_3_1">
@@ -70,7 +70,7 @@ $(document).ready(function(){
 										<div class="dataTables_header clearfix">
 											<div class="input-group col-md-12">
 												<button class="btn btn-sm" data-toggle="modal" data-target="#userNew" data-backdrop="static">
-												 <span class="icon-plus-sign"></span> New Category
+												 <span class="icon-plus"></span> New Category
 												 </button>
 											</div>
 										</div>

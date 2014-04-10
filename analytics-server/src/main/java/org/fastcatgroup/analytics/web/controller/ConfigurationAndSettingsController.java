@@ -4,7 +4,10 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.fastcatgroup.analytics.analysis.StatisticsService;
@@ -19,15 +22,34 @@ import org.springframework.web.servlet.ModelAndView;
 public class ConfigurationAndSettingsController extends AbstractController {
 	
 	@RequestMapping("/settings/configuration")
-	public ModelAndView configuration(HttpSession session) throws Exception {
+	public ModelAndView configuration(HttpSession session, HttpServletRequest request) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("/settings/configuration");
 		
 		Settings systemSettings = environment.settingManager().getSystemSettings();
 		
-		//속성 길이가 긴 경우 textarea 를 사용하기 위해
-		//페이지 내에서는 키워드 값을 하드코딩 하여 이용한다. 
-		Enumeration<Object> keys = systemSettings.properties().keys();
+		Pattern findKey = Pattern.compile("key([0-9]+)");
+		
+		if("update".equals(request.getParameter("mode"))) {
+			systemSettings.properties().clear();
+			Enumeration<String> parameterNames = request.getParameterNames();
+			for(;parameterNames.hasMoreElements();) {
+				String entry = parameterNames.nextElement();
+				String inx = "";
+				Matcher matcher = findKey.matcher(entry);
+				if (matcher.find()) {
+					inx = matcher.group(1);
+				}
+				
+				String key = request.getParameter(entry);
+				String value = request.getParameter("value"+inx);
+				
+				if(value!=null) {
+					systemSettings.properties().setProperty(key, value);
+				}
+			}
+			environment.settingManager().storeSystemSettings(systemSettings);
+		}
 		
 		Set<Object> keySet = new TreeSet<Object>();
 		keySet.addAll(systemSettings.properties().keySet());

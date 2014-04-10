@@ -33,11 +33,27 @@ $(document).ready(function(){
 function showSiteTab(siteId){
 	location.href = "settings.html?siteId="+siteId;
 }
+function removeSite() {
+	var form = $("form#category-form");
+	$.ajax({
+		url:"update-setting.html"
+		,type:"POST"
+		,data:{
+			mode:"removeSite"
+			,siteId:form[0].siteId.value
+		}, dataType:"json",
+		success:function(response) {
+			if(response["success"] == "true") {
+				location.href = "settings.html";
+			} else {
+	 			noty({text: "update failed !", layout:"topRight", timeout: 5000});
+			}
+		}, fail:function(response){
+		}
+	});
+}
 function removeCategory(categoryId) {
 	var form = $("form#category-form");
-	console.log(form[0].siteId);
-	console.log(form[0].siteId.value);
-	console.log("siteId:"+form[0].siteId.value+" / categoryId : "+categoryId);
 	$.ajax({
 		url:"update-setting.html"
 		,type:"POST"
@@ -142,6 +158,9 @@ function update(formId, mode) {
 												 </button>
 												<button class="btn btn-sm" onclick="update('category-form','update')">
 												 <span class="icon-ok"></span> Apply Category
+												 </button>
+												<button class="btn btn-sm btn-danger" onclick="removeSite()">
+												 <span class="icon-minus-sign"></span> Remove Site
 												 </button>
 											</div>
 										</div>

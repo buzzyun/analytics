@@ -86,6 +86,15 @@ public class StatisticsService extends AbstractService {
 			siteStatisticsModuleMap.put(siteId, module);
 		}
 	}
+	
+	public void writeConfig() {
+		File siteCategoryConfigFile = new File(statisticsHome, "site-category.xml");
+		try {
+			JAXBConfigs.writeConfig(siteCategoryConfigFile, siteCategoryListConfig, SiteCategoryListConfig.class);
+		} catch (JAXBException e) {
+			logger.error("", e);
+		}
+	}
 
 	// 초기 서비스시작시 DB에서 연관어 읽어서 올림.
 	private void loadRelateKeyword() {

@@ -140,7 +140,7 @@ function update(formId, mode) {
 												<button class="btn btn-sm" data-toggle="modal" data-target="#categoryNew" data-backdrop="static">
 												 <span class="icon-plus"></span> New Category
 												 </button>
-												<button class="btn btn-sm" data-toggle="modal" data-target="#categoryNew" data-backdrop="static">
+												<button class="btn btn-sm" onclick="update('category-form','update')">
 												 <span class="icon-ok"></span> Apply Category
 												 </button>
 											</div>

@@ -59,7 +59,7 @@ public class SettingManager {
 
 	private boolean storeProperties(Properties properties, String filename) {
 		String configFilepath = getConfigFilepath(filename);
-		logger.debug("Store properties = {}", configFilepath);
+		logger.trace("Store properties = {}", configFilepath);
 		
 		FileOutputStream os = null;
 		try {

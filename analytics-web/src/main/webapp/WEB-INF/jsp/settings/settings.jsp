@@ -60,7 +60,7 @@ $(document).ready(function(){
 						<%
 						}
 						%>
-						<li class=""><a href="javascript:{}"><span class="icon-plus"></span> New Site </a></li>
+						<li class=""><a href="javascript:{}" data-toggle="modal" data-target="#siteNew" data-backdrop="static"><span class="icon-plus"></span> New Site </a></li>
 					</ul>
 					<div class="tab-content">
 						<div class="tab-pane active" id="tab_3_1">
@@ -69,7 +69,7 @@ $(document).ready(function(){
 									<div class="widget-content no-padding">
 										<div class="dataTables_header clearfix">
 											<div class="input-group col-md-12">
-												<button class="btn btn-sm" data-toggle="modal" data-target="#userNew" data-backdrop="static">
+												<button class="btn btn-sm" data-toggle="modal" data-target="#categoryNew" data-backdrop="static">
 												 <span class="icon-plus"></span> New Category
 												 </button>
 											</div>
@@ -98,56 +98,69 @@ $(document).ready(function(){
 		</div>
 	</div>
 
-	<div class="modal" id="userNew">
+	<div class="modal" id="siteNew">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title">New User</h4>
+					<h4 class="modal-title">New Site</h4>
 				</div>
 				<div class="modal-body">
-					<form class="form-horizontal" role="form" id="new-user-form">
+					<form class="form-horizontal" role="form" id="new-site-form">
 						<input type="hidden" name="mode" value=""/>
 						<input type="hidden" name="id" value="-1"/>
 						<div class="form-group">
-							<label for="name" class="col-sm-3 control-label">Name</label>
+							<label for="siteId" class="col-sm-3 control-label">Site Id</label>
 							<div class="col-sm-9">
-								<input type="text" class="form-control required" id="name" name="name" placeholder="Name" minlength="3">
+								<input type="text" class="form-control required" id="siteId" name="siteId" placeholder="Site Id" minlength="4">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="userId" class="col-sm-3 control-label">User Id</label>
+							<label for="siteName" class="col-sm-3 control-label">Site Name</label>
 							<div class="col-sm-9">
-								<input type="text" class="form-control required" id="userId" name="userId" placeholder="User Id" minlength="4">
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="password" class="col-sm-3 control-label">Password</label>
-							<div class="col-sm-4">
-								<input type="password" class="form-control required" id="password" name="password" placeholder="Password" minlength="4">
-							</div>
-							<div class=" col-sm-4">
-								<input type="password" class="form-control required" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" minlength="4" equalTo="[name='password']">
-							</div>
-						</div>
-						
-						<div class="form-group">
-							<label for="email" class="col-sm-3 control-label">E-mail</label>
-							<div class="col-sm-9">
-								<input type="text" class="form-control email" id="email" name="email" placeholder="E-mail">
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="sms" class="col-sm-3 control-label">SMS</label>
-							<div class="col-sm-9">
-								<input type="text" class="form-control number" id="sms" name="sms" placeholder="SMS">
+								<input type="text" class="form-control required" id="siteName" name="siteName" placeholder="Site Name" minlength="4">
 							</div>
 						</div>
 					</form>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-					<button type="button" class="btn btn-primary" onclick="update('new-user-form','update')">Create User</button>
+					<button type="button" class="btn btn-primary" onclick="update('new-site-form','update')">Create Site</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	
+	<div class="modal" id="categoryNew">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">New Category</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal" role="form" id="new-category-form">
+						<input type="hidden" name="mode" value=""/>
+						<input type="hidden" name="id" value="-1"/>
+						<div class="form-group">
+							<label for="categoryId" class="col-sm-3 control-label">Category Id</label>
+							<div class="col-sm-9">
+								<input type="text" class="form-control required" id="categoryId" name="categoryId" placeholder="Category Id" minlength="4">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="categoryName" class="col-sm-3 control-label">Category Name</label>
+							<div class="col-sm-9">
+								<input type="text" class="form-control required" id="categoryName" name="categoryName" placeholder="Category Name" minlength="4">
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					<button type="button" class="btn btn-primary" onclick="update('new-category-form','update')">Create Category</button>
 				</div>
 			</div>
 			<!-- /.modal-content -->

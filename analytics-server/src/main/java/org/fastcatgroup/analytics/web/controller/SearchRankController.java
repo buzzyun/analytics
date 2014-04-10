@@ -42,6 +42,9 @@ public class SearchRankController extends AbstractController {
 	public ModelAndView searchKeywordAll(@PathVariable String siteId, @RequestParam(defaultValue="_root") String categoryId
 			, @RequestParam(required=false) String timeText, @RequestParam(required=false) String keywordType, @RequestParam(defaultValue="1") int pageNo
 			, @RequestParam(defaultValue="0") int start, @RequestParam(defaultValue="10") int length, @RequestParam(required = false) String timeViewType) {
+		
+		String[] typeArray = environment.settingManager().getSystemSettings().getStringArray("db.rankList", ",");
+		
 		int rankDiffOver = 0;
 		String rankDiffType = null;
 		if(keywordType == null || keywordType.length() == 0){
@@ -103,6 +106,7 @@ public class SearchRankController extends AbstractController {
 			}
 			
 			mav.setViewName("report/rank/searchKeyword");
+			mav.addObject("typeArray", typeArray);
 			mav.addObject("categoryId", categoryId);
 			mav.addObject("start", start);
 			mav.addObject("length", length);

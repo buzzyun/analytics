@@ -20,6 +20,8 @@ List<RankKeywordVO> list = (List<RankKeywordVO>) request.getAttribute("list");
 
 String keywordType = (String) request.getAttribute("keywordType");
 
+String[] typeArray = (String[]) request.getAttribute("typeArray");
+
 %>
 <c:set var="ROOT_PATH" value="../.." />
 
@@ -124,11 +126,14 @@ $(document).ready(function(){
 				
 				<div class="tabbable tabbable-custom tabbable-full-width" id="schema_tabs">
 					<ul class="nav nav-tabs">
-						<li class="<%=keywordType.equals("all") ? "active" : "" %>"><a href="javascript:showKeywordTab('all')">All</a></li>
-						<li class="<%=keywordType.equals("new") ? "active" : "" %>"><a href="javascript:showKeywordTab('new')">New</a></li>
-						<li class="<%=keywordType.equals("hot") ? "active" : "" %>"><a href="javascript:showKeywordTab('hot')">Hot</a></li>
-						<li class="<%=keywordType.equals("down") ? "active" : "" %>"><a href="javascript:showKeywordTab('down')">Down</a></li>
-						<li class="<%=keywordType.equals("empty") ? "active" : "" %>"><a href="javascript:showKeywordTab('empty')">Empty</a></li>
+					
+						<%
+						for(int typeInx=0; typeInx < typeArray.length; typeInx++ ) {
+						%>
+							<li class="<%=keywordType.equals(typeArray[typeInx]) ? "active" : "" %>"><a href="javascript:showKeywordTab('<%=typeArray[typeInx]%>')"><%=typeArray[typeInx]%></a></li>
+						<%
+						}
+						%>
 					</ul>
 					<div class="tab-content row">
 						

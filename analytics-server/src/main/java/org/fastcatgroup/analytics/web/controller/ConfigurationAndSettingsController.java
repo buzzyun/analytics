@@ -1,12 +1,16 @@
 package org.fastcatgroup.analytics.web.controller;
 
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
 import javax.servlet.http.HttpSession;
 
+import org.fastcatgroup.analytics.analysis.StatisticsService;
+import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig;
 import org.fastcatgroup.analytics.env.Settings;
+import org.fastcatgroup.analytics.service.ServiceManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -37,6 +41,12 @@ public class ConfigurationAndSettingsController extends AbstractController {
 	public ModelAndView settings(HttpSession session) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("/settings/settings");
+		
+		StatisticsService service = ServiceManager.getInstance().getService(StatisticsService.class);
+		
+		List<SiteCategoryConfig> siteList = service.getSiteCategoryListConfig().getList();
+		
+		modelAndView.addObject("siteList", siteList);
 //		Writer writer = new StringWriter();
 //		ResponseWriter responseWriter = getDefaultResponseWriter(writer);
 //		

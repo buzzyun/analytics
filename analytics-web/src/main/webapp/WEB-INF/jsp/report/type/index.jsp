@@ -9,6 +9,7 @@ List<SearchTypeHitVO> list = (List<SearchTypeHitVO>) request.getAttribute("list"
 String typeId = (String) request.getAttribute("typeId");
 String timeText = (String) request.getAttribute("timeText");
 String timeViewType = (String) request.getAttribute("timeViewType");
+String[] typeArray = (String[]) request.getAttribute("typeArray");
 
 %>
 <c:set var="ROOT_PATH" value="../.." />
@@ -173,13 +174,13 @@ function showRatioTab(typeId){
 				
 				<div class="tabbable tabbable-custom tabbable-full-width" id="schema_tabs">
 					<ul class="nav nav-tabs">
-						<li class="<%=typeId.equals("category") ? "active" : "" %>"><a href="javascript:showRatioTab('category')">category</a></li>
-						<li class="<%=typeId.equals("page") ? "active" : "" %>"><a href="javascript:showRatioTab('page')">page</a></li>
-						<li class="<%=typeId.equals("sort") ? "active" : "" %>"><a href="javascript:showRatioTab('sort')">sort</a></li>
-						<li class="<%=typeId.equals("age") ? "active" : "" %>"><a href="javascript:showRatioTab('age')">age</a></li>
-						<li class="<%=typeId.equals("service") ? "active" : "" %>"><a href="javascript:showRatioTab('service')">service</a></li>
-						<li class="<%=typeId.equals("login") ? "active" : "" %>"><a href="javascript:showRatioTab('login')">login</a></li>
-						<li class="<%=typeId.equals("gender") ? "active" : "" %>"><a href="javascript:showRatioTab('gender')">gender</a></li>
+						<% 
+						for ( int typeInx=0; typeInx < typeArray.length; typeInx ++ ) { 
+						%>
+							<li class="<%=typeId.equals(typeArray[typeInx]) ? "active" : "" %>"><a href="javascript:showRatioTab('<%=typeArray[typeInx]%>')"><%=typeArray[typeInx] %></a></li>
+						<% 
+						} 
+						%>
 					</ul>
 					<div class="tab-content row">
 						

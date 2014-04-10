@@ -1,15 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ page import="
-java.util.Map,
-java.util.HashMap,
-java.util.List,
-org.fastcatgroup.analytics.db.vo.UserAccountVO
+java.util.*,
+org.fastcatgroup.analytics.db.vo.*,
+org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig
 " %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <%
-	String menuId = "settings";
+String menuId = "settings";
+List<SiteCategoryConfig> siteList = (List<SiteCategoryConfig>)request.getAttribute("siteList");
 %>
 <c:set var="ROOT_PATH" value="../.." scope="request"/>
 <c:import url="../inc/common.jsp" />
@@ -43,12 +43,25 @@ $(document).ready(function(){
 				<!--=== Page Header ===-->
 				<div class="page-header">
 					<div class="page-title">
-						<h3>Settings</h3>
+						<h3>Site Settings</h3>
 					</div>
 				</div>
 				<!-- /Page Header -->
 				<!--=== Page Content ===-->
-				<div class="tabbable tabbable-custom tabs-left">
+				<div class="tabbable tabbable-custom tabbable-full-width">
+					<ul class="nav nav-tabs">
+						<%
+						for(int siteInx = 0; siteInx < siteList.size() ; siteInx++) {
+							SiteCategoryConfig siteConfig = siteList.get(siteInx);
+							String siteName = siteConfig.getSiteName();
+							String siteId = siteConfig.getSiteId();
+						%>
+						<li class="active"><a href="javascript:showSiteTab('<%=siteId%>')"><%=siteName %></a></li>
+						<%
+						}
+						%>
+						<li class=""><a href="javascript:{}"><span class="icon-plus-sign"></span> New Site </a></li>
+					</ul>
 					<div class="tab-content">
 						<div class="tab-pane active" id="tab_3_1">
 							<div class="col-md-12">
@@ -57,17 +70,15 @@ $(document).ready(function(){
 										<div class="dataTables_header clearfix">
 											<div class="input-group col-md-12">
 												<button class="btn btn-sm" data-toggle="modal" data-target="#userNew" data-backdrop="static">
-												 <span class="icon-user"></span> New User
+												 <span class="icon-plus-sign"></span> New Category
 												 </button>
 											</div>
 										</div>
 										<table class="table table-bordered">
 											<thead>
 												<tr>
-													<th>User Name</th>
-													<th>User Id</th>
-													<th>Email</th>
-													<th>Sms</th>
+													<th>Category Id</th>
+													<th>Category Name</th>
 													<th></th>
 												</tr>
 											</thead>	

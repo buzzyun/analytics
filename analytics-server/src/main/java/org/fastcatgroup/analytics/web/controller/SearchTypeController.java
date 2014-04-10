@@ -28,6 +28,8 @@ public class SearchTypeController extends AbstractController {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/type/index");
 		
+		String[] typeArray = environment.settingManager().getSystemSettings().getStringArray("db.typeList", ",");
+		
 		if(timeText == null){
 			Calendar calendar = SearchStatisticsProperties.getCalendar();
 			calendar.add(Calendar.DATE, -1);
@@ -82,6 +84,7 @@ public class SearchTypeController extends AbstractController {
 			mav.addObject("timeViewType", timeViewType);
 			mav.addObject("typeId", typeId);
 			mav.addObject("list", list);
+			mav.addObject("typeArray", typeArray);
 			
 		} catch (Exception e) {
 			logger.error("", e);

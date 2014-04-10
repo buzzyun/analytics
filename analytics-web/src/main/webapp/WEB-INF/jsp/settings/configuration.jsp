@@ -50,7 +50,7 @@ $(document).ready(function(){
 				</div>
 				<!-- /Page Header -->
 				<!--=== Page Content ===-->
-				<div class="tabbable tabbable-custom tabs-left">
+				<div class="tabbable tabbable-custom tabbable-full-width">
 					<div class="tab-content">
 						<div class="tab-pane active" id="tab_3_1">
 							<div class="col-md-12">

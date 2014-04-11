@@ -68,6 +68,9 @@ public class DailySearchLogAnalyticsTaskRunJob extends Job {
 			Calendar calendar1 = SearchStatisticsProperties.parseTimeId(timeId1);
 			Calendar calendar2 = SearchStatisticsProperties.parseTimeId(timeId2);
 			
+			SearchStatisticsProperties.setTimeFrom(calendar1);
+			SearchStatisticsProperties.setTimeTo(calendar2);
+			
 			while(calendar1.before(calendar2)) {
 				logger.info("CALCULATING..{}", SearchStatisticsProperties.toDatetimeString(calendar1));
 			

@@ -25,9 +25,49 @@ $(document).ready(function(){
 	$("form#category-form span.icon-minus-sign").click(function() {
 		var categoryId = /btn-remove-(.*)/.exec($(this).attr("id"))[1];
 		if(confirm("Category will remove. Are you OK?")) {
-			removeCategory(categoryId);
+			var form = $("form#category-form");
+			$.ajax({
+				url:"update-setting.html"
+				,type:"POST"
+				,data:{
+					mode:"remove"
+					,siteId:form[0].siteId.value
+					,categoryId:categoryId
+				}, dataType:"json",
+				success:function(response) {
+					if(response["success"] == "true") {
+						location.href = location.href;
+					} else {
+			 			noty({text: "update failed !", layout:"topRight", timeout: 5000});
+					}
+				}, fail:function(response){
+				}
+			});
 		}
 	});
+	
+	var addRowFunction = function(){
+		var pivotTr = $(this).parents("tr");
+		var trTemplate = $("#schema_template tr");
+		var newTr = trTemplate.clone();
+		var newIndex = new Date().getTime();
+		newTr.find("input, select, textarea").each(function() {
+			var name = $(this).attr("name");
+			var key = /^([a-zA-Z0-9_-]+)[0-9]+/.exec(name)[1];
+			$(this).attr("name", key + newIndex);
+		});
+		
+		if(pivotTr.find("input").length > 0) {
+			pivotTr.after(newTr);
+		} else {
+			tbody = pivotTr.parents("tbody");
+			pivotTr.after(newTr);
+			pivotTr.remove();
+		}
+		newTr.find("span.icon-plus-sign").parent("a.btn").click(addRowFunction);
+	};
+	
+	$("form#category-form span.icon-plus-sign").parent("a.btn").click(addRowFunction);
 });
 
 function showSiteTab(siteId){
@@ -52,26 +92,51 @@ function removeSite() {
 		}
 	});
 }
-function removeCategory(categoryId) {
-	var form = $("form#category-form");
-	$.ajax({
-		url:"update-setting.html"
-		,type:"POST"
-		,data:{
-			mode:"remove"
-			,siteId:form[0].siteId.value
-			,categoryId:categoryId
-		}, dataType:"json",
-		success:function(response) {
-			if(response["success"] == "true") {
-				location.href = location.href;
-			} else {
-	 			noty({text: "update failed !", layout:"topRight", timeout: 5000});
+
+function updateCategory(formId, mode) {
+	var form = $("#"+formId);
+	var valid = false;
+	if(mode == "remove") { 
+		valid = true; 
+	} else {
+		valid = form.valid();
+	}
+	
+	var data = {};
+	var tr = form.find("table tr");
+	for(var inx = 0 ; inx < tr.length ; inx++) {
+		var input = $(tr[inx]).find("input");
+		for(var inx2 = 0; inx2 < input.length ; inx2++) {
+			var name = input[inx2].name;
+	 		var prefix = /([a-zA-Z_-]+)[0-9]+/.exec(name);
+			console.log("prefix:"+prefix);
+			if(prefix!=null && prefix.length > 0) {
+				name = prefix[1]+inx;
 			}
-		}, fail:function(response){
+			data[name] = input[inx2].value;
 		}
-	});
+		data["count"] = inx;
+	}
+	data["mode"] = mode;
+	data["siteId"] = form.find("input[name=siteId]").val();
+	
+	if(valid) {
+		$.ajax({
+			url:"update-setting.html",
+			type:"POST",
+			data:data, dataType:"json",
+			success:function(response) {
+				if(response["success"] == "true") {
+					location.href = location.href;
+				} else {
+		 			noty({text: "update failed !", layout:"topRight", timeout: 5000});
+				}
+			}, fail:function(response){
+			}
+		});
+	}
 }
+
 function update(formId, mode) {
 	var form = $("#"+formId);
 	var valid = false;
@@ -153,10 +218,7 @@ function update(formId, mode) {
 									<div class="widget-content no-padding">
 										<div class="dataTables_header clearfix">
 											<div class="input-group col-md-12">
-												<button class="btn btn-sm" data-toggle="modal" data-target="#categoryNew" data-backdrop="static">
-												 <span class="icon-plus"></span> New Category
-												 </button>
-												<button class="btn btn-sm" onclick="update('category-form','update')">
+												<button class="btn btn-sm" onclick="updateCategory('category-form','update')">
 												 <span class="icon-ok"></span> Apply Category
 												 </button>
 												<button class="btn btn-sm btn-danger" onclick="removeSite()">
@@ -176,30 +238,68 @@ function update(formId, mode) {
 											</thead>	
 											<tbody>
 											<%
-											for( int cateInx = 0; cateInx < categoryList.size() ; cateInx++ ) {
-												CategoryConfig category = categoryList.get(cateInx);
-												if("_root".equals(category.getId())) {
-													continue;
+											if(categoryList.size() > 1) {
+											%>
+												<%
+												for( int cateInx = 0; cateInx < categoryList.size() ; cateInx++ ) {
+													CategoryConfig category = categoryList.get(cateInx);
+													if("_root".equals(category.getId())) {
+														continue;
+													}
+												%>
+													<tr>
+														<td>
+															<input class="form-control" type="text" name="categoryId<%=cateInx %>" value="<%=category.getId() %>"/>
+														</td>
+														<td>
+															<input class="form-control" type="text" name="categoryName<%=cateInx %>" value="<%=category.getName() %>"/>
+														</td>
+														<td>
+															<a class="btn btn-sm" href="javascript:{}">
+																<span class="icon-plus-sign" id="btn-add-<%=category.getId()%>"></span>
+															</a>
+															<a class="btn btn-sm" href="javascript:{}">
+																<span class="icon-minus-sign text-danger" id="btn-remove-<%=category.getId()%>"></span>
+															</a>
+														</td>
+													</tr>
+												<%
 												}
-											%>
-												<tr>
-													<td>
-														<input type="hidden" name="categoryIdOrg<%=cateInx %>" value="<%=category.getId() %>"/>
-														<input class="form-control" type="text" name="categoryIdGet<%=cateInx %>" value="<%=category.getId() %>"/>
-													</td>
-													<td>
-														<input class="form-control" type="text" name="categoryNameGet<%=cateInx %>" value="<%=category.getName() %>"/>
-													</td>
-													<td>
-														<span class="icon-minus-sign" id="btn-remove-<%=category.getId()%>"></span>
-													</td>
-												</tr>
-											<%
-											}
-											%>
-											</tbody>
+												%>
+										<%
+										} else {
+										%>
+											<tr>
+												<td colspan="2">
+												<a class="btn btn-sm" href="javascript:{}">
+													<span class="icon-plus-sign"></span>Add New
+												</a>
+												</td>
+											</tr>
+										<%
+										}
+										%>
+										</tbody>
 										</table>
 										</form>
+										<table class="hidden" id="schema_template">
+											<tr>
+												<td>
+													<input class="form-control" type="text" name="categoryId0" value=""/>
+												</td>
+												<td>
+													<input class="form-control" type="text" name="categoryName0" value=""/>
+												</td>
+												<td>
+													<a class="btn btn-sm" href="javascript:{}">
+														<span class="icon-plus-sign"></span>
+													</a>
+													<a class="btn btn-sm" href="javascript:{}">
+														<span class="icon-minus-sign text-danger"></span>
+													</a>
+												</td>
+											</tr>
+										</table>
 									</div>
 								</div>
 								

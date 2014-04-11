@@ -158,23 +158,14 @@ public class ConfigurationAndSettingsController extends AbstractController {
 		ResponseWriter responseWriter = getDefaultResponseWriter(writer);
 		
 		if("update".equals(mode)) {
-			Pattern sitePattern = Pattern.compile("^categoryIdOrg([0-9]+)");
-			//모든 파라메터를 다 살펴보아야 한다.
-			Enumeration<String> paramNames = request.getParameterNames();
-			while(paramNames.hasMoreElements()) {
-				String paramKey = paramNames.nextElement();
-				Matcher matcher = sitePattern.matcher(paramKey);
-				if(matcher.find()) {
-					String number = matcher.group(1);
-					String categoryIdOrg = request.getParameter(paramKey);
-					String categoryIdGet = request.getParameter("categoryIdGet"+number);
-					String categoryNameGet = request.getParameter("categoryNameGet"+number);
-					for (int inx = 0; inx < categoryList.size(); inx++) {
-						if(categoryList.get(inx).getId().equals(categoryIdOrg)) {
-							categoryList.set(inx, new CategoryConfig(categoryIdGet, categoryNameGet));
-							break;
-						}
-					}
+			categoryList.clear();
+			categoryList.add(new CategoryConfig("_root","_root"));
+			int count = Integer.parseInt(request.getParameter("count"));
+			for (int inx = 1; inx <= count; inx++) {
+				String categoryIdGet = request.getParameter("categoryId"+inx);
+				String categoryNameGet = request.getParameter("categoryName"+inx);
+				if(categoryIdGet!=null && !"".equals(categoryIdGet)) {
+					categoryList.add(new CategoryConfig(categoryIdGet, categoryNameGet));
 				}
 			}
 			statisticsService.writeConfig();

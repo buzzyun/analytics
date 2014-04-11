@@ -74,23 +74,28 @@ function showSiteTab(siteId){
 	location.href = "settings.html?siteId="+siteId;
 }
 function removeSite() {
-	var form = $("form#category-form");
-	$.ajax({
-		url:"update-setting.html"
-		,type:"POST"
-		,data:{
-			mode:"removeSite"
-			,siteId:form[0].siteId.value
-		}, dataType:"json",
-		success:function(response) {
-			if(response["success"] == "true") {
-				location.href = "settings.html";
-			} else {
-	 			noty({text: "update failed !", layout:"topRight", timeout: 5000});
-			}
-		}, fail:function(response){
+
+	if(confirm("DANGER! This site and category will remove. Are you OK ?")) {
+		if(confirm("Are you sure ?")) {
+			var form = $("form#category-form");
+			$.ajax({
+				url:"update-setting.html"
+				,type:"POST"
+				,data:{
+					mode:"removeSite"
+					,siteId:form[0].siteId.value
+				}, dataType:"json",
+				success:function(response) {
+					if(response["success"] == "true") {
+						location.href = "settings.html";
+					} else {
+			 			noty({text: "update failed !", layout:"topRight", timeout: 5000});
+					}
+				}, fail:function(response){
+				}
+			});
 		}
-	});
+	}
 }
 
 function updateCategory(formId, mode) {

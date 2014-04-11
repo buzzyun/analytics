@@ -160,7 +160,11 @@ function update(formId, mode) {
 			data:data, dataType:"json",
 			success:function(response) {
 				if(response["success"] == "true") {
-					location.href = location.href;
+					if(mode=="updateSite") {
+						location.href = "settings.html?siteId="+data["siteIdNew"];
+					} else {
+						location.href = location.href;
+					}
 				} else {
 		 			noty({text: "update failed !", layout:"topRight", timeout: 5000});
 				}
@@ -220,6 +224,9 @@ function update(formId, mode) {
 											<div class="input-group col-md-12">
 												<button class="btn btn-sm" onclick="updateCategory('category-form','update')">
 												 <span class="icon-ok"></span> Apply Category
+												 </button>
+												<button class="btn btn-sm" data-toggle="modal" data-target="#siteEdit" data-backdrop="static">
+												 <span class="icon-edit"></span> Edit Site
 												 </button>
 												<button class="btn btn-sm btn-danger" onclick="removeSite()">
 												 <span class="icon-minus-sign"></span> Remove Site
@@ -340,6 +347,41 @@ function update(formId, mode) {
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 					<button type="button" class="btn btn-primary" onclick="update('new-site-form','addSite')">Create Site</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	
+	<div class="modal" id="siteEdit">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">Edit Site</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal" role="form" id="edit-site-form">
+						<input type="hidden" name="siteId" value="${currentSiteId}"/>
+						<input type="hidden" name="mode" value=""/>
+						<div class="form-group">
+							<label for="siteId" class="col-sm-3 control-label">Site Id</label>
+							<div class="col-sm-9">
+								<input type="text" class="form-control required" id="siteIdNew" name="siteIdNew" value="${currentSiteId}" placeholder="Site Id">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="siteName" class="col-sm-3 control-label">Site Name</label>
+							<div class="col-sm-9">
+								<input type="text" class="form-control required" id="siteName" name="siteName" value="${currentSiteName}" placeholder="Site Name">
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					<button type="button" class="btn btn-primary" onclick="update('edit-site-form','updateSite')">Update Site</button>
 				</div>
 			</div>
 			<!-- /.modal-content -->

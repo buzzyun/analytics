@@ -54,28 +54,26 @@
 				<a href="<c:url value="/${siteId}/report/type/index.html"/>"> <i class="icon-bar-chart"></i>Type Ratio</a>
 			</li>
 			
-			<%-- <%
+			<%
 				lcatCurrent = "ctr".equals(lcat);
 			%>
 			<li class="<%=lcatCurrent ? "current" :"" %>"><a
-				href="javascript:void(0);"> <i class="icon-bar-chart"></i>
-					CTR
-			</a>
+				href="javascript:void(0);"> <i class="icon-bar-chart"></i>Click-through rate</a>
 				<ul class="sub-menu">
 					<li class="<%=(lcatCurrent && "overview".equals(mcat)) ? "current" : "" %>"><a
 						href="<c:url value="/${siteId}/report/ctr/view.html"/>">
-							<i class="icon-angle-right"></i> All
+							<i class="icon-angle-right"></i> Overview
 					</a></li> 
 					<li class="<%=(lcatCurrent && "keyword".equals(mcat)) ? "current" : "" %>"><a
 						href="<c:url value="/${siteId}/report/ctr/keyword.html"/>">
+							<i class="icon-angle-right"></i> Detail
+					</a></li> 
+					<li class="<%=(lcatCurrent && "searchKeyword".equals(mcat)) ? "current" : "" %>"><a
+						href="<c:url value="/${siteId}/report/ctr/searchKeyword.html"/>">
 							<i class="icon-angle-right"></i> Keyword
 					</a></li> 
-					<li class="<%=(lcatCurrent && "keyword".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/ctr/searchKeyword.html"/>">
-							<i class="icon-angle-right"></i> [detail..]
-					</a></li> 
 				</ul>
-			</li> --%>
+			</li>
 			
 			<%
 				lcatCurrent = "keywords".equals(lcat);

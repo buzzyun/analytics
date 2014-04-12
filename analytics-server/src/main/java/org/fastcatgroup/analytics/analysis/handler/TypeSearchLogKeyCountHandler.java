@@ -12,16 +12,16 @@ import org.fastcatgroup.analytics.util.Counter;
  * */
 public class TypeSearchLogKeyCountHandler extends CategoryLogHandler<TypeSearchLog> {
 
-	Map<String, Counter>[] typeCouterList;
+	Map<String, Counter>[] typeCounterList;
 	String[] typeList;
 
 	public TypeSearchLogKeyCountHandler(String categoryId, String[] typeList) {
 		super(categoryId);
 		logger.trace("##TypeSearchLogKeyCountHandler > {}", categoryId);
 		this.typeList = typeList;
-		typeCouterList = new Map[typeList.length];
+		typeCounterList = new Map[typeList.length];
 		for (int i = 0; i < typeList.length; i++) {
-			typeCouterList[i] = new HashMap<String, Counter>();
+			typeCounterList[i] = new HashMap<String, Counter>();
 		}
 	}
 
@@ -39,11 +39,11 @@ public class TypeSearchLogKeyCountHandler extends CategoryLogHandler<TypeSearchL
 					}
 					Counter counter = null;
 					
-					if(typeCouterList.length > i) {
-						counter = typeCouterList[i].get(type);
+					if(typeCounterList.length > i) {
+						counter = typeCounterList[i].get(type);
 						if (counter == null) {
 							counter = new Counter(logData.getCount());
-							typeCouterList[i].put(type, counter);
+							typeCounterList[i].put(type, counter);
 						} else {
 							counter.increment(logData.getCount());
 						}
@@ -59,11 +59,11 @@ public class TypeSearchLogKeyCountHandler extends CategoryLogHandler<TypeSearchL
 					}
 					Counter counter = null;
 					
-					if(typeCouterList.length > i) {
-						counter = typeCouterList[i].get(type);
+					if(typeCounterList.length > i) {
+						counter = typeCounterList[i].get(type);
 						if (counter == null) {
 							counter = new Counter(1);
-							typeCouterList[i].put(type, counter);
+							typeCounterList[i].put(type, counter);
 						} else {
 							counter.increment(logData.getCount());
 						}
@@ -77,7 +77,7 @@ public class TypeSearchLogKeyCountHandler extends CategoryLogHandler<TypeSearchL
 
 	@Override
 	public Object done() throws IOException {
-		return typeCouterList;
+		return typeCounterList;
 	}
 
 }

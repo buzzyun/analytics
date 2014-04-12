@@ -4,8 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
+import org.fastcatgroup.analytics.analysis.EntryParser;
 import org.fastcatgroup.analytics.analysis.util.AggregationResultFileWriter;
+import org.fastcatgroup.analytics.analysis.util.KeyCountRunEntry;
 import org.fastcatgroup.analytics.analysis.util.WeightedSortedRunFileMerger;
 
 public class MergeKeyCountProcessHandler extends ProcessHandler {
@@ -14,10 +15,10 @@ public class MergeKeyCountProcessHandler extends ProcessHandler {
 	String outFileName;
 	int fileLimitCount;
 	String encoding;
-	KeyCountRunEntryParser entryParser;
+	EntryParser<KeyCountRunEntry> entryParser;
 	File[] inFileList;
 	
-	public MergeKeyCountProcessHandler(File[] inFileList, File resultDir, String outFileName, String encoding, KeyCountRunEntryParser entryParser) {
+	public MergeKeyCountProcessHandler(File[] inFileList, File resultDir, String outFileName, String encoding, EntryParser<KeyCountRunEntry> entryParser) {
 		this.resultDir = resultDir;
 		this.outFileName = outFileName;
 		this.encoding = encoding;

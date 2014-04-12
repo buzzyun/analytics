@@ -1,9 +1,6 @@
 package org.fastcatgroup.analytics.analysis.calculator;
 
-import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.KEY_COUNT_EMPTY_FILENAME;
-import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.KEY_COUNT_EMPTY_RANK_FILENAME;
-import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.KEY_COUNT_FILENAME;
-import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.KEY_COUNT_RANK_FILENAME;
+import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.CLICK_RAW_FILENAME;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,15 +8,19 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.fastcatgroup.analytics.analysis.AbstractLogAggregator;
+import org.fastcatgroup.analytics.analysis.EntryParser;
+import org.fastcatgroup.analytics.analysis.KeyCountLogAggregator;
 import org.fastcatgroup.analytics.analysis.NullLogHandler;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
-import org.fastcatgroup.analytics.analysis.handler.KeyCountLogSortHandler;
-import org.fastcatgroup.analytics.analysis.handler.KeyCountProcessHandler;
-import org.fastcatgroup.analytics.analysis.handler.MergeKeyCountProcessHandler;
+import org.fastcatgroup.analytics.analysis.handler.MergeClickTypeCountProcessHandler;
 import org.fastcatgroup.analytics.analysis.handler.ProcessHandler;
-import org.fastcatgroup.analytics.analysis.handler.UpdateSearchHitHandler;
+import org.fastcatgroup.analytics.analysis.handler.UpdateClickKeywordTargetTypeCountHandler;
+import org.fastcatgroup.analytics.analysis.handler.UpdateClickKeywordTypeCountHandler;
+import org.fastcatgroup.analytics.analysis.handler.UpdateClickTypeCountHandler;
 import org.fastcatgroup.analytics.analysis.log.ClickLog;
 import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
+import org.fastcatgroup.analytics.analysis.util.KeyCountRunEntry;
 
 /**
  * 클릭로그 통계계산.
@@ -35,83 +36,76 @@ public class MonthlyClickKeywordHitCalculator extends Calculator<ClickLog> {
 	
 	@Override
 	protected CategoryProcess<ClickLog> newCategoryProcess(String categoryId){
-		String encoding = SearchStatisticsProperties.encoding;
 		
+		int minimumHitCount = 0;
 		
-		File workingDir = new File(new File(SearchStatisticsProperties.getMonthDataDir(baseDir, calendar), siteId), categoryId);
-		
-		if(!workingDir.exists()) {
-			try {
-				FileUtils.forceMkdir(workingDir);
-			} catch (IOException ignore) { }
-		}
-		
-		String timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.MONTH);
-		int runKeySize = SearchStatisticsProperties.runKeySize;
-		
-		//logger.debug("daily calendar : {}", new java.text.SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()));
-
-		//
-		//TODO calendar의 1일부터 calendar까지.
-		//
-		int diff = 0; //int diff = SearchStatisticsProperties.getDateDiff(prevCalendar, calendar);
-		
-		File[] keyCountFiles = new File[diff];
-		File[] keyEmptyFiles = new File[diff];
-		Calendar dailyCalendar = (Calendar) calendar.clone();
-		for(int inx=0;inx < diff; inx++) {
-			File timeDir = SearchStatisticsProperties.getDayDataDir(baseDir, dailyCalendar);
-			keyCountFiles[inx] = new File(new File(new File( timeDir, siteId), categoryId), KEY_COUNT_FILENAME);
-			keyEmptyFiles[inx] = new File(new File(new File( timeDir, siteId), categoryId), KEY_COUNT_EMPTY_FILENAME);
-			dailyCalendar.add(Calendar.DAY_OF_MONTH, -1);
-		}
-		
-		String dateFrom = SearchStatisticsProperties.getTimeId(dailyCalendar, Calendar.DAY_OF_MONTH);
-		String dateTo = SearchStatisticsProperties.getTimeId(calendar, Calendar.DAY_OF_MONTH);
-		
-		//1달치의 일자별 key-count log들을 머징한다.
 		CategoryProcess<ClickLog> categoryProcess = new CategoryProcess<ClickLog>(categoryId);
-		KeyCountRunEntryParser entryParser = new KeyCountRunEntryParser();
-		
-		logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
 		
 		new NullLogHandler<ClickLog>(categoryId).attachLogHandlerTo(categoryProcess);
+			
+		if(categoryId.equals("_root")) {
 		
-		ProcessHandler mergeKeyCount = new MergeKeyCountProcessHandler(keyCountFiles, workingDir, KEY_COUNT_FILENAME, encoding, entryParser).attachProcessTo(categoryProcess);
-		
-		mergeKeyCount = new MergeKeyCountProcessHandler(keyEmptyFiles, workingDir, KEY_COUNT_EMPTY_FILENAME, encoding, entryParser).appendTo(mergeKeyCount);
-		
-		ProcessHandler hitCounter = new KeyCountProcessHandler(siteId,
-				categoryId, workingDir, KEY_COUNT_FILENAME, dateFrom, dateTo,
-				encoding).appendTo(mergeKeyCount);
-		
-		/* 0. 갯수를 db로 저장한다. */
-		ProcessHandler updateSearchHitHandler = new UpdateSearchHitHandler(siteId, categoryId, timeId).appendTo(hitCounter);
-		
-		/* 1. count로 정렬하여 key-count-rank.log로 저장. */
-		ProcessHandler logSort = new KeyCountLogSortHandler(workingDir, KEY_COUNT_FILENAME, KEY_COUNT_RANK_FILENAME, encoding, runKeySize, entryParser).appendTo(updateSearchHitHandler);
-		
-		//결과없음 검색순위 정렬
-		logSort = new KeyCountLogSortHandler(workingDir, KEY_COUNT_EMPTY_FILENAME, KEY_COUNT_EMPTY_RANK_FILENAME, encoding, runKeySize, entryParser).appendTo(logSort);
-		
-		//카테고리가 _root이면 10000개, 나머지는 100개씩.
-		if(categoryId.equals("_root")){
-			topCount = 10000;
-		}else{
-			topCount = 100;
+			String encoding = SearchStatisticsProperties.encoding;
+			
+			File workingDir = new File(SearchStatisticsProperties.getDayDataDir(baseDir, calendar), siteId);
+			
+			if(!workingDir.exists()) {
+				try {
+					FileUtils.forceMkdir(workingDir);
+				} catch (IOException ignore) { }
+			}
+			
+			String timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DAY_OF_MONTH);
+			int runKeySize = SearchStatisticsProperties.runKeySize;
+			
+			//
+			//TODO calendar의 1일부터 calendar까지.
+			//1일부터 현재일자 (DAY_OF_MONTH) 까지.
+			int diff = calendar.get(Calendar.DAY_OF_MONTH);
+			
+			File[] clickLogFiles = new File[diff];
+			Calendar dailyCalendar = (Calendar) calendar.clone();
+			for(int inx=0;inx < diff; inx++) {
+				File timeDir = SearchStatisticsProperties.getDayDataDir(baseDir, dailyCalendar);
+				clickLogFiles[inx] = new File(new File( timeDir, siteId), CLICK_RAW_FILENAME);
+				dailyCalendar.add(Calendar.DAY_OF_MONTH, -1);
+			}
+			
+//			String dateFrom = SearchStatisticsProperties.getTimeId(dailyCalendar, Calendar.DAY_OF_MONTH);
+//			String dateTo = SearchStatisticsProperties.getTimeId(calendar, Calendar.DAY_OF_MONTH);
+			
+			
+			//1달치의 일자별 click-row log들을 머징한다.
+			EntryParser<KeyCountRunEntry> clickTypeParser = new KeyCountRunEntryParser();
+			
+			AbstractLogAggregator<ClickLog> clickTypeLogAggregator = new KeyCountLogAggregator<ClickLog>(workingDir, "run_click_type.log", runKeySize, encoding, minimumHitCount, clickTypeParser);
+			
+			logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
+			
+			File file = new File(workingDir, "run_click_type.log");
+			
+			ProcessHandler mergeKeyCount = new MergeClickTypeCountProcessHandler(
+					clickLogFiles, encoding, clickTypeLogAggregator,
+					MergeClickTypeCountProcessHandler.RUN_CASE_CLICK).attachProcessTo(categoryProcess);
+			ProcessHandler updateClickTypeCountHandler = new UpdateClickTypeCountHandler(siteId, timeId, file, encoding).appendTo(mergeKeyCount);
+			
+			file.delete();
+			clickTypeParser = new KeyCountRunEntryParser(new int[]{0, 1}, 2 );
+			clickTypeLogAggregator = new KeyCountLogAggregator<ClickLog>(workingDir, "run_click_type.log", runKeySize, encoding, minimumHitCount, clickTypeParser);
+			mergeKeyCount = new MergeClickTypeCountProcessHandler(
+					clickLogFiles, encoding, clickTypeLogAggregator,
+					MergeClickTypeCountProcessHandler.RUN_CASE_CLICK_KEYWORD).appendTo(updateClickTypeCountHandler);
+			updateClickTypeCountHandler = new UpdateClickKeywordTypeCountHandler(siteId, timeId, file, encoding).appendTo(mergeKeyCount);
+			
+			
+			file.delete();
+			clickTypeParser = new KeyCountRunEntryParser(new int[]{0, 1, 2}, 3 );
+			clickTypeLogAggregator = new KeyCountLogAggregator<ClickLog>(workingDir, "run_click_type.log", runKeySize, encoding, minimumHitCount, clickTypeParser);
+			mergeKeyCount = new MergeClickTypeCountProcessHandler(
+					clickLogFiles, encoding, clickTypeLogAggregator,
+					MergeClickTypeCountProcessHandler.RUN_CASE_CLICK_KEYWORD_TARGET).appendTo(updateClickTypeCountHandler);
+			updateClickTypeCountHandler = new UpdateClickKeywordTargetTypeCountHandler(siteId, timeId, file, encoding).appendTo(mergeKeyCount);
 		}
-		
-		//키워드별 count 를 바로 저장한다.
-//		new UpdateKeywordHitHandler(siteId, categoryId, timeId, rankLogFile, topCount, encoding, entryParser).appendTo(logSort);
-//		
-//		ProcessHandler rankDiff = new KeywordRankDiffHandler(rankLogFile, compareRankLogFile, topCount, encoding, entryParser).appendTo(logSort);
-//		
-//		/* 3. 구해진 인기키워드를 저장한다. */
-//		ProcessHandler popularKeywordResultHandler = new PopularKeywordResultHandler(popularKeywordLogFile, encoding).appendTo(rankDiff);
-		
-		//결과없음 순위결정
-//		new UpdateEmptyKeywordHandler(siteId, categoryId, timeId).appendTo(popularKeywordResultHandler);
-		
 		return categoryProcess;
 	}
 	

@@ -26,7 +26,11 @@ public class WeightedSortedRunFileMerger extends SortedRunFileMerger {
 		for (int i = 0; i < fileList.length; i++) {
 			File f = fileList[i];
 			if (f.exists()) {
-				WeightedKeyCountRunEntryReader r = new WeightedKeyCountRunEntryReader(f, encoding, weightList[i], entryParser);
+				float weight = 1;
+				if(weightList!=null) {
+					weight = weightList[i];
+				}
+				WeightedKeyCountRunEntryReader r = new WeightedKeyCountRunEntryReader(f, encoding, weight, entryParser);
 				r.next();
 				list.add(r);
 			}

@@ -13,7 +13,7 @@ public interface ClickKeywordTargetHitMapper extends AnalyticsMapper {
 	
 	
 	public int updateClear(@Param("siteId") String siteId,
-			@Param("timeId") String timeId, @Param("keyword") String keyword) throws Exception;
+			@Param("timeId") String timeId, @Param("keyword") String keyword, @Param("target") String target) throws Exception;
 	
 	public int putEntry(@Param("siteId") String siteId,
 			@Param("timeId") String timeId, @Param("keyword") String keyword, 

@@ -44,7 +44,6 @@
 	
 	<delete id="updateClear" parameterType="map">
 		delete from ${siteId}_click_target_hit_keyword
-		where 
 		<where>
 			timeId=#{timeId}
 			and keyword=#{keyword}

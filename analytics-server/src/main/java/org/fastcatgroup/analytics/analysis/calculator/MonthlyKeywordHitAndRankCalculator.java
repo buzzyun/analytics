@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.fastcatgroup.analytics.analysis.EntryParser;
 import org.fastcatgroup.analytics.analysis.NullLogHandler;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.handler.KeyCountLogSortHandler;
@@ -20,6 +21,7 @@ import org.fastcatgroup.analytics.analysis.handler.UpdateKeywordHitHandler;
 import org.fastcatgroup.analytics.analysis.handler.UpdateSearchHitHandler;
 import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
+import org.fastcatgroup.analytics.analysis.util.KeyCountRunEntry;
 
 import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.*;
 
@@ -74,7 +76,7 @@ public class MonthlyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		
 		//1달치의 일자별 key-count log들을 머징한다.
 		CategoryProcess<SearchLog> categoryProcess = new CategoryProcess<SearchLog>(categoryId);
-		KeyCountRunEntryParser entryParser = new KeyCountRunEntryParser();
+		EntryParser<KeyCountRunEntry> entryParser = new KeyCountRunEntryParser();
 		
 		logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
 		

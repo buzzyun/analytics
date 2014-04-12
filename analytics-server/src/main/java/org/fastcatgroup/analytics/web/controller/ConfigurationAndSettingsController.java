@@ -163,7 +163,7 @@ public class ConfigurationAndSettingsController extends AbstractController {
 		
 		if("update".equals(mode)) {
 			categoryList.clear();
-			categoryList.add(new CategoryConfig("_root","_root"));
+			categoryList.add(new CategoryConfig("_root","ALL"));
 			int count = Integer.parseInt(request.getParameter("count"));
 			for (int inx = 1; inx <= count; inx++) {
 				String categoryIdGet = request.getParameter("categoryId"+inx);

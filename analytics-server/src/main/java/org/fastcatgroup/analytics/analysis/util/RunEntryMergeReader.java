@@ -36,7 +36,7 @@ public class RunEntryMergeReader<E extends RunEntry> {
 			int idx = heap[1];
 			entry = readerList.get(idx).entry();
 
-			// logger.debug("## check {} : {}", entry, entryOld);
+			 //logger.debug("## check {} / {} : {}", idx, entry, entryOld);
 
 			if (entry == null) {
 				if (entryOld == null) {

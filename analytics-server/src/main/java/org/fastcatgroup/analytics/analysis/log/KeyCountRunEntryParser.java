@@ -4,6 +4,18 @@ import org.fastcatgroup.analytics.analysis.EntryParser;
 import org.fastcatgroup.analytics.analysis.util.KeyCountRunEntry;
 
 public class KeyCountRunEntryParser implements EntryParser<KeyCountRunEntry> {
+	
+	int[] keyIndex;
+	int countIndex;
+	
+	public KeyCountRunEntryParser() {
+		this(new int[] {0}, 1);
+	}
+	
+	public KeyCountRunEntryParser(int[] keyIndex, int countIndex) {
+		this.keyIndex = keyIndex;
+		this.countIndex = countIndex;
+	}
 
 	@Override
 	public KeyCountRunEntry parse(String line) {
@@ -11,8 +23,17 @@ public class KeyCountRunEntryParser implements EntryParser<KeyCountRunEntry> {
 		String[] el = line.split("\t");
 		if (el.length >= 2) {
 			try {
-//				logger.debug("KeyCount parsed {}, {}", el[0], el[1]);
-				return new KeyCountRunEntry(line, el[0], Integer.parseInt(el[1]));
+				//logger.debug("KeyCount parsed {}, {}", el[0], el[1]);
+				
+				String key = "";
+				for(int inx=0;inx<keyIndex.length;inx++) {
+					if(inx > 0) {
+						key+="\t";
+					}
+					key+=el[inx];
+				}
+				
+				return new KeyCountRunEntry(line, key, Integer.parseInt(el[countIndex]));
 			} catch (Exception e) {
 				logger.error("", e);
 			}

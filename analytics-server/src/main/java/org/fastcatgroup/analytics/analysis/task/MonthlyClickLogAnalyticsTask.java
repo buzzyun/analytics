@@ -1,0 +1,39 @@
+package org.fastcatgroup.analytics.analysis.task;
+
+import java.io.File;
+import java.util.Calendar;
+import java.util.List;
+
+import org.fastcatgroup.analytics.analysis.calculator.Calculator;
+import org.fastcatgroup.analytics.analysis.calculator.MonthlyClickKeywordHitCalculator;
+import org.fastcatgroup.analytics.analysis.log.ClickLog;
+import org.fastcatgroup.analytics.analysis.schedule.Schedule;
+
+/**
+ * 월별 클릭로그 계산 task
+ * 
+ * */
+public class MonthlyClickLogAnalyticsTask extends AnalyticsTask<ClickLog> {
+
+	private static final long serialVersionUID = 4212969890908932929L;
+
+	public MonthlyClickLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
+		super(siteId, categoryIdList, schedule, priority);
+	}
+
+	@Override
+	protected void prepare(Calendar calendar) {
+		// baseDir : statistics/search/date/Y####/M##/data/{siteId} 경로
+		File baseDir = environment.filePaths().getStatisticsRoot().file("search", "date");
+		
+		//월의 최초로 되돌린다.
+		calendar.add(Calendar.MONTH, 1);
+		calendar.add(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) * -1);
+		Calendar prevCalendar = (Calendar) calendar.clone();
+		prevCalendar.add(Calendar.MONTH, -1);
+		
+		// calc를 카테고리별로 모두 만든다.
+		Calculator<ClickLog> popularKeywordCalculator = new MonthlyClickKeywordHitCalculator("Monthly click log calculator", calendar, baseDir, siteId, categoryIdList);
+		addCalculator(popularKeywordCalculator);
+	}
+}

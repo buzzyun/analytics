@@ -19,12 +19,16 @@ import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig;
 import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig;
 import org.fastcatgroup.analytics.db.mapper.AnalyticsMapper;
+import org.fastcatgroup.analytics.db.mapper.ClickHitMapper;
+import org.fastcatgroup.analytics.db.mapper.ClickKeywordHitMapper;
+import org.fastcatgroup.analytics.db.mapper.ClickKeywordTargetHitMapper;
 import org.fastcatgroup.analytics.db.mapper.RelateKeywordMapper;
 import org.fastcatgroup.analytics.db.mapper.RelateKeywordValueMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchHitMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchKeywordEmptyMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchKeywordHitMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchKeywordRankMapper;
+import org.fastcatgroup.analytics.db.mapper.SearchPathHitMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchTypeHitMapper;
 import org.fastcatgroup.analytics.db.mapper.UserAccountMapper;
 import org.fastcatgroup.analytics.db.vo.UserAccountVO;
@@ -47,6 +51,10 @@ public class AnalyticsDBService extends AbstractDBService {
 		, SearchKeywordRankMapper.class
 		, SearchKeywordEmptyMapper.class
 		, UserAccountMapper.class
+		, ClickHitMapper.class
+		, ClickKeywordHitMapper.class
+		, ClickKeywordTargetHitMapper.class
+		, SearchPathHitMapper.class
 	};
 
 	public AnalyticsDBService(Environment environment, Settings settings, ServiceManager serviceManager) {

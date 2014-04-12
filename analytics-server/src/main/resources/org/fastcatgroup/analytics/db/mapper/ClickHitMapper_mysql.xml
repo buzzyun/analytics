@@ -40,6 +40,21 @@
 		</where>
 	</select>
 	
+	<select id="getTypeHit" parameterType="map" resultType="int">
+		select hit from ${siteId}_click_hit 
+		<where>
+			timeId=#{timeId}
+			and clickType=#{clickType} 
+		</where>
+	</select>
+	
+	<select id="getHit" parameterType="map" resultType="int">
+		select sum(hit) from ${siteId}_click_hit 
+		<where>
+			timeId=#{timeId}
+		</where>
+	</select>
+	
 	<insert id="putEntry" parameterType="map">
 		insert into ${siteId}_click_hit 
 		(timeId, clickType, hit) values (#{timeId}, #{clickType}, #{hit})
@@ -60,18 +75,5 @@
 			and clickType=#{clickType}
 		</where>
 	</delete>
-	
-	<select id="getEntryListBetween" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.ClickHitVO">
-		select * from ${siteId}_click_hit
-		<where>
-			<if test="from != null and from != ''">
-				timeId &gt;= #{from} 
-			</if>
-			<if test="to != null and to !=''">
-				and timeId &lt;= #{to}
-			</if>
-		</where>
-		order by timeId asc
-	</select>
 	
 </mapper>

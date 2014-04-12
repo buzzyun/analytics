@@ -1,8 +1,11 @@
-<%@page import="java.util.Random"%>
+<%@page import="java.util.Random, java.util.*" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
+List<String> clickTypeList = (List<String>) request.getAttribute("clickTypeList");
+List<Integer> searchPvList = (List<Integer>) request.getAttribute("searchPvList");
+List<Integer> hitList = (List<Integer>) request.getAttribute("hitList");
 String timeText = (String) request.getAttribute("timeText");
 if(timeText == null ) {
 	timeText = ""; 
@@ -297,7 +300,14 @@ $(document).ready(function() {
 					</div>
 				</div>
 				
-				
+				<%
+					for(int i=0;i<hitList.size(); i++){
+						Integer pv = searchPvList.get(i);
+						Integer a = hitList.get(i);
+						out.println(pv + " : " + a);
+						out.println("<br>");
+					}
+				%>
 				<div class="row">
 					<div class="col-md-12">
 						<div class="widget box">
@@ -310,7 +320,7 @@ $(document).ready(function() {
 							<div class="divider"></div>
 							<div class="widget-content">
 								<ul class="stats">
-									<li><strong>172,055</strong> <small>Search Count</small></li>
+									<li><strong>172,055</strong> <small>Search PV</small></li>
 									<li class="text-success"><strong>86,372</strong> <small>Click-through Count</small></li>
 									<li class="text-primary"><strong>50.20%</strong> <small>Click-through Rate</small></li>
 								</ul>

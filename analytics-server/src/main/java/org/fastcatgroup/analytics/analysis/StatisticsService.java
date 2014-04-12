@@ -263,6 +263,15 @@ public class StatisticsService extends AbstractService {
 
 	}
 
+	public void addClickLog(String siteId, String... entries) {
+		// 현재 type은 사용되지 않음.
+		SiteSearchLogStatisticsModule module = siteStatisticsModuleMap.get(siteId);
+		if (module != null) {
+			module.addClickLog(entries);
+		}
+
+	}
+	
 	public void clearPopularKeywordList(){
 		popularKeywordMap.clear();
 	}

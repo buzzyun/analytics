@@ -46,6 +46,7 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 	RollingRawLogger realtimeRawLogger;
 	DailyRawLogger dailyRawLogger;
 	DailyRawLogger dailyTypeRawLogger;
+	DailyRawLogger dailyClickRawLogger;
 	StatisticsService statisticsService;
 	List<String> categoryIdList;
 	
@@ -85,10 +86,12 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 
 		String logFileName = RAW_LOG_FILENAME;
 		String typeLogFileName = TYPE_RAW_FILENAME;
+		String clickLogFileName = CLICK_RAW_FILENAME;
 		
 		realtimeRawLogger = new RollingRawLogger(realtimeKeywordBaseDir, siteId, logFileName);
 		dailyRawLogger = new DailyRawLogger(SearchStatisticsProperties.getCalendar(), dateKeywordBaseDir, siteId, logFileName);
 		dailyTypeRawLogger = new DailyRawLogger(SearchStatisticsProperties.getCalendar(), dateKeywordBaseDir, siteId, typeLogFileName);
+		dailyClickRawLogger = new DailyRawLogger(SearchStatisticsProperties.getCalendar(), dateKeywordBaseDir, siteId, clickLogFileName);
 		
 		Calendar cal = SearchStatisticsProperties.getCalendar();
 		cal.set(Calendar.MINUTE, 0);
@@ -178,6 +181,19 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 
 	@Override
 	protected boolean doUnload() throws ModuleException {
+		if(realtimeRawLogger != null) {
+			realtimeRawLogger.close();
+		}
+		if(dailyRawLogger != null) {
+			dailyRawLogger.close();
+		}
+		if(dailyTypeRawLogger != null) {
+			dailyTypeRawLogger.close();
+		}
+		if(dailyClickRawLogger != null) {
+			dailyClickRawLogger.close();
+		}
+		
 		realtimeTaskRunner.cancel();
 		dailyTaskRunner.cancel();
 		relateTaskRunner.cancel();
@@ -202,6 +218,9 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 	}
 	public void addTypeLog(String... data) {
 		dailyTypeRawLogger.log(data);
+	}
+	public void addClickLog(String... data) {
+		dailyClickRawLogger.log(data);
 	}
 
 	private File[] listCategoryDir(File dir) {

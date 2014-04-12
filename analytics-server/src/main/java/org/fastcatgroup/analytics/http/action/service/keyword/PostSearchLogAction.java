@@ -52,6 +52,7 @@ public class PostSearchLogAction extends ServiceAction {
 			String prevKeyword = request.getParameter("prev");
 			String resultCount = request.getParameter("resultCount");
 			String reponseTime = request.getParameter("resptime");
+			String serviceId = request.getParameter("service");
 			
 			//keyword가 null이거나 20보다 크면 버린다.
 			//tab글자는 space로 치환한다.
@@ -75,9 +76,14 @@ public class PostSearchLogAction extends ServiceAction {
 			if(reponseTime == null || reponseTime.length() == 0){
 				reponseTime = "0";
 			}
-			service.addLog(type, siteId, categoryId, keyword, prevKeyword, resultCount, reponseTime);
+			if(serviceId == null || serviceId.length() == 0){
+				serviceId = "-";
+			}
+			service.addLog(type, siteId, categoryId, keyword, prevKeyword, resultCount, reponseTime, serviceId);
 
 			/* 2. type_raw.log */
+//			environment.settingManager().getSystemSettings();
+			//TODO 카테고리 리스트를 설정에 따라 변동될수 있도록 한다.
 			String typeCategory = request.getParameter("category");
 			String typePage = request.getParameter("page");
 			String typeSort = request.getParameter("sort");

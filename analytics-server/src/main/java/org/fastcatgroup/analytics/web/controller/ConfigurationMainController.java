@@ -43,7 +43,7 @@ public class ConfigurationMainController extends AbstractController {
 			
 			calendar1 = SearchStatisticsProperties.parseDatetimeString(dateArr[0], true);
 			
-			if(dateArr.length > 0) {
+			if(dateArr.length > 1) {
 				calendar2 = SearchStatisticsProperties.parseDatetimeString(dateArr[1], false);
 			} else {
 				calendar2 = calendar1;

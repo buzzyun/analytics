@@ -326,6 +326,18 @@ public class SearchStatisticsProperties {
 		return null;
 	}
 	
+	public static void setTimeFrom(Calendar c) {
+		c.set(Calendar.HOUR_OF_DAY, 0);
+		c.set(Calendar.MINUTE, 0);
+		c.set(Calendar.SECOND, 0);
+	}
+	
+	public static void setTimeTo(Calendar c) {
+		c.set(Calendar.HOUR_OF_DAY, 23);
+		c.set(Calendar.MINUTE, 59);
+		c.set(Calendar.SECOND, 59);
+	}
+	
 	public static Calendar getFirstDayOfWeek(Calendar calendar) {
 		Calendar ret = (Calendar) calendar.clone();
 		ret.add(Calendar.DAY_OF_MONTH, -((ret.get(Calendar.DAY_OF_WEEK) + 5) % 7));

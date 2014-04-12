@@ -1,7 +1,9 @@
 <%@page import="java.util.*"%>
-<%@ page import="org.fastcatgroup.analytics.db.vo.*" %>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
+<%@page import="org.fastcatgroup.analytics.db.vo.*" %>
+<%@page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@page import="java.text.DecimalFormat" %>
+<%@page import="org.fastcatgroup.analytics.analysis.SearchStatisticsProperties" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
 String categoryId = (String) request.getAttribute("categoryId");
@@ -10,7 +12,7 @@ String typeId = (String) request.getAttribute("typeId");
 String timeText = (String) request.getAttribute("timeText");
 String timeViewType = (String) request.getAttribute("timeViewType");
 String[] typeArray = (String[]) request.getAttribute("typeArray");
-
+DecimalFormat format = new DecimalFormat("#,###");
 %>
 <c:set var="ROOT_PATH" value="../.." />
 
@@ -72,28 +74,206 @@ $(document).ready(function() {
 	%>
 	
 	
-	var pickmenup_options = {
+	var pickmeupOptions = {
 		calendars: 3,
-		mode: 'range',
-		format: 'Y.m.d',
+		mode: "range",
+		format: "Y.m.d",
 		first_day: 1,
-		position: 'bottom',
-		hide_on_select	: false
+		position: "bottom",
+		hide_on_select	: true,
+		change : function(date) {
+			var options = $(this).data("pickmeup-options");
+			var timeViewType = options.timeViewType;
+			var dateStr1 = "";
+			var dateStr2 = "";
+			
+			if(timeViewType == "H") {
+				date = /([0-9]{4}[.][0-9]{2}[.][0-9]{2})/.exec(date)[0];
+				dateStr1 = dateStr2 = date;
+			} else {
+				dateStr1 = date[0];
+				dateStr2 = date[1];
+			}
+			var dateObj1 = options.parseDate(dateStr1);
+			var dateObj2 = options.parseDate(dateStr2);
+			
+			var prevDate = $(this).attr("prev-date");
+			
+			if(timeViewType == "H") {
+				console.log(dateStr1+":"+dateStr2);
+			} else if(timeViewType == "D") {
+				console.log(dateStr1+":"+dateStr2);
+				if(dateStr1 == dateStr2) {
+					if(prevDate) {
+						$(this).attr("prev-date",null);
+					} else {
+						$(this).attr("prev-date",dateStr1);
+					};
+				} else {
+					$(this).attr("prev-date",null);
+				};
+			} else if(timeViewType == "W") {
+				console.log(dateStr1+":"+dateStr2);
+				if(dateStr1 == dateStr2) {
+					dateObj1 = options.firstDayOfWeek(dateObj1);
+					dateObj2 = options.cloneDate(dateObj1);
+					dateObj2.setDate( dateObj2.getDate() + 6 );
+					dateStr1 = options.formatDate(dateObj1);
+					dateStr2 = options.formatDate(dateObj2);
+					if(prevDate) {
+						$(this).attr("prev-date",null);
+					} else {
+						$(this).attr("prev-date",dateStr1);
+					};
+				} else {
+					if(prevDate == dateStr1) {
+						dateObj2 = options.firstDayOfWeek(dateObj2);
+					} else if(prevDate == dateStr2) {
+						dateObj1 = options.firstDayOfWeek(dateObj1);
+						dateObj2 = options.parseDate(prevDate);
+					}
+					
+					dateObj2.setDate( dateObj2.getDate() + 6 );
+					dateStr1 = options.formatDate(dateObj1);
+					dateStr2 = options.formatDate(dateObj2);
+					$(this).attr("prev-date",null);
+				};
+			} else if(timeViewType == "M") {
+				console.log(dateStr1+":"+dateStr2);
+				if(dateStr1 == dateStr2) {
+					dateObj1 = options.firstDayOfMonth(dateObj1);
+					dateObj2 = options.lastDayOfMonth(dateObj1);
+					dateStr1 = options.formatDate(dateObj1);
+					dateStr2 = options.formatDate(dateObj2);
+					if(prevDate) {
+						$(this).attr("prev-date",null);
+					} else {
+						$(this).attr("prev-date",dateStr1);
+					};
+				} else {
+					if(prevDate == dateStr1) {
+						dateObj2 = options.firstDayOfMonth(dateObj2);
+					} else if(prevDate == dateStr2) {
+						dateObj1 = options.firstDayOfMonth(dateObj1);
+						dateObj2 = options.parseDate(prevDate);
+					}
+					
+					dateObj2 = options.lastDayOfMonth(dateObj2);
+					dateStr1 = options.formatDate(dateObj1);
+					dateStr2 = options.formatDate(dateObj2);
+					$(this).attr("prev-date",null);
+				};
+				
+			} else if(timeViewType == "Y") {
+				console.log(dateStr1+":"+dateStr2);
+				if(dateStr1 == dateStr2) {
+					dateObj1 = options.firstDayOfYear(dateObj1);
+					dateObj2 = options.lastDayOfYear(dateObj1);
+					dateStr1 = options.formatDate(dateObj1);
+					dateStr2 = options.formatDate(dateObj2);
+					if(prevDate) {
+						$(this).attr("prev-date",null);
+					} else {
+						$(this).attr("prev-date",dateStr1);
+					};
+				} else {
+					if(prevDate == dateStr1) {
+						dateObj2 = options.firstDayOfYear(dateObj2);
+					} else if(prevDate == dateStr2) {
+						dateObj1 = options.firstDayOfYear(dateObj1);
+						dateObj2 = options.parseDate(prevDate);
+					}
+					
+					dateObj2 = options.lastDayOfYear(dateObj2);
+					dateStr1 = options.formatDate(dateObj1);
+					dateStr2 = options.formatDate(dateObj2);
+					$(this).attr("prev-date",null);
+				};
+			}
+			
+			console.log("PICKUP : "+dateStr1+" ~ "+dateStr2+" / "+$(this).attr("prev-date"));
+			if(timeViewType != "H") {
+				$(this).val(dateStr1+" - "+dateStr2);
+				$(this).pickmeup("set_date",new Array(dateStr1,dateStr2));
+			} else {
+				$(this).val(dateStr1);
+				$(this).pickmeup("set_date",dateStr1);
+			};
+		}, cloneDate:function(date) {
+			return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+		}, firstDayOfWeek:function(date) {
+			var newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+			newDate.setDate( newDate.getDate() - ( ( newDate.getDay() + 6 ) % 7 ) );
+			return newDate;
+		}, firstDayOfMonth:function(date) {
+			return new Date(date.getFullYear(), date.getMonth(), 1);
+		}, lastDayOfMonth:function(date) {
+			return new Date(date.getFullYear(), date.getMonth() + 1, 0);
+		}, firstDayOfYear:function(date) {
+			return new Date(date.getFullYear(), 0, 1);
+		}, lastDayOfYear:function(date) {
+			return new Date(date.getFullYear(), 11, 31);
+		}, parseDate:function(dateStr) {
+			if(!$.isArray(dateStr)) {
+				src = dateStr.split("."); src = dateStr.split(".");
+				return new Date(src[0], src[1] - 1, src[2]);
+			};
+		}, formatDate:function(dateObj, failValue) {
+			if(dateObj==null) {
+				dateObj = failValue;
+			}
+			var year = dateObj.getFullYear();
+			var month = (dateObj.getMonth() + 1);
+			var date = dateObj.getDate();
+			if(month < 10) { month = "0"+month; }
+			if(date < 10) { date = "0"+date; }
+			return year+"."+month+"."+date;
+		}, timeViewType:"${timeViewType}"
 	};
-	$("#timeText").pickmeup(pickmenup_options);
+	$("#timeText").pickmeup(pickmeupOptions);
 
 	$("#timeViewTypeList button").on("click", function(){
+		var timeElement = $("#timeText");
+		var options = timeElement.data("pickmeup-options");
+		
 		$(this).addClass("btn-primary");
 		$(this).removeClass("btn-default");
 		
 		$(this).siblings().addClass("btn-default");
 		$(this).siblings().removeClass("btn-primary");
 		
-		$("#timeViewTypeList input[name=timeViewType]").val($(this).text().charAt(0));
+		var timeViewType = $(this).text().charAt(0);
+		$(this).parents("div").find("input[name=timeViewType]").val(timeViewType);
+		options.timeViewType = timeViewType;
 		
-		//TODO 달력의 날짜를 확인하여, 주,월,년의 경우 시작/끝 날짜를 조정해준다.
+		var dates = timeElement.val().split(" - ");
+		dates[0] = options.parseDate(dates[0]);
+		if(timeViewType != "H") {
+			dates[1] = dates[1]?options.parseDate(dates[1]):dates[0];
+		}
 		
-		
+		if(timeViewType == "H") {
+			timeElement.val(options.formatDate(dates[0]));
+			options.mode="single";
+		} else {
+			var fdate = null;
+			if(timeViewType == "D") {
+				fdate = dates[0];
+				tdate = dates[1];
+			} else if(timeViewType == "W") {
+				fdate = options.firstDayOfWeek(dates[0]);
+				tdate = options.firstDayOfWeek(dates[1]);
+				tdate.setDate(tdate.getDate() + 6);
+			} else if(timeViewType == "M") {
+				fdate = options.firstDayOfMonth(dates[0]);
+				tdate = options.lastDayOfMonth(dates[1]);
+			} else if(timeViewType == "Y") {
+				fdate = options.firstDayOfYear(dates[0]);
+				tdate = options.lastDayOfYear(dates[1]);
+			}
+			timeElement.val(options.formatDate(fdate)+" - "+options.formatDate(tdate));
+			options.mode="range";
+		};
 	});
 });
 
@@ -190,6 +370,7 @@ function showRatioTab(typeId){
 							<div class="col-md-12">
 								<div id="chart_category_rate" class="chart"></div>
 								<div>
+									<br/>
 									<table class="table table-striped table-bordered table-condensed">
 										<thead>
 											<tr>
@@ -208,7 +389,7 @@ function showRatioTab(typeId){
 											<tr>
 											<td><%=i + 1 %></td>
 											<td><%=vo.getDtype() %></td>
-											<td><%=vo.getHit() %></td>
+											<td><%=format.format(vo.getHit()) %></td>
 											<td><%=String.format("%.1f", ratio) %>%</td>
 											</tr>
 											<%
@@ -217,7 +398,7 @@ function showRatioTab(typeId){
 											<tr>
 												<td>Summary</td>
 												<td></td>
-												<td><%=totalCount %></td>
+												<td><%=format.format(totalCount) %></td>
 												<td>100.0%</td>
 											</tr>
 										</tbody>

@@ -77,7 +77,7 @@ public class SearchTypeController extends AbstractController {
 		
 		try {
 			SearchTypeHitMapper mapper = mapperSession.getMapper();
-			List<SearchTypeHitVO> list = mapper.getTypeCountListBetween(siteId, categoryId, typeId, timeFrom, timeTo);
+			List<SearchTypeHitVO> list = mapper.getTypeCountListBetween(siteId, categoryId, typeId, startTimeId, endTimeId);
 			
 			mav.addObject("categoryId", categoryId);
 			mav.addObject("timeText", timeText);

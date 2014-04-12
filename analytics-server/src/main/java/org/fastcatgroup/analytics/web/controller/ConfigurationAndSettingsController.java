@@ -84,12 +84,14 @@ public class ConfigurationAndSettingsController extends AbstractController {
 		SiteCategoryConfig currentSiteConfig = null;
 		
 		String currentSiteId = null;
+		String currentSiteName = "";
 		
 		if(siteId!=null && !"".equals(siteId)) {
 			for (int inx = 0; inx < siteList.size(); inx++) {
 				SiteCategoryConfig config = siteList.get(inx);
 				if(siteId.equals(config.getSiteId())) {
 					currentSiteId = config.getSiteId();
+					currentSiteName = config.getSiteName();
 					currentSiteConfig = config;
 					categoryList = currentSiteConfig.getCategoryList();
 				}
@@ -98,6 +100,7 @@ public class ConfigurationAndSettingsController extends AbstractController {
 			currentSiteConfig = siteList.get(0);
 			if(currentSiteConfig!=null) {
 				currentSiteId = currentSiteConfig.getSiteId();
+				currentSiteName = currentSiteConfig.getSiteName();
 				if(currentSiteConfig.getCategoryList()!=null) {
 					categoryList = currentSiteConfig.getCategoryList();
 				}
@@ -107,6 +110,7 @@ public class ConfigurationAndSettingsController extends AbstractController {
 		modelAndView.addObject("siteList", siteList);
 		modelAndView.addObject("siteId", siteId);
 		modelAndView.addObject("currentSiteId", currentSiteId);
+		modelAndView.addObject("currentSiteName", currentSiteName);
 		modelAndView.addObject("categoryList", categoryList);
 		return modelAndView;
 	}
@@ -158,23 +162,14 @@ public class ConfigurationAndSettingsController extends AbstractController {
 		ResponseWriter responseWriter = getDefaultResponseWriter(writer);
 		
 		if("update".equals(mode)) {
-			Pattern sitePattern = Pattern.compile("^categoryIdOrg([0-9]+)");
-			//모든 파라메터를 다 살펴보아야 한다.
-			Enumeration<String> paramNames = request.getParameterNames();
-			while(paramNames.hasMoreElements()) {
-				String paramKey = paramNames.nextElement();
-				Matcher matcher = sitePattern.matcher(paramKey);
-				if(matcher.find()) {
-					String number = matcher.group(1);
-					String categoryIdOrg = request.getParameter(paramKey);
-					String categoryIdGet = request.getParameter("categoryIdGet"+number);
-					String categoryNameGet = request.getParameter("categoryNameGet"+number);
-					for (int inx = 0; inx < categoryList.size(); inx++) {
-						if(categoryList.get(inx).getId().equals(categoryIdOrg)) {
-							categoryList.set(inx, new CategoryConfig(categoryIdGet, categoryNameGet));
-							break;
-						}
-					}
+			categoryList.clear();
+			categoryList.add(new CategoryConfig("_root","_root"));
+			int count = Integer.parseInt(request.getParameter("count"));
+			for (int inx = 1; inx <= count; inx++) {
+				String categoryIdGet = request.getParameter("categoryId"+inx);
+				String categoryNameGet = request.getParameter("categoryName"+inx);
+				if(categoryIdGet!=null && !"".equals(categoryIdGet)) {
+					categoryList.add(new CategoryConfig(categoryIdGet, categoryNameGet));
 				}
 			}
 			statisticsService.writeConfig();
@@ -201,7 +196,8 @@ public class ConfigurationAndSettingsController extends AbstractController {
 			}
 			statisticsService.writeConfig();
 		} else if("updateSite".equals(mode)) {
-			currentSiteConfig.setSiteId(siteId);
+			String siteIdNew = request.getParameter("siteIdNew");
+			currentSiteConfig.setSiteId(siteIdNew);
 			currentSiteConfig.setSiteName(siteName);
 			statisticsService.writeConfig();
 		} else if("addSite".equals(mode)) {

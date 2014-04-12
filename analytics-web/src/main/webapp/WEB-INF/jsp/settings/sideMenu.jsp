@@ -14,21 +14,21 @@
 		<!--=== Navigation ===-->
 		<ul id="nav">
 			<%
-				boolean lcatCurrent = "user".equals(lcat);
+				boolean lcatCurrent = "user".equals(mcat);
 			%>
 			<li class="<%=lcatCurrent ? "current" :"" %>">
 				<a href="<c:url value="/settings/index.html"/>"><i class="icon-user"></i> User Setting</a>
 			</li>
 			
 			<%
-				lcatCurrent = "".equals(lcat);
+				lcatCurrent = "configuration".equals(mcat);
 			%>
 			<li class="<%=lcatCurrent ? "current" :"" %>">
 				<a href="<c:url value="/settings/configuration.html"/>"><i class="icon-cog"></i> System Configuration</a>
 			</li>
 			
 			<%
-				lcatCurrent = "".equals(lcat);
+				lcatCurrent = "settings".equals(mcat);
 			%>
 			<li class="<%=lcatCurrent ? "current" :"" %>">
 				<a href="<c:url value="/settings/settings.html"/>"><i class="icon-list"></i> Site Settings</a>

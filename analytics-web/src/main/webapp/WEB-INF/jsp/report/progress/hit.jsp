@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="java.util.*" %>
+<%@ page import="java.text.DecimalFormat" %>
 <%@ page import="org.fastcatgroup.analytics.db.vo.*" %>
 <%@ page import="org.fastcatgroup.analytics.analysis.SearchStatisticsProperties" %>
 <%
@@ -14,6 +15,7 @@ String timeViewType = (String) request.getAttribute("timeViewType");
 if(keyword == null){
 	keyword = "";
 }
+DecimalFormat format = new DecimalFormat("#,###");
 %>
 <c:set var="ROOT_PATH" value="../.." />
 
@@ -429,9 +431,9 @@ $(document).ready(function() {
 										%>
 										<tr>
 											<td><%=vo.getTimeId() %></td>
-											<td><%=vo.getHit() %></td>
-											<td><%=vo.getMaxTime() %> ms</td>
-											<td><%=vo.getAvgTime() %> ms</td>
+											<td><%=format.format(vo.getHit()) %></td>
+											<td><%=format.format(vo.getMaxTime()) %> ms</td>
+											<td><%=format.format(vo.getAvgTime()) %> ms</td>
 										</tr>
 										<%
 											}

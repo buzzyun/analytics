@@ -25,53 +25,123 @@ $(document).ready(function(){
 	$("form#category-form span.icon-minus-sign").click(function() {
 		var categoryId = /btn-remove-(.*)/.exec($(this).attr("id"))[1];
 		if(confirm("Category will remove. Are you OK?")) {
-			removeCategory(categoryId);
+			var form = $("form#category-form");
+			$.ajax({
+				url:"update-setting.html"
+				,type:"POST"
+				,data:{
+					mode:"remove"
+					,siteId:form[0].siteId.value
+					,categoryId:categoryId
+				}, dataType:"json",
+				success:function(response) {
+					if(response["success"] == "true") {
+						location.href = location.href;
+					} else {
+			 			noty({text: "update failed !", layout:"topRight", timeout: 5000});
+					}
+				}, fail:function(response){
+				}
+			});
 		}
 	});
+	
+	var addRowFunction = function(){
+		var pivotTr = $(this).parents("tr");
+		var trTemplate = $("#schema_template tr");
+		var newTr = trTemplate.clone();
+		var newIndex = new Date().getTime();
+		newTr.find("input, select, textarea").each(function() {
+			var name = $(this).attr("name");
+			var key = /^([a-zA-Z0-9_-]+)[0-9]+/.exec(name)[1];
+			$(this).attr("name", key + newIndex);
+		});
+		
+		if(pivotTr.find("input").length > 0) {
+			pivotTr.after(newTr);
+		} else {
+			tbody = pivotTr.parents("tbody");
+			pivotTr.after(newTr);
+			pivotTr.remove();
+		}
+		newTr.find("span.icon-plus-sign").parent("a.btn").click(addRowFunction);
+	};
+	
+	$("form#category-form span.icon-plus-sign").parent("a.btn").click(addRowFunction);
 });
 
 function showSiteTab(siteId){
 	location.href = "settings.html?siteId="+siteId;
 }
 function removeSite() {
-	var form = $("form#category-form");
-	$.ajax({
-		url:"update-setting.html"
-		,type:"POST"
-		,data:{
-			mode:"removeSite"
-			,siteId:form[0].siteId.value
-		}, dataType:"json",
-		success:function(response) {
-			if(response["success"] == "true") {
-				location.href = "settings.html";
-			} else {
-	 			noty({text: "update failed !", layout:"topRight", timeout: 5000});
-			}
-		}, fail:function(response){
+
+	if(confirm("DANGER! This site and category will remove. Are you OK ?")) {
+		if(confirm("Are you sure ?")) {
+			var form = $("form#category-form");
+			$.ajax({
+				url:"update-setting.html"
+				,type:"POST"
+				,data:{
+					mode:"removeSite"
+					,siteId:form[0].siteId.value
+				}, dataType:"json",
+				success:function(response) {
+					if(response["success"] == "true") {
+						location.href = "settings.html";
+					} else {
+			 			noty({text: "update failed !", layout:"topRight", timeout: 5000});
+					}
+				}, fail:function(response){
+				}
+			});
 		}
-	});
+	}
 }
-function removeCategory(categoryId) {
-	var form = $("form#category-form");
-	$.ajax({
-		url:"update-setting.html"
-		,type:"POST"
-		,data:{
-			mode:"remove"
-			,siteId:form[0].siteId.value
-			,categoryId:categoryId
-		}, dataType:"json",
-		success:function(response) {
-			if(response["success"] == "true") {
-				location.href = location.href;
-			} else {
-	 			noty({text: "update failed !", layout:"topRight", timeout: 5000});
+
+function updateCategory(formId, mode) {
+	var form = $("#"+formId);
+	var valid = false;
+	if(mode == "remove") { 
+		valid = true; 
+	} else {
+		valid = form.valid();
+	}
+	
+	var data = {};
+	var tr = form.find("table tr");
+	for(var inx = 0 ; inx < tr.length ; inx++) {
+		var input = $(tr[inx]).find("input");
+		for(var inx2 = 0; inx2 < input.length ; inx2++) {
+			var name = input[inx2].name;
+	 		var prefix = /([a-zA-Z_-]+)[0-9]+/.exec(name);
+			console.log("prefix:"+prefix);
+			if(prefix!=null && prefix.length > 0) {
+				name = prefix[1]+inx;
 			}
-		}, fail:function(response){
+			data[name] = input[inx2].value;
 		}
-	});
+		data["count"] = inx;
+	}
+	data["mode"] = mode;
+	data["siteId"] = form.find("input[name=siteId]").val();
+	
+	if(valid) {
+		$.ajax({
+			url:"update-setting.html",
+			type:"POST",
+			data:data, dataType:"json",
+			success:function(response) {
+				if(response["success"] == "true") {
+					location.href = location.href;
+				} else {
+		 			noty({text: "update failed !", layout:"topRight", timeout: 5000});
+				}
+			}, fail:function(response){
+			}
+		});
+	}
 }
+
 function update(formId, mode) {
 	var form = $("#"+formId);
 	var valid = false;
@@ -95,7 +165,11 @@ function update(formId, mode) {
 			data:data, dataType:"json",
 			success:function(response) {
 				if(response["success"] == "true") {
-					location.href = location.href;
+					if(mode=="updateSite") {
+						location.href = "settings.html?siteId="+data["siteIdNew"];
+					} else {
+						location.href = location.href;
+					}
 				} else {
 		 			noty({text: "update failed !", layout:"topRight", timeout: 5000});
 				}
@@ -153,11 +227,11 @@ function update(formId, mode) {
 									<div class="widget-content no-padding">
 										<div class="dataTables_header clearfix">
 											<div class="input-group col-md-12">
-												<button class="btn btn-sm" data-toggle="modal" data-target="#categoryNew" data-backdrop="static">
-												 <span class="icon-plus"></span> New Category
-												 </button>
-												<button class="btn btn-sm" onclick="update('category-form','update')">
+												<button class="btn btn-sm" onclick="updateCategory('category-form','update')">
 												 <span class="icon-ok"></span> Apply Category
+												 </button>
+												<button class="btn btn-sm" data-toggle="modal" data-target="#siteEdit" data-backdrop="static">
+												 <span class="icon-edit"></span> Edit Site
 												 </button>
 												<button class="btn btn-sm btn-danger" onclick="removeSite()">
 												 <span class="icon-minus-sign"></span> Remove Site
@@ -176,30 +250,68 @@ function update(formId, mode) {
 											</thead>	
 											<tbody>
 											<%
-											for( int cateInx = 0; cateInx < categoryList.size() ; cateInx++ ) {
-												CategoryConfig category = categoryList.get(cateInx);
-												if("_root".equals(category.getId())) {
-													continue;
+											if(categoryList.size() > 1) {
+											%>
+												<%
+												for( int cateInx = 0; cateInx < categoryList.size() ; cateInx++ ) {
+													CategoryConfig category = categoryList.get(cateInx);
+													if("_root".equals(category.getId())) {
+														continue;
+													}
+												%>
+													<tr>
+														<td>
+															<input class="form-control" type="text" name="categoryId<%=cateInx %>" value="<%=category.getId() %>"/>
+														</td>
+														<td>
+															<input class="form-control" type="text" name="categoryName<%=cateInx %>" value="<%=category.getName() %>"/>
+														</td>
+														<td>
+															<a class="btn btn-sm" href="javascript:{}">
+																<span class="icon-plus-sign" id="btn-add-<%=category.getId()%>"></span>
+															</a>
+															<a class="btn btn-sm" href="javascript:{}">
+																<span class="icon-minus-sign text-danger" id="btn-remove-<%=category.getId()%>"></span>
+															</a>
+														</td>
+													</tr>
+												<%
 												}
-											%>
-												<tr>
-													<td>
-														<input type="hidden" name="categoryIdOrg<%=cateInx %>" value="<%=category.getId() %>"/>
-														<input class="form-control" type="text" name="categoryIdGet<%=cateInx %>" value="<%=category.getId() %>"/>
-													</td>
-													<td>
-														<input class="form-control" type="text" name="categoryNameGet<%=cateInx %>" value="<%=category.getName() %>"/>
-													</td>
-													<td>
-														<span class="icon-minus-sign" id="btn-remove-<%=category.getId()%>"></span>
-													</td>
-												</tr>
-											<%
-											}
-											%>
-											</tbody>
+												%>
+										<%
+										} else {
+										%>
+											<tr>
+												<td colspan="2">
+												<a class="btn btn-sm" href="javascript:{}">
+													<span class="icon-plus-sign"></span>Add New
+												</a>
+												</td>
+											</tr>
+										<%
+										}
+										%>
+										</tbody>
 										</table>
 										</form>
+										<table class="hidden" id="schema_template">
+											<tr>
+												<td>
+													<input class="form-control" type="text" name="categoryId0" value=""/>
+												</td>
+												<td>
+													<input class="form-control" type="text" name="categoryName0" value=""/>
+												</td>
+												<td>
+													<a class="btn btn-sm" href="javascript:{}">
+														<span class="icon-plus-sign"></span>
+													</a>
+													<a class="btn btn-sm" href="javascript:{}">
+														<span class="icon-minus-sign text-danger"></span>
+													</a>
+												</td>
+											</tr>
+										</table>
 									</div>
 								</div>
 								
@@ -240,6 +352,41 @@ function update(formId, mode) {
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 					<button type="button" class="btn btn-primary" onclick="update('new-site-form','addSite')">Create Site</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	
+	<div class="modal" id="siteEdit">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">Edit Site</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal" role="form" id="edit-site-form">
+						<input type="hidden" name="siteId" value="${currentSiteId}"/>
+						<input type="hidden" name="mode" value=""/>
+						<div class="form-group">
+							<label for="siteId" class="col-sm-3 control-label">Site Id</label>
+							<div class="col-sm-9">
+								<input type="text" class="form-control required" id="siteIdNew" name="siteIdNew" value="${currentSiteId}" placeholder="Site Id">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="siteName" class="col-sm-3 control-label">Site Name</label>
+							<div class="col-sm-9">
+								<input type="text" class="form-control required" id="siteName" name="siteName" value="${currentSiteName}" placeholder="Site Name">
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					<button type="button" class="btn btn-primary" onclick="update('edit-site-form','updateSite')">Update Site</button>
 				</div>
 			</div>
 			<!-- /.modal-content -->

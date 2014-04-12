@@ -2,11 +2,11 @@ package org.fastcatgroup.analytics.db.vo;
 
 public class SearchHitVO {
 
-	protected String categoryId;
-	protected String timeId;
-	protected int hit;
-	protected int avgTime;
-	protected int maxTime;
+	private String categoryId;
+	private String timeId;
+	private int hit;
+	private int avgTime;
+	private int maxTime;
 
 	public String getTimeId() {
 		return timeId;

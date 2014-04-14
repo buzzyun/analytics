@@ -19,6 +19,7 @@ import org.fastcatgroup.analytics.analysis.handler.UpdateEmptyKeywordHandler;
 import org.fastcatgroup.analytics.analysis.handler.UpdatePopularKeywordHandler;
 import org.fastcatgroup.analytics.analysis.handler.UpdateKeywordHitHandler;
 import org.fastcatgroup.analytics.analysis.handler.UpdateSearchHitHandler;
+import org.fastcatgroup.analytics.analysis.handler.UpdateServiceTypeHitHandler;
 import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
 import org.fastcatgroup.analytics.analysis.util.KeyCountRunEntry;
@@ -63,11 +64,13 @@ public class MonthlyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		//logger.debug("daily calendar : {}", new java.text.SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()));
 		File[] keyCountFiles = new File[diff];
 		File[] keyEmptyFiles = new File[diff];
+		File[] serviceCountFiles = new File[diff];
 		Calendar dailyCalendar = (Calendar) calendar.clone();
 		for(int inx=0;inx < diff; inx++) {
 			File timeDir = SearchStatisticsProperties.getDayDataDir(baseDir, dailyCalendar);
 			keyCountFiles[inx] = new File(new File(new File( timeDir, siteId), categoryId), KEY_COUNT_FILENAME);
 			keyEmptyFiles[inx] = new File(new File(new File( timeDir, siteId), categoryId), KEY_COUNT_EMPTY_FILENAME);
+			serviceCountFiles[inx] = new File(new File(new File( timeDir, siteId), categoryId), SERVICE_COUNT_FILENAME);
 			dailyCalendar.add(Calendar.DAY_OF_MONTH, -1);
 		}
 		
@@ -86,12 +89,22 @@ public class MonthlyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		
 		mergeKeyCount = new MergeKeyCountProcessHandler(keyEmptyFiles, workingDir, KEY_COUNT_EMPTY_FILENAME, encoding, entryParser).appendTo(mergeKeyCount);
 		
+		//서비스타입 기록
+		if("_root".equals(categoryId)) {
+			mergeKeyCount = new MergeKeyCountProcessHandler(serviceCountFiles, workingDir, SERVICE_COUNT_FILENAME, encoding, entryParser).appendTo(mergeKeyCount);
+		}
+		
 		ProcessHandler hitCounter = new KeyCountProcessHandler(siteId,
 				categoryId, workingDir, KEY_COUNT_FILENAME, dateFrom, dateTo,
 				encoding).appendTo(mergeKeyCount);
 		
 		/* 0. 갯수를 db로 저장한다. */
 		ProcessHandler updateSearchHitHandler = new UpdateSearchHitHandler(siteId, categoryId, timeId).appendTo(hitCounter);
+		
+		//서비스타입 로그 기록
+		if("_root".equals(categoryId)) {
+			updateSearchHitHandler = new UpdateServiceTypeHitHandler(siteId, timeId, workingDir, SERVICE_COUNT_FILENAME, encoding).appendTo(updateSearchHitHandler);
+		}
 		
 		/* 1. count로 정렬하여 key-count-rank.log로 저장. */
 		ProcessHandler logSort = new KeyCountLogSortHandler(workingDir, KEY_COUNT_FILENAME, KEY_COUNT_RANK_FILENAME, encoding, runKeySize, entryParser).appendTo(updateSearchHitHandler);

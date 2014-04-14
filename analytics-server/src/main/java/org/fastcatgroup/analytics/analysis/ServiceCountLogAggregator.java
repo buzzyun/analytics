@@ -6,7 +6,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
@@ -31,7 +35,7 @@ public class ServiceCountLogAggregator<LogType extends SearchLog> extends Abstra
 		for(String serviceType : serviceTypes) {
 			serviceCounter.put(serviceType, new Counter(0));
 		}
-		serviceCounter.put("etc", new Counter(0));
+		serviceCounter.put("_etc", new Counter(0));
 	}
 
 	@Override
@@ -41,7 +45,7 @@ public class ServiceCountLogAggregator<LogType extends SearchLog> extends Abstra
 		if(serviceCounter.containsKey(serviceType)) {
 			counter = serviceCounter.get(serviceType);
 		} else {
-			counter = serviceCounter.get("etc");
+			counter = serviceCounter.get("_etc");
 		}
 		counter.increment(log.getCount());
 	}
@@ -51,16 +55,18 @@ public class ServiceCountLogAggregator<LogType extends SearchLog> extends Abstra
 		BufferedWriter writer = null;
 		try {
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(destFile), encoding));
-			for(String serviceType : serviceTypes) {
-				if("etc".equals(serviceType)) {
-					
-				}
+			
+			List<String> serviceList = new ArrayList<String>();
+			serviceList.addAll(Arrays.asList(serviceTypes));
+			serviceList.add("_etc");
+			
+			Collections.sort(serviceList);
+			
+			for(String serviceType : serviceList) {
 				writer.append(serviceType).append("\t")
 					.append(String.valueOf(serviceCounter.get(serviceType).value()))
 					.append("\n");
 			}
-			writer.append("etc").append("\t")
-				.append(String.valueOf(serviceCounter.get("etc").value()));
 		} catch (UnsupportedEncodingException e) {
 			logger.error("", e);
 		} catch (IOException e) {

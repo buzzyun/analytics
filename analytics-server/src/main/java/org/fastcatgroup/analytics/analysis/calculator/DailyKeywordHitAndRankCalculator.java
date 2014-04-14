@@ -72,12 +72,11 @@ public class DailyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		CategoryProcess<SearchLog> categoryProcess = new CategoryProcess<SearchLog>(categoryId);
 		SearchLogValidator logValidator = new SearchLogValidator(banWords, maxKeywordLength);
 		
-		/* 서비스별 갯수. */
-		
 		LogAggregatorContainer<SearchLog> aggregator = new LogAggregatorContainer<SearchLog>();
 		aggregator.addAggregator(new KeyCountLogAggregator<SearchLog>(workingDir, KEY_COUNT_FILENAME, runKeySize, encoding, minimumHitCount, entryParser));
 		aggregator.addAggregator(new KeyCountEmptyLogAggregator<SearchLog>(workingDir, KEY_COUNT_EMPTY_FILENAME, runKeySize, encoding, minimumHitCount, entryParser));
 		
+		/* 서비스별 갯수. */
 		if("_root".equals(categoryId)) {
 			aggregator.addAggregator(new ServiceCountLogAggregator<SearchLog>(workingDir, SERVICE_COUNT_FILENAME, encoding, serviceTypeList));
 		}
@@ -87,12 +86,6 @@ public class DailyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		/* 0. 갯수를 db로 저장한다. */
 		ProcessHandler updateSearchHitHandler = new UpdateSearchHitHandler(siteId, categoryId, timeId).attachProcessTo(categoryProcess);
 
-		//서비스타입 로그 기록
-		
-		if("_root".equals(categoryId)) {
-			updateSearchHitHandler = new UpdateServiceTypeHitHandler(siteId, timeId, workingDir, SERVICE_COUNT_FILENAME, encoding).appendTo(updateSearchHitHandler);
-		}
-		
 		/* 1. count로 정렬하여 key-count-rank.log로 저장. */
 		ProcessHandler logSort = new KeyCountLogSortHandler(workingDir, KEY_COUNT_FILENAME, KEY_COUNT_RANK_FILENAME, encoding, runKeySize, entryParser).appendTo(updateSearchHitHandler);
 		

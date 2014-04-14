@@ -1,7 +1,8 @@
-<%@page import="java.util.Random, java.util.*" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@page import="java.util.Random, java.util.*" %>
+<%@page import="java.text.DecimalFormat" %>
 <%
 List<String> clickTypeList = (List<String>) request.getAttribute("clickTypeList");
 List<Integer> searchPvList = (List<Integer>) request.getAttribute("searchPvList");
@@ -10,6 +11,7 @@ String timeText = (String) request.getAttribute("timeText");
 if(timeText == null ) {
 	timeText = ""; 
 }
+DecimalFormat format = new DecimalFormat("#,###");
 %>
 <c:set var="ROOT_PATH" value="../.." />
 
@@ -20,7 +22,6 @@ if(timeText == null ) {
 
 <script>
 $(document).ready(function() {
-	
 	var pickmenup_options = {
 		calendars: 3,
 		mode: 'range',
@@ -30,101 +31,91 @@ $(document).ready(function() {
 		hide_on_select	: true 
 	};
 	$("#timeText").pickmeup(pickmenup_options);
-		
-		
-	var ctr1 = [ [ 1262304000000, 1300 ], [ 1264982400000, 700 ], [ 1267401600000, 1000 ],
-				[ 1270080000000, 3500 ], [ 1272672000000, 2000 ],
-				[ 1275350400000, 1500 ], [ 1277942400000, 1200 ] ];
-
-	var ctr2 = [ [ 1262304000000, 700 ],[ 1264982400000, 400 ],[ 1267401600000, 600 ],
-				[ 1270080000000, 2500 ], [ 1272672000000, 1300 ],
-				[ 1275350400000, 700 ], [ 1277942400000, 600 ] ];
-		
-	var ctr3 = [ [ 1262304000000, 60 ],[ 1264982400000, 50 ],[ 1267401600000, 60 ],
-				[ 1270080000000, 55 ], [ 1272672000000, 55 ],
-				[ 1275350400000, 70 ], [ 1277942400000, 60 ] ];
 	
+	var ctr1=[];
+	var ctr2=[];
+	var ctr3=[];
+	var ticks=[];
+	
+	<%
+	
+	int totalPv = 0;
+	int totalHit = 0;
+	float totalRate = 0f;
+	
+	for(int i=0;i<hitList.size(); i++){
+		Integer pv = searchPvList.get(i);
+		Integer hit = hitList.get(i);
+		if(pv==null) { pv = 0; }
+		if(hit==null) { hit = 0; }
+		totalPv += pv;
+		totalHit += hit;
+		float rate = 0f;
+		if(pv>0) {
+			rate = Math.round(hit * 100f / pv) / 100f;
+		}
+	%>
+		ctr1[<%=i%>]=[<%=i%>,<%=pv%>];
+		ctr2[<%=i%>]=[<%=i%>,<%=hit%>];
+		ctr3[<%=i%>]=[<%=i%>,<%=rate%>];
+		ticks[<%=i%>]=[<%=i%>,<%=i%>];
+	<%
+	}
+	if(totalPv > 0) {
+		totalRate = Math.round(totalHit * 100f / totalPv) / 100f;
+	}
+	%>
+		
 	var ctr_data = [ 
-{
-	label : "유입률",
-	data : ctr3,
-	color : '#eee',
-	lines: { show: false},
-	bars: {
-		show: true,
-		barWidth: 30 * 60 * 60 * 1000 *4,
-		align:'center'
-	},
-	yaxis: 2
-},                 
 	{
+		label : "유입률",
+		data : ctr3,
+		color : '#eee',
+		lines: { show: false},
+		bars: {
+			show: true,
+			barWidth: 0.2 ,
+			align:'center'
+		},
+		points:{
+			show:true
+		},
+		yaxis: 2
+	},	{
 		label : "검색PV",
 		data : ctr1,
 		lines: {
-            show: true
-        },
-        points:{
-            show:true
-        }
+			show: true
+		},
+		points:{
+			show:true
+		}
 	}, {
 		label : "통합검색",
 		data : ctr2,
 		lines: {
-            show: true
-        },
-        points:{
-            show:true
-        }
+			show: true
+		},
+		points:{
+			show:true
+		}
 	} ];
 	$.plot("#chart_ctr_total", ctr_data, $.extend(true, {}, Plugins
-			.getFlotDefaults(),
-			{
+			.getFlotDefaults(), {
 				xaxis : {
-					min : (new Date(2009, 12, 1)).getTime(),
-					max : (new Date(2010, 6, 2)).getTime(),
-					mode : "time",
+					min : 0, max : 6,
 					tickSize : [ 1, "month" ],
-					monthNames : [ "Sun", "Mon", "Tue", "Wed", "Thu",
-									"Fri", "Sat" ],
+					ticks : ticks,
 					tickLength : 0
 				},
 				yaxes: [
-				  {
-					  
-				  },{
-					position: "right"
-				  }      
-				],
-				/* series : {
-					lines : {
-						fill : false,
-						lineWidth : 1.5
-					},
-					points : {
-						show : true,
-						radius : 2.5,
-						lineWidth : 1.1
-					},
-					grow : {
-						active : true,
-						growings : [ {
-							stepMode : "maximum"
-						} ]
-					}
-				}, */
-				grid : {
+				  { },{ position: "right" }	  
+				], grid : {
 					hoverable : true,
 					clickable : true
-				},
-				tooltip : true,
-				tooltipOpts : {
-					content : '%s: %y'
-				}
+				}, tooltip : true,
+				tooltipOpts : { content : '%s: %y' }
 			}));
-
-	
-	
-	
 	
 	
 	var ctr_detail1 = [ [ 1262304000000, 800 ], [ 1264982400000, 700 ], [ 1267401600000, 900 ],
@@ -139,53 +130,52 @@ $(document).ready(function() {
 				[ 1270080000000, 455 ], [ 1272672000000, 455 ],
 				[ 1275350400000, 470 ], [ 1277942400000, 460 ] ];
 	var ctr_detail4 = [ [ 1262304000000, 60 ],[ 1264982400000, 50 ],[ 1267401600000, 60 ],
-	    				[ 1270080000000, 55 ], [ 1272672000000, 54 ],
-	    				[ 1275350400000, 65 ], [ 1277942400000, 64 ] ];
+						[ 1270080000000, 55 ], [ 1272672000000, 54 ],
+						[ 1275350400000, 65 ], [ 1277942400000, 64 ] ];
 	
 	var ctr_detail_data = [ 
-{
-	label : "유입률",
-	data : ctr_detail4,
-	color : '#eee',
-	lines: { show: false},
-	bars: {
-		show: true,
-		barWidth: 30 * 60 * 60 * 1000 *4,
-		align:'center'
-	},
-	yaxis: 2
-},                       
-	 {
+	{
+		label : "유입률",
+		data : ctr_detail4,
+		color : '#eee',
+		lines: { show: false},
+		bars: {
+			show: true,
+			barWidth: 30 * 60 * 60 * 1000 *4,
+			align:'center'
+		},
+		yaxis: 2
+	},	{
 		label : "상품블로그",
 		data : ctr_detail1,
 		lines: {
-            show: true
-        },
-        points:{
-            show:true
-        }
-	}, {
+			show: true
+		},
+		points:{
+			show:true
+		}
+	},	{
 		label : "사러가기",
 		data : ctr_detail2,
 		lines: {
-            show: true
-        },
-        points:{
-            show:true
-        }
+			show: true
+		},
+		points:{
+			show:true
+		}
 	}, {
 		label : "상품리스트",
 		data : ctr_detail3,
 		lines: {
-            show: true,
-            fill : false,
+			show: true,
+			fill : false,
 			lineWidth : 1.5
-        },
-        points:{
-        	show : true,
+		},
+		points:{
+			show : true,
 			radius : 2.5,
 			lineWidth : 1.1
-        }
+		}
 	} ];
 	$.plot("#chart_ctr_detail", ctr_detail_data, $.extend(true, {}, Plugins
 			.getFlotDefaults(),
@@ -204,25 +194,8 @@ $(document).ready(function() {
 					  
 				  },{
 					position: "right"
-				  }      
+				  }	  
 				],
-				/* series : {
-					lines : {
-						fill : false,
-						lineWidth : 1.5
-					},
-					points : {
-						show : true,
-						radius : 2.5,
-						lineWidth : 1.1
-					},
-					grow : {
-						active : true,
-						growings : [ {
-							stepMode : "maximum"
-						} ]
-					}
-				}, */
 				grid : {
 					hoverable : true,
 					clickable : true
@@ -232,9 +205,7 @@ $(document).ready(function() {
 					content : '%s: %y'
 				}
 			}));
-	
 });
-
 
 </script>
 </head>
@@ -289,25 +260,11 @@ $(document).ready(function() {
 								<h4>
 									<i class="icon-calendar"></i> Period : 2014.01 - 2014.04
 								</h4>
-								<!-- <div class="toolbar no-padding">
-									<div class="btn-group">
-										<span class="btn btn-xs"><i class="icos-word-document"></i></span>
-									</div>
-								</div> -->
 							</div>
 						</div>
 
 					</div>
 				</div>
-				
-				<%
-					for(int i=0;i<hitList.size(); i++){
-						Integer pv = searchPvList.get(i);
-						Integer a = hitList.get(i);
-						out.println(pv + " : " + a);
-						out.println("<br>");
-					}
-				%>
 				<div class="row">
 					<div class="col-md-12">
 						<div class="widget box">
@@ -320,9 +277,9 @@ $(document).ready(function() {
 							<div class="divider"></div>
 							<div class="widget-content">
 								<ul class="stats">
-									<li><strong>172,055</strong> <small>Search PV</small></li>
-									<li class="text-success"><strong>86,372</strong> <small>Click-through Count</small></li>
-									<li class="text-primary"><strong>50.20%</strong> <small>Click-through Rate</small></li>
+									<li><strong><%=format.format(totalPv) %></strong> <small>Search PV</small></li>
+									<li class="text-success"><strong><%=format.format(totalHit) %></strong> <small>Click-through Count</small></li>
+									<li class="text-primary"><strong><%=totalRate%>%</strong> <small>Click-through Rate</small></li>
 								</ul>
 							</div>
 						</div>

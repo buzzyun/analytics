@@ -10,11 +10,13 @@ import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
 import org.fastcatgroup.analytics.db.mapper.ClickHitMapper;
+import org.fastcatgroup.analytics.db.mapper.SearchPathHitMapper;
 import org.fastcatgroup.analytics.db.mapper.ClickKeywordHitMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchHitMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchKeywordHitMapper;
 import org.fastcatgroup.analytics.db.vo.ClickKeywordHitVO;
 import org.fastcatgroup.analytics.db.vo.SearchHitVO;
+import org.fastcatgroup.analytics.db.vo.SearchPathHitVO;
 import org.fastcatgroup.analytics.service.ServiceManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -81,14 +83,18 @@ public class CTRController extends AbstractController {
 		//search PV 리스트를 가져온다.
 		//
 		List<Integer> searchPvList = new ArrayList<Integer>(); 
-		MapperSession<SearchHitMapper> searchHitMapperSession = dbService.getMapperSession(SearchHitMapper.class);
-		SearchHitMapper searchHitMapper = searchHitMapperSession.getMapper();
+		MapperSession<SearchPathHitMapper> searchPathHitMapperSession = dbService.getMapperSession(SearchPathHitMapper.class);
+		SearchPathHitMapper searchPathHitMapper = searchPathHitMapperSession.getMapper();
 		try {
 			while (startTime.getTimeInMillis() <= endTime.getTimeInMillis()) {
-				String timeId = SearchStatisticsProperties.toDatetimeString(startTime, timeTypeCode);
-				SearchHitVO vo = searchHitMapper.getEntry(siteId, "_root", timeId);
-				if (vo != null) {
-					searchPvList.add(vo.getHit());
+				String timeId = SearchStatisticsProperties.getTimeId(startTime, timeTypeCode);
+				List<SearchPathHitVO> list = searchPathHitMapper.getEntryByTimeId(siteId, timeId);
+				if (list != null) {
+					int cnt = 0;
+					for(int inx=0;inx<list.size();inx++) {
+						cnt += list.get(inx).getHit();
+					}
+					searchPvList.add(cnt);
 				} else {
 					searchPvList.add(0);
 				}
@@ -97,13 +103,15 @@ public class CTRController extends AbstractController {
 		} catch (Exception e) {
 			logger.error("", e);
 		} finally {
-			if (searchHitMapperSession != null) {
-				searchHitMapperSession.closeSession();
+			if (searchPathHitMapperSession != null) {
+				searchPathHitMapperSession.closeSession();
 			}
 		}
 		mav.addObject("searchPvList", searchPvList);
 		
 		List<String> clickTypeList = new ArrayList<String>();
+		
+		//FIXME:HARDCODING
 		clickTypeList.add("blog");
 		clickTypeList.add("goshop");
 		clickTypeList.add("list");
@@ -113,9 +121,8 @@ public class CTRController extends AbstractController {
 			
 			for(String clickType : clickTypeList){
 				List<Integer> typeHitList = new ArrayList<Integer>();
-				
 				while (startTime.getTimeInMillis() <= endTime.getTimeInMillis()) {
-					String timeId = SearchStatisticsProperties.toDatetimeString(startTime, timeTypeCode);
+					String timeId = SearchStatisticsProperties.getTimeId(startTime, timeTypeCode);
 					Integer hit = mapper.getTypeHit(siteId, timeId, clickType);
 					typeHitList.add(hit);
 					startTime.add(timeTypeCode, 1);
@@ -126,7 +133,7 @@ public class CTRController extends AbstractController {
 			startTime = startTime2;
 			List<Integer> hitList = new ArrayList<Integer>();
 			while (startTime.getTimeInMillis() <= endTime.getTimeInMillis()) {
-				String timeId = SearchStatisticsProperties.toDatetimeString(startTime, timeTypeCode);
+				String timeId = SearchStatisticsProperties.getTimeId(startTime, timeTypeCode);
 				Integer hit = mapper.getHit(siteId, timeId);
 				hitList.add(hit);
 				startTime.add(timeTypeCode, 1);

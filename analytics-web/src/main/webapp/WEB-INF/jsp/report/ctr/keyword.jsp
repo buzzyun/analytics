@@ -40,7 +40,7 @@ $(document).ready(function(){
 	<div id="container">
 		<c:import url="${ROOT_PATH}/report/sideMenu.jsp">
 			<c:param name="lcat" value="ctr" />
-			<c:param name="mcat" value="keyword" />
+			<c:param name="mcat" value="searchKeyword" />
 		</c:import>
 		<div id="content">
 			<div class="container">
@@ -49,7 +49,7 @@ $(document).ready(function(){
 					<ul id="breadcrumbs" class="breadcrumb">
 						<li><i class="icon-home"></i> <a href="javascript:void(0);">Report</a></li>
 						<li><a href="#">Click-through Rate</a></li>
-						<li><a href="#">Detail</a></li>
+						<li><a href="#">Keyword</a></li>
 					</ul>
 					<!-- <ul class="crumb-buttons">
 						<li class="range">
@@ -71,9 +71,10 @@ $(document).ready(function(){
 				<div class="row row-bg row-bg-sm">
 					<!-- .row-bg -->
 					
-					<div class="col-md-12">
+					<div class="col-md-12 bottom-space">
 						<form class="form-inline" role="form">
 							<input class="form-control fcol1-2 " size="16" type="text" id="timeText" name="timeText" value="<%=timeText %>" >
+							<input type="text" class="form-control fcol2" placeholder="Keyword">
 							<input type="button" class="btn btn-primary" value="Submit">
 						</form>
 					</div>
@@ -93,29 +94,14 @@ $(document).ready(function(){
 				
 				
 				<div class="row">
-					
-					<div class="col-md-6">
+					<div class="col-md-12">
 						<div class="widget box">
-							<div class="widget-header">
-								<h4>Click-through Rate</h4>
-							</div>
 							<div class="widget-content">
 								<ul class="stats">
-									<!-- .no-dividers -->
-									<li><strong>172,055</strong> <small>Search PV</small></li>
+									<li><strong>온수매트</strong> <small>Keyword</small></li>
+									<li><strong>1,520,596</strong> <small>Search count</small></li>
 									<li class="text-success"><strong>86,372</strong> <small>Click-through count</small></li>
 									<li class="text-primary"><strong>50.20%</strong> <small>Click-through rate</small></li>
-								</ul>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-6">
-						<div class="widget box">
-							<div class="widget-header">
-								<h4>Detail Click-through Count</h4>
-							</div>
-							<div class="widget-content">
-								<ul class="stats">
 									<li><strong>76,086</strong> <small>상품블로그</small></li>
 									<li><strong>7,257</strong> <small>사러가기</small></li>
 									<li><strong>3,029</strong> <small>상품리스트</small></li>
@@ -123,13 +109,14 @@ $(document).ready(function(){
 							</div>
 						</div>
 					</div>
+					
 				</div>
 				
 				<div class="row">
 					<div class="col-md-12">
 						<div class="widget box">
 							<div class="widget-header">
-								<h4>Keyword List</h4>
+								<h4>Click List</h4>
 							</div>
 							<div class="widget-content">
 							
@@ -137,47 +124,37 @@ $(document).ready(function(){
 									<thead>
 										<tr>
 											<th>#</th>
-											<th>Keyword</th>
-											<th>Search count</th>
-											<th>Click-through count</th>
-											<th>Click-through rate</th>
+											<th>Click Target</th>
 											<th>상품블로그</th>
 											<th>사러가기</th>
-											<th>상품리스트</th>
 										</tr>
 									</thead>
 									<tbody>
 										<tr>
 											<td>1</td>
-											<td>온수매트</td>
-											<td>18,543</td>
-											<td>13,688</td>
-											<td>41.42</td>
-											<td>7,651</td>
-											<td>37</td>
+											<td><a href="#">일월 순면 황토 온수매트 2014년형</a></td>
+											<td>63</td>
 											<td>0</td>
 										</tr>
 										<tr>
 											<td>2</td>
-											<td>노트북</td>
-											<td>48,344</td>
-											<td>9,788</td>
-											<td>32.32</td>
-											<td>8,651</td>
-											<td>12</td>
+											<td>삼진 웰퍼스 스마트 온수매트 극세사 2014년형</td>
+											<td>59</td>
+											<td>0</td>
+										</tr>
+										<tr>
+											<td>3</td>
+											<td>파크론 옐로우베어 온수 놀이방매트</td>
+											<td>28</td>
 											<td>0</td>
 										</tr>
 									<%
-										for(int i =2;i< 15; i++){
+										for(int i =3;i< 12; i++){
 									%>
 										<tr>
 											<td><%=i+1 %></td>
-											<td>마우스</td>
-											<td>7,234</td>
-											<td>3,234</td>
-											<td>23.23</td>
-											<td>2,654</td>
-											<td>32</td>
+											<td><a href="#">동양이지텍 스팀보이 침대용 순면 온수매트</a></td>
+											<td><%=40-i %></td>
 											<td>0</td>
 										</tr>
 									<%

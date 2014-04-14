@@ -1,7 +1,5 @@
 package org.fastcatgroup.analytics.analysis.handler;
 
-import java.util.Calendar;
-
 import org.fastcatgroup.analytics.analysis.log.SearchLogResult;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;

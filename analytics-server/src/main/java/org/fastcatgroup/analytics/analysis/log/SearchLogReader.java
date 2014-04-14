@@ -11,7 +11,16 @@ public class SearchLogReader extends FileListLogReader<SearchLog> {
 
 	@Override
 	protected SearchLog makeLog(String[] el) {
-//		logger.debug("log>>> {}, {}", el.length, el);
-		return new SearchLog(el[0], el[1], el[2], "1", el[4], el[5]);
+		//logger.debug("log>>> {}, {}", el.length, el);
+		String[] el2 = null;
+		//FIXME:임시코드. 로그호환성을 맞추기 위해 제작한 임시코드.
+		if(el.length < 7) { 
+			el2 = new String[7];
+			System.arraycopy(el, 0, el2, 0, el.length); 
+		} else {
+			el2 = el;
+		}
+		
+		return new SearchLog(el2[0], el2[1], el2[2], "1", el2[4], el2[5], el2[6]);
 	}
 }

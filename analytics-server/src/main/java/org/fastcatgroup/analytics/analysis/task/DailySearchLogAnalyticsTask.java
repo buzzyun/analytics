@@ -33,6 +33,9 @@ public class DailySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 
 	@Override
 	protected void prepare(Calendar calendar) {
+		
+		String[] serviceTypeList = environment.settingManager().getSystemSettings().getStringArray("db.serviceList", ",");
+		
 		// baseDir : statistics/search/date/Y####/M##/D##/data/{siteId} 경로
 		File dir = environment.filePaths().getStatisticsRoot().file("search", "date");
 		
@@ -53,7 +56,7 @@ public class DailySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 		}
 
 		// calc를 카테고리별로 모두 만든다.
-		Calculator<SearchLog> popularKeywordCalculator = new DailyKeywordHitAndRankCalculator("Daily popular keyword calculator", calendar, baseDir, prevDir, siteId, categoryIdList, banWords, minimumHitCount, topCount);
+		Calculator<SearchLog> popularKeywordCalculator = new DailyKeywordHitAndRankCalculator("Daily popular keyword calculator", calendar, baseDir, prevDir, siteId, categoryIdList, banWords, serviceTypeList, minimumHitCount, topCount);
 		addCalculator(popularKeywordCalculator);
 		
 	}

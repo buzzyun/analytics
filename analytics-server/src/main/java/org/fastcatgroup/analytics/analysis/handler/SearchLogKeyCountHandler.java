@@ -1,6 +1,5 @@
 package org.fastcatgroup.analytics.analysis.handler;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.fastcatgroup.analytics.analysis.AbstractLogAggregator;

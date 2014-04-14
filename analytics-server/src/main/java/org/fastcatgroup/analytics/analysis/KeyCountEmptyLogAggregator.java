@@ -8,11 +8,8 @@ import org.fastcatgroup.analytics.analysis.util.KeyCountRunEntry;
 
 public class KeyCountEmptyLogAggregator<LogType extends SearchLog> extends KeyCountLogAggregator<LogType> {
 
-	EntryParser<KeyCountRunEntry> entryParser;
-	
 	public KeyCountEmptyLogAggregator(File targetDir, String targetFilename, int runKeySize, String outputEncoding, int minimumHitCount, EntryParser<KeyCountRunEntry> entryParser) {
 		super(targetDir, targetFilename, runKeySize, outputEncoding, minimumHitCount, entryParser);
-		this.entryParser = entryParser;
 		this.runTmpDir = new File(targetDir, "_emprun");
 	}
 	

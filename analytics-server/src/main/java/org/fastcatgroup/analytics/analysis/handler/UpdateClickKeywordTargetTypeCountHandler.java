@@ -2,12 +2,12 @@ package org.fastcatgroup.analytics.analysis.handler;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
-import org.fastcatgroup.analytics.db.mapper.ClickKeywordHitMapper;
 import org.fastcatgroup.analytics.db.mapper.ClickKeywordTargetHitMapper;
 import org.fastcatgroup.analytics.service.ServiceManager;
 
@@ -37,7 +37,7 @@ public class UpdateClickKeywordTargetTypeCountHandler extends ProcessHandler {
 		MapperSession<ClickKeywordTargetHitMapper> mapperSession = dbService.getMapperSession(ClickKeywordTargetHitMapper.class);
 		try {
 			
-			br = new BufferedReader(new FileReader(file));
+			br = new BufferedReader(new InputStreamReader(new FileInputStream(file), encoding));
 			ClickKeywordTargetHitMapper mapper = mapperSession.getMapper();
 			
 			for(String rline = null; (rline = br.readLine())!=null;) {

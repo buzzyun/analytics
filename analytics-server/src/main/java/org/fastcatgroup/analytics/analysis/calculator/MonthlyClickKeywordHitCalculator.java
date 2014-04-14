@@ -1,7 +1,5 @@
 package org.fastcatgroup.analytics.analysis.calculator;
 
-import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.CLICK_RAW_FILENAME;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
@@ -21,6 +19,8 @@ import org.fastcatgroup.analytics.analysis.handler.UpdateClickTypeCountHandler;
 import org.fastcatgroup.analytics.analysis.log.ClickLog;
 import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.util.KeyCountRunEntry;
+
+import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.*;
 
 /**
  * 클릭로그 통계계산.
@@ -59,7 +59,6 @@ public class MonthlyClickKeywordHitCalculator extends Calculator<ClickLog> {
 			int runKeySize = SearchStatisticsProperties.runKeySize;
 			
 			//
-			//TODO calendar의 1일부터 calendar까지.
 			//1일부터 현재일자 (DAY_OF_MONTH) 까지.
 			int diff = calendar.get(Calendar.DAY_OF_MONTH);
 			
@@ -71,18 +70,14 @@ public class MonthlyClickKeywordHitCalculator extends Calculator<ClickLog> {
 				dailyCalendar.add(Calendar.DAY_OF_MONTH, -1);
 			}
 			
-//			String dateFrom = SearchStatisticsProperties.getTimeId(dailyCalendar, Calendar.DAY_OF_MONTH);
-//			String dateTo = SearchStatisticsProperties.getTimeId(calendar, Calendar.DAY_OF_MONTH);
-			
-			
 			//1달치의 일자별 click-row log들을 머징한다.
 			EntryParser<KeyCountRunEntry> clickTypeParser = new KeyCountRunEntryParser();
 			
-			AbstractLogAggregator<ClickLog> clickTypeLogAggregator = new KeyCountLogAggregator<ClickLog>(workingDir, "run_click_type.log", runKeySize, encoding, minimumHitCount, clickTypeParser);
+			AbstractLogAggregator<ClickLog> clickTypeLogAggregator = new KeyCountLogAggregator<ClickLog>(workingDir, RUN_CLICK_TYPE_FILENAME, runKeySize, encoding, minimumHitCount, clickTypeParser);
 			
 			logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
 			
-			File file = new File(workingDir, "run_click_type.log");
+			File file = new File(workingDir, RUN_CLICK_TYPE_FILENAME);
 			
 			ProcessHandler mergeKeyCount = new MergeClickTypeCountProcessHandler(
 					clickLogFiles, encoding, clickTypeLogAggregator,
@@ -91,7 +86,7 @@ public class MonthlyClickKeywordHitCalculator extends Calculator<ClickLog> {
 			file.delete();
 			
 			clickTypeParser = new KeyCountRunEntryParser(new int[]{0, 1}, 2 );
-			clickTypeLogAggregator = new KeyCountLogAggregator<ClickLog>(workingDir, "run_click_type.log", runKeySize, encoding, minimumHitCount, clickTypeParser);
+			clickTypeLogAggregator = new KeyCountLogAggregator<ClickLog>(workingDir, RUN_CLICK_TYPE_FILENAME, runKeySize, encoding, minimumHitCount, clickTypeParser);
 			mergeKeyCount = new MergeClickTypeCountProcessHandler(
 					clickLogFiles, encoding, clickTypeLogAggregator,
 					MergeClickTypeCountProcessHandler.RUN_CASE_CLICK_KEYWORD).appendTo(updateClickTypeCountHandler);
@@ -100,7 +95,7 @@ public class MonthlyClickKeywordHitCalculator extends Calculator<ClickLog> {
 			
 			
 			clickTypeParser = new KeyCountRunEntryParser(new int[]{0, 1, 2}, 3 );
-			clickTypeLogAggregator = new KeyCountLogAggregator<ClickLog>(workingDir, "run_click_type.log", runKeySize, encoding, minimumHitCount, clickTypeParser);
+			clickTypeLogAggregator = new KeyCountLogAggregator<ClickLog>(workingDir, RUN_CLICK_TYPE_FILENAME, runKeySize, encoding, minimumHitCount, clickTypeParser);
 			mergeKeyCount = new MergeClickTypeCountProcessHandler(
 					clickLogFiles, encoding, clickTypeLogAggregator,
 					MergeClickTypeCountProcessHandler.RUN_CASE_CLICK_KEYWORD_TARGET).appendTo(updateClickTypeCountHandler);

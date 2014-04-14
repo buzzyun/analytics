@@ -8,8 +8,9 @@ public class SearchLog extends LogData {
 	protected int count;
 	protected int resultCount;
 	protected int responseTime;
+	protected String serviceType;
 	
-	public SearchLog(String time, String categoryId, String keyword, String count, String resultCount, String responseTime) {
+	public SearchLog(String time, String categoryId, String keyword, String count, String resultCount, String responseTime, String serviceType) {
 		this.time = time;
 		this.categoryId = categoryId;
 		this.keyword = keyword;
@@ -33,6 +34,7 @@ public class SearchLog extends LogData {
 			}
 		} catch (NumberFormatException ignore) {
 		}
+		this.serviceType = serviceType;
 	}
 	
 	public String getTime() {
@@ -63,6 +65,10 @@ public class SearchLog extends LogData {
 	
 	public int getResponseTime() {
 		return responseTime;
+	}
+	
+	public String getServiceType() {
+		return serviceType;
 	}
 	
 	@Override

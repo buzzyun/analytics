@@ -12,6 +12,7 @@ import org.fastcatgroup.analytics.analysis.KeyCountLogAggregator;
 import org.fastcatgroup.analytics.analysis.LogAggregatorContainer;
 import org.fastcatgroup.analytics.analysis.SearchLogValidator;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.ServiceCountLogAggregator;
 import org.fastcatgroup.analytics.analysis.handler.KeyCountLogSortHandler;
 import org.fastcatgroup.analytics.analysis.handler.KeywordRankDiffHandler;
 import org.fastcatgroup.analytics.analysis.handler.PopularKeywordResultHandler;
@@ -21,6 +22,7 @@ import org.fastcatgroup.analytics.analysis.handler.UpdateEmptyKeywordHandler;
 import org.fastcatgroup.analytics.analysis.handler.UpdatePopularKeywordHandler;
 import org.fastcatgroup.analytics.analysis.handler.UpdateKeywordHitHandler;
 import org.fastcatgroup.analytics.analysis.handler.UpdateSearchHitHandler;
+import org.fastcatgroup.analytics.analysis.handler.UpdateServiceTypeHitHandler;
 import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
 
@@ -32,13 +34,15 @@ public class DailyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 	private Set<String> banWords;
 	private int minimumHitCount;
 	private int topCount;
+	private String[] serviceTypeList;
 	
-	public DailyKeywordHitAndRankCalculator(String name, Calendar calendar, File baseDir, File prevDir, String siteId, List<String> categoryIdList, Set<String> banWords, int minimumHitCount, int topCount) {
+	public DailyKeywordHitAndRankCalculator(String name, Calendar calendar, File baseDir, File prevDir, String siteId, List<String> categoryIdList, Set<String> banWords, String[] serviceTypeList, int minimumHitCount, int topCount) {
 		super(name, calendar, baseDir, siteId, categoryIdList);
 		this.prevDir = prevDir;
 		this.banWords = banWords;
 		this.minimumHitCount = minimumHitCount;
 		this.topCount = topCount;
+		this.serviceTypeList = serviceTypeList;
 	}
 	
 	@Override
@@ -71,15 +75,23 @@ public class DailyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		/* 서비스별 갯수. */
 		
 		LogAggregatorContainer<SearchLog> aggregator = new LogAggregatorContainer<SearchLog>();
-		aggregator.addAggregator(new ServiceCountLogAggregator<SearchLog>(workingDir, SERVICE_COUNT_FILENAME, runKeySize, encoding, minimumHitCount, entryParser));
 		aggregator.addAggregator(new KeyCountLogAggregator<SearchLog>(workingDir, KEY_COUNT_FILENAME, runKeySize, encoding, minimumHitCount, entryParser));
 		aggregator.addAggregator(new KeyCountEmptyLogAggregator<SearchLog>(workingDir, KEY_COUNT_EMPTY_FILENAME, runKeySize, encoding, minimumHitCount, entryParser));
 		
-		new SearchLogKeyCountHandler(workingDir, SERVICE_COUNT_FILENAME, logValidator, entryParser).attachLogHandlerTo(categoryProcess);
+		if("_root".equals(categoryId)) {
+			aggregator.addAggregator(new ServiceCountLogAggregator<SearchLog>(workingDir, SERVICE_COUNT_FILENAME, encoding, serviceTypeList));
+		}
 		
-		ProcessHandler updateServiceHitHandler = new UpdateSearchHitHandler(siteId, categoryId, timeId).attachProcessTo(categoryProcess);
+		new SearchLogKeyCountHandler(categoryId, aggregator, logValidator, entryParser).attachLogHandlerTo(categoryProcess);
+		
 		/* 0. 갯수를 db로 저장한다. */
-		ProcessHandler updateSearchHitHandler = new UpdateSearchHitHandler(siteId, categoryId, timeId).attachProcessTo(updateServiceHitHandler);
+		ProcessHandler updateSearchHitHandler = new UpdateSearchHitHandler(siteId, categoryId, timeId).attachProcessTo(categoryProcess);
+
+		//서비스타입 로그 기록
+		
+		if("_root".equals(categoryId)) {
+			updateSearchHitHandler = new UpdateServiceTypeHitHandler(siteId, timeId, workingDir, SERVICE_COUNT_FILENAME, encoding).appendTo(updateSearchHitHandler);
+		}
 		
 		/* 1. count로 정렬하여 key-count-rank.log로 저장. */
 		ProcessHandler logSort = new KeyCountLogSortHandler(workingDir, KEY_COUNT_FILENAME, KEY_COUNT_RANK_FILENAME, encoding, runKeySize, entryParser).appendTo(updateSearchHitHandler);

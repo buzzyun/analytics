@@ -2,13 +2,18 @@ package org.fastcatgroup.analytics.web.controller;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
 import org.fastcatgroup.analytics.db.mapper.ClickHitMapper;
+import org.fastcatgroup.analytics.db.mapper.ClickKeywordHitMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchHitMapper;
+import org.fastcatgroup.analytics.db.mapper.SearchKeywordHitMapper;
+import org.fastcatgroup.analytics.db.vo.ClickKeywordHitVO;
 import org.fastcatgroup.analytics.db.vo.SearchHitVO;
 import org.fastcatgroup.analytics.service.ServiceManager;
 import org.springframework.stereotype.Controller;
@@ -140,19 +145,155 @@ public class CTRController extends AbstractController {
 		return mav;
 	}
 	
-	@RequestMapping("/keyword")
-	public ModelAndView keyword(@PathVariable String siteId) {
+	@RequestMapping("/detail")
+	public ModelAndView keyword(@PathVariable String siteId, @RequestParam(required=false) String timeText) {
 
 		ModelAndView mav = new ModelAndView();
-		mav.setViewName("report/ctr/keyword");
+		mav.setViewName("report/ctr/detail");
+		
+		
+		Calendar calendar = null;
+		Calendar endTime = null;
+		
+		if(timeText != null) {
+			calendar = SearchStatisticsProperties.parseDatetimeString(timeText, true);
+		} else {
+			calendar = Calendar.getInstance();
+			timeText = SearchStatisticsProperties.toDatetimeString(calendar);
+		}
+		
+		int timeTypeCode = Calendar.MONTH;
+		String timeId = SearchStatisticsProperties.getTimeId(calendar, timeTypeCode);
+		logger.debug("New time id >> {}", timeId);
+		
+		
+		AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
+		MapperSession<ClickHitMapper> clickHitMapperSession = dbService.getMapperSession(ClickHitMapper.class);
+		MapperSession<ClickKeywordHitMapper> clickKeywordHitMapperSession = dbService.getMapperSession(ClickKeywordHitMapper.class);
+		
+		//
+		//search PV 리스트를 가져온다.
+		//
+		int searchPv = 0;
+		MapperSession<SearchHitMapper> searchHitMapperSession = dbService.getMapperSession(SearchHitMapper.class);
+		try {
+			SearchHitMapper searchHitMapper = searchHitMapperSession.getMapper();
+			SearchHitVO vo = searchHitMapper.getEntry(siteId, "_root", timeId);
+			if (vo != null) {
+				searchPv = vo.getHit();
+			}
+		} catch (Exception e) {
+			logger.error("", e);
+		} finally {
+			if (searchHitMapperSession != null) {
+				searchHitMapperSession.closeSession();
+			}
+		}
+		
+		mav.addObject("searchPv", String.format("%,d", searchPv));
+		
+		List<String> clickTypeList = new ArrayList<String>();
+		clickTypeList.add("blog");
+		clickTypeList.add("goshop");
+		clickTypeList.add("list");
+		try {
+			
+			ClickHitMapper mapper = clickHitMapperSession.getMapper();
+			
+			Integer hit = mapper.getHit(siteId, timeId);
+			int ctCount = 0;
+			if(hit != null){
+				ctCount = hit.intValue();
+			}
+			mav.addObject("ctCount", String.format("%,d", ctCount));
+			
+			if(searchPv != 0){
+				mav.addObject("ctRate", "0%");
+			}else{
+				float ctr = ((float) ctCount / (float) searchPv) * 100.0f;
+				mav.addObject("ctRate", String.format("%.1f", ctr) + "%");
+			}
+			
+			for(String clickType : clickTypeList){
+				int typeHitValue = 0;
+				Integer typeHit = mapper.getTypeHit(siteId, timeId, clickType);
+				if(typeHit != null){
+					typeHitValue = typeHit;
+				}
+				mav.addObject("ctCount_"+clickType, String.format("%,d", typeHitValue));
+			}
+				
+		} catch (Exception e) {
+			logger.error("", e);
+		} finally {
+			if (clickHitMapperSession != null) {
+				clickHitMapperSession.closeSession();
+			}
+		}
+		
+		List<ClickKeywordHitVO> keywordList = null;
+		List<String> keywordSearchPvList = new ArrayList<String>();
+		List<String> kewordCtrList = new ArrayList<String>();
+		List<Map<String, String>> typeCountMapList = new ArrayList<Map<String, String>>();
+		MapperSession<SearchKeywordHitMapper> searchKeywordHitMapperSession = dbService.getMapperSession(SearchKeywordHitMapper.class);
+		try {
+			SearchKeywordHitMapper searchKeywordHitMapper = searchKeywordHitMapperSession.getMapper();
+			ClickKeywordHitMapper clickKeywordHitMapper = clickKeywordHitMapperSession.getMapper();
+			/*
+			 * 상위 20개의 키워드 리스트를 얻어온다.
+			 * */
+			keywordList = clickKeywordHitMapper.getKeywordEntryList(siteId, timeId, 20);
+			for(ClickKeywordHitVO vo : keywordList) {
+				String keyword = vo.getKeyword();
+				int keywordClickCount = vo.getCount();
+				SearchHitVO searchHitVO = searchKeywordHitMapper.getEntry(siteId, "_root", timeId, keyword);
+				int keywordSearchPv = 0;
+				float keywordCtRate = 0.0f;
+				if (searchHitVO != null) {
+					keywordSearchPv = searchHitVO.getHit();
+				}
+				if(keywordSearchPv > 0){
+					keywordCtRate = ((float) keywordClickCount / (float) keywordSearchPv) * 100.0f;
+				}
+				keywordSearchPvList.add(String.format("%,d", keywordSearchPv));
+				kewordCtrList.add(String.format("%.1f", keywordCtRate)+"%");
+				
+				Map<String, String> typeCountMap = new HashMap<String, String>();
+				for(String clickType : clickTypeList){
+					int keywordClickTypeCount = clickKeywordHitMapper.getKeywordClickCount(siteId, timeId, keyword, clickType);
+					typeCountMap.put(clickType, String.format("%,d", keywordClickTypeCount));
+				}
+				typeCountMapList.add(typeCountMap);
+			}
+		} catch (Exception e) {
+			logger.error("", e);
+		} finally {
+			if (searchKeywordHitMapperSession != null) {
+				searchKeywordHitMapperSession.closeSession();
+			}
+			if (clickKeywordHitMapperSession != null) {
+				clickKeywordHitMapperSession.closeSession();
+			}
+		}
+		
+		/* 키워드별 */
+		mav.addObject("keywordList", keywordList);
+		mav.addObject("keywordSearchPvList", keywordSearchPvList);
+		mav.addObject("kewordCtrList", kewordCtrList);
+		mav.addObject("typeCountMapList", typeCountMapList);
+		
+		mav.addObject("timeText", timeText);
+		mav.addObject("clickTypeList", clickTypeList);
+		logger.debug(">>clickTypeList {} ", clickTypeList);
 		return mav;
+		
 	}
 	
-	@RequestMapping("/searchKeyword")
+	@RequestMapping("/keyword")
 	public ModelAndView searchKeyword(@PathVariable String siteId) {
 
 		ModelAndView mav = new ModelAndView();
-		mav.setViewName("report/ctr/searchKeyword");
+		mav.setViewName("report/ctr/keyword");
 		return mav;
 	}
 }

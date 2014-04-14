@@ -33,11 +33,21 @@
 		truncate table ${siteId}_click_hit_keyword 
 	</delete>
 		
-	<select id="getEntryList" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.ClickKeywordHitVO">
-		select * from ${siteId}_click_hit_keyword 
+	<select id="getKeywordEntryList" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.ClickKeywordHitVO">
+		select * from (
+			select keyword, sum(hit) as count from ${siteId}_click_hit_keyword 
+			where timeId=#{timeId}
+			group by keyword
+			order by count desc
+		) as A limit ${topCount}
+	</select>
+	
+	<select id="getKeywordClickCount" parameterType="map" resultType="int">
+		select hit from ${siteId}_click_hit_keyword 
 		<where>
 			timeId=#{timeId}
-			and keyword=#{keyword}
+			and keyword = #{keyword}
+			and clickType = #{clickType}
 		</where>
 	</select>
 	

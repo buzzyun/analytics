@@ -40,7 +40,7 @@ $(document).ready(function(){
 	<div id="container">
 		<c:import url="${ROOT_PATH}/report/sideMenu.jsp">
 			<c:param name="lcat" value="ctr" />
-			<c:param name="mcat" value="searchKeyword" />
+			<c:param name="mcat" value="keyword" />
 		</c:import>
 		<div id="content">
 			<div class="container">
@@ -132,19 +132,19 @@ $(document).ready(function(){
 									<tbody>
 										<tr>
 											<td>1</td>
-											<td><a href="#">일월 순면 황토 온수매트 2014년형</a></td>
+											<td><a href="#">2074170</a></td>
 											<td>63</td>
 											<td>0</td>
 										</tr>
 										<tr>
 											<td>2</td>
-											<td>삼진 웰퍼스 스마트 온수매트 극세사 2014년형</td>
+											<td>2674170</td>
 											<td>59</td>
 											<td>0</td>
 										</tr>
 										<tr>
 											<td>3</td>
-											<td>파크론 옐로우베어 온수 놀이방매트</td>
+											<td>3074170</td>
 											<td>28</td>
 											<td>0</td>
 										</tr>
@@ -153,7 +153,7 @@ $(document).ready(function(){
 									%>
 										<tr>
 											<td><%=i+1 %></td>
-											<td><a href="#">동양이지텍 스팀보이 침대용 순면 온수매트</a></td>
+											<td><a href="#"><%=2074170 + i*120000 %></a></td>
 											<td><%=40-i %></td>
 											<td>0</td>
 										</tr>

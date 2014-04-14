@@ -38,14 +38,6 @@
 		</where>
 	</select>
 	
-	<select id="getEntryList" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchHitVO">
-		select * from ${siteId}_hit
-		<where>
-			categoryId=#{categoryId}
-			and timeId = #{timeId}
-		</where>
-	</select>
-	
 	<insert id="putEntry" parameterType="map">
 		insert into ${siteId}_hit 
 		(categoryId, timeId, hit, avgTime, maxTime) values (#{categoryId}, #{timeId}, #{hit}, #{avgTime}, #{maxTime})

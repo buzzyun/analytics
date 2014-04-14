@@ -2,27 +2,20 @@ package org.fastcatgroup.analytics.db.vo;
 
 public class ClickKeywordHitVO {
 	
-	private String timeId;
 	private String keyword;
-	private int hit;
+	private int count;
 
-	public String getTimeId() {
-		return timeId;
-	}
-	public void setTimeId(String timeId) {
-		this.timeId = timeId;
-	}
 	public String getKeyword() {
 		return keyword;
 	}
 	public void setKeyword(String keyword) {
 		this.keyword = keyword;
 	}
-	public int getHit() {
-		return hit;
+	public int getCount() {
+		return count;
 	}
-	public void setHit(int hit) {
-		this.hit = hit;
+	public void setCount(int count) {
+		this.count = count;
 	}
 	
 	

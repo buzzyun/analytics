@@ -1,8 +1,14 @@
-<%@page import="java.util.Random"%>
+<%@page import="java.util.*, org.fastcatgroup.analytics.db.vo.*"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
+List<String> clickTypeList = (List<String>) request.getAttribute("clickTypeList");
+List<ClickKeywordHitVO> keywordList = (List<ClickKeywordHitVO>) request.getAttribute("keywordList");
+List<Map<String, String>> typeCountMapList = (List<Map<String, String>>) request.getAttribute("typeCountMapList");
+List<String> keywordSearchPvList = (List<String>) request.getAttribute("keywordSearchPvList");
+List<String> kewordCtrList = (List<String>) request.getAttribute("kewordCtrList");
+
 String timeText = (String) request.getAttribute("timeText");
 if(timeText == null ) {
 	timeText = ""; 
@@ -40,7 +46,7 @@ $(document).ready(function(){
 	<div id="container">
 		<c:import url="${ROOT_PATH}/report/sideMenu.jsp">
 			<c:param name="lcat" value="ctr" />
-			<c:param name="mcat" value="keyword" />
+			<c:param name="mcat" value="detail" />
 		</c:import>
 		<div id="content">
 			<div class="container">
@@ -64,7 +70,7 @@ $(document).ready(function(){
 				<!--=== Page Header ===-->
 				<div class="page-header">
 					<div class="page-title page-title-sm">
-						<h3>Keyword Click-through</h3>
+						<h3>Detail Click-through</h3>
 					</div>
 				</div>
 				<!-- /Page Header -->
@@ -102,9 +108,9 @@ $(document).ready(function(){
 							<div class="widget-content">
 								<ul class="stats">
 									<!-- .no-dividers -->
-									<li><strong>172,055</strong> <small>Search PV</small></li>
-									<li class="text-success"><strong>86,372</strong> <small>Click-through count</small></li>
-									<li class="text-primary"><strong>50.20%</strong> <small>Click-through rate</small></li>
+									<li><strong>${searchPv}</strong> <small>Search PV</small></li>
+									<li class="text-success"><strong>${ctCount }</strong> <small>Click-through count</small></li>
+									<li class="text-primary"><strong>${ctRate }</strong> <small>Click-through rate</small></li>
 								</ul>
 							</div>
 						</div>
@@ -116,9 +122,14 @@ $(document).ready(function(){
 							</div>
 							<div class="widget-content">
 								<ul class="stats">
-									<li><strong>76,086</strong> <small>상품블로그</small></li>
-									<li><strong>7,257</strong> <small>사러가기</small></li>
-									<li><strong>3,029</strong> <small>상품리스트</small></li>
+									<%
+									for(String clickType : clickTypeList) {
+										String ctCount = "ctCount_" + clickType;
+									%>
+									<li><strong><%=request.getAttribute(ctCount) %></strong> <small><%=clickType %></small></li>
+									<%
+									}
+									%>
 								</ul>
 							</div>
 						</div>
@@ -141,47 +152,37 @@ $(document).ready(function(){
 											<th>Search count</th>
 											<th>Click-through count</th>
 											<th>Click-through rate</th>
-											<th>상품블로그</th>
-											<th>사러가기</th>
-											<th>상품리스트</th>
+											<%
+											for(String clickType : clickTypeList) {
+											%>
+											<th><%=clickType %></th>
+											<%
+											}
+											%>
 										</tr>
 									</thead>
 									<tbody>
-										<tr>
-											<td>1</td>
-											<td>온수매트</td>
-											<td>18,543</td>
-											<td>13,688</td>
-											<td>41.42</td>
-											<td>7,651</td>
-											<td>37</td>
-											<td>0</td>
-										</tr>
-										<tr>
-											<td>2</td>
-											<td>노트북</td>
-											<td>48,344</td>
-											<td>9,788</td>
-											<td>32.32</td>
-											<td>8,651</td>
-											<td>12</td>
-											<td>0</td>
-										</tr>
 									<%
-										for(int i =2;i< 15; i++){
+									for(int i = 0; i < keywordList.size(); i++) {
+										ClickKeywordHitVO vo = keywordList.get(i);
+										Map<String, String> typeCountMap = typeCountMapList.get(i);
 									%>
 										<tr>
 											<td><%=i+1 %></td>
-											<td>마우스</td>
-											<td>7,234</td>
-											<td>3,234</td>
-											<td>23.23</td>
-											<td>2,654</td>
-											<td>32</td>
-											<td>0</td>
+											<td><%=vo.getKeyword() %></td>
+											<td><%=keywordSearchPvList.get(i) %></td>
+											<td><%=vo.getCount() %></td>
+											<td><%=kewordCtrList.get(i) %></td>
+											<%
+											for(String clickType : clickTypeList) {
+											%>
+											<td><%=typeCountMap.get(clickType) %></td>
+											<%
+											}
+											%>
 										</tr>
 									<%
-										}
+									}
 									%>
 									</tbody>
 								</table>

@@ -39,6 +39,7 @@ public class UpdateClickKeywordTypeCountHandler extends ProcessHandler {
 			br = new BufferedReader(new FileReader(file));
 			ClickKeywordHitMapper mapper = mapperSession.getMapper();
 			
+			mapper.updateClear(siteId, timeId);
 			for(String rline = null; (rline = br.readLine())!=null;) {
 				String[] data = rline.split("\t");
 				
@@ -51,7 +52,6 @@ public class UpdateClickKeywordTypeCountHandler extends ProcessHandler {
 				} catch (NumberFormatException ignore) { }
 				
 				logger.debug("#### UpdateClickKeywordTypeHit {} >> {} > {} / {}", timeId, clickType, mapper);
-				mapper.updateClear(siteId, timeId, keyword);
 				mapper.putEntry(siteId, timeId, keyword, clickType, count);
 				
 			}

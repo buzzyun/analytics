@@ -64,12 +64,12 @@
 						href="<c:url value="/${siteId}/report/ctr/view.html"/>">
 							<i class="icon-angle-right"></i> Overview
 					</a></li> 
-					<li class="<%=(lcatCurrent && "keyword".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/ctr/keyword.html"/>">
+					<li class="<%=(lcatCurrent && "detail".equals(mcat)) ? "current" : "" %>"><a
+						href="<c:url value="/${siteId}/report/ctr/detail.html"/>">
 							<i class="icon-angle-right"></i> Detail
 					</a></li> 
-					<li class="<%=(lcatCurrent && "searchKeyword".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/report/ctr/searchKeyword.html"/>">
+					<li class="<%=(lcatCurrent && "keyword".equals(mcat)) ? "current" : "" %>"><a
+						href="<c:url value="/${siteId}/report/ctr/keyword.html"/>">
 							<i class="icon-angle-right"></i> Keyword
 					</a></li> 
 				</ul>

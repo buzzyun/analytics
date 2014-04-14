@@ -268,7 +268,7 @@ $(document).ready(function() {
 				<!--=== Page Header ===-->
 				<div class="page-header">
 					<div class="page-title page-title-sm">
-						<h3>Click-through Rate</h3>
+						<h3>Overview</h3>
 					</div>
 				</div>
 				<!-- /Page Header -->

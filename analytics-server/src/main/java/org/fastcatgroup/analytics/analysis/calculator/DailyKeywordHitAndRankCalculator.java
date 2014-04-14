@@ -68,15 +68,18 @@ public class DailyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		CategoryProcess<SearchLog> categoryProcess = new CategoryProcess<SearchLog>(categoryId);
 		SearchLogValidator logValidator = new SearchLogValidator(banWords, maxKeywordLength);
 		
-		LogAggregatorContainer<SearchLog> aggregator = new LogAggregatorContainer<SearchLog>();
+		/* 서비스별 갯수. */
 		
+		LogAggregatorContainer<SearchLog> aggregator = new LogAggregatorContainer<SearchLog>();
+		aggregator.addAggregator(new ServiceCountLogAggregator<SearchLog>(workingDir, SERVICE_COUNT_FILENAME, runKeySize, encoding, minimumHitCount, entryParser));
 		aggregator.addAggregator(new KeyCountLogAggregator<SearchLog>(workingDir, KEY_COUNT_FILENAME, runKeySize, encoding, minimumHitCount, entryParser));
 		aggregator.addAggregator(new KeyCountEmptyLogAggregator<SearchLog>(workingDir, KEY_COUNT_EMPTY_FILENAME, runKeySize, encoding, minimumHitCount, entryParser));
 		
-		new SearchLogKeyCountHandler(categoryId, aggregator, logValidator, entryParser).attachLogHandlerTo(categoryProcess);
+		new SearchLogKeyCountHandler(workingDir, SERVICE_COUNT_FILENAME, logValidator, entryParser).attachLogHandlerTo(categoryProcess);
 		
+		ProcessHandler updateServiceHitHandler = new UpdateSearchHitHandler(siteId, categoryId, timeId).attachProcessTo(categoryProcess);
 		/* 0. 갯수를 db로 저장한다. */
-		ProcessHandler updateSearchHitHandler = new UpdateSearchHitHandler(siteId, categoryId, timeId).attachProcessTo(categoryProcess);
+		ProcessHandler updateSearchHitHandler = new UpdateSearchHitHandler(siteId, categoryId, timeId).attachProcessTo(updateServiceHitHandler);
 		
 		/* 1. count로 정렬하여 key-count-rank.log로 저장. */
 		ProcessHandler logSort = new KeyCountLogSortHandler(workingDir, KEY_COUNT_FILENAME, KEY_COUNT_RANK_FILENAME, encoding, runKeySize, entryParser).appendTo(updateSearchHitHandler);

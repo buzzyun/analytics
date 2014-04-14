@@ -55,7 +55,7 @@ public class MonthlyClickKeywordHitCalculator extends Calculator<ClickLog> {
 				} catch (IOException ignore) { }
 			}
 			
-			String timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DAY_OF_MONTH);
+			String timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.MONTH);
 			int runKeySize = SearchStatisticsProperties.runKeySize;
 			
 			//
@@ -88,23 +88,24 @@ public class MonthlyClickKeywordHitCalculator extends Calculator<ClickLog> {
 					clickLogFiles, encoding, clickTypeLogAggregator,
 					MergeClickTypeCountProcessHandler.RUN_CASE_CLICK).attachProcessTo(categoryProcess);
 			ProcessHandler updateClickTypeCountHandler = new UpdateClickTypeCountHandler(siteId, timeId, file, encoding).appendTo(mergeKeyCount);
-			
 			file.delete();
+			
 			clickTypeParser = new KeyCountRunEntryParser(new int[]{0, 1}, 2 );
 			clickTypeLogAggregator = new KeyCountLogAggregator<ClickLog>(workingDir, "run_click_type.log", runKeySize, encoding, minimumHitCount, clickTypeParser);
 			mergeKeyCount = new MergeClickTypeCountProcessHandler(
 					clickLogFiles, encoding, clickTypeLogAggregator,
 					MergeClickTypeCountProcessHandler.RUN_CASE_CLICK_KEYWORD).appendTo(updateClickTypeCountHandler);
 			updateClickTypeCountHandler = new UpdateClickKeywordTypeCountHandler(siteId, timeId, file, encoding).appendTo(mergeKeyCount);
-			
-			
 			file.delete();
+			
+			
 			clickTypeParser = new KeyCountRunEntryParser(new int[]{0, 1, 2}, 3 );
 			clickTypeLogAggregator = new KeyCountLogAggregator<ClickLog>(workingDir, "run_click_type.log", runKeySize, encoding, minimumHitCount, clickTypeParser);
 			mergeKeyCount = new MergeClickTypeCountProcessHandler(
 					clickLogFiles, encoding, clickTypeLogAggregator,
 					MergeClickTypeCountProcessHandler.RUN_CASE_CLICK_KEYWORD_TARGET).appendTo(updateClickTypeCountHandler);
 			updateClickTypeCountHandler = new UpdateClickKeywordTargetTypeCountHandler(siteId, timeId, file, encoding).appendTo(mergeKeyCount);
+			file.delete();
 		}
 		return categoryProcess;
 	}

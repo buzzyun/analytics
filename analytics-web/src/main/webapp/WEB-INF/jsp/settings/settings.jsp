@@ -228,14 +228,16 @@ function update(formId, mode) {
 										<div class="dataTables_header clearfix">
 											<div class="input-group col-md-12">
 												<button class="btn btn-sm" onclick="updateCategory('category-form','update')">
-												 <span class="icon-ok"></span> Apply Category
-												 </button>
+													<span class="icon-ok"></span> Apply Category
+												</button>
+												 &nbsp;
 												<button class="btn btn-sm" data-toggle="modal" data-target="#siteEdit" data-backdrop="static">
-												 <span class="icon-edit"></span> Edit Site
-												 </button>
+													<span class="icon-edit"></span> Edit Site
+												</button>
+												 &nbsp;
 												<button class="btn btn-sm btn-danger" onclick="removeSite()">
-												 <span class="icon-minus-sign"></span> Remove Site
-												 </button>
+													<span class="icon-minus-sign"></span> Remove Site
+												</button>
 											</div>
 										</div>
 										<form class="form-horizontal" role="form" id="category-form">
@@ -284,7 +286,7 @@ function update(formId, mode) {
 											<tr>
 												<td colspan="2">
 												<a class="btn btn-sm" href="javascript:{}">
-													<span class="icon-plus-sign"></span>Add New
+													<span class="icon-plus-sign"></span> Add New
 												</a>
 												</td>
 											</tr>

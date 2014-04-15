@@ -500,7 +500,7 @@ DecimalFormat format = new DecimalFormat("#,###");
 					<div class="col-md-12">
 						<div class="widget box">
 							<div class="widget-header">
-								<h4>Click Through Rate</h4>
+								<h4>Click-through Rate</h4>
 							</div>
 							<div class="widget-content">
 								<div id="chart_dashboard_ctr" class="chart"></div>

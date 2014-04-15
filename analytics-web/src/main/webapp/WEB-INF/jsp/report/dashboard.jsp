@@ -7,19 +7,11 @@
 <%@page import="org.fastcatgroup.analytics.analysis.SearchStatisticsProperties" %>
 <%
 
-List<SearchHitVO> currentWeek = (List<SearchHitVO>)request.getAttribute("currentWeekData");
-List<SearchHitVO> lastWeek = (List<SearchHitVO>)request.getAttribute("lastWeekData");
-
+List<SearchHitVO> currentWeek = (List<SearchHitVO>) request.getAttribute("currentWeekData");
+List<SearchHitVO> lastWeek = (List<SearchHitVO>) request.getAttribute("lastWeekData");
+String timeText = (String) request.getAttribute("timeText");
 int totalCurrentWeek = 0;
 int totalLastWeek = 0;
-
-String fromDateId = "";
-String toDateId = "";
-
-if(currentWeek.size() > 0) {
-	fromDateId = currentWeek.get(0).getTimeId();
-	toDateId = currentWeek.get(currentWeek.size()-1).getTimeId();
-}
 
 DecimalFormat format = new DecimalFormat("#,###");
 %>
@@ -311,7 +303,7 @@ DecimalFormat format = new DecimalFormat("#,###");
 						<div class="widget">
 							<div class="widget-header">
 								<h4>
-									<i class="icon-calendar"></i> Period : <%=fromDateId %> - <%=toDateId %> 
+									<i class="icon-calendar"></i> Period : ${timeText}
 								</h4>
 							</div>
 						</div>
@@ -481,8 +473,8 @@ DecimalFormat format = new DecimalFormat("#,###");
 				<!-- - -->
 				<div class="row">
 				<% 
-				for(int inx=0;inx<typeListArray.length; inx++) {
-					List<SearchTypeHitVO>typeList = typeListArray[inx];
+				for(int inx = 0;inx < typeListArray.length; inx++) {
+					List<SearchTypeHitVO> typeList = typeListArray[inx];
 					if(typeList.size() > 0) {
 						String typeId = typeList.get(0).getTypeId();
 					%>

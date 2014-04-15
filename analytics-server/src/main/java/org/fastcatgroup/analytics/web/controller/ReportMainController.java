@@ -1,6 +1,8 @@
 package org.fastcatgroup.analytics.web.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -69,26 +71,26 @@ public class ReportMainController extends AbstractController {
 			//일주일치와 그 전주의 일자별 데이터를 가져온다.
 			Calendar calendar = SearchStatisticsProperties.getCalendar();
 			Calendar fromDate = SearchStatisticsProperties.getFirstDayOfWeek(calendar);
-			if(fromDate.get(Calendar.DAY_OF_WEEK) == 1 ) {
-				
-			}
 			Calendar toDate = SearchStatisticsProperties.getLastDayOfWeek(calendar);
 			
-			String fromDateStr = SearchStatisticsProperties.getTimeId(fromDate, Calendar.DAY_OF_MONTH);
-			String toDateStr = SearchStatisticsProperties.getTimeId(toDate, Calendar.DAY_OF_MONTH);
+			String fromTimeId = SearchStatisticsProperties.getTimeId(fromDate, Calendar.DAY_OF_MONTH);
+			String toTimeId = SearchStatisticsProperties.getTimeId(toDate, Calendar.DAY_OF_MONTH);
+			
+			String timeText = SearchStatisticsProperties.toDatetimeString(fromDate)
+					+ " - " + SearchStatisticsProperties.toDatetimeString(toDate);
 			
 			List<SearchHitVO> currentWeek = fillData(
 					hitMapper.getEntryListBetween(siteId, categoryId,
-							fromDateStr, toDateStr), fromDate, toDate);
+							fromTimeId, toTimeId), fromDate, toDate);
 			
 			fromDate.add(Calendar.DAY_OF_MONTH, -7);
 			toDate.add(Calendar.DAY_OF_MONTH, -7);
-			fromDateStr = SearchStatisticsProperties.getTimeId(fromDate, Calendar.DAY_OF_MONTH);
-			toDateStr = SearchStatisticsProperties.getTimeId(toDate, Calendar.DAY_OF_MONTH);
+			fromTimeId = SearchStatisticsProperties.getTimeId(fromDate, Calendar.DAY_OF_MONTH);
+			toTimeId = SearchStatisticsProperties.getTimeId(toDate, Calendar.DAY_OF_MONTH);
 			
 			List<SearchHitVO> lastWeek = fillData(
 					hitMapper.getEntryListBetween(siteId, categoryId,
-							fromDateStr, toDateStr), fromDate, toDate);
+							fromTimeId, toTimeId), fromDate, toDate);
 			
 			mav.addObject("currentWeekData", currentWeek);
 			mav.addObject("lastWeekData", lastWeek);
@@ -113,7 +115,13 @@ public class ReportMainController extends AbstractController {
 			
 			//타입별
 			String[] types = new String[] { "category", "login", "age" };
-			
+			String[] typeRateListArray = environment.settingManager().getSystemSettings().getStringArray("dashboard.typeRateList", ",");
+			List<String> typeRateList = null;
+			if(typeRateListArray == null){
+				typeRateList = new ArrayList<String>(0);
+			}else{
+				typeRateList = Arrays.asList(typeRateListArray);
+			}
 			@SuppressWarnings("unchecked")
 			List<SearchTypeHitVO>[] typeListArray = new List[types.length];
 			
@@ -122,7 +130,9 @@ public class ReportMainController extends AbstractController {
 				List<SearchTypeHitVO> typeList = typeMapper.getEntryList(siteId, categoryId, timeId, typeId);
 				typeListArray[typeInx] = typeList;
 			}
-			mav.addObject("typeListArray",typeListArray);
+			logger.debug(">>>typeRateList {}", typeRateList);
+			mav.addObject("typeListArray", typeListArray);
+			mav.addObject("timeText", timeText);
 			
 			//TODO:CTR...
 			

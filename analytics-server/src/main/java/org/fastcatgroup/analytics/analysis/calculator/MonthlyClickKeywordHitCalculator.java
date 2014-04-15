@@ -89,7 +89,7 @@ public class MonthlyClickKeywordHitCalculator extends Calculator<ClickLog> {
 			/*
 			 * 2. 키워드별 type별 클릭수.
 			 * */
-			clickTypeParser = new KeyCountRunEntryParser(new int[]{0, 1}, 2 );
+			clickTypeParser = new KeyCountRunEntryParser(new int[]{0, 2}, 3 );
 			clickTypeLogAggregator = new KeyCountLogAggregator<ClickLog>(workingDir, RUN_CLICK_TYPE_FILENAME, runKeySize, encoding, minimumHitCount, clickTypeParser);
 			mergeKeyCount = new MergeClickTypeCountProcessHandler(
 					clickLogFiles, encoding, clickTypeLogAggregator,

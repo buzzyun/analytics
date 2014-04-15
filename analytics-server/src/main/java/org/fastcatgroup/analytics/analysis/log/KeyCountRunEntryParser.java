@@ -32,7 +32,7 @@ public class KeyCountRunEntryParser implements EntryParser<KeyCountRunEntry> {
 					}
 					key+=el[inx];
 				}
-				
+				logger.debug(">>>>>el {} {}", "", el);
 				return new KeyCountRunEntry(line, key, Integer.parseInt(el[countIndex]));
 			} catch (Exception e) {
 				logger.error("", e);

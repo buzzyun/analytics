@@ -71,26 +71,53 @@ $(document).ready(function(){
 					</div>
 				</div>
 				<!-- /Page Header -->
-				<div class="row row-bg row-bg-sm">
+				<div class="row ">
 					<!-- .row-bg -->
 					
-					<div class="col-md-12">
-						<form class="form-inline" method="get" >
-							<select name="taskType" class="select_flat select_flat-sm fcol2-1">
-								<option value="searchStatictics">Search Statistics</option>
-								<option value="relateKeyword">Relate Keyword</option>
-								<option value="realtimeKeyword">Realtime Popular Keyword</option>
-								<!-- <option value="W">Week</option>
-								<option value="M">Month</option>
-								<option value="Y">Year</option> -->
-							</select>
-							<input class="form-control fcol1-2 " size="16" type="text" name="date" autocomplete="off" value="<%=date %>" >
-							<input type="submit" class="btn btn-sm btn-primary" value="Run">
-						</form>
+						
+				<div class="col-md-12">
+					<div class="widget">
+						<div class="widget-header">
+							<h4>Search Statistics</h4>
+						</div>
+						<div class="widget-content no-padding">
+							<form class="form-inline" method="post" >
+								<input type="hidden" name="taskType" value="searchStatictics" />
+								<input class="form-control fcol1-2 " size="16" type="text" name="date" autocomplete="off" value="<%=date %>" >
+								<input type="submit" class="btn btn-primary" value="Run">
+							</form>
+						</div>
 					</div>
 				</div>
 				
+				<div class="col-md-12">
+					<div class="widget">
+						<div class="widget-header">
+							<h4>Relate Keyword</h4>
+						</div>
+						<div class="widget-content no-padding">
+							<form class="form-inline" method="post" >
+								<input type="hidden" name="taskType" value="relateKeyword" />
+								<input class="form-control fcol1-2 " size="16" type="text" name="date" autocomplete="off" value="<%=date %>" >
+								<input type="submit" class="btn btn-primary" value="Run">
+							</form>
+						</div>
+					</div>
+				</div>
 				
+				<div class="col-md-12">
+					<div class="widget">
+						<div class="widget-header">
+							<h4>Realtime Popular Keyword</h4>
+						</div>
+						<div class="widget-content no-padding">
+							<form class="form-inline" method="post" >
+								<input type="hidden" name="taskType" value="realtimeKeyword" />
+								<input type="submit" class="btn btn-primary" value="Run">
+							</form>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

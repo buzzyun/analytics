@@ -18,9 +18,9 @@ import java.util.Random;
 
 public class LogGenerator {
 	public static void main(String[] args) {
-		if (args.length != 7) {
-			System.out.println("Usage: LogGenerator [analytics-path] [site id] [keyword file path] [min,max qty] [from,to date] [category list] [type list]");
-			System.out.println("   ex: > LogGenerator /home/fastcat/analytics total ../keyword.txt 1000,10000 20140102,20150102 cat1,cat2 category<cat1|cate2>,page<1|2|3|4|5>,sort<score|date|price>,age<0|10|20|30|40|50>,service<autocomplete|catelist>,login<Y|N>,gender<M|F|U>");
+		if (args.length != 10) {
+			System.out.println("Usage: LogGenerator [analytics-path] [site id] [keyword file path] [min,max qty] [from,to date] [category list] [type list] [click min,max] [click id list] [click types]");
+			System.out.println("   ex: > LogGenerator /home/fastcat/analytics total ../keyword.txt 1000,10000 20140102,20150102 cat1,cat2 category<cat1|cate2>,page<1|2|3|4|5>,sort<score|date|price>,age<0|10|20|30|40|50>,service<autocomplete|catelist>,login<Y|N>,gender<M|F|U> 0,10 11111,22222,33333,aaa_12345,bbb_22222,ccc_33333 blog,goshop,list");
 			System.exit(1);
 		}
 		String homePath = args[0];
@@ -43,7 +43,13 @@ public class LogGenerator {
 		
 		String[] categoryList = args[5].split(",");
 		String typeList = args[6]; // category,page,sort,age,service,login,gender
-		String[] clickIdList = args[7].split(",");
+		String[] clickMinMax = args[7].split(",");
+		
+		int minClick = Integer.parseInt(clickMinMax[0]);
+		int maxClick = Integer.parseInt(clickMinMax[1]);
+		
+		String[] clickIdList = args[8].split(",");
+		String[] clickTypeList = args[9].split(",");
 
 		File file = new File(keywordFilePath);
 
@@ -69,10 +75,10 @@ public class LogGenerator {
 		File home = new File(homePath, "statistics");
 		home = new File(home, "search");
 		System.out.println("generating...");
-		new LogGenerator().generate(home, siteId, file, minQty, maxQty, fromDate, toDate, categoryList, types, typeValues, clickIdList);
+		new LogGenerator().generate(home, siteId, file, minQty, maxQty, fromDate, toDate, categoryList, types, typeValues, minClick, maxClick, clickIdList, clickTypeList);
 	}
 	
-	private void generate(File home, String siteId, File file, int minQty, int maxQty, Calendar fromDate, Calendar toDate, String[] categoryList, String[] types, List<String>[] typeValues, String[] clickIdList) {
+	private void generate(File home, String siteId, File file, int minQty, int maxQty, Calendar fromDate, Calendar toDate, String[] categoryList, String[] types, List<String>[] typeValues, int minClick, int maxClick, String[] clickIdList, String[] clickTypeList) {
 		List<String> keywordList = new ArrayList<String>();
 		BufferedReader reader = null;
 		try {
@@ -174,12 +180,20 @@ public class LogGenerator {
 						insertSearchLog(home, calendar, searchData, (inx==0 && inx2==0));
 						
 						//clicklog
-						int clickQty = r.nextInt(10);
+						int clickQty = r.nextInt(maxClick - minClick) + minClick;
 						String[] rawData = searchData.split("\t");
 						for (int clickInx = 0; clickInx < clickQty; clickInx++) {
 							String productId="";
-							String service = rawData[7+4];
-							insertClickLog(home, calendar, rawData[3], productId, service, rawData, (inx==0&& clickInx==0));
+							String clickType="";
+							
+							productId = clickIdList[ r.nextInt(clickIdList.length) ];
+							
+							//if(productId.contains("_")) { //제휴사 상품타입일 경우 goshop 으로 고정
+							//	clickType = clickTypeList[];
+							//}
+							
+							clickType = clickTypeList[ r.nextInt(clickTypeList.length) ];
+							insertClickLog(home, calendar, timeId, rawData[3], productId, clickType, rawData, (inx==0 && inx2==0 && clickInx==0));
 						}
 						count++;
 						if(count % 10000 == 0){
@@ -191,7 +205,6 @@ public class LogGenerator {
 			}
 		} finally {
 		}
-
 	}
 	
 	private static Calendar parseDate(String dateStr) {
@@ -243,7 +256,7 @@ public class LogGenerator {
 		return sb.toString();
 	}
 	
-	private void insertClickLog(File baseDir, Calendar calendar, String string, String productId, String service, String[] rawData, boolean create) {
+	private void insertClickLog(File baseDir, Calendar calendar, String timeId, String keyword, String productId, String clickType, String[] rawData, boolean create) {
 		BufferedWriter writer = null;
 		try {
 			
@@ -267,18 +280,23 @@ public class LogGenerator {
 			File file = null;
 			
 			//click_raw log
-//			file = new File(dataDir, "click_raw.log");
-//			//System.out.println(file.getAbsolutePath());
-//			if(create && file.exists()) {
-//				System.out.println("deleting.."+file.getAbsolutePath());
-//				file.delete();
-//				writer = new BufferedWriter(new FileWriter(file));
-//			} else {
-//				writer = new BufferedWriter(new FileWriter(file, true));
-//			}
-//			
-//		} catch (IOException e) {
-//			e.printStackTrace();
+			file = new File(dataDir, "click_raw.log");
+			//System.out.println(file.getAbsolutePath());
+			if(create && file.exists()) {
+				System.out.println("deleting.."+file.getAbsolutePath());
+				file.delete();
+				writer = new BufferedWriter(new FileWriter(file));
+			} else {
+				writer = new BufferedWriter(new FileWriter(file, true));
+			}
+			
+			writer.append(timeId).append("\t") //시간
+			.append(keyword).append("\t") //키워드
+			.append(productId).append("\t") //상품id
+			.append(clickType).append("\n"); //클릭타입
+			
+		} catch (IOException e) {
+			e.printStackTrace();
 		} finally {
 			if(writer!=null) {
 				try {

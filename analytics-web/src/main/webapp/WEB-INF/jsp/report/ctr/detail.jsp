@@ -80,7 +80,7 @@ $(document).ready(function(){
 					<div class="col-md-12">
 						<form class="form-inline" role="form">
 							<input class="form-control fcol1-2 " size="16" type="text" id="timeText" name="timeText" value="<%=timeText %>" >
-							<input type="button" class="btn btn-primary" value="Submit">
+							<input type="submit" class="btn btn-primary" value="Submit">
 						</form>
 					</div>
 				</div>
@@ -89,7 +89,7 @@ $(document).ready(function(){
 						<div class="widget">
 							<div class="widget-header">
 								<h4>
-									<i class="icon-calendar"></i> Period : 2014.04
+									<i class="icon-calendar"></i> Period : <%=timeText.substring(0, 7) %>
 								</h4>
 							</div>
 						</div>

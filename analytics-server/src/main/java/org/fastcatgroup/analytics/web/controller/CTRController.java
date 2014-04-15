@@ -11,9 +11,11 @@ import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
 import org.fastcatgroup.analytics.db.mapper.ClickHitMapper;
 import org.fastcatgroup.analytics.db.mapper.ClickKeywordHitMapper;
+import org.fastcatgroup.analytics.db.mapper.ClickKeywordTargetHitMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchHitMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchKeywordHitMapper;
 import org.fastcatgroup.analytics.db.vo.ClickKeywordHitVO;
+import org.fastcatgroup.analytics.db.vo.ClickKeywordTargetHitVO;
 import org.fastcatgroup.analytics.db.vo.SearchHitVO;
 import org.fastcatgroup.analytics.service.ServiceManager;
 import org.springframework.stereotype.Controller;
@@ -151,10 +153,7 @@ public class CTRController extends AbstractController {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/ctr/detail");
 		
-		
 		Calendar calendar = null;
-		Calendar endTime = null;
-		
 		if(timeText != null) {
 			calendar = SearchStatisticsProperties.parseDatetimeString(timeText, true);
 		} else {
@@ -207,7 +206,7 @@ public class CTRController extends AbstractController {
 			}
 			mav.addObject("ctCount", String.format("%,d", ctCount));
 			
-			if(searchPv != 0){
+			if(searchPv == 0){
 				mav.addObject("ctRate", "0%");
 			}else{
 				float ctr = ((float) ctCount / (float) searchPv) * 100.0f;
@@ -260,7 +259,7 @@ public class CTRController extends AbstractController {
 				
 				Map<String, String> typeCountMap = new HashMap<String, String>();
 				for(String clickType : clickTypeList){
-					int keywordClickTypeCount = clickKeywordHitMapper.getKeywordClickCount(siteId, timeId, keyword, clickType);
+					int keywordClickTypeCount = clickKeywordHitMapper.getKeywordTypeClickCount(siteId, timeId, keyword, clickType);
 					typeCountMap.put(clickType, String.format("%,d", keywordClickTypeCount));
 				}
 				typeCountMapList.add(typeCountMap);
@@ -290,10 +289,102 @@ public class CTRController extends AbstractController {
 	}
 	
 	@RequestMapping("/keyword")
-	public ModelAndView searchKeyword(@PathVariable String siteId) {
+	public ModelAndView searchKeyword(@PathVariable String siteId, @RequestParam(required=false) String timeText, @RequestParam(required=false) String keyword) {
 
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/ctr/keyword");
+		Calendar calendar = null;
+		if(timeText != null) {
+			calendar = SearchStatisticsProperties.parseDatetimeString(timeText, true);
+		} else {
+			calendar = Calendar.getInstance();
+			timeText = SearchStatisticsProperties.toDatetimeString(calendar);
+		}
+		
+		int timeTypeCode = Calendar.MONTH;
+		String timeId = SearchStatisticsProperties.getTimeId(calendar, timeTypeCode);
+		logger.debug("New time id >> {}", timeId);
+		
+		List<String> clickTypeList = new ArrayList<String>();
+		clickTypeList.add("blog");
+		clickTypeList.add("goshop");
+		clickTypeList.add("list");
+		
+		mav.addObject("timeText", timeText);
+		mav.addObject("clickTypeList", clickTypeList);
+		
+		if(keyword == null || keyword.trim().length() == 0) {
+			return mav;
+		}
+		keyword = keyword.trim();
+		
+		AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
+		MapperSession<ClickKeywordHitMapper> clickKeywordHitMapperSession = dbService.getMapperSession(ClickKeywordHitMapper.class);
+		
+		//
+		//search PV 리스트를 가져온다.
+		//
+		int searchPv = 0;
+		MapperSession<SearchKeywordHitMapper> searchKeywordHitMapperSession = dbService.getMapperSession(SearchKeywordHitMapper.class);
+		try {
+			SearchKeywordHitMapper searchKeywordHitMapper = searchKeywordHitMapperSession.getMapper();
+			SearchHitVO vo = searchKeywordHitMapper.getEntry(siteId, "_root", timeId, keyword);
+			if (vo != null) {
+				searchPv = vo.getHit();
+			}
+		} catch (Exception e) {
+			logger.error("", e);
+		} finally {
+			if (searchKeywordHitMapperSession != null) {
+				searchKeywordHitMapperSession.closeSession();
+			}
+		}
+		
+		mav.addObject("searchPv", String.format("%,d", searchPv));
+		
+		try {
+			
+			ClickKeywordHitMapper clickKeywordHitMapper = clickKeywordHitMapperSession.getMapper();
+			Integer clickCount = clickKeywordHitMapper.getKeywordClickCount(siteId, timeId, keyword);
+			int ctCount = clickCount != null ? clickCount.intValue() : 0;
+			mav.addObject("ctCount", String.format("%,d", ctCount));
+			if(searchPv == 0){
+				mav.addObject("ctRate", "0%");
+			}else{
+				float ctr = ((float) ctCount / (float) searchPv) * 100.0f;
+				mav.addObject("ctRate", String.format("%.1f", ctr) + "%");
+			}
+			for(String clickType : clickTypeList){
+				int typeHitValue = 0;
+				Integer typeHit = clickKeywordHitMapper.getKeywordTypeClickCount(siteId, timeId, keyword, clickType);
+				if(typeHit != null){
+					typeHitValue = typeHit;
+				}
+				mav.addObject("ctCount_"+clickType, String.format("%,d", typeHitValue));
+			}
+
+		} catch (Exception e) {
+			logger.error("", e);
+		} finally {
+			if (clickKeywordHitMapperSession != null) {
+				clickKeywordHitMapperSession.closeSession();
+			}
+		}
+		List<ClickKeywordTargetHitVO> targetHitList = null;
+		MapperSession<ClickKeywordTargetHitMapper> clickKeywordTargetHitMapperSession = dbService.getMapperSession(ClickKeywordTargetHitMapper.class);
+		try {
+			ClickKeywordTargetHitMapper clickKeywordTargetHitMapper = clickKeywordTargetHitMapperSession.getMapper();
+			int topCount = 20;
+			targetHitList = clickKeywordTargetHitMapper.getEntryList(siteId, timeId, keyword, topCount);
+		} catch (Exception e) {
+			logger.error("", e);
+		} finally {
+			if (clickKeywordTargetHitMapperSession != null) {
+				clickKeywordTargetHitMapperSession.closeSession();
+			}
+		}
+		
+		mav.addObject("targetHitList", targetHitList);
 		return mav;
 	}
 }

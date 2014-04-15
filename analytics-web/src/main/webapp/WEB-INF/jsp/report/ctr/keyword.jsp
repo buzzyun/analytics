@@ -1,12 +1,15 @@
-<%@page import="java.util.Random"%>
+<%@page import="java.util.*, org.fastcatgroup.analytics.db.vo.*"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
+List<String> clickTypeList = (List<String>) request.getAttribute("clickTypeList");
+String keyword = request.getParameter("keyword");
 String timeText = (String) request.getAttribute("timeText");
 if(timeText == null ) {
 	timeText = ""; 
 }
+List<ClickKeywordTargetHitVO> targetHitList = (List<ClickKeywordTargetHitVO>) request.getAttribute("targetHitList");
 %>
 <c:set var="ROOT_PATH" value="../.." />
 
@@ -74,17 +77,23 @@ $(document).ready(function(){
 					<div class="col-md-12 bottom-space">
 						<form class="form-inline" role="form">
 							<input class="form-control fcol1-2 " size="16" type="text" id="timeText" name="timeText" value="<%=timeText %>" >
-							<input type="text" class="form-control fcol2" placeholder="Keyword">
-							<input type="button" class="btn btn-primary" value="Submit">
+							<input type="text" name="keyword" class="form-control fcol2" placeholder="Keyword">
+							<input type="submit" class="btn btn-primary" value="Submit">
 						</form>
 					</div>
 				</div>
+				
+				
+				<%
+				if(keyword != null && keyword.length() > 0) {
+				%>
+				
 				<div class="row">
 					<div class="col-md-12">
 						<div class="widget">
 							<div class="widget-header">
 								<h4>
-									<i class="icon-calendar"></i> Period : 2014.04
+									<i class="icon-calendar"></i> Period : <%=timeText.substring(0, 7) %>
 								</h4>
 							</div>
 						</div>
@@ -98,13 +107,18 @@ $(document).ready(function(){
 						<div class="widget box">
 							<div class="widget-content">
 								<ul class="stats">
-									<li><strong>온수매트</strong> <small>Keyword</small></li>
-									<li><strong>1,520,596</strong> <small>Search count</small></li>
-									<li class="text-success"><strong>86,372</strong> <small>Click-through count</small></li>
-									<li class="text-primary"><strong>50.20%</strong> <small>Click-through rate</small></li>
-									<li><strong>76,086</strong> <small>상품블로그</small></li>
-									<li><strong>7,257</strong> <small>사러가기</small></li>
-									<li><strong>3,029</strong> <small>상품리스트</small></li>
+									<li><strong><%=keyword %></strong> <small>Keyword</small></li>
+									<li><strong>${searchPv }</strong> <small>Search PV</small></li>
+									<li class="text-success"><strong>${ctCount }</strong> <small>Click-through count</small></li>
+									<li class="text-primary"><strong>${ctRate }</strong> <small>Click-through rate</small></li>
+									<%
+									for(String clickType : clickTypeList) {
+										String count = (String) request.getAttribute("ctCount_"+clickType);
+									%>
+									<li><strong><%=count %></strong> <small><%=clickType %></small></li>
+									<%
+									}
+									%>
 								</ul>
 							</div>
 						</div>
@@ -112,6 +126,11 @@ $(document).ready(function(){
 					
 				</div>
 				
+				<%
+				}
+				
+				if(targetHitList != null) {
+				%>
 				<div class="row">
 					<div class="col-md-12">
 						<div class="widget box">
@@ -125,47 +144,45 @@ $(document).ready(function(){
 										<tr>
 											<th>#</th>
 											<th>Click Target</th>
-											<th>상품블로그</th>
-											<th>사러가기</th>
+											<%
+											for(String clickType : clickTypeList) {
+											%>
+											<th><%=clickType %></th>
+											<%
+											}
+											%>
 										</tr>
 									</thead>
 									<tbody>
-										<tr>
-											<td>1</td>
-											<td><a href="#">2074170</a></td>
-											<td>63</td>
-											<td>0</td>
-										</tr>
-										<tr>
-											<td>2</td>
-											<td>2674170</td>
-											<td>59</td>
-											<td>0</td>
-										</tr>
-										<tr>
-											<td>3</td>
-											<td>3074170</td>
-											<td>28</td>
-											<td>0</td>
-										</tr>
-									<%
-										for(int i =3;i< 12; i++){
-									%>
+										<%
+										for(int i = 0; i< targetHitList.size(); i++) {
+											ClickKeywordTargetHitVO vo = targetHitList.get(i);
+										%>
 										<tr>
 											<td><%=i+1 %></td>
-											<td><a href="#"><%=2074170 + i*120000 %></a></td>
-											<td><%=40-i %></td>
-											<td>0</td>
+											<td><a href="#"><%=vo.getClickId() %></a></td>
+											<%
+											for(String clickType : clickTypeList) {
+												if(clickType.equals(vo.getClickType())){
+													%><td><%=vo.getCount() %></td><%
+												}else{
+													%><td>0</td><%	
+												}
+											}
+											%>
 										</tr>
-									<%
+										<%
 										}
-									%>
+										%>
 									</tbody>
 								</table>
 							</div>
 						</div>
 					</div>
 				</div>
+				<%
+				}
+				%>
 
 
 			</div>

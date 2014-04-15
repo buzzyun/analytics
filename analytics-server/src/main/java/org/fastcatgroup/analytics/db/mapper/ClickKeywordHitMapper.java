@@ -11,6 +11,9 @@ public interface ClickKeywordHitMapper extends AnalyticsMapper {
 			@Param("timeId") String timeId, @Param("topCount") int topCount) throws Exception;
 	
 	public Integer getKeywordClickCount(@Param("siteId") String siteId,
+			@Param("timeId") String timeId, @Param("keyword") String keyword) throws Exception;
+	
+	public Integer getKeywordTypeClickCount(@Param("siteId") String siteId,
 			@Param("timeId") String timeId, @Param("keyword") String keyword, @Param("clickType") String clickType) throws Exception;
 	
 	public int updateClear(@Param("siteId") String siteId,

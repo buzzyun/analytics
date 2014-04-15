@@ -1,6 +1,7 @@
 package org.fastcatgroup.analytics.web.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +34,9 @@ public class CTRController extends AbstractController {
 
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/ctr/view");
+		
+		String[] clickTypeArray = environment.settingManager().getSystemSettings().getStringArray("db.clickTypeList", ",");
+		List<String> clickTypeList = Arrays.asList(clickTypeArray);
 		
 		Calendar startTime = null;
 		Calendar endTime = null;
@@ -109,12 +113,6 @@ public class CTRController extends AbstractController {
 		}
 		mav.addObject("searchPvList", searchPvList);
 		
-		List<String> clickTypeList = new ArrayList<String>();
-		
-		//FIXME:HARDCODING
-		clickTypeList.add("blog");
-		clickTypeList.add("goshop");
-		clickTypeList.add("list");
 		try {
 			
 			ClickHitMapper mapper = mapperSession.getMapper();
@@ -158,6 +156,8 @@ public class CTRController extends AbstractController {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/ctr/detail");
 		
+		String[] clickTypeArray = environment.settingManager().getSystemSettings().getStringArray("db.clickTypeList", ",");
+		List<String> clickTypeList = Arrays.asList(clickTypeArray);
 		
 		Calendar calendar = null;
 		Calendar endTime = null;
@@ -199,10 +199,6 @@ public class CTRController extends AbstractController {
 		
 		mav.addObject("searchPv", String.format("%,d", searchPv));
 		
-		List<String> clickTypeList = new ArrayList<String>();
-		clickTypeList.add("blog");
-		clickTypeList.add("goshop");
-		clickTypeList.add("list");
 		try {
 			
 			ClickHitMapper mapper = clickHitMapperSession.getMapper();

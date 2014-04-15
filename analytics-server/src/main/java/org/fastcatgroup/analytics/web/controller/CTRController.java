@@ -89,11 +89,14 @@ public class CTRController extends AbstractController {
 		//search PV 리스트를 가져온다.
 		//
 		List<Integer> searchPvList = new ArrayList<Integer>(); 
+		List<String> labelList = new ArrayList<String>();
 		MapperSession<SearchPathHitMapper> searchPathHitMapperSession = dbService.getMapperSession(SearchPathHitMapper.class);
 		SearchPathHitMapper searchPathHitMapper = searchPathHitMapperSession.getMapper();
 		try {
 			while (startTime.getTimeInMillis() <= endTime.getTimeInMillis()) {
 				String timeId = SearchStatisticsProperties.getTimeId(startTime, timeTypeCode);
+				String label = SearchStatisticsProperties.toDatetimeString(startTime, Calendar.MONTH);
+				labelList.add(label);
 				List<SearchPathHitVO> list = searchPathHitMapper.getEntryByTimeId(siteId, timeId);
 				if (list != null) {
 					int cnt = 0;
@@ -140,6 +143,7 @@ public class CTRController extends AbstractController {
 			}
 			mav.addObject("hitList", hitList);
 			mav.addObject("timeText", timeText);
+			mav.addObject("labelList", labelList);
 			mav.addObject("clickTypeList", clickTypeList);
 		} catch (Exception e) {
 			logger.error("", e);

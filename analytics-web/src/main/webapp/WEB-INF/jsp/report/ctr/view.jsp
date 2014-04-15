@@ -7,8 +7,15 @@
 List<String> clickTypeList = (List<String>) request.getAttribute("clickTypeList");
 List<Integer> searchPvList = (List<Integer>) request.getAttribute("searchPvList");
 List<Integer> hitList = (List<Integer>) request.getAttribute("hitList");
+List<String> labelList = (List<String>) request.getAttribute("labelList");
 String timeText = (String) request.getAttribute("timeText");
 if(timeText == null ) {
+	Calendar c1 = Calendar.getInstance();
+	Calendar c2 = Calendar.getInstance();
+	
+	
+	
+	//기본적으로 6달.
 	timeText = ""; 
 }
 DecimalFormat format = new DecimalFormat("#,###");
@@ -58,11 +65,11 @@ $(document).ready(function() {
 		ctr1[<%=i%>]=[<%=i%>,<%=pv%>];
 		ctr2[<%=i%>]=[<%=i%>,<%=hit%>];
 		ctr3[<%=i%>]=[<%=i%>,<%=rate%>];
-		ticks[<%=i%>]=[<%=i%>,<%=i%>];
+		ticks[<%=i%>]=[<%=i%>,<%=labelList.get(i)%>];
 	<%
 	}
 	if(totalPv > 0) {
-		totalRate = Math.round(totalHit * 100f / totalPv) / 100f;
+		totalRate = Math.round(totalHit * 10000f / totalPv) / 100f;
 	}
 	%>
 		
@@ -77,28 +84,18 @@ $(document).ready(function() {
 			barWidth: 0.2 ,
 			align:'center'
 		},
-		points:{
-			show:true
-		},
+		points:{ show:true },
 		yaxis: 2
 	},	{
 		label : "검색PV",
 		data : ctr1,
-		lines: {
-			show: true
-		},
-		points:{
-			show:true
-		}
+		lines: { show: true },
+		points:{ show:true }
 	}, {
 		label : "통합검색",
 		data : ctr2,
-		lines: {
-			show: true
-		},
-		points:{
-			show:true
-		}
+		lines: { show: true },
+		points:{ show:true }
 	} ];
 	$.plot("#chart_ctr_total", ctr_data, $.extend(true, {}, Plugins
 			.getFlotDefaults(), {
@@ -253,12 +250,16 @@ $(document).ready(function() {
 						</form>
 					</div>
 				</div>
+				<%
+				String startTimeLabel = labelList.get(0);
+				String endTimeLabel = labelList.get(labelList.size()-1);
+				%>
 				<div class="row">
 					<div class="col-md-12">
 						<div class="widget">
 							<div class="widget-header">
 								<h4>
-									<i class="icon-calendar"></i> Period : 2014.01 - 2014.04
+									<i class="icon-calendar"></i> Period : <%=timeText%>
 								</h4>
 							</div>
 						</div>

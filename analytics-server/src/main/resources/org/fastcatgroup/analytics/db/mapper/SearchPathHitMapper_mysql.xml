@@ -40,6 +40,13 @@
 		</where>
 	</select>
 	
+	<select id="getEntryByTimeId" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.SearchPathHitVO">
+		select * from ${siteId}_searchpath_hit 
+		<where>
+			timeId=#{timeId}
+		</where>
+	</select>
+	
 	<insert id="putEntry" parameterType="map">
 		insert into ${siteId}_searchpath_hit 
 		(timeId, searchId, hit) values (#{timeId}, #{searchId}, #{hit})

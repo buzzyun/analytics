@@ -18,9 +18,9 @@ import java.util.Random;
 
 public class LogGenerator {
 	public static void main(String[] args) {
-		if (args.length != 7) {
-			System.out.println("Usage: LogGenerator [analytics-path] [site id] [keyword file path] [min,max qty] [from,to date] [category list] [type list]");
-			System.out.println("   ex: > LogGenerator /home/fastcat/analytics total ../keyword.txt 1000,10000 20140102,20150102 cat1,cat2 category<cat1|cate2>,page<1|2|3|4|5>,sort<score|date|price>,age<0|10|20|30|40|50>,service<autocomplete|catelist>,login<Y|N>,gender<M|F|U>");
+		if (args.length != 10) {
+			System.out.println("Usage: LogGenerator [analytics-path] [site id] [keyword file path] [min,max qty] [from,to date] [category list] [type list] [click min,max] [click id list] [click types]");
+			System.out.println("   ex: > LogGenerator /home/fastcat/analytics total ../keyword.txt 1000,10000 20140102,20150102 cat1,cat2 category<cat1|cate2>,page<1|2|3|4|5>,sort<score|date|price>,age<0|10|20|30|40|50>,service<autocomplete|catelist>,login<Y|N>,gender<M|F|U> 0,10 11111,22222,33333,aaa_12345,bbb_22222,ccc_33333 blog,goshop,list");
 			System.exit(1);
 		}
 		String homePath = args[0];
@@ -43,6 +43,13 @@ public class LogGenerator {
 		
 		String[] categoryList = args[5].split(",");
 		String typeList = args[6]; // category,page,sort,age,service,login,gender
+		String[] clickMinMax = args[7].split(",");
+		
+		int minClick = Integer.parseInt(clickMinMax[0]);
+		int maxClick = Integer.parseInt(clickMinMax[1]);
+		
+		String[] clickIdList = args[8].split(",");
+		String[] clickTypeList = args[9].split(",");
 
 		File file = new File(keywordFilePath);
 
@@ -68,10 +75,10 @@ public class LogGenerator {
 		File home = new File(homePath, "statistics");
 		home = new File(home, "search");
 		System.out.println("generating...");
-		new LogGenerator().generate(home, siteId, file, minQty, maxQty, fromDate, toDate, categoryList, types, typeValues);
+		new LogGenerator().generate(home, siteId, file, minQty, maxQty, fromDate, toDate, categoryList, types, typeValues, minClick, maxClick, clickIdList, clickTypeList);
 	}
 	
-	private void generate(File home, String siteId, File file, int minQty, int maxQty, Calendar fromDate, Calendar toDate, String[] categoryList, String[] types, List<String>[] typeValues) {
+	private void generate(File home, String siteId, File file, int minQty, int maxQty, Calendar fromDate, Calendar toDate, String[] categoryList, String[] types, List<String>[] typeValues, int minClick, int maxClick, String[] clickIdList, String[] clickTypeList) {
 		List<String> keywordList = new ArrayList<String>();
 		BufferedReader reader = null;
 		try {
@@ -97,8 +104,6 @@ public class LogGenerator {
 		Random r = new Random(System.nanoTime());
 		
 		int[] qtyGenerate = new int[24];
-		
-		long st = System.nanoTime();
 		
 		try {
 			
@@ -145,6 +150,7 @@ public class LogGenerator {
 					
 					for(int inx2=0;inx2<qtyGenerate[inx];inx2++) {
 		
+						//searchlog
 						String categoryId = "_root";
 						int cateIndex = r.nextInt(categoryList.length + 1);
 						if(cateIndex < categoryList.length){
@@ -170,21 +176,35 @@ public class LogGenerator {
 						
 						String timeId = (inx<10?"0"+inx:inx)+":"+(minute<10?"0"+minute:minute);
 						
-						String data = makeData(siteId, timeId, categoryId, keyword, prevKeyword, resultCount, resptime, types, typeValue);
-						insertLog(home, calendar, data, (inx==0 && inx2==0));
-						count++;
+						String searchData = makeData(siteId, timeId, categoryId, keyword, prevKeyword, resultCount, resptime, types, typeValue);
+						insertSearchLog(home, calendar, searchData, (inx==0 && inx2==0));
 						
+						//clicklog
+						int clickQty = r.nextInt(maxClick - minClick) + minClick;
+						String[] rawData = searchData.split("\t");
+						for (int clickInx = 0; clickInx < clickQty; clickInx++) {
+							String productId="";
+							String clickType="";
+							
+							productId = clickIdList[ r.nextInt(clickIdList.length) ];
+							
+							//if(productId.contains("_")) { //제휴사 상품타입일 경우 goshop 으로 고정
+							//	clickType = clickTypeList[];
+							//}
+							
+							clickType = clickTypeList[ r.nextInt(clickTypeList.length) ];
+							insertClickLog(home, calendar, timeId, rawData[3], productId, clickType, rawData, (inx==0 && inx2==0 && clickInx==0));
+						}
+						count++;
 						if(count % 10000 == 0){
 							System.out.println("log " + count + "... / " + format.format(calendar.getTime()) );
 						}
 					}
 				}
-				
 				calendar.add(Calendar.DAY_OF_MONTH, 1);
 			}
 		} finally {
 		}
-
 	}
 	
 	private static Calendar parseDate(String dateStr) {
@@ -235,8 +255,60 @@ public class LogGenerator {
 		}
 		return sb.toString();
 	}
+	
+	private void insertClickLog(File baseDir, Calendar calendar, String timeId, String keyword, String productId, String clickType, String[] rawData, boolean create) {
+		BufferedWriter writer = null;
+		try {
+			
+			File dateDir  = new File(baseDir, "date");
+			
+			int year = calendar.get(Calendar.YEAR);
+			int month = calendar.get(Calendar.MONTH) + 1;
+			int date = calendar.get(Calendar.DAY_OF_MONTH);
+			
+			dateDir = new File(dateDir, "Y"+(year<10?"0"+year:year));
+			dateDir = new File(dateDir, "M"+(month<10?"0"+month:month));
+			dateDir = new File(dateDir, "D"+(date<10?"0"+date:date));
+			
+			File dataDir = new File(dateDir, "data");
+			dataDir = new File(dataDir, rawData[0]);
+			
+			if(!dataDir.exists()) {
+				dataDir.mkdirs();
+			}
+			
+			File file = null;
+			
+			//click_raw log
+			file = new File(dataDir, "click_raw.log");
+			//System.out.println(file.getAbsolutePath());
+			if(create && file.exists()) {
+				System.out.println("deleting.."+file.getAbsolutePath());
+				file.delete();
+				writer = new BufferedWriter(new FileWriter(file));
+			} else {
+				writer = new BufferedWriter(new FileWriter(file, true));
+			}
+			
+			writer.append(timeId).append("\t") //시간
+			.append(keyword).append("\t") //키워드
+			.append(productId).append("\t") //상품id
+			.append(clickType).append("\n"); //클릭타입
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if(writer!=null) {
+				try {
+					writer.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 
-	private void insertLog(File baseDir, Calendar calendar, String data, boolean create) {
+	private void insertSearchLog(File baseDir, Calendar calendar, String data, boolean create) {
 		//System.out.println(data);
 		String[] rawData = data.split("\t");
 		BufferedWriter writer = null;
@@ -273,7 +345,8 @@ public class LogGenerator {
 			}
 			writer.append(rawData[1]).append("\t").append(rawData[2]).append("\t")
 				.append(rawData[3]).append("\t").append(rawData[4]).append("\t")
-				.append(rawData[5]).append("\t").append(rawData[6]);
+				.append(rawData[5]).append("\t").append(rawData[6]).append("\t")
+				.append(rawData[7 + 4]); //서비스id 추가
 			writer.append("\n");
 			writer.flush();
 			
@@ -288,7 +361,6 @@ public class LogGenerator {
 				writer = new BufferedWriter(new FileWriter(file));
 			} else {
 				writer = new BufferedWriter(new FileWriter(file, true));
-				
 			}
 			
 			writer.append(rawData[1]).append("\t").append(rawData[2]).append("\t")

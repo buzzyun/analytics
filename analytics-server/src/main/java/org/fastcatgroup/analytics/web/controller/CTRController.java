@@ -1,6 +1,7 @@
 package org.fastcatgroup.analytics.web.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,7 @@ import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
 import org.fastcatgroup.analytics.db.mapper.ClickHitMapper;
+import org.fastcatgroup.analytics.db.mapper.SearchPathHitMapper;
 import org.fastcatgroup.analytics.db.mapper.ClickKeywordHitMapper;
 import org.fastcatgroup.analytics.db.mapper.ClickKeywordTargetHitMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchHitMapper;
@@ -17,6 +19,7 @@ import org.fastcatgroup.analytics.db.mapper.SearchKeywordHitMapper;
 import org.fastcatgroup.analytics.db.vo.ClickKeywordHitVO;
 import org.fastcatgroup.analytics.db.vo.ClickKeywordTargetHitVO;
 import org.fastcatgroup.analytics.db.vo.SearchHitVO;
+import org.fastcatgroup.analytics.db.vo.SearchPathHitVO;
 import org.fastcatgroup.analytics.service.ServiceManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +36,9 @@ public class CTRController extends AbstractController {
 
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/ctr/view");
+		
+		String[] clickTypeArray = environment.settingManager().getSystemSettings().getStringArray("db.clickTypeList", ",");
+		List<String> clickTypeList = Arrays.asList(clickTypeArray);
 		
 		Calendar startTime = null;
 		Calendar endTime = null;
@@ -83,14 +89,18 @@ public class CTRController extends AbstractController {
 		//search PV 리스트를 가져온다.
 		//
 		List<Integer> searchPvList = new ArrayList<Integer>(); 
-		MapperSession<SearchHitMapper> searchHitMapperSession = dbService.getMapperSession(SearchHitMapper.class);
-		SearchHitMapper searchHitMapper = searchHitMapperSession.getMapper();
+		MapperSession<SearchPathHitMapper> searchPathHitMapperSession = dbService.getMapperSession(SearchPathHitMapper.class);
+		SearchPathHitMapper searchPathHitMapper = searchPathHitMapperSession.getMapper();
 		try {
 			while (startTime.getTimeInMillis() <= endTime.getTimeInMillis()) {
-				String timeId = SearchStatisticsProperties.toDatetimeString(startTime, timeTypeCode);
-				SearchHitVO vo = searchHitMapper.getEntry(siteId, "_root", timeId);
-				if (vo != null) {
-					searchPvList.add(vo.getHit());
+				String timeId = SearchStatisticsProperties.getTimeId(startTime, timeTypeCode);
+				List<SearchPathHitVO> list = searchPathHitMapper.getEntryByTimeId(siteId, timeId);
+				if (list != null) {
+					int cnt = 0;
+					for(int inx=0;inx<list.size();inx++) {
+						cnt += list.get(inx).getHit();
+					}
+					searchPvList.add(cnt);
 				} else {
 					searchPvList.add(0);
 				}
@@ -99,25 +109,20 @@ public class CTRController extends AbstractController {
 		} catch (Exception e) {
 			logger.error("", e);
 		} finally {
-			if (searchHitMapperSession != null) {
-				searchHitMapperSession.closeSession();
+			if (searchPathHitMapperSession != null) {
+				searchPathHitMapperSession.closeSession();
 			}
 		}
 		mav.addObject("searchPvList", searchPvList);
 		
-		List<String> clickTypeList = new ArrayList<String>();
-		clickTypeList.add("blog");
-		clickTypeList.add("goshop");
-		clickTypeList.add("list");
 		try {
 			
 			ClickHitMapper mapper = mapperSession.getMapper();
 			
 			for(String clickType : clickTypeList){
 				List<Integer> typeHitList = new ArrayList<Integer>();
-				
 				while (startTime.getTimeInMillis() <= endTime.getTimeInMillis()) {
-					String timeId = SearchStatisticsProperties.toDatetimeString(startTime, timeTypeCode);
+					String timeId = SearchStatisticsProperties.getTimeId(startTime, timeTypeCode);
 					Integer hit = mapper.getTypeHit(siteId, timeId, clickType);
 					typeHitList.add(hit);
 					startTime.add(timeTypeCode, 1);
@@ -128,7 +133,7 @@ public class CTRController extends AbstractController {
 			startTime = startTime2;
 			List<Integer> hitList = new ArrayList<Integer>();
 			while (startTime.getTimeInMillis() <= endTime.getTimeInMillis()) {
-				String timeId = SearchStatisticsProperties.toDatetimeString(startTime, timeTypeCode);
+				String timeId = SearchStatisticsProperties.getTimeId(startTime, timeTypeCode);
 				Integer hit = mapper.getHit(siteId, timeId);
 				hitList.add(hit);
 				startTime.add(timeTypeCode, 1);
@@ -152,6 +157,9 @@ public class CTRController extends AbstractController {
 
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/ctr/detail");
+		
+		String[] clickTypeArray = environment.settingManager().getSystemSettings().getStringArray("db.clickTypeList", ",");
+		List<String> clickTypeList = Arrays.asList(clickTypeArray);
 		
 		Calendar calendar = null;
 		if(timeText != null) {
@@ -191,10 +199,6 @@ public class CTRController extends AbstractController {
 		
 		mav.addObject("searchPv", String.format("%,d", searchPv));
 		
-		List<String> clickTypeList = new ArrayList<String>();
-		clickTypeList.add("blog");
-		clickTypeList.add("goshop");
-		clickTypeList.add("list");
 		try {
 			
 			ClickHitMapper mapper = clickHitMapperSession.getMapper();
@@ -305,10 +309,8 @@ public class CTRController extends AbstractController {
 		String timeId = SearchStatisticsProperties.getTimeId(calendar, timeTypeCode);
 		logger.debug("New time id >> {}", timeId);
 		
-		List<String> clickTypeList = new ArrayList<String>();
-		clickTypeList.add("blog");
-		clickTypeList.add("goshop");
-		clickTypeList.add("list");
+		String[] clickTypeArray = environment.settingManager().getSystemSettings().getStringArray("db.clickTypeList", ",");
+		List<String> clickTypeList = Arrays.asList(clickTypeArray);
 		
 		mav.addObject("timeText", timeText);
 		mav.addObject("clickTypeList", clickTypeList);

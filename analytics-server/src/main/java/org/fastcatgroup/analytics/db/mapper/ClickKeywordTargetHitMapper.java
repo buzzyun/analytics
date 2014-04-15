@@ -9,7 +9,7 @@ public interface ClickKeywordTargetHitMapper extends AnalyticsMapper {
 	
 	public List<ClickKeywordTargetHitVO> getEntryList(@Param("siteId") String siteId,
 			@Param("timeId") String timeId,
-			@Param("keyword") String keyword) throws Exception;
+			@Param("keyword") String keyword, @Param("topCount") int topCount) throws Exception;
 	
 	
 	public int updateClear(@Param("siteId") String siteId,

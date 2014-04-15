@@ -35,11 +35,13 @@
 	</delete>
 		
 	<select id="getEntryList" parameterType="map" resultType="org.fastcatgroup.analytics.db.vo.ClickKeywordTargetHitVO">
-		select * from ${siteId}_click_target_hit_keyword 
+		select clickId, clickType, hit as count from ${siteId}_click_target_hit_keyword
 		<where>
 			timeId=#{timeId}
 			and keyword=#{keyword}
 		</where>
+		order by hit desc
+		limit ${topCount}
 	</select>
 	
 	<delete id="updateClear" parameterType="map">

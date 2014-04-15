@@ -21,6 +21,7 @@ import org.fastcatgroup.analytics.db.vo.ClickKeywordTargetHitVO;
 import org.fastcatgroup.analytics.db.vo.SearchHitVO;
 import org.fastcatgroup.analytics.db.vo.SearchPathHitVO;
 import org.fastcatgroup.analytics.service.ServiceManager;
+import org.fastcatgroup.analytics.util.Counter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +39,7 @@ public class CTRController extends AbstractController {
 		mav.setViewName("report/ctr/view");
 		
 		String[] clickTypeArray = environment.settingManager().getSystemSettings().getStringArray("db.clickTypeList", ",");
+		String[] serviceList = environment.settingManager().getSystemSettings().getStringArray("db.serviceList", ",");
 		List<String> clickTypeList = Arrays.asList(clickTypeArray);
 		
 		Calendar startTime = null;
@@ -69,6 +71,9 @@ public class CTRController extends AbstractController {
 			startTime.set(Calendar.DATE, 1);
 			startTime.add(Calendar.MONTH, -6);
 			
+			endTime.add(Calendar.MONTH, 1);
+			endTime.set(Calendar.DAY_OF_MONTH, -1);
+			
 			String timeFrom = SearchStatisticsProperties.toDatetimeString(startTime);
 			String timeTo = SearchStatisticsProperties.toDatetimeString(endTime);
 			timeText = timeFrom + " - " + timeTo;
@@ -81,9 +86,8 @@ public class CTRController extends AbstractController {
 		String endTimeId = SearchStatisticsProperties.getTimeId(endTime, timeTypeCode);
 		logger.debug("New time id >> {} ~ {}", startTimeId, endTimeId);
 		
-		
 		AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
-		MapperSession<ClickHitMapper> mapperSession = dbService.getMapperSession(ClickHitMapper.class);
+		MapperSession<ClickHitMapper> clickMapperSession = dbService.getMapperSession(ClickHitMapper.class);
 		
 		//
 		//search PV 리스트를 가져온다.
@@ -92,7 +96,13 @@ public class CTRController extends AbstractController {
 		List<String> labelList = new ArrayList<String>();
 		MapperSession<SearchPathHitMapper> searchPathHitMapperSession = dbService.getMapperSession(SearchPathHitMapper.class);
 		SearchPathHitMapper searchPathHitMapper = searchPathHitMapperSession.getMapper();
+		Map<String, Counter> pathCounter = new HashMap<String, Counter>();
 		try {
+			for(String service : serviceList) {
+				pathCounter.put(service, new Counter(0));
+			}
+			pathCounter.put("_etc", new Counter(0));
+			
 			while (startTime.getTimeInMillis() <= endTime.getTimeInMillis()) {
 				String timeId = SearchStatisticsProperties.getTimeId(startTime, timeTypeCode);
 				String label = SearchStatisticsProperties.toDatetimeString(startTime, Calendar.MONTH);
@@ -101,7 +111,17 @@ public class CTRController extends AbstractController {
 				if (list != null) {
 					int cnt = 0;
 					for(int inx=0;inx<list.size();inx++) {
-						cnt += list.get(inx).getHit();
+						
+						SearchPathHitVO pathHitVO = list.get(inx);
+						if(pathCounter.containsKey(pathHitVO.getSearchId())) {
+							pathCounter.get(
+									pathHitVO.getSearchId()).increment(
+									pathHitVO.getHit());
+						} else {
+							pathCounter.get("_etc").increment(pathHitVO.getHit());
+						}
+						
+						cnt += pathHitVO.getHit();
 					}
 					searchPvList.add(cnt);
 				} else {
@@ -116,31 +136,32 @@ public class CTRController extends AbstractController {
 				searchPathHitMapperSession.closeSession();
 			}
 		}
+		mav.addObject("serviceList", serviceList);
+		mav.addObject("searchPathCounter", pathCounter);
 		mav.addObject("searchPvList", searchPvList);
-		
 		try {
-			
-			ClickHitMapper mapper = mapperSession.getMapper();
-			
+			ClickHitMapper clickMapper = clickMapperSession.getMapper();
 			for(String clickType : clickTypeList){
+				startTime = (Calendar) startTime2.clone();
 				List<Integer> typeHitList = new ArrayList<Integer>();
 				while (startTime.getTimeInMillis() <= endTime.getTimeInMillis()) {
 					String timeId = SearchStatisticsProperties.getTimeId(startTime, timeTypeCode);
-					Integer hit = mapper.getTypeHit(siteId, timeId, clickType);
+					Integer hit = clickMapper.getTypeHit(siteId, timeId, clickType);
 					typeHitList.add(hit);
 					startTime.add(timeTypeCode, 1);
 				}
 				mav.addObject("clickType_"+clickType, typeHitList);
 			}
 			
-			startTime = startTime2;
+			startTime = (Calendar) startTime2.clone();
 			List<Integer> hitList = new ArrayList<Integer>();
 			while (startTime.getTimeInMillis() <= endTime.getTimeInMillis()) {
 				String timeId = SearchStatisticsProperties.getTimeId(startTime, timeTypeCode);
-				Integer hit = mapper.getHit(siteId, timeId);
+				Integer hit = clickMapper.getHit(siteId, timeId);
 				hitList.add(hit);
 				startTime.add(timeTypeCode, 1);
 			}
+			
 			mav.addObject("hitList", hitList);
 			mav.addObject("timeText", timeText);
 			mav.addObject("labelList", labelList);
@@ -148,8 +169,8 @@ public class CTRController extends AbstractController {
 		} catch (Exception e) {
 			logger.error("", e);
 		} finally {
-			if (mapperSession != null) {
-				mapperSession.closeSession();
+			if (clickMapperSession != null) {
+				clickMapperSession.closeSession();
 			}
 		}
 		

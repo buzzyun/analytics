@@ -3,7 +3,7 @@ package org.fastcatgroup.analytics.db.vo;
 public class SearchPathHitVO {
 
 	protected String timeId;
-	protected String searchType;
+	protected String searchId;
 	protected int hit;
 
 	public String getTimeId() {
@@ -14,12 +14,12 @@ public class SearchPathHitVO {
 		this.timeId = timeId;
 	}
 
-	public String getSearchType() {
-		return searchType;
+	public String getSearchId() {
+		return searchId;
 	}
 
-	public void setSearchType(String searchType) {
-		this.searchType = searchType;
+	public void setSearchId(String searchId) {
+		this.searchId = searchId;
 	}
 
 	public int getHit() {

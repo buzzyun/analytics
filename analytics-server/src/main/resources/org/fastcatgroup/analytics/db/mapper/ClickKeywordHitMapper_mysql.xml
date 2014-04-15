@@ -63,7 +63,6 @@
 		delete from ${siteId}_click_hit_keyword
 		<where>
 			timeId=#{timeId}
-			and keyword=#{keyword}
 		</where>
 	</delete>
 	

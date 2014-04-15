@@ -52,7 +52,7 @@ public class UpdateClickKeywordTargetTypeCountHandler extends ProcessHandler {
 					count = Integer.parseInt(data[3]);
 				} catch (NumberFormatException ignore) { }
 				
-				logger.debug("#### UpdateClickKeywordTargetTypeHit {} >> {} > {} / {}", timeId, clickType, mapper);
+				logger.trace("#### UpdateClickKeywordTargetTypeHit {} >> {} > {} / {}", timeId, clickType, mapper);
 				mapper.updateClear(siteId, timeId, keyword, target);
 				mapper.putEntry(siteId, timeId, keyword, target, clickType, count);
 				

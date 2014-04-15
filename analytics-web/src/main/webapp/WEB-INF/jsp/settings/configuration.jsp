@@ -72,9 +72,10 @@ $(document).ready(function(){
 												<button class="btn btn-sm" id="btn-apply-property">
 												<span class="icon-ok"></span> Save
 												</button>
-												<button class="btn btn-sm" id="btn-restart">
+												&nbsp;
+												<!-- <button class="btn btn-sm" id="btn-restart">
 												<span class="icon-play-circle"></span> Restart
-												</button>
+												</button> -->
 											</div>
 										</div>
 										<form class="form-horizontal" id="config-form" role="form">

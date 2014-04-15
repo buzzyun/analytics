@@ -48,21 +48,21 @@ public class MergeClickTypeCountProcessHandler extends ProcessHandler {
 			
 			for (ClickLog log = null; (log = logReader.readLog()) != null;) {
 				ClickLog log2 = log;
-				
-				switch(runCase) {
+
+				switch (runCase) {
 				case RUN_CASE_CLICK:
-					log2 = new ClickLog("",log.getClickType(),"","");
+					log2 = new ClickLog(null, log.getClickType(), null, null);
 					break;
 				case RUN_CASE_CLICK_KEYWORD:
-					log2 = new ClickLog("",log.getKeyword()+"\t"+log.getClickType(),"","");
+					log2 = new ClickLog(null, log.getKeyword(), null, log.getClickType());
 					break;
 				case RUN_CASE_CLICK_KEYWORD_TARGET:
-					log2 = new ClickLog("",log.getKeyword()+"\t"+log.getClickId()+"\t"+log.getClickType(),"","");
+					log2 = new ClickLog(null, log.getKeyword(), log.getClickId(), log.getClickType());
 					break;
 				}
-				
+
 				aggregator.handleLog(log2);
-				//logger.debug("handling log : {}", log2);
+				// logger.debug("handling log : {}", log2);
 			}
 			
 			aggregator.done();

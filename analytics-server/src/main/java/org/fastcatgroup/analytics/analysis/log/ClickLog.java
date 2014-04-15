@@ -61,7 +61,7 @@ public class ClickLog extends LogData {
 
 	@Override
 	public String getKey() {
-		return keyword;
+		return keyword + "\t" + clickId + "\t" + clickType;
 	}
 
 

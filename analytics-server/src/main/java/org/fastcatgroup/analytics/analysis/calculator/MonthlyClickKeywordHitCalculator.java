@@ -64,27 +64,31 @@ public class MonthlyClickKeywordHitCalculator extends Calculator<ClickLog> {
 			
 			File[] clickLogFiles = new File[diff];
 			Calendar dailyCalendar = (Calendar) calendar.clone();
-			for(int inx=0;inx < diff; inx++) {
+			for (int inx = 0; inx < diff; inx++) {
 				File timeDir = SearchStatisticsProperties.getDayDataDir(baseDir, dailyCalendar);
-				clickLogFiles[inx] = new File(new File( timeDir, siteId), CLICK_RAW_FILENAME);
+				clickLogFiles[inx] = new File(new File(timeDir, siteId), CLICK_RAW_FILENAME);
 				dailyCalendar.add(Calendar.DAY_OF_MONTH, -1);
 			}
 			
 			//1달치의 일자별 click-row log들을 머징한다.
-			EntryParser<KeyCountRunEntry> clickTypeParser = new KeyCountRunEntryParser();
-			
-			AbstractLogAggregator<ClickLog> clickTypeLogAggregator = new KeyCountLogAggregator<ClickLog>(workingDir, RUN_CLICK_TYPE_FILENAME, runKeySize, encoding, minimumHitCount, clickTypeParser);
 			
 			logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
-			
 			File file = new File(workingDir, RUN_CLICK_TYPE_FILENAME);
 			
+			/*
+			 * 1. type별 클릭수.
+			 * */
+			EntryParser<KeyCountRunEntry> clickTypeParser = new KeyCountRunEntryParser(new int[] {0}, 3);
+			AbstractLogAggregator<ClickLog> clickTypeLogAggregator = new KeyCountLogAggregator<ClickLog>(workingDir, RUN_CLICK_TYPE_FILENAME, runKeySize, encoding, minimumHitCount, clickTypeParser);
 			ProcessHandler mergeKeyCount = new MergeClickTypeCountProcessHandler(
 					clickLogFiles, encoding, clickTypeLogAggregator,
 					MergeClickTypeCountProcessHandler.RUN_CASE_CLICK).attachProcessTo(categoryProcess);
 			ProcessHandler updateClickTypeCountHandler = new UpdateClickTypeCountHandler(siteId, timeId, file, encoding).appendTo(mergeKeyCount);
 			file.delete();
 			
+			/*
+			 * 2. 키워드별 type별 클릭수.
+			 * */
 			clickTypeParser = new KeyCountRunEntryParser(new int[]{0, 1}, 2 );
 			clickTypeLogAggregator = new KeyCountLogAggregator<ClickLog>(workingDir, RUN_CLICK_TYPE_FILENAME, runKeySize, encoding, minimumHitCount, clickTypeParser);
 			mergeKeyCount = new MergeClickTypeCountProcessHandler(
@@ -93,7 +97,9 @@ public class MonthlyClickKeywordHitCalculator extends Calculator<ClickLog> {
 			updateClickTypeCountHandler = new UpdateClickKeywordTypeCountHandler(siteId, timeId, file, encoding).appendTo(mergeKeyCount);
 			file.delete();
 			
-			
+			/*
+			 * 3. 키워드별 type별 클릭대상별 클릭수.
+			 * */
 			clickTypeParser = new KeyCountRunEntryParser(new int[]{0, 1, 2}, 3 );
 			clickTypeLogAggregator = new KeyCountLogAggregator<ClickLog>(workingDir, RUN_CLICK_TYPE_FILENAME, runKeySize, encoding, minimumHitCount, clickTypeParser);
 			mergeKeyCount = new MergeClickTypeCountProcessHandler(

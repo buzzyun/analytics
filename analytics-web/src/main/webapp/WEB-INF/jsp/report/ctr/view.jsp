@@ -17,7 +17,9 @@ if(timeText == null ) {
 }
 DecimalFormat format = new DecimalFormat("#,###");
 
-
+//
+// TODO total은 합산이 아닌 월별로 데이터가 들어와야함. 
+//
 Counter totalSearchCounter = searchPathCounter.get("total");
 int totalSearchCount = 0;
 if(totalSearchCounter != null) {
@@ -78,34 +80,36 @@ $(document).ready(function() {
 	}
 	%>
 		
-	var ctr_data = [ 
-	{
-		label : "Click Through Rate",
-		data : ctr3,
-		color : "#428bca",
-		lines: { show: false},
-		bars: {
-			show: true,
-			barWidth: 0.2 ,
-			align:"center"
-		},
-		points:{ show:true },
-		yaxis: 2
-	},	{
-		label : "Search PV",
-		data : ctr1,
-		color : "#000",
-		lines: { show: true },
-		points:{ show:true }
-	}, {
-		label : "Click Through Count",
-		data : ctr2,
-		color : "#468847",
-		lines: { show: true },
-		points:{ show:true }
-	} ];
+	var search_through_data = [ 
+   	{
+     		label : "Search PV",
+     		data : ctr1,
+     		color : "#000",
+     		lines: { show: true },
+     		points:{ show:true }
+     	}, 
+     	{
+   		label : "Search Through Count",
+   		data : ctr2,
+   		color : "#468847",
+   		lines: { show: true },
+   		points:{ show:true }
+   	},
+   	{
+   		label : "Search Through Rate",
+   		data : ctr3,
+   		color : "#428bca",
+   		lines: { show: false},
+   		bars: {
+   			show: true,
+   			barWidth: 0.2 ,
+   			align:"center"
+   		},
+   		points:{ show:true },
+   		yaxis: 2
+   	}];
 	
-	$.plot("#chart_search_rate", ctr_data, $.extend(true, {}, 
+	$.plot("#chart_search_rate", search_through_data, $.extend(true, {}, 
 		Plugins.getFlotDefaults(), {
 			xaxis : {
 				min : 0, max : 6,
@@ -119,9 +123,40 @@ $(document).ready(function() {
 				clickable : true
 			}, tooltip : true,
 			tooltipOpts : { content : "%s: %y" }
-		}));
+		})
+	);
 	
-	var ctrDetails = [];
+	
+	
+	
+	var ctr_data = [ 
+	{
+		label : "Search PV",
+		data : ctr1,
+		color : "#000",
+		lines: { show: true },
+		points:{ show:true }
+	},
+	{
+		label : "Click Through Count",
+		data : ctr2,
+		color : "#468847",
+		lines: { show: true },
+		points:{ show:true }
+	},
+	{
+		label : "Click Through Rate",
+		data : ctr3,
+		color : "#428bca",
+		lines: { show: false},
+		bars: {
+			show: true,
+			barWidth: 0.2 ,
+			align:"center"
+		},
+		points:{ show:true },
+		yaxis: 2
+	}];
 	
 	<%
 	List<Integer> typeCountList = new ArrayList<Integer>();
@@ -137,46 +172,10 @@ $(document).ready(function() {
 			typeCount += clickCount;
 		}
 		typeCountList.add(typeCount);
-	%>
-		<%-- ctrDetails[<%=typeInx+1%>]={
-			label:"<%=clickType%>",
-			lines:{show:true},
-			points:{show:true},
-			data:[
-			<% 
-			int typeCount = 0;
-			for(int inx=0;inx<clickList.size();inx++) { 
-				Integer clickCount = clickList.get(inx);
-				if(clickCount==null) {
-					clickCount = 0;
-				}
-				typeCount += clickCount;
-			%>
-				<%=(inx > 0) ? ",":""%>
-				[<%=inx%>,<%=clickCount%>]
-			<% 
-			}
-			typeCountList.add(typeCount);
-			%>
-			]
-		}; --%>
-	<%
 	}
 	%>
-	ctrDetails[0]={
-		label : "Click Through Rate",
-		data : ctr3,
-		color : "#468847",
-		lines: {show:false},
-		bars: {
-			show: true,
-			barWidth: 0.2,
-			align:'center'
-		},
-		yaxis: 2
-	};	
 	
-	$.plot("#chart_ctr", ctrDetails, $.extend(true, {}, Plugins
+	$.plot("#chart_ctr", ctr_data, $.extend(true, {}, Plugins
 	.getFlotDefaults(), {
 		xaxis : {
 			min : 0,
@@ -317,6 +316,7 @@ $(document).ready(function() {
 						</div>
 					</div>
 				</div>
+			</div>
 		</div>
 	</div>
 </body>

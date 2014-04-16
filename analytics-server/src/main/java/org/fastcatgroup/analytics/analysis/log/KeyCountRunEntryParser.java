@@ -30,9 +30,9 @@ public class KeyCountRunEntryParser implements EntryParser<KeyCountRunEntry> {
 					if (inx > 0) {
 						key += "\t";
 					}
-					key += el[inx];
+					key += el[keyIndex[inx]];
 				}
-				logger.trace(">>>>>el {} {}", "", el);
+				logger.trace(">>>>>el {} {} / key:{} / {}", "", el, key, keyIndex);
 				return new KeyCountRunEntry(line, key, Integer.parseInt(el[countIndex]));
 			} catch (Exception e) {
 				logger.error("", e);

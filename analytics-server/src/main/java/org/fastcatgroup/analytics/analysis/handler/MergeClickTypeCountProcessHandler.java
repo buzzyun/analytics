@@ -62,7 +62,6 @@ public class MergeClickTypeCountProcessHandler extends ProcessHandler {
 				}
 
 				aggregator.handleLog(log2);
-				// logger.debug("handling log : {}", log2);
 			}
 			
 			aggregator.done();

@@ -22,7 +22,6 @@ import org.fastcatgroup.analytics.analysis.handler.UpdateEmptyKeywordHandler;
 import org.fastcatgroup.analytics.analysis.handler.UpdatePopularKeywordHandler;
 import org.fastcatgroup.analytics.analysis.handler.UpdateKeywordHitHandler;
 import org.fastcatgroup.analytics.analysis.handler.UpdateSearchHitHandler;
-import org.fastcatgroup.analytics.analysis.handler.UpdateServiceTypeHitHandler;
 import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
 

@@ -21,7 +21,7 @@ import org.fastcatgroup.analytics.db.vo.ClickKeywordTargetHitVO;
 import org.fastcatgroup.analytics.db.vo.SearchHitVO;
 import org.fastcatgroup.analytics.db.vo.SearchPathHitVO;
 import org.fastcatgroup.analytics.service.ServiceManager;
-import org.fastcatgroup.analytics.util.Counter;
+import org.fastcatgroup.analytics.util.ListableCounter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -96,35 +96,40 @@ public class CTRController extends AbstractController {
 		List<String> labelList = new ArrayList<String>();
 		MapperSession<SearchPathHitMapper> searchPathHitMapperSession = dbService.getMapperSession(SearchPathHitMapper.class);
 		SearchPathHitMapper searchPathHitMapper = searchPathHitMapperSession.getMapper();
-		Map<String, Counter> pathCounter = new HashMap<String, Counter>();
+		Map<String, ListableCounter> pathCounter = new HashMap<String, ListableCounter>();
+		
 		try {
 			for(String service : serviceList) {
-				pathCounter.put(service, new Counter(0));
+				pathCounter.put(service, new ListableCounter(0));
 			}
-			pathCounter.put("_etc", new Counter(0));
+			pathCounter.put("_etc", new ListableCounter(0));
 			
-			while (startTime.getTimeInMillis() <= endTime.getTimeInMillis()) {
+			startTime = (Calendar) startTime2.clone();
+			for (int timeInx=0;startTime.getTimeInMillis() <= endTime.getTimeInMillis();timeInx++) {
 				String timeId = SearchStatisticsProperties.getTimeId(startTime, timeTypeCode);
 				String label = SearchStatisticsProperties.toDatetimeString(startTime, Calendar.MONTH);
 				labelList.add(label);
 				List<SearchPathHitVO> list = searchPathHitMapper.getEntryByTimeId(siteId, timeId);
 				if (list != null) {
 					int cnt = 0;
-					for(int inx=0;inx<list.size();inx++) {
+					for(int svcInx=0;svcInx<list.size();svcInx++) {
 						
-						SearchPathHitVO pathHitVO = list.get(inx);
+						SearchPathHitVO pathHitVO = list.get(svcInx);
 						if(pathCounter.containsKey(pathHitVO.getSearchId())) {
 							pathCounter.get(
-									pathHitVO.getSearchId()).increment(
+									pathHitVO.getSearchId()).increment(timeInx,
 									pathHitVO.getHit());
 						} else {
-							pathCounter.get("_etc").increment(pathHitVO.getHit());
+							pathCounter.get("_etc").increment(timeInx, pathHitVO.getHit());
 						}
 						
 						cnt += pathHitVO.getHit();
 					}
 					searchPvList.add(cnt);
 				} else {
+					for(String service : serviceList) {
+						pathCounter.get(service).increment(timeInx, 0);
+					}
 					searchPvList.add(0);
 				}
 				startTime.add(timeTypeCode, 1);

@@ -3,30 +3,26 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page import="java.util.Random, java.util.*" %>
 <%@page import="java.text.DecimalFormat"%>
-<%@page import="org.fastcatgroup.analytics.util.Counter"%>
+<%@page import="org.fastcatgroup.analytics.util.ListableCounter"%>
 <%
 List<String> clickTypeList = (List<String>) request.getAttribute("clickTypeList");
 List<Integer> searchPvList = (List<Integer>) request.getAttribute("searchPvList");
 List<Integer> clickHitList = (List<Integer>) request.getAttribute("clickHitList");
 List<String> labelList = (List<String>) request.getAttribute("labelList");
 String[] serviceList = (String[]) request.getAttribute("serviceList");
-Map<String, Counter>  searchPathCounter = (Map<String, Counter>) request.getAttribute("searchPathCounter");
+Map<String, ListableCounter>  searchPathCounter = (Map<String, ListableCounter>) request.getAttribute("searchPathCounter");
 String timeText = (String) request.getAttribute("timeText");
 if(timeText == null ) {
 	timeText = ""; 
 }
 DecimalFormat format = new DecimalFormat("#,###");
 
-//
-// TODO total은 합산이 아닌 월별로 데이터가 들어와야함. 
-//
-Counter totalSearchCounter = searchPathCounter.get("total");
+ListableCounter totalSearchCounter = searchPathCounter.get("total");
 int totalSearchCount = 0;
 if(totalSearchCounter != null) {
 	totalSearchCount = totalSearchCounter.value();
 }
 float totalSearchRate = 0f;
-
 %>
 <c:set var="ROOT_PATH" value="../.." />
 
@@ -47,9 +43,11 @@ $(document).ready(function() {
 	};
 	$("#timeText").pickmeup(pickmeup_options);
 	
-	var ctr1=[];
-	var ctr2=[];
-	var ctr3=[];
+	var searchPvData=[];
+	var totalSearchCountData=[];
+	var totalSearchRateData=[];
+	var clickHitData=[];
+	var searchClickRate=[];
 	var ticks=[];
 	
 	<%
@@ -67,10 +65,22 @@ $(document).ready(function() {
 		if(pv>0) {
 			rate = Math.round(clickHit * 100f / pv) / 100f;
 		}
+		
+		Integer searchCount = 0;
+		if(totalSearchCounter!=null) {
+			searchCount = totalSearchCounter.list().get(i);
+		}
+		if(searchCount==null) { searchCount=0; }
+		float searchRate=0f;
+		if(pv>0) {
+			searchRate = Math.round(searchCount *100f / pv) / 100f;
+		}
 	%>
-		ctr1[<%=i%>]=[<%=i%>,<%=pv%>];
-		ctr2[<%=i%>]=[<%=i%>,<%=clickHit%>];
-		ctr3[<%=i%>]=[<%=i%>,<%=rate%>];
+		searchPvData[<%=i%>]=[<%=i%>,<%=pv%>];
+		totalSearchCountData[<%=i%>]=[<%=i%>,<%=searchCount%>];
+		totalSearchRateData[<%=i%>]=[<%=i%>,<%=searchRate%>];
+		clickHitData[<%=i%>]=[<%=i%>,<%=clickHit%>];
+		searchClickRate[<%=i%>]=[<%=i%>,<%=rate%>];
 		ticks[<%=i%>]=[<%=i%>,<%=labelList.get(i)%>];
 	<%
 	}
@@ -81,33 +91,31 @@ $(document).ready(function() {
 	%>
 		
 	var search_through_data = [ 
-   	{
-     		label : "Search PV",
-     		data : ctr1,
-     		color : "#000",
-     		lines: { show: true },
-     		points:{ show:true }
-     	}, 
-     	{
-   		label : "Search Through Count",
-   		data : ctr2,
-   		color : "#468847",
-   		lines: { show: true },
-   		points:{ show:true }
-   	},
-   	{
-   		label : "Search Through Rate",
-   		data : ctr3,
-   		color : "#428bca",
-   		lines: { show: false},
-   		bars: {
-   			show: true,
-   			barWidth: 0.2 ,
-   			align:"center"
-   		},
-   		points:{ show:true },
-   		yaxis: 2
-   	}];
+		{
+			label : "Search PV",
+			data : searchPvData,
+			color : "#000",
+			lines: { show: true },
+			points:{ show:true }
+		}, {
+		label : "Total Search Count",
+		data : totalSearchCountData,
+		color : "#468847",
+		lines: { show: true },
+		points:{ show:true }
+	}, {
+		label : "Total Search Rate",
+		data : totalSearchRateData,
+		color : "#428bca",
+		lines: { show: false},
+		bars: {
+			show: true,
+			barWidth: 0.2 ,
+			align:"center"
+		},
+		points:{ show:true },
+		yaxis: 2
+	}];
 	
 	$.plot("#chart_search_rate", search_through_data, $.extend(true, {}, 
 		Plugins.getFlotDefaults(), {
@@ -117,7 +125,7 @@ $(document).ready(function() {
 				ticks : ticks,
 				tickLength : 0
 			}, yaxes: [
-			  { },{ position: "right" }	  
+				{ },{ position: "right" }	  
 			], grid : {
 				hoverable : true,
 				clickable : true
@@ -126,27 +134,22 @@ $(document).ready(function() {
 		})
 	);
 	
-	
-	
-	
 	var ctr_data = [ 
 	{
 		label : "Search PV",
-		data : ctr1,
+		data : searchPvData,
 		color : "#000",
 		lines: { show: true },
 		points:{ show:true }
-	},
-	{
+	}, {
 		label : "Click Through Count",
-		data : ctr2,
+		data : clickHitData,
 		color : "#468847",
 		lines: { show: true },
 		points:{ show:true }
-	},
-	{
+	}, {
 		label : "Click Through Rate",
-		data : ctr3,
+		data : searchClickRate,
 		color : "#428bca",
 		lines: { show: false},
 		bars: {
@@ -257,7 +260,7 @@ $(document).ready(function() {
 							<div class="widget-content">
 								<ul class="stats">
 									<li><strong><%=format.format(totalPv) %></strong> <small>Search PV</small></li>
-									<li class="text-success"><strong><%=totalSearchCount %></strong> <small>Total Search</small></li>
+									<li class="text-success"><strong><%=format.format(totalSearchCount) %></strong> <small>Total Search</small></li>
 									<li class="text-primary"><strong><%=totalSearchRate %>%</strong> <small>Total Search Rate</small></li>
 								</ul>
 							</div>

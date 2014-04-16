@@ -164,7 +164,7 @@ DecimalFormat format = new DecimalFormat("#,###");
 						ticks : ticks,
 						tickLength : 0
 					}, yaxes: [
-					  { },{ min:"0", position: "right" }
+					  { min:"0" },{ min:"0", position: "right" }
 					], grid : {
 						hoverable : true,
 						clickable : true

@@ -17,7 +17,7 @@ if(timeText == null ) {
 }
 DecimalFormat format = new DecimalFormat("#,###");
 
-ListableCounter totalSearchCounter = searchPathCounter.get("total");
+ListableCounter totalSearchCounter = searchPathCounter.get("main");
 int totalSearchCount = 0;
 if(totalSearchCounter != null) {
 	totalSearchCount = totalSearchCounter.value();
@@ -106,7 +106,7 @@ $(document).ready(function() {
 	}, {
 		label : "Total Search Rate",
 		data : totalSearchRateData,
-		color : "#428bca",
+		color : 'rgba(66,139,202,0.3)',
 		lines: { show: false},
 		bars: {
 			show: true,
@@ -150,7 +150,7 @@ $(document).ready(function() {
 	}, {
 		label : "Click Through Rate",
 		data : searchClickRate,
-		color : "#428bca",
+		color : 'rgba(66,139,202,0.3)',
 		lines: { show: false},
 		bars: {
 			show: true,

@@ -17,7 +17,7 @@ if(timeText == null ) {
 }
 DecimalFormat format = new DecimalFormat("#,###");
 
-ListableCounter totalSearchCounter = searchPathCounter.get("main");
+ListableCounter totalSearchCounter = searchPathCounter.get("total");
 int totalSearchCount = 0;
 if(totalSearchCounter != null) {
 	totalSearchCount = totalSearchCounter.value();
@@ -91,7 +91,7 @@ $(document).ready(function() {
 	%>
 		
 	var search_through_data = [ 
-		{
+	{
 			label : "Search PV",
 			data : searchPvData,
 			color : "#000",
@@ -106,7 +106,7 @@ $(document).ready(function() {
 	}, {
 		label : "Total Search Rate",
 		data : totalSearchRateData,
-		color : 'rgba(66,139,202,0.3)',
+		color : "rgba(66,139,202,0.3)",
 		lines: { show: false},
 		bars: {
 			show: true,
@@ -120,7 +120,7 @@ $(document).ready(function() {
 	$.plot("#chart_search_rate", search_through_data, $.extend(true, {}, 
 		Plugins.getFlotDefaults(), {
 			xaxis : {
-				min : 0, max : 6,
+				min : 0,
 				tickSize : [ 1, "month" ],
 				ticks : ticks,
 				tickLength : 0,
@@ -150,7 +150,7 @@ $(document).ready(function() {
 	}, {
 		label : "Click Through Rate",
 		data : searchClickRate,
-		color : 'rgba(66,139,202,0.3)',
+		color : "rgba(66,139,202,0.3)",
 		lines: { show: false},
 		bars: {
 			show: true,
@@ -182,7 +182,6 @@ $(document).ready(function() {
 	.getFlotDefaults(), {
 		xaxis : {
 			min : 0,
-			max : 6,
 			tickSize : [ 1, "month" ],
 			ticks : ticks,
 			tickLength : 0

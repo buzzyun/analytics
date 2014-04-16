@@ -1,14 +1,21 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@page import="java.util.List" %>
+<%@page import="java.util.*" %>
 <%@page import="java.text.DecimalFormat" %>
 <%@page import="org.fastcatgroup.analytics.db.vo.*" %>
 <%@page import="org.fastcatgroup.analytics.analysis.SearchStatisticsProperties" %>
+<%@page import="org.fastcatgroup.analytics.util.ListableCounter"%>
 <%
 
 List<SearchHitVO> currentWeek = (List<SearchHitVO>) request.getAttribute("currentWeekData");
 List<SearchHitVO> lastWeek = (List<SearchHitVO>) request.getAttribute("lastWeekData");
+
+String[] clickTypeList = (String[]) request.getAttribute("clickTypeList");
+List<Integer> searchPvList = (List<Integer>) request.getAttribute("searchPvList");
+Map<String, ListableCounter> clickHitList = (Map<String,ListableCounter>) request.getAttribute("clickHitList");
+List<String> labelList = (List<String>) request.getAttribute("labelList");
+
 String timeText = (String) request.getAttribute("timeText");
 int totalCurrentWeek = 0;
 int totalLastWeek = 0;
@@ -86,82 +93,98 @@ DecimalFormat format = new DecimalFormat("#,###");
 					}, tooltip : true,
 					tooltipOpts : { content : '%s: %y' }
 				}));
-
 			
-			var ctr1 = [ [ 1262304000000, 1300 ], [ 1264982400000, 700 ], [ 1267401600000, 1000 ],
-				[ 1270080000000, 3500 ], [ 1272672000000, 2000 ],
-				[ 1275350400000, 1500 ], [ 1277942400000, 1200 ] ];
-
-			var ctr2 = [ [ 1262304000000, 700 ],[ 1264982400000, 400 ],[ 1267401600000, 600 ],
-				[ 1270080000000, 2500 ], [ 1272672000000, 1300 ],
-				[ 1275350400000, 700 ], [ 1277942400000, 600 ] ];
+		var ctr1 = [];
+		var ctr2 = [];
+		var ctr3 = [];
+		var ticks=[];
 			
-			var ctr3 = [ [ 1262304000000, 60 ],[ 1264982400000, 50 ],[ 1267401600000, 60 ],
-							[ 1270080000000, 55 ], [ 1272672000000, 55 ],
-							[ 1275350400000, 70 ], [ 1277942400000, 60 ] ];
-			
-			
+		<%	
+		int totalPv = 0;
+		int totalClickHit = 0;
+		float totalClickRate = 0f;
+		for(int i=0;i<searchPvList.size(); i++){
+			Integer pv = searchPvList.get(i);
+			if(pv==null) { pv = 0; }
+			int clickHit = 0;
+			for(String clickType : clickTypeList) {
+				Integer value = clickHitList.get(clickType).list().get(i);
+				if(value!=null) {
+					clickHit+=value;
+				}
+			}
+			float searchRate=0f;
+			if(pv>0) {
+				searchRate = Math.round(clickHit * 100f / pv) / 100f;
+			}
+			totalPv += pv;
+			totalClickHit += clickHit;
+			%>
+			ctr1[<%=i%>]=[<%=i%>,<%=pv%>];
+			ctr2[<%=i%>]=[<%=i%>,<%=clickHit%>];
+			ctr3[<%=i%>]=[<%=i%>,<%=searchRate%>];
+			ticks[<%=i%>]=[<%=i%>,<%=labelList.get(i)%>];
+			<%
+		}
+		if(totalPv > 0) {
+			totalClickRate = Math.round(totalClickHit * 10000f / totalPv) / 100f;
+		}
+		%>
 			var ctr_data = [ {
-				label : "검색PV",
+				label : "Search PV",
 				data : ctr1,
-				color : '#eb8544'
+				color : "#eb8544"
 			}, {
-				label : "통합검색",
+				label : "Click Through Count",
 				data : ctr2,
-				color : '#487FF3'
+				color : "#487FF3"
 			}, {
-				label : "유입률",
+				label : "Click Through Rate",
 				data : ctr3,
-				color : '#999',
+				color : "rgba(66,139,202,0.3)",
+				lines: { show: false},
+				bars: {
+					show: true,
+					barWidth: 0.2 ,
+					align:"center"
+				},
+				points:{ show:true },
 				yaxis: 2
 			} ];
+			
 			$.plot("#chart_dashboard_ctr", ctr_data, $.extend(true, {}, Plugins
-					.getFlotDefaults(),
-					{
-						xaxis : {
-							min : (new Date(2009, 12, 1)).getTime(),
-							max : (new Date(2010, 6, 2)).getTime(),
-							mode : "time",
-							tickSize : [ 1, "month" ],
-							monthNames : [ "Sun", "Mon", "Tue", "Wed", "Thu",
-											"Fri", "Sat" ],
-							tickLength : 0
+				.getFlotDefaults(), {
+					xaxis : {
+						min : 0,
+						tickSize : [ 1, "month" ],
+						ticks : ticks,
+						tickLength : 0
+					}, yaxes: [
+					  { },{ min:"0", position: "right" }
+					], grid : {
+						hoverable : true,
+						clickable : true
+					}, tooltip : true,
+					tooltipOpts : { content : '%s: %y' },
+					series : {
+						lines : {
+							fill : false,
+							lineWidth : 1.5
 						},
-						yaxes: [
-						  {
-							  
-						  },{
-							position: "right"
-						  }      
-						],
-						series : {
-							lines : {
-								fill : false,
-								lineWidth : 1.5
-							},
-							points : {
-								show : true,
-								radius : 2.5,
-								lineWidth : 1.1
-							},
-							grow : {
-								active : true,
-								growings : [ {
-									stepMode : "maximum"
-								} ]
-							}
+						points : {
+							show : true,
+							radius : 2.5,
+							lineWidth : 1.1
 						},
-						grid : {
-							hoverable : true,
-							clickable : true
-						},
-						tooltip : true,
-						tooltipOpts : {
-							content : '%s: %y'
+						grow : {
+							active : true,
+							growings : [ {
+								stepMode : "maximum"
+							} ]
 						}
-					}));
-			
-			
+					}
+				})
+			);
 			// 서비스별 Data
 			<%
 			List<SearchTypeHitVO>[] typeListArray = (List<SearchTypeHitVO>[])request.getAttribute("typeListArray");
@@ -203,65 +226,7 @@ DecimalFormat format = new DecimalFormat("#,###");
 				}
 			}
 			%>
-// 			// 정렬별 Data
-// 			var login_rate_data = [];
-// 			login_rate_data[0] = { label: "인기도순", data: 50 };
-// 			login_rate_data[1] = { label: "정확도순", data: 30 };
-// 			login_rate_data[1] = { label: "낮은가격순", data: 20 };
-// 			$.plot("#chart_login_rate", login_rate_data, $.extend(true, {}, Plugins.getFlotDefaults(), {
-// 				series: {
-// 					pie: {
-// 						show: true,
-// 						radius: 1,
-// 						label: {
-// 							show: true
-// 						}
-// 					}
-// 				},
-// 				grid: {
-// 					hoverable: true
-// 				},
-// 				tooltip: true,
-// 				tooltipOpts: {
-// 					content: '%p.0%, %s', // show percentages, rounding to 2 decimal places
-// 					shifts: {
-// 						x: 20,
-// 						y: 0
-// 					}
-// 				}
-// 			}));
-// 			// 연령별 Data
-// 			var age_rate_data = [];
-// 			age_rate_data[0] = { label: "10대이전", data: 10 };
-// 			age_rate_data[1] = { label: "20대", data: 25 };
-// 			age_rate_data[2] = { label: "30대", data: 40 };
-// 			age_rate_data[3] = { label: "40대", data: 15 };
-// 			age_rate_data[3] = { label: "50대이후", data: 10 };
-// 			$.plot("#chart_age_rate", age_rate_data, $.extend(true, {}, Plugins.getFlotDefaults(), {
-// 				series: {
-// 					pie: {
-// 						show: true,
-// 						radius: 1,
-// 						label: {
-// 							show: true
-// 						}
-// 					}
-// 				},
-// 				grid: {
-// 					hoverable: true
-// 				},
-// 				tooltip: true,
-// 				tooltipOpts: {
-// 					content: '%p.0%, %s', // show percentages, rounding to 2 decimal places
-// 					shifts: {
-// 						x: 20,
-// 						y: 0
-// 					}
-// 				}
-// 			}));
 		});
-	
-	
 </script>
 
 </head>
@@ -281,11 +246,7 @@ DecimalFormat format = new DecimalFormat("#,###");
 						<li><a href="#">Dashboard</a></li>
 					</ul>
 					<ul class="crumb-buttons">
-						<li class="range">
-							<!-- <a href="#"> <i class="icon-calendar"></i>
-								<span></span> <i class="icon-angle-down"></i>
-						</a> -->
-						</li>
+						<li class="range"></li>
 					</ul>
 				</div>
 				<!-- /Breadcrumbs line -->
@@ -509,18 +470,22 @@ DecimalFormat format = new DecimalFormat("#,###");
 							<div class="widget-content">
 								<ul class="stats">
 									<!-- .no-dividers -->
-									<li><strong>172,055</strong> <small>검색PV</small></li>
-									<li class="text-success"><strong>86,372</strong> <small>유입건</small></li>
-									<li class="text-primary"><strong>50.20%</strong> <small>유입률</small></li>
+									<li><strong><%=format.format(totalPv) %></strong> <small>Search PV</small></li>
+									<li class="text-success"><strong><%=format.format(totalClickHit) %></strong> <small>Click-through Count</small></li>
+									<li class="text-primary"><strong><%=totalClickRate%>%</strong> <small>Click-through Rate</small></li>
 								</ul>
 							</div>
 							<div class="divider"></div>
 							<div class="widget-content">
 								<ul class="stats">
 									<!-- .no-dividers -->
-									<li class="light"><strong>76,086</strong> <small>상품블로그</small></li>
-									<li class="light"><strong>7,257</strong> <small>사러가기</small></li>
-									<li class="light"><strong>3,029</strong> <small>상품리스트</small></li>
+									<%
+									for(String clickType : clickTypeList) {
+									%>
+									<li class="light"><strong><%=format.format(clickHitList.get(clickType).value()) %></strong> <small><%=clickType %></small></li>
+									<%
+									}
+									%>
 								</ul>
 							</div>
 						</div>

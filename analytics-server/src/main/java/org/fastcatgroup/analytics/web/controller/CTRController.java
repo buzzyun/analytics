@@ -68,8 +68,8 @@ public class CTRController extends AbstractController {
 		} else {
 			endTime = Calendar.getInstance();
 			startTime = Calendar.getInstance();
-			startTime.set(Calendar.DATE, 1);
 			startTime.add(Calendar.MONTH, -6);
+			startTime.set(Calendar.DAY_OF_MONTH, 1);
 			
 			endTime.add(Calendar.MONTH, 1);
 			endTime.set(Calendar.DAY_OF_MONTH, -1);
@@ -92,7 +92,7 @@ public class CTRController extends AbstractController {
 		//
 		//search PV 리스트를 가져온다.
 		//
-		List<Integer> searchPvList = new ArrayList<Integer>(); 
+		List<Integer> searchPvList = new ArrayList<Integer>();
 		List<String> labelList = new ArrayList<String>();
 		MapperSession<SearchPathHitMapper> searchPathHitMapperSession = dbService.getMapperSession(SearchPathHitMapper.class);
 		SearchPathHitMapper searchPathHitMapper = searchPathHitMapperSession.getMapper();

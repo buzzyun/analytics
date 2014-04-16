@@ -4,21 +4,27 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.CategoryConfig;
 import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
+import org.fastcatgroup.analytics.db.mapper.ClickHitMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchHitMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchKeywordRankMapper;
+import org.fastcatgroup.analytics.db.mapper.SearchPathHitMapper;
 import org.fastcatgroup.analytics.db.mapper.SearchTypeHitMapper;
 import org.fastcatgroup.analytics.db.vo.RankKeywordVO;
 import org.fastcatgroup.analytics.db.vo.RankKeywordVO.RankDiffType;
 import org.fastcatgroup.analytics.db.vo.SearchHitVO;
+import org.fastcatgroup.analytics.db.vo.SearchPathHitVO;
 import org.fastcatgroup.analytics.db.vo.SearchTypeHitVO;
 import org.fastcatgroup.analytics.service.ServiceManager;
+import org.fastcatgroup.analytics.util.ListableCounter;
 import org.json.JSONStringer;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,6 +59,8 @@ public class ReportMainController extends AbstractController {
 		MapperSession<SearchHitMapper> hitSession = null;
 		MapperSession<SearchKeywordRankMapper> rankSession = null;
 		MapperSession<SearchTypeHitMapper> typeSession = null;
+		MapperSession<SearchPathHitMapper> pathSession = null;
+		MapperSession<ClickHitMapper> clickSession = null;
 		
 		String categoryId = "_root";
 		
@@ -63,10 +71,14 @@ public class ReportMainController extends AbstractController {
 			hitSession = dbService.getMapperSession(SearchHitMapper.class);
 			rankSession = dbService.getMapperSession(SearchKeywordRankMapper.class);
 			typeSession = dbService.getMapperSession(SearchTypeHitMapper.class);
+			pathSession = dbService.getMapperSession(SearchPathHitMapper.class);
+			clickSession = dbService.getMapperSession(ClickHitMapper.class);
 			
 			SearchHitMapper hitMapper = hitSession.getMapper();
 			SearchKeywordRankMapper rankMapper = rankSession.getMapper();
 			SearchTypeHitMapper typeMapper = typeSession.getMapper();
+			SearchPathHitMapper pathMapper = pathSession.getMapper();
+			ClickHitMapper clickMapper = clickSession.getMapper();
 			
 			//일주일치와 그 전주의 일자별 데이터를 가져온다.
 			Calendar calendar = SearchStatisticsProperties.getCalendar();
@@ -134,8 +146,57 @@ public class ReportMainController extends AbstractController {
 			mav.addObject("typeListArray", typeListArray);
 			mav.addObject("timeText", timeText);
 			
-			//TODO:CTR...
+			fromDate = (Calendar) calendar.clone();
+			fromDate.add(Calendar.MONTH, - 6);
+			fromDate.set(Calendar.DAY_OF_MONTH, 1);
 			
+			toDate.add(Calendar.MONTH, 1);
+			
+			String[] clickTypeList = environment.settingManager().getSystemSettings().getStringArray("db.clickTypeList", ",");
+			
+			List<String> labelList = new ArrayList<String>();
+			List<Integer> searchPvList = new ArrayList<Integer>();
+			Map<String, ListableCounter> clickHitList = new HashMap<String, ListableCounter>();
+			for(String clickType : clickTypeList){
+				clickHitList.put(clickType, new ListableCounter(0));
+			}
+			
+			//List<Integer> typeHitList = new ArrayList<Integer>();
+			for (int timeInx=0;fromDate.getTimeInMillis() <= toDate.getTimeInMillis();timeInx++) {
+				timeId = SearchStatisticsProperties.getTimeId(fromDate, Calendar.MONTH);
+				String label = SearchStatisticsProperties.toDatetimeString(fromDate, Calendar.MONTH);
+				labelList.add(label);
+				
+				List<SearchPathHitVO> pvList = pathMapper.getEntryByTimeId(siteId, timeId);
+				
+				if (pvList != null) {
+					int cnt = 0;
+					for(int svcInx=0;svcInx<pvList.size();svcInx++) {
+						SearchPathHitVO pathHitVO = pvList.get(svcInx);
+						cnt += pathHitVO.getHit();
+					}
+					searchPvList.add(cnt);
+				} else {
+					searchPvList.add(0);
+				}
+				
+				Integer totalClick = clickMapper.getHit(siteId, timeId);
+				if(totalClick==null) { totalClick=0; }
+				for(String clickType : clickTypeList){
+					Integer typeHit = clickMapper.getTypeHit(siteId, timeId, clickType);
+					if(typeHit==null) { typeHit = 0; }
+					clickHitList.get(clickType).increment(timeInx, typeHit);
+					totalClick -= typeHit;
+				}
+				// 지정된 클릭타입 이외의 타입이 있는지 확인하기 위함.
+				//typeHitList.get("_etc").increment(timeInx, totalClick);
+				
+				fromDate.add(Calendar.MONTH, 1);
+			}
+			mav.addObject("clickTypeList", clickTypeList);
+			mav.addObject("searchPvList", searchPvList);
+			mav.addObject("clickHitList", clickHitList);
+			mav.addObject("labelList", labelList);
 		} catch (Exception e) {
 			logger.error("", e);
 		} finally {

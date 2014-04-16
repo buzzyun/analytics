@@ -11,12 +11,13 @@ public class ListableCounter {
 		count.add(i);
 	}
 
-	public void increment(int index, int n) {
+	public void increment(int index, Integer n) {
 		if(count.size() <= index) {
 			for(int i=count.size();i<=index;i++) {
 				count.add(0);
 			}
 		}
+		if (n == null) { n = 0; }
 		count.set(index, count.get(index) + n);
 	}
 	

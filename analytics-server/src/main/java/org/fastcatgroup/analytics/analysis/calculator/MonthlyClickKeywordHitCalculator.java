@@ -6,12 +6,9 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.fastcatgroup.analytics.analysis.AbstractLogAggregator;
 import org.fastcatgroup.analytics.analysis.EntryParser;
-import org.fastcatgroup.analytics.analysis.KeyCountLogAggregator;
 import org.fastcatgroup.analytics.analysis.NullLogHandler;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
-import org.fastcatgroup.analytics.analysis.handler.MergeClickTypeCountProcessHandler;
 import org.fastcatgroup.analytics.analysis.handler.MergeKeyCountProcessHandler;
 import org.fastcatgroup.analytics.analysis.handler.ProcessHandler;
 import org.fastcatgroup.analytics.analysis.handler.UpdateClickKeywordTargetTypeCountHandler;
@@ -38,8 +35,6 @@ public class MonthlyClickKeywordHitCalculator extends Calculator<ClickLog> {
 	@Override
 	protected CategoryProcess<ClickLog> newCategoryProcess(String categoryId){
 		
-		int minimumHitCount = 0;
-		
 		CategoryProcess<ClickLog> categoryProcess = new CategoryProcess<ClickLog>(categoryId);
 		
 		new NullLogHandler<ClickLog>(categoryId).attachLogHandlerTo(categoryProcess);
@@ -57,7 +52,6 @@ public class MonthlyClickKeywordHitCalculator extends Calculator<ClickLog> {
 			}
 			
 			String timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.MONTH);
-			int runKeySize = SearchStatisticsProperties.runKeySize;
 			
 			//
 			//1일부터 현재일자 (DAY_OF_MONTH) 까지.
@@ -101,7 +95,7 @@ public class MonthlyClickKeywordHitCalculator extends Calculator<ClickLog> {
 			 * */
 			clickTypeParser = new KeyCountRunEntryParser(new int[]{0, 1, 2}, 3 );
 			mergeKeyCount = new MergeKeyCountProcessHandler(clickKeywordTargetCountFiles, workingDir, RUN_CLICK_TYPE_FILENAME, encoding, clickTypeParser).appendTo(updateClickTypeCountHandler);
-			updateClickTypeCountHandler = new UpdateClickKeywordTypeCountHandler(siteId, timeId, file, encoding).appendTo(mergeKeyCount);
+			updateClickTypeCountHandler = new UpdateClickKeywordTargetTypeCountHandler(siteId, timeId, file, encoding).appendTo(mergeKeyCount);
 			file.delete();
 		}
 		return categoryProcess;

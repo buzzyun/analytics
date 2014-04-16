@@ -26,11 +26,11 @@ public class KeyCountRunEntryParser implements EntryParser<KeyCountRunEntry> {
 				//logger.debug("KeyCount parsed {}, {}", el[0], el[1]);
 				
 				String key = "";
-				for(int inx=0;inx<keyIndex.length;inx++) {
-					if(inx > 0) {
-						key+="\t";
+				for (int inx = 0; inx < keyIndex.length; inx++) {
+					if (inx > 0) {
+						key += "\t";
 					}
-					key+=el[inx];
+					key += el[inx];
 				}
 				logger.trace(">>>>>el {} {}", "", el);
 				return new KeyCountRunEntry(line, key, Integer.parseInt(el[countIndex]));

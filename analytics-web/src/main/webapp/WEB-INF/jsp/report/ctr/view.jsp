@@ -7,7 +7,7 @@
 <%
 List<String> clickTypeList = (List<String>) request.getAttribute("clickTypeList");
 List<Integer> searchPvList = (List<Integer>) request.getAttribute("searchPvList");
-List<Integer> hitList = (List<Integer>) request.getAttribute("hitList");
+List<Integer> clickHitList = (List<Integer>) request.getAttribute("clickHitList");
 List<String> labelList = (List<String>) request.getAttribute("labelList");
 String[] serviceList = (String[]) request.getAttribute("serviceList");
 Map<String, Counter>  searchPathCounter = (Map<String, Counter>) request.getAttribute("searchPathCounter");
@@ -16,6 +16,17 @@ if(timeText == null ) {
 	timeText = ""; 
 }
 DecimalFormat format = new DecimalFormat("#,###");
+
+//
+// TODO total은 합산이 아닌 월별로 데이터가 들어와야함. 
+//
+Counter totalSearchCounter = searchPathCounter.get("total");
+int totalSearchCount = 0;
+if(totalSearchCounter != null) {
+	totalSearchCount = totalSearchCounter.value();
+}
+float totalSearchRate = 0f;
+
 %>
 <c:set var="ROOT_PATH" value="../.." />
 
@@ -43,59 +54,62 @@ $(document).ready(function() {
 	
 	<%
 	int totalPv = 0;
-	int totalHit = 0;
-	float totalRate = 0f;
-	for(int i=0;i<hitList.size(); i++){
+	int totalClickHit = 0;
+	float totalClickRate = 0f;
+	for(int i=0;i<clickHitList.size(); i++){
 		Integer pv = searchPvList.get(i);
-		Integer hit = hitList.get(i);
+		Integer clickHit = clickHitList.get(i);
 		if(pv==null) { pv = 0; }
-		if(hit==null) { hit = 0; }
+		if(clickHit==null) { clickHit = 0; }
 		totalPv += pv;
-		totalHit += hit;
+		totalClickHit += clickHit;
 		float rate = 0f;
 		if(pv>0) {
-			rate = Math.round(hit * 100f / pv) / 100f;
+			rate = Math.round(clickHit * 100f / pv) / 100f;
 		}
 	%>
 		ctr1[<%=i%>]=[<%=i%>,<%=pv%>];
-		ctr2[<%=i%>]=[<%=i%>,<%=hit%>];
+		ctr2[<%=i%>]=[<%=i%>,<%=clickHit%>];
 		ctr3[<%=i%>]=[<%=i%>,<%=rate%>];
 		ticks[<%=i%>]=[<%=i%>,<%=labelList.get(i)%>];
 	<%
 	}
 	if(totalPv > 0) {
-		totalRate = Math.round(totalHit * 10000f / totalPv) / 100f;
+		totalClickRate = Math.round(totalClickHit * 10000f / totalPv) / 100f;
+		totalSearchRate = Math.round(totalSearchCount * 10000f / totalPv) / 100f;
 	}
 	%>
 		
-	var ctr_data = [ 
-	{
-		label : "Click Through Rate",
-		data : ctr3,
-		color : "#428bca",
-		lines: { show: false},
-		bars: {
-			show: true,
-			barWidth: 0.2 ,
-			align:"center"
-		},
-		points:{ show:true },
-		yaxis: 2
-	},	{
-		label : "Search PV",
-		data : ctr1,
-		color : "#000",
-		lines: { show: true },
-		points:{ show:true }
-	}, {
-		label : "Click Through Count",
-		data : ctr2,
-		color : "#468847",
-		lines: { show: true },
-		points:{ show:true }
-	} ];
+	var search_through_data = [ 
+   	{
+     		label : "Search PV",
+     		data : ctr1,
+     		color : "#000",
+     		lines: { show: true },
+     		points:{ show:true }
+     	}, 
+     	{
+   		label : "Search Through Count",
+   		data : ctr2,
+   		color : "#468847",
+   		lines: { show: true },
+   		points:{ show:true }
+   	},
+   	{
+   		label : "Search Through Rate",
+   		data : ctr3,
+   		color : "#428bca",
+   		lines: { show: false},
+   		bars: {
+   			show: true,
+   			barWidth: 0.2 ,
+   			align:"center"
+   		},
+   		points:{ show:true },
+   		yaxis: 2
+   	}];
 	
-	$.plot("#chart_ctr_total", ctr_data, $.extend(true, {}, 
+	$.plot("#chart_search_rate", search_through_data, $.extend(true, {}, 
 		Plugins.getFlotDefaults(), {
 			xaxis : {
 				min : 0, max : 6,
@@ -109,54 +123,59 @@ $(document).ready(function() {
 				clickable : true
 			}, tooltip : true,
 			tooltipOpts : { content : "%s: %y" }
-		}));
+		})
+	);
 	
-	var ctrDetails = [];
+	
+	
+	
+	var ctr_data = [ 
+	{
+		label : "Search PV",
+		data : ctr1,
+		color : "#000",
+		lines: { show: true },
+		points:{ show:true }
+	},
+	{
+		label : "Click Through Count",
+		data : ctr2,
+		color : "#468847",
+		lines: { show: true },
+		points:{ show:true }
+	},
+	{
+		label : "Click Through Rate",
+		data : ctr3,
+		color : "#428bca",
+		lines: { show: false},
+		bars: {
+			show: true,
+			barWidth: 0.2 ,
+			align:"center"
+		},
+		points:{ show:true },
+		yaxis: 2
+	}];
 	
 	<%
 	List<Integer> typeCountList = new ArrayList<Integer>();
 	for(int typeInx=0;typeInx < clickTypeList.size(); typeInx++) {
 		String clickType = clickTypeList.get(typeInx);
 		List<Integer> clickList = (List<Integer>)request.getAttribute("clickType_"+clickType);
-	%>
-		ctrDetails[<%=typeInx+1%>]={
-			label:"<%=clickType%>",
-			lines:{show:true},
-			points:{show:true},
-			data:[
-			<% 
-			int typeCount = 0;
-			for(int inx=0;inx<clickList.size();inx++) { 
-				Integer clickCount = clickList.get(inx);
-				if(clickCount==null) {
-					clickCount = 0;
-				}
-				typeCount += clickCount;
-			%>
-				<%=(inx > 0) ? ",":""%>
-				[<%=inx%>,<%=clickCount%>]
-			<% 
+		int typeCount = 0;
+		for(int inx=0;inx<clickList.size();inx++) { 
+			Integer clickCount = clickList.get(inx);
+			if(clickCount==null) {
+				clickCount = 0;
 			}
-			typeCountList.add(typeCount);
-			%>
-		]}
-	<%
+			typeCount += clickCount;
+		}
+		typeCountList.add(typeCount);
 	}
 	%>
-	ctrDetails[0]={
-		label : "Click Through Rate",
-		data : ctr3,
-		color : "#468847",
-		lines: {show:false},
-		bars: {
-			show: true,
-			barWidth: 0.2,
-			align:'center'
-		},
-		yaxis: 2
-	};	
 	
-	$.plot("#chart_ctr_detail", ctrDetails, $.extend(true, {}, Plugins
+	$.plot("#chart_ctr", ctr_data, $.extend(true, {}, Plugins
 	.getFlotDefaults(), {
 		xaxis : {
 			min : 0,
@@ -229,17 +248,33 @@ $(document).ready(function() {
 					<div class="col-md-12">
 						<div class="widget box">
 							<div class="widget-header">
-								<h4>Total Click-through</h4>
+								<h4>Search-through Rate</h4>
 							</div>
 							<div class="widget-content">
-								<div id="chart_ctr_total" class="chart"></div>
+								<div id="chart_search_rate" class="chart"></div>
 							</div>
 							<div class="divider"></div>
 							<div class="widget-content">
 								<ul class="stats">
 									<li><strong><%=format.format(totalPv) %></strong> <small>Search PV</small></li>
-									<li class="text-success"><strong><%=format.format(totalHit) %></strong> <small>Click-through Count</small></li>
-									<li class="text-primary"><strong><%=totalRate%>%</strong> <small>Click-through Rate</small></li>
+									<li class="text-success"><strong><%=totalSearchCount %></strong> <small>Total Search</small></li>
+									<li class="text-primary"><strong><%=totalSearchRate %>%</strong> <small>Total Search Rate</small></li>
+								</ul>
+							</div>
+							<div class="divider"></div>
+							<div class="widget-content">
+								<ul class="stats">
+									<%
+									for(String service : serviceList) {
+										if("_etc".equals(service) || "total".equals(service)) {
+											continue;
+										}
+									%>
+									<li class="light"><strong><%=format.format(searchPathCounter.get(service).value())%></strong> <small><%=service%></small></li>
+									<%
+									}
+									%>
+									<li class="light"><strong><%=format.format(searchPathCounter.get("_etc").value()) %></strong> <small>ETC</small></li>
 								</ul>
 							</div>
 						</div>
@@ -250,54 +285,34 @@ $(document).ready(function() {
 					<div class="col-md-12">
 						<div class="widget box">
 							<div class="widget-header">
-								<h4>Detail Click-through</h4>
+								<h4>Click-through Rate</h4>
 							</div>
 							<div class="widget-content">
-								<div id="chart_ctr_detail" class="chart"></div>
+								<div id="chart_ctr" class="chart"></div>
 							</div>
 							<div class="divider"></div>
 							<div class="widget-content">
 								<ul class="stats">
-									<li class="text-success"><strong><%=format.format(totalHit)%></strong> 
-									<small>Click-through Count</small></li>
+									<li><strong><%=format.format(totalPv) %></strong> <small>Search PV</small></li>
+									<li class="text-success"><strong><%=format.format(totalClickHit) %></strong> <small>Click-through Count</small></li>
+									<li class="text-primary"><strong><%=totalClickRate %>%</strong> <small>Click-through Rate</small></li>
+								</ul>
+							</div>
+							<div class="divider"></div>
+							<div class="widget-content">
+								<ul class="stats">
 									<% 
 									for(int typeInx=0;typeInx < clickTypeList.size(); typeInx++) {
 										String clickType = clickTypeList.get(typeInx);
 										int typeCount = typeCountList.get(typeInx);
 									%>
-										<li><strong><%=format.format(typeCount) %></strong> <small><%=clickType %></small></li>
+										<li class="light"><strong><%=format.format(typeCount) %></strong> <small><%=clickType %></small></li>
 									<%
 									}
 									%>
 								</ul>
 							</div>
 							
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-12">	
-						<div class="widget box">
-						<div class="widget-header">
-							<h4>Search-through Count</h4>
-						</div>
-						<div class="widget-content">
-							<ul class="stats">
-								<li class="text-success"><strong><%=format.format(totalPv) %></strong> 
-								<small>Search Count</small></li>
-								<%
-								for(String service : serviceList) {
-									if("_etc".equals(service)) {
-										continue;
-									}
-								%>
-								<li><strong><%=format.format(searchPathCounter.get(service).value())%></strong> <small><%=service%></small></li>
-								<%
-								}
-								%>
-								<li><strong><%=format.format(searchPathCounter.get("_etc").value()) %></strong> <small>ETC</small></li>
-							</ul>
-						</div>
 						</div>
 					</div>
 				</div>

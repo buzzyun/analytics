@@ -154,15 +154,15 @@ public class CTRController extends AbstractController {
 			}
 			
 			startTime = (Calendar) startTime2.clone();
-			List<Integer> hitList = new ArrayList<Integer>();
+			List<Integer> clickHitList = new ArrayList<Integer>();
 			while (startTime.getTimeInMillis() <= endTime.getTimeInMillis()) {
 				String timeId = SearchStatisticsProperties.getTimeId(startTime, timeTypeCode);
 				Integer hit = clickMapper.getHit(siteId, timeId);
-				hitList.add(hit);
+				clickHitList.add(hit);
 				startTime.add(timeTypeCode, 1);
 			}
 			
-			mav.addObject("hitList", hitList);
+			mav.addObject("clickHitList", clickHitList);
 			mav.addObject("timeText", timeText);
 			mav.addObject("labelList", labelList);
 			mav.addObject("clickTypeList", clickTypeList);

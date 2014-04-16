@@ -25,6 +25,7 @@ public class KeyCountLogAggregator<LogType extends LogData> extends AbstractLogA
 		this.entryParser = entryParser;
 		this.runTmpDir = new File(targetDir, "_run");
 		this.destFile = new File(targetDir, fileName);
+		destFile.delete();
 		
 		if (!targetDir.exists()) {
 			targetDir.mkdir();

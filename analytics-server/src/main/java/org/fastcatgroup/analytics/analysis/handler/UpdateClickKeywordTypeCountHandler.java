@@ -40,6 +40,7 @@ public class UpdateClickKeywordTypeCountHandler extends ProcessHandler {
 			ClickKeywordHitMapper mapper = mapperSession.getMapper();
 			
 			mapper.updateClear(siteId, timeId);
+			mapperSession.commit();
 			for(String rline = null; (rline = br.readLine())!=null;) {
 				String[] data = rline.split("\t");
 				

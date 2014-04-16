@@ -40,8 +40,15 @@ public class UpdateClickKeywordTargetTypeCountHandler extends ProcessHandler {
 			br = new BufferedReader(new InputStreamReader(new FileInputStream(file), encoding));
 			ClickKeywordTargetHitMapper mapper = mapperSession.getMapper();
 			
+			mapper.updateClear(siteId, timeId);
+			
 			for(String rline = null; (rline = br.readLine())!=null;) {
 				String[] data = rline.split("\t");
+				
+				if(data.length < 4) {
+					logger.debug("unparsable data:{} / {}",rline, file);
+					continue;
+				}
 				
 				String keyword = data[0];
 				String target = data[1];
@@ -53,7 +60,6 @@ public class UpdateClickKeywordTargetTypeCountHandler extends ProcessHandler {
 				} catch (NumberFormatException ignore) { }
 				
 				logger.trace("#### UpdateClickKeywordTargetTypeHit {} >> {} > {} / {}", timeId, clickType, mapper);
-				mapper.updateClear(siteId, timeId, keyword, target);
 				mapper.putEntry(siteId, timeId, keyword, target, clickType, count);
 				
 			}

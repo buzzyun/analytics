@@ -74,6 +74,7 @@ public class MonthlyClickKeywordHitCalculator extends Calculator<ClickLog> {
 			logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
 			
 			File file = new File(workingDir, RUN_CLICK_TYPE_FILENAME);
+			file.delete();
 			/*
 			 * 1. type별 클릭수.
 			 * */

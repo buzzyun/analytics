@@ -99,8 +99,7 @@ public abstract class Calculator<LogType extends LogData> {
 
 				}
 			} catch (Exception e) {
-//				logger.error("{}", e.getMessage());
-				logger.error("{}", e);
+				logger.error("", e);
 			}
 		}
 	}

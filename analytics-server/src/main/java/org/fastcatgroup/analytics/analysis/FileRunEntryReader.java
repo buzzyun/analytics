@@ -27,7 +27,7 @@ public class FileRunEntryReader<EntryType extends RunEntry> extends RunEntryRead
 
 	public FileRunEntryReader(File file, String encoding, EntryParser<EntryType> entryParser) throws IOException {
 		if (file != null && file.exists()) {
-			logger.debug("open file {}", file.getAbsolutePath());
+			logger.trace("open file {}", file.getAbsolutePath());
 			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), encoding));
 			this.entryParser = entryParser;
 		}

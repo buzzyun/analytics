@@ -20,11 +20,11 @@ public class KeyCountLogAggregator<LogType extends LogData> extends AbstractLogA
 	protected File destFile;
 	EntryParser<KeyCountRunEntry> entryParser;
 	
-	public KeyCountLogAggregator(File targetDir, String targetFilename, int runKeySize, String outputEncoding, int minimumHitCount, EntryParser<KeyCountRunEntry> entryParser) {
+	public KeyCountLogAggregator(File targetDir, String fileName, int runKeySize, String outputEncoding, int minimumHitCount, EntryParser<KeyCountRunEntry> entryParser) {
 		super(runKeySize, outputEncoding, minimumHitCount);
 		this.entryParser = entryParser;
 		this.runTmpDir = new File(targetDir, "_run");
-		this.destFile = new File(targetDir, targetFilename);
+		this.destFile = new File(targetDir, fileName);
 		
 		if (!targetDir.exists()) {
 			targetDir.mkdir();

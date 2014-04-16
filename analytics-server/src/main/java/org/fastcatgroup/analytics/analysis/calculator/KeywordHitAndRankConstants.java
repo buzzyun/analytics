@@ -14,6 +14,11 @@ public class KeywordHitAndRankConstants {
 	public static final String RAW_LOG_FILENAME = "raw.log";
 	public static final String TYPE_RAW_FILENAME = "type_raw.log";
 	public static final String CLICK_RAW_FILENAME = "click_raw.log";
+	
+	public static final String CLICK_COUNT_FILENAME = "click-count.log";
+	public static final String CLICK_KEYWORD_COUNT_FILENAME = "click-keyword-count.log";
+	public static final String CLICK_KEYWORD_TARGET_COUNT_FILENAME = "click-keyword-target-count.log";
+	
 	public static final String TMP_LOG_FILENAME = "tmp.log";
 	public static final String SERVICE_COUNT_FILENAME = "service-count.log";
 	public static final String RUN_CLICK_TYPE_FILENAME = "run_click_type.log";

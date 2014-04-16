@@ -123,9 +123,9 @@ $(document).ready(function() {
 				min : 0, max : 6,
 				tickSize : [ 1, "month" ],
 				ticks : ticks,
-				tickLength : 0
+				tickLength : 0,
 			}, yaxes: [
-				{ },{ position: "right" }	  
+				{ },{ min:"0", position: "right" }
 			], grid : {
 				hoverable : true,
 				clickable : true
@@ -187,7 +187,7 @@ $(document).ready(function() {
 			ticks : ticks,
 			tickLength : 0
 		},
-		yaxes: [ { },{ position: "right" } ],
+		yaxes: [ { },{ min:"0", position: "right" } ],
 		grid : { hoverable : true, clickable : true },
 		tooltip : true,
 		tooltipOpts : { content : '%s: %y' }

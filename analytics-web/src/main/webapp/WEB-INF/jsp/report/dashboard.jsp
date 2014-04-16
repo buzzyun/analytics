@@ -133,11 +133,15 @@ DecimalFormat format = new DecimalFormat("#,###");
 			var ctr_data = [ {
 				label : "Search PV",
 				data : ctr1,
-				color : "#eb8544"
+				color : "#000",
+				lines: { show: true },
+				points:{ show:true }
 			}, {
 				label : "Click Through Count",
 				data : ctr2,
-				color : "#487FF3"
+				color : "#468847",
+				lines: { show: true },
+				points:{ show:true }
 			}, {
 				label : "Click Through Rate",
 				data : ctr3,

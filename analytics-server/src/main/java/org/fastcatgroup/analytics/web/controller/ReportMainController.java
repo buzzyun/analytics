@@ -158,11 +158,10 @@ public class ReportMainController extends AbstractController {
 			List<Integer> searchPvList = new ArrayList<Integer>();
 			Map<String, ListableCounter> clickHitList = new HashMap<String, ListableCounter>();
 			for(String clickType : clickTypeList){
-				clickHitList.put(clickType, new ListableCounter(0));
+				clickHitList.put(clickType, new ListableCounter());
 			}
-			
-			//List<Integer> typeHitList = new ArrayList<Integer>();
-			for (int timeInx=0;fromDate.getTimeInMillis() <= toDate.getTimeInMillis();timeInx++) {
+			int timeInx = 0;
+			for (;fromDate.getTimeInMillis() <= toDate.getTimeInMillis();timeInx++) {
 				timeId = SearchStatisticsProperties.getTimeId(fromDate, Calendar.MONTH);
 				String label = SearchStatisticsProperties.toDatetimeString(fromDate, Calendar.MONTH);
 				labelList.add(label);
@@ -193,6 +192,14 @@ public class ReportMainController extends AbstractController {
 				
 				fromDate.add(Calendar.MONTH, 1);
 			}
+			
+			//모든 타입 내 배열 갯수를 맞춰 준다.
+			for(String key : clickHitList.keySet()) {
+				if(clickHitList.get(key).list().size() < timeInx) {
+					clickHitList.get(key).increment(timeInx - 1, 0);
+				}
+			}
+			
 			mav.addObject("clickTypeList", clickTypeList);
 			mav.addObject("searchPvList", searchPvList);
 			mav.addObject("clickHitList", clickHitList);

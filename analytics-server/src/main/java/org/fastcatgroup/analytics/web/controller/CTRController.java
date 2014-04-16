@@ -100,12 +100,13 @@ public class CTRController extends AbstractController {
 		
 		try {
 			for(String service : serviceList) {
-				pathCounter.put(service, new ListableCounter(0));
+				pathCounter.put(service, new ListableCounter());
 			}
-			pathCounter.put("_etc", new ListableCounter(0));
+			pathCounter.put("_etc", new ListableCounter());
 			
 			startTime = (Calendar) startTime2.clone();
-			for (int timeInx=0;startTime.getTimeInMillis() <= endTime.getTimeInMillis();timeInx++) {
+			int timeInx = 0;
+			for (;startTime.getTimeInMillis() <= endTime.getTimeInMillis();timeInx++) {
 				String timeId = SearchStatisticsProperties.getTimeId(startTime, timeTypeCode);
 				String label = SearchStatisticsProperties.toDatetimeString(startTime, Calendar.MONTH);
 				labelList.add(label);
@@ -134,6 +135,15 @@ public class CTRController extends AbstractController {
 				}
 				startTime.add(timeTypeCode, 1);
 			}
+			
+			
+			//모든 서비스 내 배열 갯수를 맞춰 준다.
+			for(String key : pathCounter.keySet()) {
+				if(pathCounter.get(key).list().size() < timeInx) {
+					pathCounter.get(key).increment(timeInx - 1, 0);
+				}
+			}
+			
 		} catch (Exception e) {
 			logger.error("", e);
 		} finally {

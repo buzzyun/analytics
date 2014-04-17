@@ -57,15 +57,18 @@ DecimalFormat format = new DecimalFormat("#,###");
 				<% } %>
 			];
 			
-			var data = [ {
-				label : "Current",
-				data : d1,
-				color : '#eb8544'
-			}, {
+			var data = [ 
+			{
 				label : "Previous",
 				data : d2,
 				color : '#487FF3'
-			} ];
+			},
+			{
+				label : "Current",
+				data : d1,
+				color : '#eb8544'
+			}
+			];
 
 			$.plot("#chart_dashboard_main", data, $.extend(true, {}, Plugins
 				.getFlotDefaults(),
@@ -289,9 +292,9 @@ DecimalFormat format = new DecimalFormat("#,###");
 							<div class="widget-content">
 								<ul class="stats">
 									<!-- .no-dividers -->
-									<li><strong><%=format.format(totalCurrentWeek) %></strong> <small>Total Count</small></li>
+									<li><strong><%=format.format(totalCurrentWeek) %></strong> <small>Search PV</small></li>
 									<li class="light"><strong><%=format.format(totalLastWeek) %></strong> <small>Last
-											Period</small></li>
+											Period Search PV</small></li>
 									<%
 									double rate = 0;
 									if(totalCurrentWeek > 0) {

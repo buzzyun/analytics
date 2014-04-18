@@ -17,6 +17,7 @@ public class MergeKeyCountProcessHandler extends ProcessHandler {
 	String encoding;
 	EntryParser<KeyCountRunEntry> entryParser;
 	File[] inFileList;
+	float[] weightList;
 	
 	public MergeKeyCountProcessHandler(File[] inFileList, File resultDir, String outFileName, String encoding, EntryParser<KeyCountRunEntry> entryParser) {
 		this.resultDir = resultDir;
@@ -24,17 +25,18 @@ public class MergeKeyCountProcessHandler extends ProcessHandler {
 		this.encoding = encoding;
 		this.entryParser = entryParser;
 		this.inFileList = inFileList;
+		weightList = new float[inFileList.length];
+		Arrays.fill(weightList, 1.0f);
+	}
+	
+	public float[] weightList() {
+		return weightList;
 	}
 
 	@Override
 	public Object process(Object parameter) {
 		//logger.debug("start process.. ");
-		
 		File keyCountFile = new File(resultDir, outFileName);
-		
-		float[] weightList = new float[inFileList.length];
-		Arrays.fill(weightList, 1.0f);
-		
 		try {
 
 			if (inFileList == null || inFileList.length == 0) {

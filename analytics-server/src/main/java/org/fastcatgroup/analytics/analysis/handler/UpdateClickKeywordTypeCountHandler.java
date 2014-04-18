@@ -58,7 +58,6 @@ public class UpdateClickKeywordTypeCountHandler extends ProcessHandler {
 			}
 		} finally {
 			if (mapperSession != null) {
-				mapperSession.commit();
 				mapperSession.closeSession();
 			}
 			

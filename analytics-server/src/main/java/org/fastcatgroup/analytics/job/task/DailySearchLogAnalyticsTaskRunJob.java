@@ -9,7 +9,6 @@ import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig;
 import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.CategoryConfig;
 import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig;
-import org.fastcatgroup.analytics.analysis.schedule.ScheduledTaskRunner;
 import org.fastcatgroup.analytics.analysis.schedule.SimpleTaskRunner;
 import org.fastcatgroup.analytics.analysis.schedule.TimeSchedule;
 import org.fastcatgroup.analytics.analysis.task.DailyClickLogAnalyticsTask;
@@ -19,6 +18,7 @@ import org.fastcatgroup.analytics.analysis.task.HourlySearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.MonthlyClickLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.MonthlySearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.MonthlyTypeSearchLogAnalyticsTask;
+import org.fastcatgroup.analytics.analysis.task.NDaysClickLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.WeeklySearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.WeeklyTypeSearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.YearlySearchLogAnalyticsTask;
@@ -130,6 +130,10 @@ public class DailySearchLogAnalyticsTaskRunJob extends Job {
 				TimeSchedule schedule10 = new TimeSchedule(calendar1.getTimeInMillis(), 0);
 				MonthlyClickLogAnalyticsTask task10 = new MonthlyClickLogAnalyticsTask(siteId, categoryIdList, schedule10, 10);
 				taskRunner.addTask(task10);
+				
+				TimeSchedule schedule11 = new TimeSchedule(calendar1.getTimeInMillis(), 0);
+				NDaysClickLogAnalyticsTask task11 = new NDaysClickLogAnalyticsTask(siteId, categoryIdList, schedule11, 11);
+				taskRunner.addTask(task11);
 				
 				taskRunner.start();
 				

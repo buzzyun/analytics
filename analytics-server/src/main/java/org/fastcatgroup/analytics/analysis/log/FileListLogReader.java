@@ -50,6 +50,13 @@ public abstract class FileListLogReader<LogType extends LogData> implements Sour
 		}
 		return null;
 	}
+	
+	public int currentIndex () {
+		if(currentInx > 0) {
+			return currentInx - 1;
+		}
+		return 0;
+	}
 
 	@Override
 	public LogType readLog() {

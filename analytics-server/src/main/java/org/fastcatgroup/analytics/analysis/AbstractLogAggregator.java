@@ -49,10 +49,10 @@ public abstract class AbstractLogAggregator<LogType extends LogData> {
 	protected abstract void doDone();
 	
 	public void handleLog(LogType log) throws IOException {
-//		logger.debug("{}: {}", getClass().getSimpleName(), log);
+		logger.trace("{}: {}", getClass().getSimpleName(), log);
 		if (log != null && log.getKey() != null && log.getKey().length() > 0) {
 			Counter counter = aggregateMap.get(log.getKey());
-//			logger.debug("##handle log {} > {}", log.getKey(), counter);
+			logger.trace("##handle log {} > {}", log.getKey(), counter);
 			if (counter != null) {
 				counter.increment(log.getCount());
 			} else {

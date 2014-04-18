@@ -12,7 +12,6 @@ import org.fastcatgroup.analytics.analysis.KeyCountLogAggregator;
 import org.fastcatgroup.analytics.analysis.NullLogHandler;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.handler.MergeClickTypeCountProcessHandler;
-import org.fastcatgroup.analytics.analysis.handler.ProcessHandler;
 import org.fastcatgroup.analytics.analysis.log.ClickLog;
 import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.util.KeyCountRunEntry;
@@ -38,7 +37,7 @@ public class DailyClickKeywordHitCalculator extends Calculator<ClickLog> {
 		
 		CategoryProcess<ClickLog> categoryProcess = new CategoryProcess<ClickLog>(categoryId);
 		
-		//입력소스에서 키값을 읽어들이는 방식이 3가지 타입으로 각기 다르므로 1개소스를 읽어들이는 loghandler 를 사용하지 않는다.
+		//FIXME:클릭raw 로그를 읽어들이는 리딩소스는 1개이므로 loghandler 를 이용하도록 수정.
 		new NullLogHandler<ClickLog>(categoryId).attachLogHandlerTo(categoryProcess);
 			
 		if(categoryId.equals("_root")) {
@@ -62,31 +61,13 @@ public class DailyClickKeywordHitCalculator extends Calculator<ClickLog> {
 			logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
 			
 			/*
-			 * 1. type별 클릭수.
+			 * 키워드별 type별 클릭대상별 클릭수.
 			 * */
-			EntryParser<KeyCountRunEntry> clickTypeParser = new KeyCountRunEntryParser(new int[] {0}, 3);
-			AbstractLogAggregator<ClickLog> clickTypeLogAggregator = new KeyCountLogAggregator<ClickLog>(workingDir, CLICK_COUNT_FILENAME, runKeySize, encoding, minimumHitCount, clickTypeParser);
-			ProcessHandler mergeKeyCount = new MergeClickTypeCountProcessHandler(
+			EntryParser<KeyCountRunEntry> clickTypeParser = new KeyCountRunEntryParser(new int[]{0, 1, 2}, 3 );
+			AbstractLogAggregator<ClickLog> clickTypeLogAggregator = new KeyCountLogAggregator<ClickLog>(workingDir, CLICK_KEYWORD_TARGET_COUNT_FILENAME, runKeySize, encoding, minimumHitCount, clickTypeParser);
+			new MergeClickTypeCountProcessHandler(
 					clickLogFiles, encoding, clickTypeLogAggregator,
-					MergeClickTypeCountProcessHandler.RUN_CASE_CLICK).attachProcessTo(categoryProcess);
-			
-			/*
-			 * 2. 키워드별 type별 클릭수.
-			 * */
-			clickTypeParser = new KeyCountRunEntryParser(new int[]{0, 2}, 3 );
-			clickTypeLogAggregator = new KeyCountLogAggregator<ClickLog>(workingDir, CLICK_KEYWORD_COUNT_FILENAME, runKeySize, encoding, minimumHitCount, clickTypeParser);
-			mergeKeyCount = new MergeClickTypeCountProcessHandler(
-					clickLogFiles, encoding, clickTypeLogAggregator,
-					MergeClickTypeCountProcessHandler.RUN_CASE_CLICK_KEYWORD).appendTo(mergeKeyCount);
-			
-			/*
-			 * 3. 키워드별 type별 클릭대상별 클릭수.
-			 * */
-			clickTypeParser = new KeyCountRunEntryParser(new int[]{0, 1, 2}, 3 );
-			clickTypeLogAggregator = new KeyCountLogAggregator<ClickLog>(workingDir, CLICK_KEYWORD_TARGET_COUNT_FILENAME, runKeySize, encoding, minimumHitCount, clickTypeParser);
-			mergeKeyCount = new MergeClickTypeCountProcessHandler(
-					clickLogFiles, encoding, clickTypeLogAggregator,
-					MergeClickTypeCountProcessHandler.RUN_CASE_CLICK_KEYWORD_TARGET).appendTo(mergeKeyCount);
+					MergeClickTypeCountProcessHandler.RUN_CASE_CLICK_KEYWORD_TARGET).attachProcessTo(categoryProcess);
 		}
 		return categoryProcess;
 	}

@@ -50,7 +50,7 @@ public class NDaysClickKeywordHitCalculator extends Calculator<ClickLog> {
 			Calendar dailyCalendar = (Calendar) calendar.clone();
 			for (int inx = 0; inx < nDays; inx++) {
 				File timeDir = SearchStatisticsProperties.getDayDataDir(baseDir, dailyCalendar);
-				clickLogFiles[inx] = new File(new File(timeDir, siteId), CLICK_KEYWORD_TARGET_COUNT_FILENAME);
+				clickLogFiles[inx] = new File(new File(timeDir, siteId), CLICK_COUNT_FILENAME);
 				dailyCalendar.add(Calendar.DAY_OF_MONTH, -1);
 			}
 			

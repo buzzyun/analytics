@@ -64,7 +64,7 @@ public class DailyClickKeywordHitCalculator extends Calculator<ClickLog> {
 			 * 키워드별 type별 클릭대상별 클릭수.
 			 * */
 			EntryParser<KeyCountRunEntry> clickTypeParser = new KeyCountRunEntryParser(new int[]{0, 1, 2}, 3 );
-			AbstractLogAggregator<ClickLog> clickTypeLogAggregator = new KeyCountLogAggregator<ClickLog>(workingDir, CLICK_KEYWORD_TARGET_COUNT_FILENAME, runKeySize, encoding, minimumHitCount, clickTypeParser);
+			AbstractLogAggregator<ClickLog> clickTypeLogAggregator = new KeyCountLogAggregator<ClickLog>(workingDir, CLICK_COUNT_FILENAME, runKeySize, encoding, minimumHitCount, clickTypeParser);
 			new MergeClickTypeCountProcessHandler(
 					clickLogFiles, encoding, clickTypeLogAggregator,
 					MergeClickTypeCountProcessHandler.RUN_CASE_CLICK_KEYWORD_TARGET).attachProcessTo(categoryProcess);

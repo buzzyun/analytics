@@ -66,15 +66,27 @@ public class DailySearchLogAnalyticsTaskRunJob extends Job {
 		
 		if (timeId1 != null && !"".equals(timeId1)) {
 			
-			
 			Calendar calendar1 = SearchStatisticsProperties.parseTimeId(timeId1);
 			Calendar calendar2 = SearchStatisticsProperties.parseTimeId(timeId2);
+			
+			//dayDiff 가 0 이면, 즉 일일 실행이면 모두 실행한다.
+			//다수일을 지정한 경우 에는 선택적으로 실행할 수 있도록 한다.
+			int dayDiff = SearchStatisticsProperties.getDateDiff(calendar1, calendar2);
 			
 			SearchStatisticsProperties.setTimeFrom(calendar1);
 			SearchStatisticsProperties.setTimeTo(calendar2);
 			
 			while(calendar1.before(calendar2)) {
 				logger.info("CALCULATING..{}", SearchStatisticsProperties.toDatetimeString(calendar1));
+				
+				Calendar weekEnd = (Calendar) calendar1.clone();
+				Calendar monthEnd = (Calendar) calendar1.clone();
+				
+				weekEnd.set(Calendar.DAY_OF_WEEK, 7);
+				weekEnd.add(Calendar.DAY_OF_MONTH, 1);
+				
+				monthEnd.add(Calendar.MONTH, 1);
+				monthEnd.add(Calendar.DAY_OF_MONTH, -1);
 			
 				SimpleTaskRunner taskRunner = new SimpleTaskRunner("search-log-task-runner", JobService.getInstance(), environment);
 				/* 1. raw.log */
@@ -92,44 +104,54 @@ public class DailySearchLogAnalyticsTaskRunJob extends Job {
 				DailyTypeSearchLogAnalyticsTask task2 = new DailyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule2, 2, null);
 				taskRunner.addTask(task2);
 				
-				/* weekly log */
-				TimeSchedule schedule3 = new TimeSchedule(calendar1.getTimeInMillis(), 0);
-				WeeklySearchLogAnalyticsTask task3 = new WeeklySearchLogAnalyticsTask(siteId, categoryIdList, schedule3, 3);
-				taskRunner.addTask(task3);
+				if (weekEnd.equals(calendar1) || dayDiff == 0) {
 				
-				/* weekly type log */
-				TimeSchedule schedule4 = new TimeSchedule(calendar1.getTimeInMillis(), 0);
-				WeeklyTypeSearchLogAnalyticsTask task4 = new WeeklyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule4, 4);
-				taskRunner.addTask(task4);
+					/* weekly log */
+					TimeSchedule schedule3 = new TimeSchedule(calendar1.getTimeInMillis(), 0);
+					WeeklySearchLogAnalyticsTask task3 = new WeeklySearchLogAnalyticsTask(siteId, categoryIdList, schedule3, 3);
+					taskRunner.addTask(task3);
+					
+					/* weekly type log */
+					TimeSchedule schedule4 = new TimeSchedule(calendar1.getTimeInMillis(), 0);
+					WeeklyTypeSearchLogAnalyticsTask task4 = new WeeklyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule4, 4);
+					taskRunner.addTask(task4);
+				}
 				
-				/* monthly log */
-				TimeSchedule schedule5 = new TimeSchedule(calendar1.getTimeInMillis(), 0);
-				MonthlySearchLogAnalyticsTask task5 = new MonthlySearchLogAnalyticsTask(siteId, categoryIdList, schedule5, 5);
-				taskRunner.addTask(task5);
+				if (monthEnd.equals(calendar1) || dayDiff == 0) {
 				
-				/* monthly type log */
-				TimeSchedule schedule6 = new TimeSchedule(calendar1.getTimeInMillis(), 0);
-				MonthlyTypeSearchLogAnalyticsTask task6 = new MonthlyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule6, 6);
-				taskRunner.addTask(task6);
-				
-				/* yearly log */
-				TimeSchedule schedule7 = new TimeSchedule(calendar1.getTimeInMillis(), 0);
-				YearlySearchLogAnalyticsTask task7 = new YearlySearchLogAnalyticsTask(siteId, categoryIdList, schedule7, 7);
-				taskRunner.addTask(task7);
-				
-				/* yearly type log */
-				TimeSchedule schedule8 = new TimeSchedule(calendar1.getTimeInMillis(), 0);
-				YearlyTypeSearchLogAnalyticsTask task8 = new YearlyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule8, 8);
-				taskRunner.addTask(task8);
+					/* monthly log */
+					TimeSchedule schedule5 = new TimeSchedule(calendar1.getTimeInMillis(), 0);
+					MonthlySearchLogAnalyticsTask task5 = new MonthlySearchLogAnalyticsTask(siteId, categoryIdList, schedule5, 5);
+					taskRunner.addTask(task5);
+					
+					/* monthly type log */
+					TimeSchedule schedule6 = new TimeSchedule(calendar1.getTimeInMillis(), 0);
+					MonthlyTypeSearchLogAnalyticsTask task6 = new MonthlyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule6, 6);
+					taskRunner.addTask(task6);
+					
+					if(calendar1.get(Calendar.MONTH) == 11 || dayDiff == 0) {
+						/* yearly log */
+						TimeSchedule schedule7 = new TimeSchedule(calendar1.getTimeInMillis(), 0);
+						YearlySearchLogAnalyticsTask task7 = new YearlySearchLogAnalyticsTask(siteId, categoryIdList, schedule7, 7);
+						taskRunner.addTask(task7);
+						
+						/* yearly type log */
+						TimeSchedule schedule8 = new TimeSchedule(calendar1.getTimeInMillis(), 0);
+						YearlyTypeSearchLogAnalyticsTask task8 = new YearlyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule8, 8);
+						taskRunner.addTask(task8);
+					}
+				}
 			
 				/* click log */
 				TimeSchedule schedule9 = new TimeSchedule(calendar1.getTimeInMillis(), 0);
 				DailyClickLogAnalyticsTask task9 = new DailyClickLogAnalyticsTask(siteId, categoryIdList, schedule9, 9);
 				taskRunner.addTask(task9);
 				
-				TimeSchedule schedule10 = new TimeSchedule(calendar1.getTimeInMillis(), 0);
-				MonthlyClickLogAnalyticsTask task10 = new MonthlyClickLogAnalyticsTask(siteId, categoryIdList, schedule10, 10);
-				taskRunner.addTask(task10);
+				if (monthEnd.equals(calendar1) || dayDiff == 0) {
+					TimeSchedule schedule10 = new TimeSchedule(calendar1.getTimeInMillis(), 0);
+					MonthlyClickLogAnalyticsTask task10 = new MonthlyClickLogAnalyticsTask(siteId, categoryIdList, schedule10, 10);
+					taskRunner.addTask(task10);
+				}
 				
 				TimeSchedule schedule11 = new TimeSchedule(calendar1.getTimeInMillis(), 0);
 				NDaysClickLogAnalyticsTask task11 = new NDaysClickLogAnalyticsTask(siteId, categoryIdList, schedule11, 11);

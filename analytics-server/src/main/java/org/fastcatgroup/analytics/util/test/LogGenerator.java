@@ -131,6 +131,7 @@ public class LogGenerator {
 				System.out.println("qtyTotal="+qtyTotalGenerate+".. / shffling..");
 				
 				//난수로 갯수를 섞는다.
+				r.setSeed(System.currentTimeMillis());
 				int randomCount = r.nextInt(10000);
 				for(int inx=0;inx< randomCount; inx++) {
 					int randomInxF = r.nextInt(24);
@@ -156,12 +157,14 @@ public class LogGenerator {
 						if(cateIndex < categoryList.length){
 							categoryId = categoryList[cateIndex];
 						}
+						r.setSeed(System.currentTimeMillis());
 				
 						int keyword0 = r.nextInt(keywordList.size());
 						int keyword1 = r.nextInt(keywordList.size());
 						String keyword = keywordList.get(keyword0);
 						String prevKeyword = keywordList.get(keyword1);
 						for (int i = 0; i < typeValue.length; i++) {
+							r.setSeed(System.currentTimeMillis());
 							typeValue[i] = typeValues[i].get(r.nextInt(typeValues[i].size()));
 						}
 						
@@ -192,6 +195,7 @@ public class LogGenerator {
 							//	clickType = clickTypeList[];
 							//}
 							
+							r.setSeed(System.currentTimeMillis());
 							clickType = clickTypeList[ r.nextInt(clickTypeList.length) ];
 							insertClickLog(home, calendar, timeId, rawData[3], productId, clickType, rawData, (inx==0 && inx2==0 && clickInx==0));
 						}

@@ -28,10 +28,17 @@ public class GetServicePopularKeywordAction extends ServiceAction {
 		String siteId = request.getParameter("siteId");
 		String categoryId = request.getParameter("categoryId");
 		String timeType = request.getParameter("timeType");
+		String date = request.getParameter("date");
+		int ln = request.getIntParameter("ln",0);
 		int interval = request.getIntParameter("interval", 1);
 		String errorMessage = null;
 
 		try {
+			//TODO: interval 을 0으로 주고 date 를 직접 기재한 경우
+			//파일기반에서 덤프 하도록 한다.
+			//ln 이 0 인 경우 모조리 덤프 한다.
+			
+			
 			String timeId = null;
 			Calendar calendar = SearchStatisticsProperties.getCalendar();
 			List<RankKeyword> list = null;
@@ -81,5 +88,4 @@ public class GetServicePopularKeywordAction extends ServiceAction {
 			responseWriter.done();
 		}
 	}
-
 }

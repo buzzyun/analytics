@@ -24,36 +24,39 @@ public class GetServicePopularKeywordAction extends ServiceAction {
 		ResponseWriter responseWriter = getDefaultResponseWriter(response.getWriter());
 		responseWriter.object();
 
-//		String type = request.getParameter("type");
+		//String type = request.getParameter("type");
 		String siteId = request.getParameter("siteId");
 		String categoryId = request.getParameter("categoryId");
 		String timeType = request.getParameter("timeType");
-		String date = request.getParameter("date");
+		String timeId = request.getParameter("timeId");
+		//String date = request.getParameter("date");
+		int sn = request.getIntParameter("sn",1);
 		int ln = request.getIntParameter("ln",0);
 		int interval = request.getIntParameter("interval", 1);
 		String errorMessage = null;
 
 		try {
-			//TODO: interval 을 0으로 주고 date 를 직접 기재한 경우
-			//파일기반에서 덤프 하도록 한다.
-			//ln 이 0 인 경우 모조리 덤프 한다.
-			
-			
-			String timeId = null;
-			Calendar calendar = SearchStatisticsProperties.getCalendar();
+			//String timeId = null;
 			List<RankKeyword> list = null;
-			if ("D".equalsIgnoreCase(timeType)) {
-				calendar.add(Calendar.DATE, -interval);
-				timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DATE);
-				list = statisticsService.getPopularKeywordList(siteId, categoryId, timeId);
-			} else if ("W".equalsIgnoreCase(timeType)) {
-				calendar.add(Calendar.WEEK_OF_YEAR, -interval);
-				timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.WEEK_OF_YEAR);
-				list = statisticsService.getPopularKeywordList(siteId, categoryId, timeId);
-			} else if ("M".equalsIgnoreCase(timeType)) {
-				calendar.add(Calendar.MONTH, -interval);
-				timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.MONTH);
-				list = statisticsService.getPopularKeywordList(siteId, categoryId, timeId);
+			if (interval != 0) {
+				Calendar calendar = SearchStatisticsProperties.getCalendar();
+				if ("D".equalsIgnoreCase(timeType)) {
+					calendar.add(Calendar.DATE, -interval);
+					timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DATE);
+					list = statisticsService.getPopularKeywordList(siteId, categoryId, timeId);
+				} else if ("W".equalsIgnoreCase(timeType)) {
+					calendar.add(Calendar.WEEK_OF_YEAR, -interval);
+					timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.WEEK_OF_YEAR);
+					list = statisticsService.getPopularKeywordList(siteId, categoryId, timeId);
+				} else if ("M".equalsIgnoreCase(timeType)) {
+					calendar.add(Calendar.MONTH, -interval);
+					timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.MONTH);
+					list = statisticsService.getPopularKeywordList(siteId, categoryId, timeId);
+				}
+			} else {
+				//TODO: interval 을 0으로 주고 date 를 직접 기재한 경우
+				//파일기반에서 덤프 하도록 한다.
+				//ln 이 0 인 경우 모조리 덤프 한다.
 			}
 			
 			responseWriter.key("siteId").value(siteId);

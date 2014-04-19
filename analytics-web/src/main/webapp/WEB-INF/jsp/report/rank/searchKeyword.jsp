@@ -4,6 +4,7 @@
 <%@ page import="java.util.*" %>
 <%@ page import="org.fastcatgroup.analytics.db.vo.*" %>
 <%@ page import="org.fastcatgroup.analytics.db.vo.RankKeywordVO.RankDiffType" %>
+<%@ page import="org.fastcatgroup.analytics.analysis.config.StatisticsSettings.TypeSetting" %>
 
 <%
 String categoryId = (String) request.getAttribute("categoryId");

@@ -7,12 +7,12 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ServiceSetting;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
 import org.fastcatgroup.analytics.analysis.util.AggregationResultWriter;
 import org.fastcatgroup.analytics.analysis.util.RunMerger;
@@ -24,16 +24,16 @@ public class ServiceCountLogAggregator<LogType extends SearchLog> extends Abstra
 	private Map<String, Counter> serviceCounter;
 	private File destFile;
 	private String encoding;
-	private String[] serviceTypes;
+	private List<ServiceSetting> serviceTypes;
 
-	public ServiceCountLogAggregator(File targetDir, String targetFilename, String encoding, String[] serviceTypes) {
+	public ServiceCountLogAggregator(File targetDir, String targetFilename, String encoding, List<ServiceSetting> serviceTypes) {
 		super(0, null, 0);
 		this.destFile = new File(targetDir, targetFilename);
 		this.encoding = encoding;
 		this.serviceTypes = serviceTypes;
 		serviceCounter = new HashMap<String, Counter>();
-		for(String serviceType : serviceTypes) {
-			serviceCounter.put(serviceType, new Counter(0));
+		for(ServiceSetting serviceType : serviceTypes) {
+			serviceCounter.put(serviceType.getId(), new Counter(0));
 		}
 		serviceCounter.put("_etc", new Counter(0));
 	}
@@ -57,7 +57,9 @@ public class ServiceCountLogAggregator<LogType extends SearchLog> extends Abstra
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(destFile), encoding));
 			
 			List<String> serviceList = new ArrayList<String>();
-			serviceList.addAll(Arrays.asList(serviceTypes));
+			for(ServiceSetting serviceSetting : serviceTypes) {
+				serviceList.add(serviceSetting.getId());
+			}
 			serviceList.add("_etc");
 			
 			Collections.sort(serviceList);

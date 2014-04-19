@@ -1,13 +1,15 @@
 package org.fastcatgroup.analytics.web.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ClickTypeSetting;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ServiceSetting;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.SiteAttribute;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
 import org.fastcatgroup.analytics.db.mapper.ClickHitMapper;
@@ -38,9 +40,13 @@ public class CTRController extends AbstractController {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/ctr/view");
 		
-		String[] clickTypeArray = environment.settingManager().getSystemSettings().getStringArray("db.clickTypeList", ",");
-		String[] serviceList = environment.settingManager().getSystemSettings().getStringArray("db.serviceList", ",");
-		List<String> clickTypeList = Arrays.asList(clickTypeArray);
+		SiteAttribute siteAttribute = this.getStatisticsService().getStatisticsSetting(siteId).getSiteAttribute();
+		List<ClickTypeSetting> clickTypeSettingList = siteAttribute.getClickTypeList();
+		List<ServiceSetting> serviceSettingList = siteAttribute.getServiceList();
+		List<String> clickTypeList = new ArrayList<String>();
+		for(ClickTypeSetting clickType : clickTypeSettingList) {
+			clickTypeList.add(clickType.getId());
+		}
 		
 		Calendar startTime = null;
 		Calendar endTime = null;
@@ -99,8 +105,8 @@ public class CTRController extends AbstractController {
 		Map<String, ListableCounter> pathCounter = new HashMap<String, ListableCounter>();
 		
 		try {
-			for(String service : serviceList) {
-				pathCounter.put(service, new ListableCounter());
+			for(ServiceSetting service : serviceSettingList) {
+				pathCounter.put(service.getId(), new ListableCounter());
 			}
 			pathCounter.put("_etc", new ListableCounter());
 			
@@ -128,8 +134,8 @@ public class CTRController extends AbstractController {
 					}
 					searchPvList.add(cnt);
 				} else {
-					for(String service : serviceList) {
-						pathCounter.get(service).increment(timeInx, 0);
+					for(ServiceSetting service : serviceSettingList) {
+						pathCounter.get(service.getId()).increment(timeInx, 0);
 					}
 					searchPvList.add(0);
 				}
@@ -151,7 +157,7 @@ public class CTRController extends AbstractController {
 				searchPathHitMapperSession.closeSession();
 			}
 		}
-		mav.addObject("serviceList", serviceList);
+		mav.addObject("serviceList", serviceSettingList);
 		mav.addObject("searchPathCounter", pathCounter);
 		mav.addObject("searchPvList", searchPvList);
 		try {
@@ -198,8 +204,12 @@ public class CTRController extends AbstractController {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/ctr/detail");
 		
-		String[] clickTypeArray = environment.settingManager().getSystemSettings().getStringArray("db.clickTypeList", ",");
-		List<String> clickTypeList = Arrays.asList(clickTypeArray);
+		SiteAttribute siteAttribute = this.getStatisticsService().getStatisticsSetting(siteId).getSiteAttribute();
+		List<ClickTypeSetting> clickTypeSettingList = siteAttribute.getClickTypeList();
+		List<String> clickTypeList = new ArrayList<String>();
+		for(ClickTypeSetting clickType : clickTypeSettingList) {
+			clickTypeList.add(clickType.getId());
+		}
 		
 		Calendar calendar = null;
 		if(timeText != null) {
@@ -349,8 +359,12 @@ public class CTRController extends AbstractController {
 		String timeId = SearchStatisticsProperties.getTimeId(calendar, timeTypeCode);
 		logger.debug("New time id >> {}", timeId);
 		
-		String[] clickTypeArray = environment.settingManager().getSystemSettings().getStringArray("db.clickTypeList", ",");
-		List<String> clickTypeList = Arrays.asList(clickTypeArray);
+		SiteAttribute siteAttribute = this.getStatisticsService().getStatisticsSetting(siteId).getSiteAttribute();
+		List<ClickTypeSetting> clickTypeSettingList = siteAttribute.getClickTypeList();
+		List<String> clickTypeList = new ArrayList<String>();
+		for(ClickTypeSetting clickType : clickTypeSettingList) {
+			clickTypeList.add(clickType.getId());
+		}
 		
 		mav.addObject("timeText", timeText);
 		mav.addObject("clickTypeList", clickTypeList);

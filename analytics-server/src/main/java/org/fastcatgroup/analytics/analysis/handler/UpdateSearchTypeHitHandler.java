@@ -1,10 +1,12 @@
 package org.fastcatgroup.analytics.analysis.handler;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.TypeSetting;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
 import org.fastcatgroup.analytics.db.mapper.SearchTypeHitMapper;
@@ -15,9 +17,9 @@ public class UpdateSearchTypeHitHandler extends ProcessHandler {
 	String siteId;
 	String categoryId;
 	String timeId;
-	String[] typeList;
+	List<TypeSetting> typeList;
 
-	public UpdateSearchTypeHitHandler(String siteId, String categoryId, String timeId, String[] typeList) {
+	public UpdateSearchTypeHitHandler(String siteId, String categoryId, String timeId, List<TypeSetting> typeList) {
 		this.siteId = siteId;
 		this.categoryId = categoryId;
 		this.timeId = timeId;
@@ -37,8 +39,8 @@ public class UpdateSearchTypeHitHandler extends ProcessHandler {
 			Calendar cal = SearchStatisticsProperties.getCalendar();
 			cal.add(Calendar.DAY_OF_MONTH, -1);
 
-			for (int i = 0; i < typeList.length; i++) {
-				String typeId = typeList[i];
+			for (int i = 0; i < typeList.size(); i++) {
+				String typeId = typeList.get(i).getId();
 				Map<String, Counter> typeCounterMap = typeCounterList[i];
 
 				int count = mapper.getCount(siteId, categoryId, timeId, typeId);

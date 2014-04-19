@@ -2,8 +2,10 @@ package org.fastcatgroup.analytics.analysis.handler;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.TypeSetting;
 import org.fastcatgroup.analytics.analysis.log.TypeSearchLog;
 import org.fastcatgroup.analytics.util.Counter;
 
@@ -13,14 +15,14 @@ import org.fastcatgroup.analytics.util.Counter;
 public class TypeSearchLogKeyCountHandler extends CategoryLogHandler<TypeSearchLog> {
 
 	Map<String, Counter>[] typeCounterList;
-	String[] typeList;
+	List<TypeSetting> typeList;
 
-	public TypeSearchLogKeyCountHandler(String categoryId, String[] typeList) {
+	public TypeSearchLogKeyCountHandler(String categoryId, List<TypeSetting> typeList) {
 		super(categoryId);
 		logger.trace("##TypeSearchLogKeyCountHandler > {}", categoryId);
 		this.typeList = typeList;
-		typeCounterList = new Map[typeList.length];
-		for (int i = 0; i < typeList.length; i++) {
+		typeCounterList = new Map[typeList.size()];
+		for (int i = 0; i < typeList.size(); i++) {
 			typeCounterList[i] = new HashMap<String, Counter>();
 		}
 	}

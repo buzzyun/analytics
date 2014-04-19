@@ -82,8 +82,7 @@ public class PostSearchLogAction extends ServiceAction {
 			service.addLog(type, siteId, categoryId, keyword, prevKeyword, resultCount, reponseTime, serviceId);
 
 			/* 2. type_raw.log */
-//			environment.settingManager().getSystemSettings();
-			//TODO 카테고리 리스트를 설정에 따라 변동될수 있도록 한다.
+			//FIXME 카테고리 리스트를 설정에 따라 변동될수 있도록 한다.
 			String typeCategory = request.getParameter("category");
 			String typePage = request.getParameter("page");
 			String typeSort = request.getParameter("sort");

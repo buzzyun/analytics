@@ -76,7 +76,6 @@ public class ConfigurationAndSettingsController extends AbstractController {
 		
 		StatisticsService statisticsService = ServiceManager.getInstance().getService(StatisticsService.class);
 		
-		//SiteCategoryListConfig siteCategoryListConfig = statisticsService.getSiteCategoryListConfig();
 		SiteListSetting siteCategoryListConfig = statisticsService.getSiteListSetting();
 		
 		List<SiteSetting> siteList = siteCategoryListConfig.getSiteList();

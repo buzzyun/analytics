@@ -7,11 +7,15 @@ import java.util.List;
 
 import org.fastcatgroup.analytics.analysis.DailyRawLogger;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.analysis.calculator.Calculator;
 import org.fastcatgroup.analytics.analysis.calculator.DailyTypeHitCalculator;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.SiteAttribute;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.TypeSetting;
 import org.fastcatgroup.analytics.analysis.log.TypeSearchLog;
 import org.fastcatgroup.analytics.analysis.log.TypeSearchLogReader;
 import org.fastcatgroup.analytics.analysis.schedule.Schedule;
+import org.fastcatgroup.analytics.service.ServiceManager;
 
 import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.*;
 /**
@@ -34,7 +38,9 @@ public class DailyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchLog
 		// baseDir : statistics/search/date/Y####/M##/D##/data/{siteId} 경로
 		File dir = environment.filePaths().getStatisticsRoot().file("search", "date");
 		
-		String[] typeList = environment.settingManager().getSystemSettings().getStringArray("db.typeList", ",");
+		SiteAttribute siteAttribute = ServiceManager.getInstance().getService(StatisticsService.class).getStatisticsSetting(siteId).getSiteAttribute();
+		List<TypeSetting> typeList = siteAttribute.getTypeList();
+		
 		logger.debug("@@@@typeList > {} {}", "", typeList);
 		Calendar prevCalendar = (Calendar) calendar.clone();
 		prevCalendar.add(Calendar.DAY_OF_MONTH, -1);

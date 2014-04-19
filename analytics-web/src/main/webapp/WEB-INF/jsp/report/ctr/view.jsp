@@ -1,15 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@page import="java.util.Random, java.util.*" %>
-<%@page import="java.text.DecimalFormat"%>
-<%@page import="org.fastcatgroup.analytics.util.ListableCounter"%>
+<%@ page import="java.util.Random, java.util.*" %>
+<%@ page import="java.text.DecimalFormat"%>
+<%@ page import="org.fastcatgroup.analytics.util.ListableCounter"%>
+<%@ page import="org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ClickTypeSetting" %>
+<%@ page import="org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ServiceSetting" %>
 <%
 List<String> clickTypeList = (List<String>) request.getAttribute("clickTypeList");
 List<Integer> searchPvList = (List<Integer>) request.getAttribute("searchPvList");
 List<Integer> clickHitList = (List<Integer>) request.getAttribute("clickHitList");
 List<String> labelList = (List<String>) request.getAttribute("labelList");
-String[] serviceList = (String[]) request.getAttribute("serviceList");
+List<ServiceSetting> serviceList = (List<ServiceSetting>) request.getAttribute("serviceList");
 Map<String, ListableCounter>  searchPathCounter = (Map<String, ListableCounter>) request.getAttribute("searchPathCounter");
 String timeText = (String) request.getAttribute("timeText");
 if(timeText == null ) {
@@ -266,12 +268,12 @@ $(document).ready(function() {
 							<div class="widget-content">
 								<ul class="stats">
 									<%
-									for(String service : serviceList) {
-										if("_etc".equals(service) || "total".equals(service)) {
+									for(ServiceSetting service : serviceList) {
+										if("_etc".equals(service.getId()) || "total".equals(service.getId())) {
 											continue;
 										}
 									%>
-									<li class="light"><strong><%=format.format(searchPathCounter.get(service).value())%></strong> <small><%=service%></small></li>
+									<li class="light"><strong><%=format.format(searchPathCounter.get(service.getId()).value())%></strong> <small><%=service.getId()%></small></li>
 									<%
 									}
 									%>

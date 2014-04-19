@@ -4,6 +4,7 @@
 	pageEncoding="UTF-8"%>
 <%@page import="java.text.DecimalFormat" %>
 <%@page import="org.fastcatgroup.analytics.analysis.SearchStatisticsProperties" %>
+<%@page import="org.fastcatgroup.analytics.analysis.config.StatisticsSettings.TypeSetting" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
 String categoryId = (String) request.getAttribute("categoryId");
@@ -11,7 +12,7 @@ List<SearchTypeHitVO> list = (List<SearchTypeHitVO>) request.getAttribute("list"
 String typeId = (String) request.getAttribute("typeId");
 String timeText = (String) request.getAttribute("timeText");
 String timeViewType = (String) request.getAttribute("timeViewType");
-String[] typeArray = (String[]) request.getAttribute("typeArray");
+List<TypeSetting> typeArray = (List<TypeSetting>) request.getAttribute("typeArray");
 DecimalFormat format = new DecimalFormat("#,###");
 %>
 <c:set var="ROOT_PATH" value="../.." />
@@ -355,9 +356,9 @@ function showRatioTab(typeId){
 				<div class="tabbable tabbable-custom tabbable-full-width" id="schema_tabs">
 					<ul class="nav nav-tabs">
 						<% 
-						for ( int typeInx=0; typeInx < typeArray.length; typeInx ++ ) { 
+						for ( int typeInx=0; typeInx < typeArray.size(); typeInx ++ ) { 
 						%>
-							<li class="<%=typeId.equals(typeArray[typeInx]) ? "active" : "" %>"><a href="javascript:showRatioTab('<%=typeArray[typeInx]%>')"><%=typeArray[typeInx] %></a></li>
+							<li class="<%=typeId.equals(typeArray.get(typeInx).getId()) ? "active" : "" %>"><a href="javascript:showRatioTab('<%=typeArray.get(typeInx).getId()%>')"><%=typeArray.get(typeInx).getId() %></a></li>
 						<% 
 						} 
 						%>

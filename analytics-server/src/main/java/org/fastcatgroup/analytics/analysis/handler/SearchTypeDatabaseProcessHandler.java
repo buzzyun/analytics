@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.TypeSetting;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
 import org.fastcatgroup.analytics.db.mapper.SearchTypeHitMapper;
@@ -19,15 +20,15 @@ public class SearchTypeDatabaseProcessHandler extends ProcessHandler {
 	private String timeTo;
 	private Map<String, Integer> typeMap;
 	
-	public SearchTypeDatabaseProcessHandler(String siteId, String categoryId, String timeFrom, String timeTo, String[] typeList) {
+	public SearchTypeDatabaseProcessHandler(String siteId, String categoryId, String timeFrom, String timeTo, List<TypeSetting> typeList) {
 		this.siteId = siteId;
 		this.categoryId = categoryId;
 		this.timeFrom = timeFrom;
 		this.timeTo = timeTo;
 		
 		typeMap = new HashMap<String, Integer>();
-		for (int inx = 0; inx < typeList.length; inx++) {
-			typeMap.put(typeList[inx], inx);
+		for (int inx = 0; inx < typeList.size(); inx++) {
+			typeMap.put(typeList.get(inx).getId(), inx);
 		}
 	}
 

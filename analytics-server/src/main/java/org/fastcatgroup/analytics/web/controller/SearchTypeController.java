@@ -4,6 +4,9 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsService;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.SiteAttribute;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.TypeSetting;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
 import org.fastcatgroup.analytics.db.mapper.SearchTypeHitMapper;
@@ -28,7 +31,9 @@ public class SearchTypeController extends AbstractController {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/type/index");
 		
-		String[] typeArray = environment.settingManager().getSystemSettings().getStringArray("db.typeList", ",");
+		SiteAttribute siteAttribute = ServiceManager.getInstance().getService(StatisticsService.class).getStatisticsSetting(siteId).getSiteAttribute();
+		List<TypeSetting> typeArray = siteAttribute.getTypeList();
+		
 		
 		if(timeText == null){
 			Calendar calendar = SearchStatisticsProperties.getCalendar();

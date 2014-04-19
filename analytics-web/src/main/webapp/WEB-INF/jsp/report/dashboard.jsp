@@ -6,12 +6,13 @@
 <%@page import="org.fastcatgroup.analytics.db.vo.*" %>
 <%@page import="org.fastcatgroup.analytics.analysis.SearchStatisticsProperties" %>
 <%@page import="org.fastcatgroup.analytics.util.ListableCounter"%>
+<%@page import="org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ClickTypeSetting"%>
 <%
 
 List<SearchHitVO> currentWeek = (List<SearchHitVO>) request.getAttribute("currentWeekData");
 List<SearchHitVO> lastWeek = (List<SearchHitVO>) request.getAttribute("lastWeekData");
 
-String[] clickTypeList = (String[]) request.getAttribute("clickTypeList");
+List<ClickTypeSetting> clickTypeList = (List<ClickTypeSetting>) request.getAttribute("clickTypeList");
 List<Integer> searchPvList = (List<Integer>) request.getAttribute("searchPvList");
 Map<String, ListableCounter> clickHitList = (Map<String,ListableCounter>) request.getAttribute("clickHitList");
 List<String> labelList = (List<String>) request.getAttribute("labelList");
@@ -110,8 +111,8 @@ DecimalFormat format = new DecimalFormat("#,###");
 			Integer pv = searchPvList.get(i);
 			if(pv==null) { pv = 0; }
 			int clickHit = 0;
-			for(String clickType : clickTypeList) {
-				Integer value = clickHitList.get(clickType).list().get(i);
+			for(ClickTypeSetting clickType : clickTypeList) {
+				Integer value = clickHitList.get(clickType.getId()).list().get(i);
 				if(value!=null) {
 					clickHit+=value;
 				}
@@ -487,9 +488,9 @@ DecimalFormat format = new DecimalFormat("#,###");
 								<ul class="stats">
 									<!-- .no-dividers -->
 									<%
-									for(String clickType : clickTypeList) {
+									for(ClickTypeSetting clickType : clickTypeList) {
 									%>
-									<li class="light"><strong><%=format.format(clickHitList.get(clickType).value()) %></strong> <small><%=clickType %></small></li>
+									<li class="light"><strong><%=format.format(clickHitList.get(clickType.getId()).value()) %></strong> <small><%=clickType.getId() %></small></li>
 									<%
 									}
 									%>

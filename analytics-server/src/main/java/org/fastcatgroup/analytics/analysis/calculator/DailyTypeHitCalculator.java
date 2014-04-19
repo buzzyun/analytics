@@ -5,15 +5,16 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.TypeSetting;
 import org.fastcatgroup.analytics.analysis.handler.TypeSearchLogKeyCountHandler;
 import org.fastcatgroup.analytics.analysis.handler.UpdateSearchTypeHitHandler;
 import org.fastcatgroup.analytics.analysis.log.TypeSearchLog;
 
 public class DailyTypeHitCalculator extends Calculator<TypeSearchLog> {
 	
-	String[] typeList;
+	List<TypeSetting> typeList;
 	
-	public DailyTypeHitCalculator(String name, Calendar calendar, File baseDir, String siteId, List<String> categoryIdList, String[] typeList) {
+	public DailyTypeHitCalculator(String name, Calendar calendar, File baseDir, String siteId, List<String> categoryIdList, List<TypeSetting> typeList) {
 		super(name, calendar, baseDir, siteId, categoryIdList);
 		this.typeList = typeList;
 	}

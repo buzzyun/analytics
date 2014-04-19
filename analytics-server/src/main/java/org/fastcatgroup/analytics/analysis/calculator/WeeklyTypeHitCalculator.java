@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.fastcatgroup.analytics.analysis.NullLogHandler;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.TypeSetting;
 import org.fastcatgroup.analytics.analysis.handler.SearchTypeDatabaseProcessHandler;
 import org.fastcatgroup.analytics.analysis.handler.ProcessHandler;
 import org.fastcatgroup.analytics.analysis.handler.UpdateSearchTypeHitHandler;
@@ -13,10 +14,10 @@ import org.fastcatgroup.analytics.analysis.log.TypeSearchLog;
 
 public class WeeklyTypeHitCalculator extends Calculator<TypeSearchLog> {
 	
-	private String[] typeList;
+	private List<TypeSetting> typeList;
 	private Calendar prevCalendar;
 	
-	public WeeklyTypeHitCalculator(String name, Calendar calendar, Calendar prevCalendar, File baseDir, String siteId, List<String> categoryIdList, String[] typeList) {
+	public WeeklyTypeHitCalculator(String name, Calendar calendar, Calendar prevCalendar, File baseDir, String siteId, List<String> categoryIdList, List<TypeSetting> typeList) {
 		super(name, calendar, baseDir, siteId, categoryIdList);
 		this.typeList = typeList;
 		this.prevCalendar = prevCalendar;

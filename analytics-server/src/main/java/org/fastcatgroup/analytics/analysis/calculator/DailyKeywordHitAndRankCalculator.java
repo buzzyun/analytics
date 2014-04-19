@@ -13,6 +13,7 @@ import org.fastcatgroup.analytics.analysis.LogAggregatorContainer;
 import org.fastcatgroup.analytics.analysis.SearchLogValidator;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.ServiceCountLogAggregator;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ServiceSetting;
 import org.fastcatgroup.analytics.analysis.handler.KeyCountLogSortHandler;
 import org.fastcatgroup.analytics.analysis.handler.KeywordRankDiffHandler;
 import org.fastcatgroup.analytics.analysis.handler.PopularKeywordResultHandler;
@@ -33,9 +34,9 @@ public class DailyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 	private Set<String> banWords;
 	private int minimumHitCount;
 	private int topCount;
-	private String[] serviceTypeList;
+	private List<ServiceSetting> serviceTypeList;
 	
-	public DailyKeywordHitAndRankCalculator(String name, Calendar calendar, File baseDir, File prevDir, String siteId, List<String> categoryIdList, Set<String> banWords, String[] serviceTypeList, int minimumHitCount, int topCount) {
+	public DailyKeywordHitAndRankCalculator(String name, Calendar calendar, File baseDir, File prevDir, String siteId, List<String> categoryIdList, Set<String> banWords, List<ServiceSetting> serviceTypeList, int minimumHitCount, int topCount) {
 		super(name, calendar, baseDir, siteId, categoryIdList);
 		this.prevDir = prevDir;
 		this.banWords = banWords;

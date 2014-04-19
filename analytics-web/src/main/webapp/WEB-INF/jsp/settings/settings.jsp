@@ -3,16 +3,16 @@
 <%@ page import="
 java.util.*,
 org.fastcatgroup.analytics.db.vo.*,
-org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig,
-org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.CategoryConfig
+org.fastcatgroup.analytics.analysis.config.SiteListSetting.SiteSetting,
+org.fastcatgroup.analytics.analysis.config.StatisticsSettings.CategorySetting
 " %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <%
 String menuId = "settings";
-List<SiteCategoryConfig> siteList = (List<SiteCategoryConfig>)request.getAttribute("siteList");
+List<SiteSetting> siteList = (List<SiteSetting>)request.getAttribute("siteList");
 String currentSiteId = (String)request.getAttribute("currentSiteId");
-List<CategoryConfig> categoryList = (List<CategoryConfig>)request.getAttribute("categoryList");
+List<CategorySetting> categoryList = (List<CategorySetting>)request.getAttribute("categoryList");
 %>
 <c:set var="ROOT_PATH" value="../.." scope="request"/>
 <c:import url="../inc/common.jsp" />
@@ -210,9 +210,9 @@ function update(formId, mode) {
 					<ul class="nav nav-tabs">
 						<%
 						for(int siteInx = 0; siteInx < siteList.size() ; siteInx++) {
-							SiteCategoryConfig siteConfig = siteList.get(siteInx);
-							String siteName = siteConfig.getSiteName();
-							String siteId = siteConfig.getSiteId();
+							SiteSetting siteConfig = siteList.get(siteInx);
+							String siteName = siteConfig.getName();
+							String siteId = siteConfig.getId();
 						%>
 						<li class="<%=siteId.equals(currentSiteId)?"active":""%>"><a href="javascript:showSiteTab('<%=siteId%>')"><%=siteName %></a></li>
 						<%
@@ -256,7 +256,7 @@ function update(formId, mode) {
 											%>
 												<%
 												for( int cateInx = 0; cateInx < categoryList.size() ; cateInx++ ) {
-													CategoryConfig category = categoryList.get(cateInx);
+													CategorySetting category = categoryList.get(cateInx);
 													if("_root".equals(category.getId())) {
 														continue;
 													}

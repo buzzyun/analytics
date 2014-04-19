@@ -10,7 +10,9 @@ import java.util.Map;
 
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.config.SiteListSetting.SiteSetting;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.CategorySetting;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ClickTypeSetting;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
 import org.fastcatgroup.analytics.db.mapper.ClickHitMapper;
@@ -152,13 +154,15 @@ public class ReportMainController extends AbstractController {
 			
 			toDate.add(Calendar.MONTH, 1);
 			
-			String[] clickTypeList = environment.settingManager().getSystemSettings().getStringArray("db.clickTypeList", ",");
+			StatisticsSettings statisticsSetting = getStatisticsService().getStatisticsSetting(siteId);
+			
+			List<ClickTypeSetting> clickTypeList = statisticsSetting.getSiteAttribute().getClickTypeList();
 			
 			List<String> labelList = new ArrayList<String>();
 			List<Integer> searchPvList = new ArrayList<Integer>();
 			Map<String, ListableCounter> clickHitList = new HashMap<String, ListableCounter>();
-			for(String clickType : clickTypeList){
-				clickHitList.put(clickType, new ListableCounter());
+			for(ClickTypeSetting clickType : clickTypeList){
+				clickHitList.put(clickType.getId(), new ListableCounter());
 			}
 			int timeInx = 0;
 			for (;fromDate.getTimeInMillis() <= toDate.getTimeInMillis();timeInx++) {
@@ -181,10 +185,10 @@ public class ReportMainController extends AbstractController {
 				
 				Integer totalClick = clickMapper.getHit(siteId, timeId);
 				if(totalClick==null) { totalClick=0; }
-				for(String clickType : clickTypeList){
-					Integer typeHit = clickMapper.getTypeHit(siteId, timeId, clickType);
+				for(ClickTypeSetting clickType : clickTypeList){
+					Integer typeHit = clickMapper.getTypeHit(siteId, timeId, clickType.getId());
 					if(typeHit==null) { typeHit = 0; }
-					clickHitList.get(clickType).increment(timeInx, typeHit);
+					clickHitList.get(clickType.getId()).increment(timeInx, typeHit);
 					totalClick -= typeHit;
 				}
 				// 지정된 클릭타입 이외의 타입이 있는지 확인하기 위함.

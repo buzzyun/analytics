@@ -2,7 +2,6 @@ package org.fastcatgroup.analytics.analysis;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +21,6 @@ import org.fastcatgroup.analytics.db.mapper.SearchKeywordRankMapper;
 import org.fastcatgroup.analytics.db.vo.RankKeywordVO;
 import org.fastcatgroup.analytics.db.vo.RelateKeywordVO;
 import org.fastcatgroup.analytics.env.Environment;
-import org.fastcatgroup.analytics.env.SettingFileNames;
 import org.fastcatgroup.analytics.env.Settings;
 import org.fastcatgroup.analytics.exception.AnalyticsException;
 import org.fastcatgroup.analytics.service.AbstractService;
@@ -37,14 +35,12 @@ public class StatisticsService extends AbstractService {
 	private File statisticsHome;
 	private SiteListSetting siteListSetting;
 	
-	private Map<String, CategoryStatistics> categoryStatisticsMap;
-
 	private Map<String, Map<String, List<RankKeyword>>> realtimePopularKeywordMap;
 	private Map<String, Map<String, Map<String, List<RankKeyword>>>> popularKeywordMap;
-
-	private Map<String, SiteSearchLogStatisticsModule> siteStatisticsModuleMap;
-
 	private Map<String, Map<String, List<String>>> relateKeywordMap;
+	private Map<String, SiteSearchLogStatisticsModule> siteStatisticsModuleMap;
+	private Map<String, StatisticsSettings> statisticsSettingMap;
+	//private Map<String, Map<String, CategoryStatistics>> categoryStatisticsMap;
 
 	public StatisticsService(Environment environment, Settings settings, ServiceManager serviceManager) {
 		super(environment, settings, serviceManager);
@@ -54,13 +50,10 @@ public class StatisticsService extends AbstractService {
 		}
 
 		realtimePopularKeywordMap = new ConcurrentHashMap<String, Map<String, List<RankKeyword>>>();
-		
 		popularKeywordMap = new ConcurrentHashMap<String, Map<String, Map<String, List<RankKeyword>>>>();
-
-		siteStatisticsModuleMap = new ConcurrentHashMap<String, SiteSearchLogStatisticsModule>();
-
 		relateKeywordMap = new ConcurrentHashMap<String, Map<String, List<String>>>();
-
+		siteStatisticsModuleMap = new ConcurrentHashMap<String, SiteSearchLogStatisticsModule>();
+		statisticsSettingMap = new ConcurrentHashMap<String, StatisticsSettings>();
 		// 로드 siteCategoryConfig
 		
 		File confDir = new File(environment.filePaths().file(),"conf");
@@ -83,7 +76,7 @@ public class StatisticsService extends AbstractService {
 				}
 				SiteSearchLogStatisticsModule module = new SiteSearchLogStatisticsModule(this, statisticsHome, siteId, categoryIdList, environment, settings);
 				siteStatisticsModuleMap.put(siteId, module);
-				
+				statisticsSettingMap.put(siteId, statisticsSettings);
 			}
 		} catch (JAXBException e) {
 			logger.error("", e);
@@ -167,6 +160,10 @@ public class StatisticsService extends AbstractService {
 	public SiteListSetting getSiteListSetting() {
 		return siteListSetting;
 	}
+	
+	public StatisticsSettings getStatisticsSetting(String siteId) {
+		return statisticsSettingMap.get(siteId);
+	}
 
 	/**
 	 * 실시간 인기검색어를 리턴한다.
@@ -213,13 +210,9 @@ public class StatisticsService extends AbstractService {
 		logger.debug("relative keyword. map:{}", keywordMap);
 	}
 
-	public Collection<CategoryStatistics> getCategoryStatisticsList() {
-		return categoryStatisticsMap.values();
-	}
-
 	@Override
 	protected boolean doStart() throws AnalyticsException {
-		categoryStatisticsMap = new HashMap<String, CategoryStatistics>();
+		//categoryStatisticsMap = new HashMap<String,Map<String, CategoryStatistics>>();
 
 		for (SiteSearchLogStatisticsModule module : siteStatisticsModuleMap.values()) {
 			module.load();
@@ -244,9 +237,13 @@ public class StatisticsService extends AbstractService {
 		return true;
 	}
 
-	public CategoryStatistics categoryStatistics(String categoryId) {
-		return categoryStatisticsMap.get(categoryId);
-	}
+//	public CategoryStatistics categoryStatistics(String siteId, String categoryId) {
+//		Map<String, CategoryStatistics> map = categoryStatisticsMap.get(siteId);
+//		if(map!=null) {
+//			return map.get(categoryId);
+//		}
+//		return null;
+//	}
 
 	public void addLog(String type, String siteId, String... entries) {
 		// 현재 type은 사용되지 않음.

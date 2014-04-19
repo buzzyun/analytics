@@ -8,11 +8,15 @@ import java.util.Set;
 
 import org.fastcatgroup.analytics.analysis.DailyRawLogger;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.analysis.calculator.Calculator;
 import org.fastcatgroup.analytics.analysis.calculator.DailyKeywordHitAndRankCalculator;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ServiceSetting;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.SiteAttribute;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
 import org.fastcatgroup.analytics.analysis.log.SearchLogReader;
 import org.fastcatgroup.analytics.analysis.schedule.Schedule;
+import org.fastcatgroup.analytics.service.ServiceManager;
 
 import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.*;
 
@@ -34,7 +38,8 @@ public class DailySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 	@Override
 	protected void prepare(Calendar calendar) {
 		
-		String[] serviceTypeList = environment.settingManager().getSystemSettings().getStringArray("db.serviceList", ",");
+		SiteAttribute siteAttribute = ServiceManager.getInstance().getService(StatisticsService.class).getStatisticsSetting(siteId).getSiteAttribute();
+		List<ServiceSetting> serviceTypeList = siteAttribute.getServiceList();
 		
 		// baseDir : statistics/search/date/Y####/M##/D##/data/{siteId} 경로
 		File dir = environment.filePaths().getStatisticsRoot().file("search", "date");

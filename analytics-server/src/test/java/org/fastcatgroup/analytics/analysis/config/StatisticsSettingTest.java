@@ -52,20 +52,20 @@ public class StatisticsSettingTest {
 		siteAttribute.setClickTypeList(clickTypeList);
 		
 		List<ServiceSetting> serviceList = new ArrayList<ServiceSetting>();
-		serviceList.add(new ServiceSetting("autocomplete","자동완성"));
-		serviceList.add(new ServiceSetting("total","통합검색"));
-		serviceList.add(new ServiceSetting("main","메인화면"));
-		serviceList.add(new ServiceSetting("catelist","카테고리목록"));
+		serviceList.add(new ServiceSetting("autocomplete","자동완성",false));
+		serviceList.add(new ServiceSetting("total","통합검색",true));
+		serviceList.add(new ServiceSetting("main","메인화면",false));
+		serviceList.add(new ServiceSetting("catelist","카테고리목록",false));
 		siteAttribute.setServiceList(serviceList);
 		
 		List<TypeSetting> typeList = new ArrayList<TypeSetting>();
-		typeList.add(new TypeSetting("category","카테고리별 분류"));
-		typeList.add(new TypeSetting("page","페이지별 분류"));
-		typeList.add(new TypeSetting("sort","정렬방식별 분류"));
-		typeList.add(new TypeSetting("age","연령대별 분류"));
-		typeList.add(new TypeSetting("service","서비스별 분류"));
-		typeList.add(new TypeSetting("login","로그인여부별 분류"));
-		typeList.add(new TypeSetting("gender","성별 분류"));
+		typeList.add(new TypeSetting("category","카테고리별 분류",true));
+		typeList.add(new TypeSetting("page","페이지별 분류",false));
+		typeList.add(new TypeSetting("sort","정렬방식별 분류",false));
+		typeList.add(new TypeSetting("age","연령대별 분류",true));
+		typeList.add(new TypeSetting("service","서비스별 분류",false));
+		typeList.add(new TypeSetting("login","로그인여부별 분류",true));
+		typeList.add(new TypeSetting("gender","성별 분류",false));
 		siteAttribute.setTypeList(typeList);
 		
 		settings.setSiteAttribute(siteAttribute);

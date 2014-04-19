@@ -103,4 +103,25 @@ public class ConfigurationMainController extends AbstractController {
 		}
 		return mav;
 	}
+	
+	@RequestMapping("/settings/categorySetting")
+	public ModelAndView categorySetting(@PathVariable String siteId) throws Exception {
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("configuration/settings/categorySetting");
+		return mav;
+	}
+	
+	@RequestMapping("/settings/keywordSetting")
+	public ModelAndView keywordSetting(@PathVariable String siteId) throws Exception {
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("configuration/settings/keywordSetting");
+		return mav;
+	}
+	
+	@RequestMapping("/settings/attributeSetting")
+	public ModelAndView statisticsSetting(@PathVariable String siteId) throws Exception {
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("configuration/settings/attributeSetting");
+		return mav;
+	}
 }

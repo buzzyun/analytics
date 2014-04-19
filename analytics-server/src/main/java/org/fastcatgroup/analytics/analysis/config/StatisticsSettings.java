@@ -203,13 +203,35 @@ public class StatisticsSettings {
 	}
 	
 	@XmlType public static class TypeSetting extends IdNameSetting {
+		private Boolean primary;
 		public TypeSetting() { }
-		public TypeSetting(String id, String name) { super(id, name); }
+		public TypeSetting(String id, String name, Boolean primary) { 
+			super(id, name); 
+			this.setPrimary(primary);
+		}
+		@XmlAttribute(name = "isPrimary")
+		public Boolean getPrimary() {
+			return primary;
+		}
+		public void setPrimary(Boolean primary) {
+			this.primary = primary;
+		}
 	}
 	
 	@XmlType public static class ServiceSetting extends IdNameSetting {
+		private Boolean primary;
 		public ServiceSetting() { }
-		public ServiceSetting(String id, String name) { super(id, name); }
+		public ServiceSetting(String id, String name, Boolean primary) { 
+			super(id, name); 
+			this.setPrimary(primary);
+		}
+		@XmlAttribute(name = "isPrimary")
+		public Boolean getPrimary() {
+			return primary;
+		}
+		public void setPrimary(Boolean primary) {
+			this.primary = primary;
+		}
 	}
 	
 	@XmlType public static class ClickTypeSetting extends IdNameSetting {

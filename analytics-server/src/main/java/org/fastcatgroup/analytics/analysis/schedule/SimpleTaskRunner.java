@@ -82,8 +82,12 @@ public class SimpleTaskRunner extends Thread {
 					break;
 				}
 
+				long st = System.currentTimeMillis();
 				try {
-					logger.debug("{} run!", task);
+					logger.info("===================================");
+					logger.info("= {} RUN.", task.getClass().getSimpleName());
+					logger.info("= {} ", task);
+					logger.info("===================================");
 					task.incrementExecution();
 
 					ResultFuture resultFuture = jobExecutor.offer(task);
@@ -96,6 +100,9 @@ public class SimpleTaskRunner extends Thread {
 						logger.debug("Scheduled Job Finished. {} > {}, execution[{}]", task, result, task.getExecuteCount());
 					}
 				} finally {
+					logger.info("===================================");
+					logger.info("= {} Done. time = {}s", task.getClass().getSimpleName(), (System.currentTimeMillis() - st) / 1000);
+					logger.info("===================================");
 				}
 
 			} catch (InterruptedException e) {

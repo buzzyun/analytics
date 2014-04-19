@@ -24,6 +24,7 @@ $(document).ready(function(){
 	
 	var pickmeupOptions = {
 		calendars: 3,
+		mode: "range",
 		format: "Y.m.d",
 		first_day: 1,
 		position: "bottom",
@@ -52,72 +53,33 @@ $(document).ready(function(){
 					<ul id="breadcrumbs" class="breadcrumb">
 						<li><i class="icon-home"></i> <a href="javascript:void(0);">Configuration</a></li>
 						<li><a href="#">Management</a></li>
-						<li><a href="#">Run Statistics</a></li>
+						<li><a href="#">Run Test Range Statistics</a></li>
 					</ul>
-					<!-- <ul class="crumb-buttons">
-						<li class="range">
-							<a href="#"> <i class="icon-calendar"></i>
-								<span></span> <i class="icon-angle-down"></i>
-						</a>
-						</li>
-					</ul> -->
 				</div>
 				<!-- /Breadcrumbs line -->
 
 				<!--=== Page Header ===-->
 				<div class="page-header">
 					<div class="page-title page-title-sm">
-						<h3>Run Statistics</h3>
+						<h3>Run Test Range Statistics</h3>
 					</div>
 				</div>
 				<!-- /Page Header -->
 				<div class="row ">
-					<!-- .row-bg -->
-					
-						
-				<div class="col-md-12">
-					<div class="widget">
-						<div class="widget-header">
-							<h4>Search Statistics</h4>
-						</div>
-						<div class="widget-content no-padding">
-							<form class="form-inline" method="post" >
-								<input type="hidden" name="taskType" value="searchStatictics" />
-								<input class="form-control fcol1-2 " size="16" type="text" name="date" autocomplete="off" value="<%=date %>" >
-								<input type="submit" class="btn btn-primary" value="Run">
-							</form>
+					<div class="col-md-12">
+						<div class="widget">
+							<div class="widget-header">
+								<h4>Search Statistics</h4>
+							</div>
+							<div class="widget-content no-padding">
+								<form class="form-inline" method="post" >
+									<input class="form-control fcol2-1 " size="16" type="text" name="date" autocomplete="off" value="<%=date %>" >
+									<input type="submit" class="btn btn-primary" value="Run">
+								</form>
+							</div>
 						</div>
 					</div>
 				</div>
-				
-				<%-- <div class="col-md-12">
-					<div class="widget">
-						<div class="widget-header">
-							<h4>Relate Keyword</h4>
-						</div>
-						<div class="widget-content no-padding">
-							<form class="form-inline" method="post" >
-								<input type="hidden" name="taskType" value="relateKeyword" />
-								<input class="form-control fcol1-2 " size="16" type="text" name="date" autocomplete="off" value="<%=date %>" >
-								<input type="submit" class="btn btn-primary" value="Run">
-							</form>
-						</div>
-					</div>
-				</div>
-				
-				<div class="col-md-12">
-					<div class="widget">
-						<div class="widget-header">
-							<h4>Realtime Popular Keyword</h4>
-						</div>
-						<div class="widget-content no-padding">
-							<form class="form-inline" method="post" >
-								<input type="hidden" name="taskType" value="realtimeKeyword" />
-								<input type="submit" class="btn btn-primary" value="Run">
-							</form>
-						</div>
-					</div>
-				</div> --%>
 			</div>
 		</div>
 	</div>

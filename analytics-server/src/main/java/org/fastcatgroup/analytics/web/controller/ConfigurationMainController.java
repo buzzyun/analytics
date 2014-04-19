@@ -6,6 +6,7 @@ import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.control.JobService;
 import org.fastcatgroup.analytics.job.Job;
 import org.fastcatgroup.analytics.job.task.DailySearchLogAnalyticsTaskRunJob;
+import org.fastcatgroup.analytics.job.task.TestBulkLogAnalyticsTaskRunJob;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,51 +21,86 @@ public class ConfigurationMainController extends AbstractController {
 	public ModelAndView index(@PathVariable String siteId) {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("configuration/index");
-		
-		
+
 		return mav;
 	}
-	
+
 	@RequestMapping("/management/run")
 	public ModelAndView run(@PathVariable String siteId, @RequestParam(required = false) String taskType, @RequestParam(required = false) String date) throws Exception {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("configuration/management/run");
-		
+
 		Calendar calendar1 = null;
 		Calendar calendar2 = null;
-		
+
 		String timeId1 = "";
 		String timeId2 = "";
-		
-		if(date!=null && !"".equals(date)) {
-			
+
+		if (date != null && !"".equals(date)) {
+
 			String[] dateArr = date.split(" - ");
-			
-			
+
 			calendar1 = SearchStatisticsProperties.parseDatetimeString(dateArr[0], true);
-			
-			if(dateArr.length > 1) {
+
+			if (dateArr.length > 1) {
 				calendar2 = SearchStatisticsProperties.parseDatetimeString(dateArr[1], false);
 			} else {
 				calendar2 = calendar1;
 			}
 			timeId1 = SearchStatisticsProperties.getTimeId(calendar1, Calendar.DAY_OF_MONTH);
 			timeId2 = SearchStatisticsProperties.getTimeId(calendar2, Calendar.DAY_OF_MONTH);
-			if("searchStatictics".equals(taskType)) {
+			if ("searchStatictics".equals(taskType)) {
 				Job job = new DailySearchLogAnalyticsTaskRunJob(siteId, timeId1, timeId2);
-				JobService.getInstance().offer(job);	
-			} else if("relateKeyword".equals(taskType)) {
-//				action = new RelateSearchLogAnalyticsTaskRunAction();
-			} else if("realtimeKeyword".equals(taskType)) {
-//				action = new RealtimeSearchLogAnalyticsTaskRunAction();
+				JobService.getInstance().offer(job);
+			} else if ("relateKeyword".equals(taskType)) {
+				// action = new RelateSearchLogAnalyticsTaskRunAction();
+			} else if ("realtimeKeyword".equals(taskType)) {
+				// action = new RealtimeSearchLogAnalyticsTaskRunAction();
 			}
-		
+
 		} else {
 			calendar1 = SearchStatisticsProperties.getCalendar();
 			calendar1.add(Calendar.DATE, -1);
 		}
-		
+
 		mav.addObject("date", SearchStatisticsProperties.toDatetimeString(calendar1));
+		return mav;
+	}
+
+	@RequestMapping("/management/runTestRange")
+	public ModelAndView runTestRange(@PathVariable String siteId, @RequestParam(required = false) String date) throws Exception {
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("configuration/management/runTestRange");
+
+		Calendar calendar1 = null;
+		Calendar calendar2 = null;
+
+		String timeId1 = "";
+		String timeId2 = "";
+
+		if (date != null && !"".equals(date)) {
+
+			String[] dateArr = date.split("-");
+			if (dateArr.length == 2) {
+				for (int i = 0; i < dateArr.length ;i++) {
+					dateArr[i] = dateArr[i].trim();
+				}
+
+				calendar1 = SearchStatisticsProperties.parseDatetimeString(dateArr[0], true);
+				calendar2 = SearchStatisticsProperties.parseDatetimeString(dateArr[1], false);
+				
+				timeId1 = SearchStatisticsProperties.getTimeId(calendar1, Calendar.DAY_OF_MONTH);
+				timeId2 = SearchStatisticsProperties.getTimeId(calendar2, Calendar.DAY_OF_MONTH);
+				
+				Job job = new TestBulkLogAnalyticsTaskRunJob(siteId, timeId1, timeId2);
+				JobService.getInstance().offer(job);
+			}
+			mav.addObject("date", date);
+		}else{
+			Calendar now = SearchStatisticsProperties.getCalendar();
+			String timeString = SearchStatisticsProperties.toDatetimeString(now, Calendar.DAY_OF_MONTH);
+			mav.addObject("date", timeString + " - " + timeString);
+		}
 		return mav;
 	}
 }

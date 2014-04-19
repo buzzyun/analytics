@@ -81,7 +81,12 @@ $(document).ready(function() {
 	
 	var data = [
 		{data : d1, color : '#eb8544', label: 'Hit count'},
-		{data : avgTime, color : 'blue', yaxis: 2, label: 'Response time'}
+		{data : avgTime, color : 'rgba(66,139,202,0.3)', yaxis: 2, label: 'Response time', lines: { show: false}, bars: {
+			show: true,
+			barWidth: 0.2 ,
+			align:"center"
+		}
+		}
 	];
 
 	function yFormatter(v, axis) {

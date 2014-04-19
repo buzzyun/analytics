@@ -28,7 +28,7 @@ import org.fastcatgroup.analytics.exception.AnalyticsException;
 import org.fastcatgroup.analytics.job.Job;
 import org.fastcatgroup.analytics.service.ServiceManager;
 
-public class DailySearchLogAnalyticsTaskRunJob extends Job {
+public class TestBulkLogAnalyticsTaskRunJob extends Job {
 	
 	private static final long serialVersionUID = 8365827926796537780L;
 	
@@ -36,10 +36,10 @@ public class DailySearchLogAnalyticsTaskRunJob extends Job {
 	private String timeId1;
 	private String timeId2;
 	
-	public DailySearchLogAnalyticsTaskRunJob(){
+	public TestBulkLogAnalyticsTaskRunJob(){
 	}
 	
-	public DailySearchLogAnalyticsTaskRunJob(String siteId, String timeId1, String timeId2){
+	public TestBulkLogAnalyticsTaskRunJob(String siteId, String timeId1, String timeId2){
 		this.siteId = siteId;
 		this.timeId1 = timeId1;
 		this.timeId2 = timeId2;
@@ -63,7 +63,7 @@ public class DailySearchLogAnalyticsTaskRunJob extends Job {
 			}
 		}
 		
-		if (timeId1 != null && !"".equals(timeId1)) {
+		if (timeId1 != null && timeId2 != null) {
 			
 			Calendar currentDay = SearchStatisticsProperties.parseTimeId(timeId1);
 			Calendar lastDay = SearchStatisticsProperties.parseTimeId(timeId2);
@@ -78,79 +78,84 @@ public class DailySearchLogAnalyticsTaskRunJob extends Job {
 				logger.info("#### CALCULATING.{} / {}", SearchStatisticsProperties.toDatetimeString(currentDay), SearchStatisticsProperties.toDatetimeString(lastDay));
 				logger.info("####");
 				logger.info("#####################################");
-				
-				Calendar weekEnd = (Calendar) currentDay.clone();
-				Calendar monthEnd = (Calendar) currentDay.clone();
-				
-				weekEnd.set(Calendar.DAY_OF_WEEK, 7);
-				weekEnd.add(Calendar.DAY_OF_MONTH, 1);
-				
-				monthEnd.add(Calendar.MONTH, 1);
-				monthEnd.add(Calendar.DAY_OF_MONTH, -1);
-			
 				SimpleTaskRunner taskRunner = new SimpleTaskRunner("search-log-task-runner", JobService.getInstance(), environment);
-				
-				/********************
-				 **  search log 
-				 ********************/
-				/* 1. Hourly */
+				/* 1. raw.log */
 				TimeSchedule schedule = new TimeSchedule(currentDay.getTimeInMillis(), 0);
 				HourlySearchLogAnalyticsTask task = new HourlySearchLogAnalyticsTask(siteId, categoryIdList, schedule, 0, null);
 				taskRunner.addTask(task);
 			
-				/* 2. Daily */
+				/* 1. raw.log */
 				TimeSchedule schedule1 = new TimeSchedule(currentDay.getTimeInMillis(), 0);
 				DailySearchLogAnalyticsTask task1 = new DailySearchLogAnalyticsTask(siteId, categoryIdList, schedule1, 1, null);
 				taskRunner.addTask(task1);
 				
+				/* 2. type_raw.log */
 				TimeSchedule schedule2 = new TimeSchedule(currentDay.getTimeInMillis(), 0);
 				DailyTypeSearchLogAnalyticsTask task2 = new DailyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule2, 2, null);
 				taskRunner.addTask(task2);
 				
+				//
+				//last day of week
+				//
+				if (currentDay.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
 				
-				/* 3. Weekly */
-				TimeSchedule schedule3 = new TimeSchedule(currentDay.getTimeInMillis(), 0);
-				WeeklySearchLogAnalyticsTask task3 = new WeeklySearchLogAnalyticsTask(siteId, categoryIdList, schedule3, 3);
-				taskRunner.addTask(task3);
+					/* weekly log */
+					TimeSchedule schedule3 = new TimeSchedule(currentDay.getTimeInMillis(), 0);
+					WeeklySearchLogAnalyticsTask task3 = new WeeklySearchLogAnalyticsTask(siteId, categoryIdList, schedule3, 3);
+					taskRunner.addTask(task3);
+					
+					/* weekly type log */
+					TimeSchedule schedule4 = new TimeSchedule(currentDay.getTimeInMillis(), 0);
+					WeeklyTypeSearchLogAnalyticsTask task4 = new WeeklyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule4, 4);
+					taskRunner.addTask(task4);
+				}
 				
-				TimeSchedule schedule4 = new TimeSchedule(currentDay.getTimeInMillis(), 0);
-				WeeklyTypeSearchLogAnalyticsTask task4 = new WeeklyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule4, 4);
-				taskRunner.addTask(task4);
+				//
+				//last day of month
+				//
+				if(currentDay.getActualMaximum(Calendar.DAY_OF_MONTH) == currentDay.get(Calendar.DAY_OF_MONTH)){
 				
-				
-				/* 4. Monthly */
-				TimeSchedule schedule5 = new TimeSchedule(currentDay.getTimeInMillis(), 0);
-				MonthlySearchLogAnalyticsTask task5 = new MonthlySearchLogAnalyticsTask(siteId, categoryIdList, schedule5, 5);
-				taskRunner.addTask(task5);
-				
-				TimeSchedule schedule6 = new TimeSchedule(currentDay.getTimeInMillis(), 0);
-				MonthlyTypeSearchLogAnalyticsTask task6 = new MonthlyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule6, 6);
-				taskRunner.addTask(task6);
-				
-				/* 5. Yearly */
-				TimeSchedule schedule7 = new TimeSchedule(currentDay.getTimeInMillis(), 0);
-				YearlySearchLogAnalyticsTask task7 = new YearlySearchLogAnalyticsTask(siteId, categoryIdList, schedule7, 7);
-				taskRunner.addTask(task7);
-				
-				TimeSchedule schedule8 = new TimeSchedule(currentDay.getTimeInMillis(), 0);
-				YearlyTypeSearchLogAnalyticsTask task8 = new YearlyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule8, 8);
-				taskRunner.addTask(task8);
+					/* monthly log */
+					TimeSchedule schedule5 = new TimeSchedule(currentDay.getTimeInMillis(), 0);
+					MonthlySearchLogAnalyticsTask task5 = new MonthlySearchLogAnalyticsTask(siteId, categoryIdList, schedule5, 5);
+					taskRunner.addTask(task5);
+					
+					/* monthly type log */
+					TimeSchedule schedule6 = new TimeSchedule(currentDay.getTimeInMillis(), 0);
+					MonthlyTypeSearchLogAnalyticsTask task6 = new MonthlyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule6, 6);
+					taskRunner.addTask(task6);
+					
+					
+					//
+					//last day of year
+					//
+					if(currentDay.getActualMaximum(Calendar.MONTH) == currentDay.get(Calendar.MONTH)){
+						/* yearly log */
+						TimeSchedule schedule7 = new TimeSchedule(currentDay.getTimeInMillis(), 0);
+						YearlySearchLogAnalyticsTask task7 = new YearlySearchLogAnalyticsTask(siteId, categoryIdList, schedule7, 7);
+						taskRunner.addTask(task7);
+						
+						/* yearly type log */
+						TimeSchedule schedule8 = new TimeSchedule(currentDay.getTimeInMillis(), 0);
+						YearlyTypeSearchLogAnalyticsTask task8 = new YearlyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule8, 8);
+						taskRunner.addTask(task8);
+					}
+				}
 			
-				/********************
-				 **  click log 
-				 ********************/
-				
-				/* 1. Daily */
+				/* click log */
 				TimeSchedule schedule9 = new TimeSchedule(currentDay.getTimeInMillis(), 0);
 				DailyClickLogAnalyticsTask task9 = new DailyClickLogAnalyticsTask(siteId, categoryIdList, schedule9, 9);
 				taskRunner.addTask(task9);
 				
-				/* 2. Monthly */
-				TimeSchedule schedule10 = new TimeSchedule(currentDay.getTimeInMillis(), 0);
-				MonthlyClickLogAnalyticsTask task10 = new MonthlyClickLogAnalyticsTask(siteId, categoryIdList, schedule10, 10);
-				taskRunner.addTask(task10);
+				//
+				//last day of month
+				//
+				if(currentDay.getActualMaximum(Calendar.DAY_OF_MONTH) == currentDay.get(Calendar.DAY_OF_MONTH)){
+					TimeSchedule schedule10 = new TimeSchedule(currentDay.getTimeInMillis(), 0);
+					MonthlyClickLogAnalyticsTask task10 = new MonthlyClickLogAnalyticsTask(siteId, categoryIdList, schedule10, 10);
+					taskRunner.addTask(task10);
+				}
 				
-				/* 3. N-Days */
 				TimeSchedule schedule11 = new TimeSchedule(currentDay.getTimeInMillis(), 0);
 				NDaysClickLogAnalyticsTask task11 = new NDaysClickLogAnalyticsTask(siteId, categoryIdList, schedule11, 11);
 				taskRunner.addTask(task11);
@@ -167,13 +172,6 @@ public class DailySearchLogAnalyticsTaskRunJob extends Job {
 				
 				currentDay.add(Calendar.DAY_OF_MONTH, 1);
 				
-				while(taskRunner.queueSize() > 0) {
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException ignore) { 
-						break;
-					}
-				}
 			}
 		}
 		

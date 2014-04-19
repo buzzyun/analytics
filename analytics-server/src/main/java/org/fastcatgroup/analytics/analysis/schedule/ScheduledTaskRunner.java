@@ -76,8 +76,12 @@ public class ScheduledTaskRunner extends Thread {
 					break;
 				}
 
+				long st = System.currentTimeMillis();
 				try {
-					logger.debug("{} run!", task);
+					logger.info("===================================");
+					logger.info("= {} RUN.", task.getClass().getSimpleName());
+					logger.info("= {} ", task);
+					logger.info("===================================");
 					task.incrementExecution();
 
 					ResultFuture resultFuture = jobExecutor.offer(task);
@@ -90,6 +94,10 @@ public class ScheduledTaskRunner extends Thread {
 						logger.debug("Scheduled Job Finished. {} > {}, execution[{}]", task, result, task.getExecuteCount());
 					}
 				} finally {
+					logger.info("===================================");
+					logger.info("= {} Done. time = {}s", task.getClass().getSimpleName(), (System.currentTimeMillis() - st) / 1000);
+					logger.info("===================================");
+					
 					// 실행한 job에 대해서는 반드시 다음 시간에 실행되도록 update time후 offer되도록 한다.
 					task.updateScheduleTimeByNow();
 					priorityJobQueue.offer(task);

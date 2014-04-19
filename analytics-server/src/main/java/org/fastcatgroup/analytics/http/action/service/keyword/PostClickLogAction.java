@@ -1,8 +1,8 @@
 package org.fastcatgroup.analytics.http.action.service.keyword;
 
 import org.fastcatgroup.analytics.analysis.StatisticsService;
-import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig;
-import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig;
+import org.fastcatgroup.analytics.analysis.config.SiteListSetting;
+import org.fastcatgroup.analytics.analysis.config.SiteListSetting.SiteSetting;
 import org.fastcatgroup.analytics.http.ActionMapping;
 import org.fastcatgroup.analytics.http.action.ActionRequest;
 import org.fastcatgroup.analytics.http.action.ActionResponse;
@@ -32,12 +32,12 @@ public class PostClickLogAction extends ServiceAction {
 		String clickType = request.getParameter("clickType");
 		
 		StatisticsService service = ServiceManager.getInstance().getService(StatisticsService.class);
-		SiteCategoryListConfig siteConfig = service.getSiteCategoryListConfig();
+		SiteListSetting siteConfig = service.getSiteListSetting();
 		
 		//siteid 가 지정되지 않았을 경우 자동으로 입력해 줌.
-		if (siteConfig.getList().size() == 1 && (siteId == null || "".equals(siteId))) {
-			SiteCategoryConfig cateConfig = siteConfig.getList().get(0);
-			siteId = cateConfig.getSiteId();
+		if (siteConfig.getSiteList().size() == 1 && (siteId == null || "".equals(siteId))) {
+			SiteSetting cateConfig = siteConfig.getSiteList().get(0);
+			siteId = cateConfig.getId();
 		}
 		
 		if(siteId == null || siteId.trim().length() == 0|| keyword == null || keyword.trim().length() == 0 || clickType == null || clickType.trim().length() == 0){

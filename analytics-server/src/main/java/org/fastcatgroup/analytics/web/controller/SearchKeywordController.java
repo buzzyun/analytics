@@ -42,7 +42,7 @@ public class SearchKeywordController extends AbstractController {
 		ModelAndView mav = new ModelAndView();
 		ServiceManager serviceManager = ServiceManager.getInstance();
 		StatisticsService statisticsService = serviceManager.getService(StatisticsService.class);
-		mav.addObject("siteConfig", statisticsService.getSiteCategoryListConfig().getList());
+		mav.addObject("siteConfig", statisticsService.getSiteListSetting().getSiteList());
 		mav.setViewName("report/keyword/relateKeyword");
 		return mav;
 

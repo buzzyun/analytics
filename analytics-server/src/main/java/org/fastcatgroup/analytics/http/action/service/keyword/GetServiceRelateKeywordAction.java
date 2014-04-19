@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.fastcatgroup.analytics.analysis.StatisticsService;
-import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig;
-import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig;
+import org.fastcatgroup.analytics.analysis.config.SiteListSetting;
+import org.fastcatgroup.analytics.analysis.config.SiteListSetting.SiteSetting;
 import org.fastcatgroup.analytics.http.ActionMapping;
 import org.fastcatgroup.analytics.http.action.ActionRequest;
 import org.fastcatgroup.analytics.http.action.ActionResponse;
@@ -28,30 +28,25 @@ public class GetServiceRelateKeywordAction extends ServiceAction {
 		String errorMessage = null;
 		
 		StatisticsService service = ServiceManager.getInstance().getService(StatisticsService.class);
-		
-		SiteCategoryListConfig siteConfig = service.getSiteCategoryListConfig();
+
+		SiteListSetting siteConfig= service.getSiteListSetting();
 		
 		//siteid 가 지정되지 않았을 경우 자동으로 입력해 줌.
-		if (siteConfig.getList().size() == 1 && (siteId == null || "".equals(siteId))) {
-			SiteCategoryConfig cateConfig = siteConfig.getList().get(0);
-			siteId = cateConfig.getSiteId();
+		if (siteConfig.getSiteList().size() == 1 && (siteId == null || "".equals(siteId))) {
+			//SiteCategoryConfig cateConfig = siteConfig.getList().get(0);
+			SiteSetting cateConfig= siteConfig.getSiteList().get(0);
+			siteId = cateConfig.getId();
 		}
 		
 		Map<String, List<String>> relateKeywordMap = service.getRelateKeywordMap(siteId);
-//		logger.debug("relateKeywordMap:{}.{}.{}", siteId, relateKeywordMap);
+		logger.trace("relateKeywordMap:{}.{}.{}", siteId, relateKeywordMap);
 		
-		//KeywordDictionaryType keywordDictionaryType = KeywordDictionaryType.RELATE_KEYWORD;
-
 		responseWriter.object();
 		responseWriter.key("siteId").value(siteId);
 		responseWriter.key("service").value(KeywordDictionaryType.RELATE_KEYWORD.name());
 		
 		try {
-			//KeywordDictionary keywordDictionary = keywordService.getKeywordDictionary(categoryId, keywordDictionaryType);
-			//RelateKeywordDictionary relateKeywordDictionary = (RelateKeywordDictionary) keywordDictionary;
-			
 			if (keyword != null && relateKeywordMap != null) {
-				//String relateValue = relateKeywordDictionary.getRelateKeyword(keyword);
 				responseWriter.key("keyword").value(keyword);
 				responseWriter.key("relate").array();
 				List<String> list = relateKeywordMap.get(keyword);

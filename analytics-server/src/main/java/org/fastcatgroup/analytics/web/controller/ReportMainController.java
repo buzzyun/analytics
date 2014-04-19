@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
-import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.CategoryConfig;
-import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig;
+import org.fastcatgroup.analytics.analysis.config.SiteListSetting.SiteSetting;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.CategorySetting;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
 import org.fastcatgroup.analytics.db.mapper.ClickHitMapper;
@@ -229,13 +229,13 @@ public class ReportMainController extends AbstractController {
 	
 	@RequestMapping("/categoryList")
 	public ModelAndView getCategoryList(@PathVariable String siteId) {
-		List<SiteCategoryConfig> siteCategoryList = getSiteCategoryListConfig();
+		List<SiteSetting> siteCategoryList = getSiteCategoryListConfig();
 		JSONStringer s = new JSONStringer();
 		s.array();
-		for(SiteCategoryConfig config : siteCategoryList){
-			if(config.getSiteId().equals(siteId)){
-				List<CategoryConfig> list = config.getCategoryList();
-				for(CategoryConfig categoryConfig : list){
+		for(SiteSetting config : siteCategoryList){
+			if(config.getId().equals(siteId)){
+				List<CategorySetting> list = config.getStatisticsSettings().getCategoryList();
+				for(CategorySetting categoryConfig : list){
 					s.object().key(categoryConfig.getId()).value(categoryConfig.getName()).endObject();
 				}
 				break;

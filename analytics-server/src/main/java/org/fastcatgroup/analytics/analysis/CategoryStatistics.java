@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.fastcatgroup.analytics.settings.StatisticsSettings.Category;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.CategorySetting;
 import org.fastcatgroup.analytics.util.AsynchronousCounter;
 import org.fastcatgroup.analytics.util.AsynchronousFileLogger;
 import org.slf4j.Logger;
@@ -32,7 +32,7 @@ public class CategoryStatistics {
 	private static final int KEYWORD_LIST_DEFAULT_SIZE = 100;
 	private static final int PERIOD_FOR_REALTIME_POPULAR_KEYWORD = 5;//5분.
 	
-	private Category category;
+	private CategorySetting category;
 	
 	private Timer timer;
 	private List<String> keywordList;
@@ -43,7 +43,7 @@ public class CategoryStatistics {
 	private static final String realTimeLogFileName = ".keyword.rt.log"; //실시간 인기검색어에 사용되는 5분주기 로그.
 	private static final String oneDayLogFileName = ".keyword.day.log"; //인기검색어 일,주,월 통계에 사용되는 하루주기 로그.
 	
-	public CategoryStatistics(Category category, File home) {
+	public CategoryStatistics(CategorySetting category, File home) {
 		this.category = category;
 		String categoryId = category.getId();
 		
@@ -95,7 +95,7 @@ public class CategoryStatistics {
 		logger.info("Statistics Category [{}] provides one day keyword. start={}", categoryId, cal.getTime());
 	}
 
-	public Category category(){
+	public CategorySetting category(){
 		return category;
 	}
 	public String categoryId(){

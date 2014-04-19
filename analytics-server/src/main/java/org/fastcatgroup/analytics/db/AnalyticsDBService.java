@@ -16,8 +16,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.fastcatgroup.analytics.analysis.StatisticsService;
-import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig;
-import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig;
+import org.fastcatgroup.analytics.analysis.config.SiteListSetting;
+import org.fastcatgroup.analytics.analysis.config.SiteListSetting.SiteSetting;
 import org.fastcatgroup.analytics.db.mapper.AnalyticsMapper;
 import org.fastcatgroup.analytics.db.mapper.ClickHitMapper;
 import org.fastcatgroup.analytics.db.mapper.ClickKeywordHitMapper;
@@ -94,16 +94,17 @@ public class AnalyticsDBService extends AbstractDBService {
 	@Override
 	protected void initMapper(Class<?>[] mapperList) throws AnalyticsException {
 
-		SiteCategoryListConfig config = ServiceManager.getInstance().getService(StatisticsService.class).getSiteCategoryListConfig();
-		List<SiteCategoryConfig> siteCategoryConfig = config.getList();
+		SiteListSetting config = ServiceManager.getInstance().getService(StatisticsService.class).getSiteListSetting();
+		List<SiteSetting> siteCategoryConfig = config.getSiteList();
 
 		for (Class<?> mapperDAO : mapperList) {
 			
 			Class<? extends AnalyticsMapper> clazz = (Class<? extends AnalyticsMapper>) mapperDAO;
 			MapperSession<? extends AnalyticsMapper> mapperSession = (MapperSession<? extends AnalyticsMapper>) getMapperSession(clazz);
 			AnalyticsMapper managedMapper = mapperSession.getMapper();
-			for (SiteCategoryConfig siteConfig : siteCategoryConfig) {
-				String siteId = siteConfig.getSiteId();
+			
+			for (SiteSetting siteConfig : siteCategoryConfig) {
+				String siteId = siteConfig.getId();
 				try {
 					try{
 						//mysql에서 이상하게 최초쿼리는 에러나서..

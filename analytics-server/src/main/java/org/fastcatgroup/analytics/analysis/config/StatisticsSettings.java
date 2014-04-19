@@ -6,6 +6,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name="statistics")
 public class StatisticsSettings {
@@ -84,13 +85,13 @@ public class StatisticsSettings {
 		this.siteAttribute = siteAttribute;
 	}
 	
+	@XmlType 
 	public static class SiteAttribute {
 		private List<TypeSetting> typeList;
 		private List<ServiceSetting> serviceList;
 		private List<ClickTypeSetting> clickTypeList;
 		
 		public SiteAttribute() {}
-		
 		public SiteAttribute(List<TypeSetting>typeList, List<ServiceSetting>serviceList, List<ClickTypeSetting>clickTypeList) {
 			this.typeList = typeList;
 			this.serviceList = serviceList;
@@ -123,105 +124,112 @@ public class StatisticsSettings {
 		}
 	}
 	
+	@XmlType 
 	public static class RealtimePopularKeywordSetting extends PopularKeywordSetting {
-		private int recentCount;
-		
+		private Integer recentCount;
 		public RealtimePopularKeywordSetting() { }
-		
-		public RealtimePopularKeywordSetting(int recentCount, int topCount, int minimumHitCount) { 
+		public RealtimePopularKeywordSetting(Integer recentCount, Integer topCount, Integer minimumHitCount) { 
 			super(topCount, minimumHitCount);
 			this.recentCount = recentCount;
 		}
 		@XmlElement(name="recentLogUsingCount")
-		public int getRecentCount() {
+		public Integer getRecentCount() {
 			return recentCount;
 		}
-		public void setRecentCount(int recentCount) {
+		public void setRecentCount(Integer recentCount) {
 			this.recentCount = recentCount;
 		}
 		
 	}
 	
+	@XmlType 
 	public static class PopularKeywordSetting extends KeywordSetting {
-		private int topCount;
+		private Integer topCount;
 		public PopularKeywordSetting() { }
-		public PopularKeywordSetting(int topCount, int minimumHitCount) {
+		public PopularKeywordSetting(Integer topCount, Integer minimumHitCount) {
 			super(minimumHitCount);
 			this.topCount = topCount;
 		}
 		@XmlElement(name="topCount")
-		public int getTopCount() {
+		public Integer getTopCount() {
 			return topCount;
 		}
-		public void setTopCount(int topCount) {
+		public void setTopCount(Integer topCount) {
 			this.topCount = topCount;
 		}
 	}
 	
+	@XmlType 
 	public static class RelateKeywordSetting extends KeywordSetting {
-		public RelateKeywordSetting(int i) { super(i); } 
+		public RelateKeywordSetting() { }
+		public RelateKeywordSetting(Integer i) { super(i); } 
 	}
 	
-	public static abstract class KeywordSetting {
-		private int minimumHitCount;
-		
-		public KeywordSetting() { }
-		public KeywordSetting(int minimumHitCount) { 
-			this.minimumHitCount = minimumHitCount;
-		}
-		@XmlElement(name="minimumHitCount")
-		public int getMinimumHitCount() {
-			return minimumHitCount;
-		}
-		public void setMinimumHitCount(int minimumHitCount) {
-			this.minimumHitCount = minimumHitCount;
-		}
-	}
-	
+	@XmlType(propOrder = { "useRelateKeyword", "usePopularKeyword", "useRealTimePopularKeyword"})
 	public static class CategorySetting extends IdNameSetting {
-		private boolean usePopularKeyword;
-		private boolean useRelateKeyword;
-		private boolean useRealtimePopularKeyword;
-		public CategorySetting(String id, String name, boolean usePopularKeyword, boolean useRelateKeyword, boolean useRealtimePopularKeyword) { 
+		private Boolean usePopularKeyword;
+		private Boolean useRelateKeyword;
+		private Boolean useRealTimePopularKeyword;
+		public CategorySetting() { }
+		public CategorySetting(String id, String name, Boolean usePopularKeyword, Boolean useRelateKeyword, Boolean useRealTimePopularKeyword) { 
 			super(id, name); 
 			this.usePopularKeyword = usePopularKeyword;
 			this.useRelateKeyword = useRelateKeyword;
-			this.useRealtimePopularKeyword = useRealtimePopularKeyword;
+			this.useRealTimePopularKeyword = useRealTimePopularKeyword;
 		}
 		
 		@XmlAttribute(name="usePopularKeyword")
-		public boolean isUsePopularKeyword() {
+		public Boolean isUsePopularKeyword() {
 			return usePopularKeyword;
 		}
-		public void setUsePopularKeyword(boolean usePopularKeyword) {
+		public void setUsePopularKeyword(Boolean usePopularKeyword) {
 			this.usePopularKeyword = usePopularKeyword;
 		}
 		@XmlAttribute(name="useRelateKeyword")
-		public boolean isUseRelateKeyword() {
+		public Boolean isUseRelateKeyword() {
 			return useRelateKeyword;
 		}
-		public void setUseRelateKeyword(boolean useRelateKeyword) {
+		public void setUseRelateKeyword(Boolean useRelateKeyword) {
 			this.useRelateKeyword = useRelateKeyword;
 		}
-		@XmlAttribute(name="useRealtimePopularKeyword")
-		public boolean isUseRealtimePopularKeyword() {
-			return useRealtimePopularKeyword;
+		@XmlAttribute(name="useRealTimePopularKeyword")
+		public Boolean isUseRealTimePopularKeyword() {
+			return useRealTimePopularKeyword;
 		}
-		public void setUseRealtimePopularKeyword(boolean useRealtimePopularKeyword) {
-			this.useRealtimePopularKeyword = useRealtimePopularKeyword;
+		public void setUseRealTimePopularKeyword(Boolean useRealTimePopularKeyword) {
+			this.useRealTimePopularKeyword = useRealTimePopularKeyword;
 		}
 		
 	}
 	
-	public static class TypeSetting extends IdNameSetting {
+	@XmlType public static class TypeSetting extends IdNameSetting {
+		public TypeSetting() { }
 		public TypeSetting(String id, String name) { super(id, name); }
 	}
 	
-	public static class ServiceSetting extends IdNameSetting {
+	@XmlType public static class ServiceSetting extends IdNameSetting {
+		public ServiceSetting() { }
 		public ServiceSetting(String id, String name) { super(id, name); }
 	}
 	
-	public static class ClickTypeSetting extends IdNameSetting {
+	@XmlType public static class ClickTypeSetting extends IdNameSetting {
+		public ClickTypeSetting() { }
 		public ClickTypeSetting(String id, String name) { super(id, name); }
+	}
+	
+	public static abstract class KeywordSetting {
+		private Integer minimumHitCount;
+		
+		public KeywordSetting() { }
+		public KeywordSetting(Integer minimumHitCount) { 
+			this.minimumHitCount = minimumHitCount;
+		}
+		@XmlElement(name="minimumHitCount")
+		public Integer getMinimumHitCount() {
+			return minimumHitCount;
+		}
+		public void setMinimumHitCount(Integer minimumHitCount) {
+			this.minimumHitCount = minimumHitCount;
+		}
 	}
 }

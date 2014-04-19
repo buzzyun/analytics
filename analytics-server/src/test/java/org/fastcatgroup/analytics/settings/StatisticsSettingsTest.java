@@ -8,7 +8,8 @@ import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
-import org.fastcatgroup.analytics.settings.StatisticsSettings.Category;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.CategorySetting;
 import org.fastcatgroup.analytics.util.JAXBConfigs;
 import org.junit.Test;
 
@@ -17,8 +18,8 @@ public class StatisticsSettingsTest {
 	@Test
 	public void test() throws JAXBException {
 		StatisticsSettings s = new StatisticsSettings();
-		List<Category> categoryList = new ArrayList<Category>();
-		categoryList.add(new Category("total", "통합검색", true, true, false));
+		List<CategorySetting> categoryList = new ArrayList<CategorySetting>();
+		categoryList.add(new CategorySetting("total", "통합검색", true, true, false));
 		s.setCategoryList(categoryList);
 		
 		StringWriter writer = new StringWriter();
@@ -31,8 +32,8 @@ public class StatisticsSettingsTest {
 		Reader reader = new StringReader(source);
 		
 		StatisticsSettings s2 = JAXBConfigs.readConfig(reader, StatisticsSettings.class);
-		List<Category> categoryList2 = s2.getCategoryList();
-		for(Category category : categoryList2){
+		List<CategorySetting> categoryList2 = s2.getCategoryList();
+		for(CategorySetting category : categoryList2){
 			System.out.println(category);
 		}
 	}

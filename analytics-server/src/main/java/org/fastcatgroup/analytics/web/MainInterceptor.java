@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.fastcatgroup.analytics.analysis.StatisticsService;
-import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig;
-import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig;
+import org.fastcatgroup.analytics.analysis.config.SiteListSetting;
+import org.fastcatgroup.analytics.analysis.config.SiteListSetting.SiteSetting;
 import org.fastcatgroup.analytics.service.ServiceManager;
 import org.fastcatgroup.analytics.web.controller.MainController;
 import org.slf4j.Logger;
@@ -71,17 +71,18 @@ public class MainInterceptor extends HandlerInterceptorAdapter {
 			synchronized (this) {
 				siteList = new ArrayList<String[]>();
 				StatisticsService s = ServiceManager.getInstance().getService(StatisticsService.class);
-				SiteCategoryListConfig siteCategoryListConfig = s.getSiteCategoryListConfig();
-				List<SiteCategoryConfig> list = siteCategoryListConfig.getList();
-				for (SiteCategoryConfig siteCategoryConfig : list) {
-					String siteId = siteCategoryConfig.getSiteId();
-					String siteName = siteCategoryConfig.getSiteName();
+				
+				SiteListSetting siteCategoryListConfig = s.getSiteListSetting();
+				List<SiteSetting> list = siteCategoryListConfig.getSiteList();
+				for (SiteSetting siteCategoryConfig : list) {
+					String siteId = siteCategoryConfig.getId();
+					String siteName = siteCategoryConfig.getName();
 					siteList.add(new String[] { siteId, siteName });
 				}
 			}
 		}
 		
-//		logger.debug("siteList:{}", siteList);
+		logger.trace("siteList:{}", siteList);
 		
 		modelAndView.addObject("_siteList", siteList);
 
@@ -93,8 +94,4 @@ public class MainInterceptor extends HandlerInterceptorAdapter {
 			}
 		}
 	}
-	//
-	// @Override
-	// public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-	// }
 }

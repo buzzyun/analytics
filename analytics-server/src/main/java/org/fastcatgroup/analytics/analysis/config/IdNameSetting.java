@@ -1,10 +1,14 @@
 package org.fastcatgroup.analytics.analysis.config;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
 
+@XmlType(propOrder = { "id", "name" })
 public abstract class IdNameSetting {
 	private String id;
 	private String name;
+	
+	public IdNameSetting() { }
 	
 	public IdNameSetting(String id, String name) {
 		this.id=id;

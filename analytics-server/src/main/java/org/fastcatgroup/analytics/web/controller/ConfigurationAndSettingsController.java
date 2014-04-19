@@ -14,9 +14,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.fastcatgroup.analytics.analysis.StatisticsService;
-import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig;
-import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.CategoryConfig;
-import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig;
+import org.fastcatgroup.analytics.analysis.config.SiteListSetting;
+import org.fastcatgroup.analytics.analysis.config.SiteListSetting.SiteSetting;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.CategorySetting;
 import org.fastcatgroup.analytics.env.Settings;
 import org.fastcatgroup.analytics.service.ServiceManager;
 import org.fastcatgroup.analytics.util.ResponseWriter;
@@ -75,34 +76,36 @@ public class ConfigurationAndSettingsController extends AbstractController {
 		
 		StatisticsService statisticsService = ServiceManager.getInstance().getService(StatisticsService.class);
 		
-		SiteCategoryListConfig siteCategoryListConfig = statisticsService.getSiteCategoryListConfig();
+		//SiteCategoryListConfig siteCategoryListConfig = statisticsService.getSiteCategoryListConfig();
+		SiteListSetting siteCategoryListConfig = statisticsService.getSiteListSetting();
 		
-		List<SiteCategoryConfig> siteList = siteCategoryListConfig.getList();
+		List<SiteSetting> siteList = siteCategoryListConfig.getSiteList();
 		
-		List<CategoryConfig> categoryList = new ArrayList<CategoryConfig>();
+		List<CategorySetting> categoryList = new ArrayList<CategorySetting>();
 		
-		SiteCategoryConfig currentSiteConfig = null;
+		SiteSetting currentSiteConfig = null;
 		
 		String currentSiteId = null;
 		String currentSiteName = "";
 		
 		if(siteId!=null && !"".equals(siteId)) {
 			for (int inx = 0; inx < siteList.size(); inx++) {
-				SiteCategoryConfig config = siteList.get(inx);
-				if(siteId.equals(config.getSiteId())) {
-					currentSiteId = config.getSiteId();
-					currentSiteName = config.getSiteName();
+				SiteSetting config = siteList.get(inx);
+				if(siteId.equals(config.getId())) {
+					currentSiteId = config.getId();
+					currentSiteName = config.getName();
 					currentSiteConfig = config;
-					categoryList = currentSiteConfig.getCategoryList();
+					categoryList = currentSiteConfig.getStatisticsSettings().getCategoryList();
 				}
 			}
 		} else {
 			currentSiteConfig = siteList.get(0);
 			if(currentSiteConfig!=null) {
-				currentSiteId = currentSiteConfig.getSiteId();
-				currentSiteName = currentSiteConfig.getSiteName();
-				if(currentSiteConfig.getCategoryList()!=null) {
-					categoryList = currentSiteConfig.getCategoryList();
+				currentSiteId = currentSiteConfig.getId();
+				currentSiteName = currentSiteConfig.getName();
+				StatisticsSettings statisticsSettings = currentSiteConfig.getStatisticsSettings();
+				if(statisticsSettings.getCategoryList()!=null) {
+					categoryList = statisticsSettings.getCategoryList();
 				}
 			}
 		}
@@ -127,31 +130,32 @@ public class ConfigurationAndSettingsController extends AbstractController {
 		
 		StatisticsService statisticsService = ServiceManager.getInstance().getService(StatisticsService.class);
 		
-		SiteCategoryListConfig siteCategoryListConfig = statisticsService.getSiteCategoryListConfig();
+		SiteListSetting siteCategoryListConfig = statisticsService.getSiteListSetting();
 		
-		List<SiteCategoryConfig> siteList = siteCategoryListConfig.getList();
+		List<SiteSetting> siteList = siteCategoryListConfig.getSiteList();
 		
-		List<CategoryConfig> categoryList = new ArrayList<CategoryConfig>();
+		List<CategorySetting> categoryList = new ArrayList<CategorySetting>();
 		
-		SiteCategoryConfig currentSiteConfig = null;
+		SiteSetting currentSiteConfig = null;
 		
 		String currentSiteId = null;
 		
 		if(siteId!=null && !"".equals(siteId)) {
 			for (int inx = 0; inx < siteList.size(); inx++) {
-				SiteCategoryConfig config = siteList.get(inx);
-				if(siteId.equals(config.getSiteId())) {
-					currentSiteId = config.getSiteId();
+				SiteSetting config = siteList.get(inx);
+				if(siteId.equals(config.getId())) {
+					currentSiteId = config.getName();
 					currentSiteConfig = config;
-					categoryList = currentSiteConfig.getCategoryList();
+					categoryList = currentSiteConfig.getStatisticsSettings().getCategoryList();
 				}
 			}
 		} else {
 			currentSiteConfig = siteList.get(0);
 			if(currentSiteConfig!=null) {
-				currentSiteId = currentSiteConfig.getSiteId();
-				if(currentSiteConfig.getCategoryList()!=null) {
-					categoryList = currentSiteConfig.getCategoryList();
+				currentSiteId = currentSiteConfig.getId();
+				StatisticsSettings statisticsSettings = currentSiteConfig.getStatisticsSettings();
+				if(statisticsSettings.getCategoryList()!=null) {
+					categoryList = statisticsSettings.getCategoryList();
 				}
 			}
 		}
@@ -163,19 +167,20 @@ public class ConfigurationAndSettingsController extends AbstractController {
 		
 		if("update".equals(mode)) {
 			categoryList.clear();
-			categoryList.add(new CategoryConfig("_root","ALL"));
+			categoryList.add(new CategorySetting("_root","ALL",true,true,true));
+			
 			int count = Integer.parseInt(request.getParameter("count"));
 			for (int inx = 1; inx <= count; inx++) {
 				String categoryIdGet = request.getParameter("categoryId"+inx);
 				String categoryNameGet = request.getParameter("categoryName"+inx);
 				if(categoryIdGet!=null && !"".equals(categoryIdGet)) {
-					categoryList.add(new CategoryConfig(categoryIdGet, categoryNameGet));
+					categoryList.add(new CategorySetting(categoryIdGet, categoryNameGet, true,true,true));
 				}
 			}
 			statisticsService.writeConfig();
 		} else if("add".equals(mode)) {
 			boolean found = false;
-			CategoryConfig categoryConfig = new CategoryConfig(categoryId, categoryName);
+			CategorySetting categoryConfig = new CategorySetting(categoryId, categoryName, true,true,true);
 			for (int inx = 0; inx < categoryList.size(); inx++) {
 				if(categoryList.get(inx).getId().equals(categoryId)) {
 					categoryList.set(inx, categoryConfig);
@@ -184,7 +189,7 @@ public class ConfigurationAndSettingsController extends AbstractController {
 				}
 			}
 			if(!found) {
-				categoryList.add(new CategoryConfig(categoryId, categoryName));
+				categoryList.add(new CategorySetting(categoryId, categoryName,true,true,true));
 			}
 			statisticsService.writeConfig();
 		} else if("remove".equals(mode)) {
@@ -197,29 +202,32 @@ public class ConfigurationAndSettingsController extends AbstractController {
 			statisticsService.writeConfig();
 		} else if("updateSite".equals(mode)) {
 			String siteIdNew = request.getParameter("siteIdNew");
-			currentSiteConfig.setSiteId(siteIdNew);
-			currentSiteConfig.setSiteName(siteName);
+			currentSiteConfig.setId(siteIdNew);
+			currentSiteConfig.setName(siteName);
 			statisticsService.writeConfig();
 		} else if("addSite".equals(mode)) {
 			boolean found = false;
 			for(int inx=0;inx < siteList.size(); inx++) {
-				if(siteList.get(inx).getSiteId().equals(siteId)) {
+				if(siteList.get(inx).getId().equals(siteId)) {
 					found = true;
 					break;
 				}
 			}
 			
 			if(!found) {
-				SiteCategoryConfig siteCategoryConfig = new SiteCategoryConfig(siteId, siteName);
-				List<CategoryConfig> newCategoryList = new ArrayList<CategoryConfig>();
-				newCategoryList.add(new CategoryConfig("_root", "_root"));
-				siteCategoryConfig.setCategoryList(newCategoryList);
+				SiteSetting siteCategoryConfig = new SiteSetting(siteId, siteName);
+				List<CategorySetting> newCategoryList = new ArrayList<CategorySetting>();
+				newCategoryList.add(new CategorySetting("_root", "ALL",true,true,true));
+				StatisticsSettings statisticsSettings = new StatisticsSettings();
+				statisticsSettings.setCategoryList(newCategoryList);
+				siteCategoryConfig.setStatisticsSettings(statisticsSettings);
+				
 				siteList.add(siteCategoryConfig);
 				statisticsService.writeConfig();
 			}
 		} else if("removeSite".equals(mode)) {
 			for(int inx=0;inx < siteList.size(); inx++) {
-				if(siteList.get(inx).getSiteId().equals(siteId)) {
+				if(siteList.get(inx).getId().equals(siteId)) {
 					siteList.remove(inx);
 					break;
 				}

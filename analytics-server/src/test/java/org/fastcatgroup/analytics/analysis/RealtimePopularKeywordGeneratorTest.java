@@ -1,27 +1,28 @@
 package org.fastcatgroup.analytics.analysis;
 
-import org.fastcatgroup.analytics.settings.StatisticsSettings;
-import org.fastcatgroup.analytics.settings.StatisticsSettings.PopularKeywordConfig;
-import org.fastcatgroup.analytics.settings.StatisticsSettings.RealtimePopularKeywordConfig;
-import org.fastcatgroup.analytics.settings.StatisticsSettings.RelateKeywordConfig;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.PopularKeywordSetting;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.RealtimePopularKeywordSetting;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.RelateKeywordSetting;
+
 
 public class RealtimePopularKeywordGeneratorTest {
 
 	public StatisticsSettings getStatisticsSettings(String banwords, int rtPopMinHit, int popMinHit, int relMinHit){
-		RealtimePopularKeywordConfig realTimePopularKeywordConfig = new RealtimePopularKeywordConfig();
-		PopularKeywordConfig popularKeywordConfig = new PopularKeywordConfig();
-		RelateKeywordConfig relateKeywordConfig = new RelateKeywordConfig();
+		RealtimePopularKeywordSetting realTimePopularKeywordConfig = new RealtimePopularKeywordSetting(10,10,10);
+		PopularKeywordSetting popularKeywordConfig = new PopularKeywordSetting(10,10);
+		RelateKeywordSetting relateKeywordConfig = new RelateKeywordSetting(10);
 		realTimePopularKeywordConfig.setMinimumHitCount(rtPopMinHit);
-		realTimePopularKeywordConfig.setRecentLogUsingCount(6);
+		realTimePopularKeywordConfig.setRecentCount(6);
 		realTimePopularKeywordConfig.setTopCount(10);
 		popularKeywordConfig.setMinimumHitCount(popMinHit);
 		relateKeywordConfig.setMinimumHitCount(relMinHit);
 		
 		StatisticsSettings statisticsSettings = new StatisticsSettings();
 		statisticsSettings.setBanwords(banwords);
-		statisticsSettings.setRealTimePopularKeywordConfig(realTimePopularKeywordConfig);
-		statisticsSettings.setPopularKeywordConfig(popularKeywordConfig);
-		statisticsSettings.setRelateKeywordConfig(relateKeywordConfig);
+		statisticsSettings.setRealtimePopularKeywordSetting(realTimePopularKeywordConfig);
+		statisticsSettings.setPopularKeywordSetting(popularKeywordConfig);
+		statisticsSettings.setRelateKeywordSetting(relateKeywordConfig);
 		
 		return statisticsSettings;
 	}

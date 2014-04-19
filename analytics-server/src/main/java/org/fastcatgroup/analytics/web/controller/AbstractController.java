@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.fastcatgroup.analytics.analysis.StatisticsService;
-import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig;
-import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig;
+import org.fastcatgroup.analytics.analysis.config.SiteListSetting;
+import org.fastcatgroup.analytics.analysis.config.SiteListSetting.SiteSetting;
 import org.fastcatgroup.analytics.env.Environment;
 import org.fastcatgroup.analytics.http.action.ServiceAction.Type;
 import org.fastcatgroup.analytics.service.ServiceManager;
@@ -66,10 +66,10 @@ public class AbstractController {
 		return ServiceManager.getInstance().getService(StatisticsService.class);
 	}
 	
-	protected List<SiteCategoryConfig> getSiteCategoryListConfig(){
+	protected List<SiteSetting> getSiteCategoryListConfig(){
 		StatisticsService statisticsService = ServiceManager.getInstance().getService(StatisticsService.class);
-		SiteCategoryListConfig config = statisticsService.getSiteCategoryListConfig();
-		return config.getList();
+		SiteListSetting config = statisticsService.getSiteListSetting();
+		return config.getSiteList();
 	}
 	
 	protected ResponseWriter getDefaultResponseWriter(Writer writer) {
@@ -89,7 +89,7 @@ public class AbstractController {
 	}
 	
 	protected void writeHeader(HttpServletResponse response, String responseCharset) {
-//		logger.debug("resultType > {}", resultType);
+		logger.trace("resultType > {}", resultType);
 		if (resultType == Type.json) {
 			response.setContentType("application/json; charset=" + responseCharset);
 		} else if (resultType == Type.jsonp) {

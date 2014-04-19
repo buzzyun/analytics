@@ -10,10 +10,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.bind.JAXBException;
 
-import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig;
-import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.CategoryConfig;
-import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig;
 import org.fastcatgroup.analytics.analysis.config.SiteListSetting;
+import org.fastcatgroup.analytics.analysis.config.SiteListSetting.SiteSetting;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.CategorySetting;
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
@@ -27,7 +27,6 @@ import org.fastcatgroup.analytics.env.Settings;
 import org.fastcatgroup.analytics.exception.AnalyticsException;
 import org.fastcatgroup.analytics.service.AbstractService;
 import org.fastcatgroup.analytics.service.ServiceManager;
-import org.fastcatgroup.analytics.settings.StatisticsSettings;
 import org.fastcatgroup.analytics.util.JAXBConfigs;
 
 /**
@@ -36,7 +35,8 @@ import org.fastcatgroup.analytics.util.JAXBConfigs;
 public class StatisticsService extends AbstractService {
 
 	private File statisticsHome;
-	private StatisticsSettings statisticsSettings;
+	private SiteListSetting siteListSetting;
+	
 	private Map<String, CategoryStatistics> categoryStatisticsMap;
 
 	private Map<String, Map<String, List<RankKeyword>>> realtimePopularKeywordMap;
@@ -45,8 +45,6 @@ public class StatisticsService extends AbstractService {
 	private Map<String, SiteSearchLogStatisticsModule> siteStatisticsModuleMap;
 
 	private Map<String, Map<String, List<String>>> relateKeywordMap;
-
-	private SiteCategoryListConfig siteCategoryListConfig;
 
 	public StatisticsService(Environment environment, Settings settings, ServiceManager serviceManager) {
 		super(environment, settings, serviceManager);
@@ -65,63 +63,73 @@ public class StatisticsService extends AbstractService {
 
 		// 로드 siteCategoryConfig
 		
-		File siteConfigFile = new File(new File(environment.filePaths().file(),"conf"),"sites.xml");
+		File confDir = new File(environment.filePaths().file(),"conf");
+		File confSiteDir = new File(confDir,"sites");
+		File siteConfigFile = new File(confDir,"sites.xml");
+		List<SiteSetting> siteList = null;
 		try {
-			JAXBConfigs.readConfig(siteConfigFile, SiteListSetting.class);
-		} catch (JAXBException e) {
-			logger.error("", e);
-		}
-		
-		
-		
-		File siteCategoryConfigFile = new File(statisticsHome, "site-category.xml");
-		try {
-			siteCategoryListConfig = JAXBConfigs.readConfig(siteCategoryConfigFile, SiteCategoryListConfig.class);
-		} catch (JAXBException e) {
-			logger.error("", e);
-		}
-		logger.debug("##siteCategoryConfig >> {}", siteCategoryListConfig);
-		List<SiteCategoryConfig> siteCategoryList = siteCategoryListConfig.getList();
-
-		for (SiteCategoryConfig siteCategoryConfig : siteCategoryList) {
-
-			String siteId = siteCategoryConfig.getSiteId();
-			List<CategoryConfig> categoryList = siteCategoryConfig.getCategoryList();
-
-			List<String> categoryIdList = new ArrayList<String>();
-			for (CategoryConfig c : categoryList) {
-				categoryIdList.add(c.getId());
+			siteListSetting = JAXBConfigs.readConfig(siteConfigFile, SiteListSetting.class);
+			siteList = siteListSetting.getSiteList();
+			for(SiteSetting siteSetting : siteList) {
+				String siteId = siteSetting.getId();
+				File statisticsFile = new File(confSiteDir, siteSetting.getId()+".xml");
+				StatisticsSettings statisticsSettings = JAXBConfigs.readConfig(statisticsFile, StatisticsSettings.class);
+				siteSetting.setStatisticsSettings(statisticsSettings);
+				
+				List<String> categoryIdList = new ArrayList<String>();
+				List<CategorySetting> categoryList = siteSetting.getStatisticsSettings().getCategoryList();
+				for(CategorySetting c : categoryList) {
+					categoryIdList.add(c.getId());
+				}
+				SiteSearchLogStatisticsModule module = new SiteSearchLogStatisticsModule(this, statisticsHome, siteId, categoryIdList, environment, settings);
+				siteStatisticsModuleMap.put(siteId, module);
+				
 			}
-
-			SiteSearchLogStatisticsModule module = new SiteSearchLogStatisticsModule(this, statisticsHome, siteId, categoryIdList, environment, settings);
-			siteStatisticsModuleMap.put(siteId, module);
+		} catch (JAXBException e) {
+			logger.error("", e);
 		}
 	}
 	
 	public void writeConfig() {
-		File siteCategoryConfigFile = new File(statisticsHome, "site-category.xml");
+		File confDir = new File(environment.filePaths().file(),"conf");
+		File confSiteDir = new File(confDir,"sites");
+		File siteConfigFile = new File(confDir,"sites.xml");
+		
+		List<SiteSetting> siteList = siteListSetting.getSiteList();
+		
+		File[] statisticsFiles = new File[siteList.size()];
+		for (int inx = 0; inx < siteList.size(); inx++) {
+			statisticsFiles[inx] = new File(confSiteDir, siteList.get(inx).getId()+".xml");
+		}
+		
 		try {
-			JAXBConfigs.writeConfig(siteCategoryConfigFile, siteCategoryListConfig, SiteCategoryListConfig.class);
+			JAXBConfigs.writeConfig(siteConfigFile, siteListSetting, SiteListSetting.class);
 		} catch (JAXBException e) {
 			logger.error("", e);
+		}
+		for(int inx=0;inx<siteList.size();inx++) {
+			try {
+				JAXBConfigs.writeConfig(statisticsFiles[inx], siteList.get(inx), StatisticsSettings.class);
+			} catch (JAXBException e) {
+				logger.error("", e);
+			}
 		}
 	}
 
 	// 초기 서비스시작시 DB에서 연관어 읽어서 올림.
 	private void loadRelateKeyword() {
 		relateKeywordMap.clear();
-
-		List<SiteCategoryConfig> siteCategoryList = siteCategoryListConfig.getList();
+		
+		List<SiteSetting> siteList = siteListSetting.getSiteList();
 
 		AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
 		MapperSession<RelateKeywordMapper> mapperSession = dbService.getMapperSession(RelateKeywordMapper.class);
 
 		try {
 			RelateKeywordMapper mapper = mapperSession.getMapper();
-
-			for (SiteCategoryConfig siteCategoryConfig : siteCategoryList) {
-
-				String siteId = siteCategoryConfig.getSiteId();
+			
+			for(SiteSetting siteSetting : siteList) {
+				String siteId = siteSetting.getId();
 				Map<String, List<String>> siteRelateKeywordMap = new HashMap<String, List<String>>();
 				relateKeywordMap.put(siteId, siteRelateKeywordMap);
 				logger.debug("### Load relate keyword site {} > {}", siteId, mapper);
@@ -147,7 +155,6 @@ public class StatisticsService extends AbstractService {
 					}
 				}
 			}
-
 		} catch (Exception e) {
 			logger.error("", e);
 		} finally {
@@ -156,22 +163,22 @@ public class StatisticsService extends AbstractService {
 			}
 		}
 	}
-
-	public SiteCategoryListConfig getSiteCategoryListConfig() {
-		return siteCategoryListConfig;
+	
+	public SiteListSetting getSiteListSetting() {
+		return siteListSetting;
 	}
 
 	/**
 	 * 실시간 인기검색어를 리턴한다.
 	 * */
 	public List<RankKeyword> getRealtimePopularKeywordList(String siteId, String categoryId) {
-//		logger.debug("get realtime keyword. siteId:{} / categoryId:{}", siteId, categoryId);
+		logger.trace("get realtime keyword. siteId:{} / categoryId:{}", siteId, categoryId);
 		Map<String, List<RankKeyword>> map = realtimePopularKeywordMap.get(siteId);
 		if (map != null) {
 			if (categoryId == null || categoryId.length() == 0) {
 				categoryId = "_root";
 			}
-//			logger.debug("get realtime keyword map:{}", map);
+			logger.trace("get realtime keyword map:{}", map);
 			return map.get(categoryId);
 		}
 		return null;
@@ -190,10 +197,10 @@ public class StatisticsService extends AbstractService {
 	}
 
 	public Map<String, List<String>> getRelateKeywordMap(String siteId) {
-//		logger.debug("relateKeywordMap:{}", relateKeywordMap);
+		logger.trace("relateKeywordMap:{}", relateKeywordMap);
 		Map<String, List<String>> map = relateKeywordMap.get(siteId);
 		if (map != null) {
-//			logger.debug("get relative keyword map:{} [{}]", map);
+			logger.trace("get relative keyword map:{} [{}]", map);
 			return map;
 		}
 		return null;
@@ -213,17 +220,6 @@ public class StatisticsService extends AbstractService {
 	@Override
 	protected boolean doStart() throws AnalyticsException {
 		categoryStatisticsMap = new HashMap<String, CategoryStatistics>();
-		File statisticsSettingFile = environment.filePaths().configPath().path(SettingFileNames.statisticsConfig).file();
-		try {
-			statisticsSettings = JAXBConfigs.readConfig(statisticsSettingFile, StatisticsSettings.class);
-		} catch (JAXBException e) {
-			logger.error("statisticsSetting read error.", e);
-			return false;
-		}
-		if (statisticsSettings == null) {
-			logger.error("Cannot load statistics setting file >> {}", statisticsSettingFile);
-			return false;
-		}
 
 		for (SiteSearchLogStatisticsModule module : siteStatisticsModuleMap.values()) {
 			module.load();
@@ -248,10 +244,6 @@ public class StatisticsService extends AbstractService {
 		return true;
 	}
 
-	public StatisticsSettings statisticsSettings() {
-		return statisticsSettings;
-	}
-
 	public CategoryStatistics categoryStatistics(String categoryId) {
 		return categoryStatisticsMap.get(categoryId);
 	}
@@ -262,7 +254,6 @@ public class StatisticsService extends AbstractService {
 		if (module != null) {
 			module.addLog(entries);
 		}
-
 	}
 	
 	public void addTypeLog(String type, String siteId, String... entries) {
@@ -271,7 +262,6 @@ public class StatisticsService extends AbstractService {
 		if (module != null) {
 			module.addTypeLog(entries);
 		}
-
 	}
 
 	public void addClickLog(String siteId, String... entries) {

@@ -12,6 +12,9 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
 import org.fastcatgroup.analytics.analysis.StatisticsService;
+import org.fastcatgroup.analytics.analysis.config.SiteListSetting;
+import org.fastcatgroup.analytics.analysis.config.SiteListSetting.SiteSetting;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.CategorySetting;
 import org.fastcatgroup.analytics.db.mapper.SearchKeywordRankMapper;
 import org.fastcatgroup.analytics.db.vo.RankKeywordVO;
 import org.fastcatgroup.analytics.exception.AnalyticsException;
@@ -20,7 +23,6 @@ import org.fastcatgroup.analytics.keyword.KeywordDictionary.KeywordDictionaryTyp
 import org.fastcatgroup.analytics.keyword.KeywordService;
 import org.fastcatgroup.analytics.keyword.PopularKeywordDictionary;
 import org.fastcatgroup.analytics.service.ServiceManager;
-import org.fastcatgroup.analytics.settings.StatisticsSettings.Category;
 
 public class KeywordDictionaryCompileApplyJob extends Job {
 
@@ -45,68 +47,68 @@ public class KeywordDictionaryCompileApplyJob extends Job {
 		KeywordService keywordService = ServiceManager.getInstance().getService(KeywordService.class);
 
 		StatisticsService statisticsService = ServiceManager.getInstance().getService(StatisticsService.class);
-
-		List<Category> categoryList = statisticsService.statisticsSettings().getCategoryList();
-
-		try {
-			dictionaryType = KeywordDictionaryType.valueOf(dictionaryTypeStr);
-
-			if (dictionaryType == KeywordDictionaryType.POPULAR_KEYWORD_REALTIME) {
-
-				timeStr = "REALTIME";
-
-				compilePopularKeyword(keywordService, categoryList, dictionaryType, interval, timeStr);
-
-			} else if (dictionaryType == KeywordDictionaryType.POPULAR_KEYWORD_DAY) {
-
-				dateFormat = new SimpleDateFormat("yyyyMMdd");
-
-				calendar.add(Calendar.DATE, -1);
-
-				timeStr = "D" + dateFormat.format(calendar.getTime());
-
-				compilePopularKeyword(keywordService, categoryList, dictionaryType, interval, timeStr);
-
-			} else if (dictionaryType == KeywordDictionaryType.POPULAR_KEYWORD_WEEK) {
-
-				dateFormat = new SimpleDateFormat("yyyyMMww");
-
-				calendar.add(Calendar.WEEK_OF_YEAR, -1);
-
-				timeStr = "W" + dateFormat.format(calendar.getTime());
-
-				compilePopularKeyword(keywordService, categoryList, dictionaryType, interval, timeStr);
-
-			} else if (dictionaryType == KeywordDictionaryType.POPULAR_KEYWORD_MONTH) {
-
-				dateFormat = new SimpleDateFormat("yyyyMM");
-
-				calendar.add(Calendar.MONTH, -1);
-
-				timeStr = "M" + dateFormat.format(calendar.getTime());
-
-				compilePopularKeyword(keywordService, categoryList, dictionaryType, interval, timeStr);
-
-//			} else if (dictionaryType == KeywordDictionaryType.RELATE_KEYWORD) {
-//				compileRelateKeyword(keywordService, categoryList, dictionaryType);
+		
+		List<SiteSetting> siteList = statisticsService.getSiteListSetting().getSiteList();
+		
+		for(SiteSetting siteSetting : siteList) {
+			List<CategorySetting> categoryList = siteSetting.getStatisticsSettings().getCategoryList();
+			try {
+				dictionaryType = KeywordDictionaryType.valueOf(dictionaryTypeStr);
+	
+				if (dictionaryType == KeywordDictionaryType.POPULAR_KEYWORD_REALTIME) {
+	
+					timeStr = "REALTIME";
+	
+					compilePopularKeyword(keywordService, categoryList, dictionaryType, interval, timeStr);
+	
+				} else if (dictionaryType == KeywordDictionaryType.POPULAR_KEYWORD_DAY) {
+	
+					dateFormat = new SimpleDateFormat("yyyyMMdd");
+	
+					calendar.add(Calendar.DATE, -1);
+	
+					timeStr = "D" + dateFormat.format(calendar.getTime());
+	
+					compilePopularKeyword(keywordService, categoryList, dictionaryType, interval, timeStr);
+	
+				} else if (dictionaryType == KeywordDictionaryType.POPULAR_KEYWORD_WEEK) {
+	
+					dateFormat = new SimpleDateFormat("yyyyMMww");
+	
+					calendar.add(Calendar.WEEK_OF_YEAR, -1);
+	
+					timeStr = "W" + dateFormat.format(calendar.getTime());
+	
+					compilePopularKeyword(keywordService, categoryList, dictionaryType, interval, timeStr);
+	
+				} else if (dictionaryType == KeywordDictionaryType.POPULAR_KEYWORD_MONTH) {
+	
+					dateFormat = new SimpleDateFormat("yyyyMM");
+	
+					calendar.add(Calendar.MONTH, -1);
+	
+					timeStr = "M" + dateFormat.format(calendar.getTime());
+	
+					compilePopularKeyword(keywordService, categoryList, dictionaryType, interval, timeStr);
+	
+				}
+	
+			} catch (IllegalArgumentException e) {
+				logger.error("", e);
+				return new JobResult("INVALID KEYWORD DICTIONARY TYPE >> " + dictionaryTypeStr);
+			} catch (Exception e) {
+				logger.error("", e);
+				return new JobResult("KEYWORD DICTIONARY COMPILE ERROR >> " + e.getMessage());
 			}
-
-		} catch (IllegalArgumentException e) {
-			logger.error("", e);
-			return new JobResult("INVALID KEYWORD DICTIONARY TYPE >> " + dictionaryTypeStr);
-		} catch (Exception e) {
-			logger.error("", e);
-			return new JobResult("KEYWORD DICTIONARY COMPILE ERROR >> " + e.getMessage());
 		}
-
 		return new JobResult(true);
 	}
 
-	private void compilePopularKeyword(KeywordService keywordService, List<Category> categoryList, KeywordDictionaryType type, int interval, String time) throws Exception {
+	private void compilePopularKeyword(KeywordService keywordService, List<CategorySetting> categoryList, KeywordDictionaryType type, int interval, String time) throws Exception {
 
 		SearchKeywordRankMapper mapper = keywordService.getMapperSession(SearchKeywordRankMapper.class).getMapper();
 
-		for (Category category : categoryList) {
+		for (CategorySetting category : categoryList) {
 
 			List<RankKeywordVO> keywordList = null;//mapper.getEntryList("", category.getId(), time, 0, 10);
 
@@ -138,45 +140,4 @@ public class KeywordDictionaryCompileApplyJob extends Job {
 			}
 		}
 	}
-
-//	private void compileRelateKeyword(KeywordService keywordService, List<Category> categoryList, KeywordDictionaryType type) throws Exception {
-//
-//		RelateKeywordMapper mapper = keywordService.getMapperSession(RelateKeywordMapper.class).getMapper();
-//
-//		for (Category category : categoryList) {
-//
-//			List<RelateKeywordVO> keywordList = mapper.getEntryList(category.getId());
-//
-//			RelateKeywordDictionary dictionary = new RelateKeywordDictionary();
-//
-//			for (RelateKeywordVO keyword : keywordList) {
-//				dictionary.putRelateKeyword(keyword.getKeyword(), keyword.getValue());
-//			}
-//
-//			File writeFile = keywordService.getFile(category.getId(), type);
-//
-//			File parentDir = writeFile.getParentFile();
-//
-//			if (!parentDir.exists()) {
-//				FileUtils.forceMkdir(parentDir);
-//			}
-//
-//			OutputStream ostream = null;
-//
-//			try {
-//
-//				ostream = new FileOutputStream(writeFile);
-//
-//				dictionary.writeTo(ostream);
-//
-//			} finally {
-//
-//				if (ostream != null)
-//					try {
-//						ostream.close();
-//					} catch (IOException e) {
-//					}
-//			}
-//		}
-//	}
 }

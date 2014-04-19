@@ -6,6 +6,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fastcatgroup.analytics.analysis.config.SiteListSetting.SiteSetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.CategorySetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ClickTypeSetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.PopularKeywordSetting;
@@ -16,11 +17,16 @@ import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.SiteAttribu
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.TypeSetting;
 import org.fastcatgroup.analytics.util.JAXBConfigs;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class StatisticsSettingTest {
 
+	private static final Logger logger = LoggerFactory.getLogger(StatisticsSettingTest.class);
+	
 	@Test
 	public void testSave() throws Exception {
+		
 		
 		StatisticsSettings settings = new StatisticsSettings();
 		
@@ -68,7 +74,25 @@ public class StatisticsSettingTest {
 		
 		JAXBConfigs.writeConfig(file, settings, StatisticsSettings.class);
 		
-		//fail("Not yet implemented");
+		assertTrue(true);
 	}
-
+	
+	@Test
+	public void testSiteSave() throws Exception {
+		
+		SiteListSetting settings = new SiteListSetting();
+		List<SiteSetting> siteList = new ArrayList<SiteSetting>();
+		settings.setSiteList(siteList);
+		siteList.add(new SiteSetting("www","쇼핑몰"));
+		siteList.add(new SiteSetting("blog","블로그"));
+		
+		File file = new File("/tmp/test.xml");
+		JAXBConfigs.writeConfig(file, settings, SiteListSetting.class);
+		
+		SiteListSetting config = JAXBConfigs.readConfig(file, SiteListSetting.class);
+		
+		logger.debug("config:{}", config.getSiteList());
+		
+		assertTrue(true);
+	}
 }

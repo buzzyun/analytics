@@ -4,7 +4,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
-import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig;
+import org.fastcatgroup.analytics.analysis.config.SiteListSetting.SiteSetting;
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
@@ -27,7 +27,7 @@ public class SearchRankController extends AbstractController {
 	public ModelAndView realtimeSearchKeyword(@PathVariable String siteId, @RequestParam(required = false) String categoryId) {
 		ModelAndView mav = new ModelAndView();
 
-		List<SiteCategoryConfig> siteCategoryList = getSiteCategoryListConfig();
+		List<SiteSetting> siteCategoryList = getSiteCategoryListConfig();
 		mav.addObject("siteCategoryList", siteCategoryList);
 		List<RankKeyword> rankList = null;
 		if (siteId != null) {

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fastcatgroup.analytics.analysis.StatisticsService;
-import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig;
-import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.CategoryConfig;
-import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig;
+import org.fastcatgroup.analytics.analysis.config.SiteListSetting;
+import org.fastcatgroup.analytics.analysis.config.SiteListSetting.SiteSetting;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.CategorySetting;
 import org.fastcatgroup.analytics.analysis.schedule.TimeSchedule;
 import org.fastcatgroup.analytics.analysis.task.RealtimeSearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.control.JobService;
@@ -30,15 +30,15 @@ public class RealtimeSearchLogAnalyticsTaskRunAction extends ServiceAction {
 		responseWriter.object();
 		try {
 			StatisticsService statisticsService = ServiceManager.getInstance().getService(StatisticsService.class);
-			SiteCategoryListConfig siteCategoryListConfig = statisticsService.getSiteCategoryListConfig();
+			SiteListSetting siteCategoryListConfig = statisticsService.getSiteListSetting();
 
-			List<SiteCategoryConfig> list = siteCategoryListConfig.getList();
+			List<SiteSetting> list = siteCategoryListConfig.getSiteList();
 
 			List<String> categoryIdList = new ArrayList<String>();
-
-			for (SiteCategoryConfig config : list) {
-				if (config.getSiteId().equals(siteId)) {
-					for (CategoryConfig categoryConfig : config.getCategoryList()) {
+			
+			for (SiteSetting config : list) {
+				if (config.getId().equals(siteId)) {
+					for (CategorySetting categoryConfig : config.getStatisticsSettings().getCategoryList()) {
 						categoryIdList.add(categoryConfig.getId());
 					}
 				}

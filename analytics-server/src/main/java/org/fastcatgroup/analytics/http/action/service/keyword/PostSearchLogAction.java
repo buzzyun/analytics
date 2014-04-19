@@ -1,8 +1,14 @@
 package org.fastcatgroup.analytics.http.action.service.keyword;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.analysis.config.SiteListSetting;
 import org.fastcatgroup.analytics.analysis.config.SiteListSetting.SiteSetting;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.SiteAttribute;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.TypeSetting;
 import org.fastcatgroup.analytics.http.ActionMapping;
 import org.fastcatgroup.analytics.http.action.ActionRequest;
 import org.fastcatgroup.analytics.http.action.ActionResponse;
@@ -80,40 +86,22 @@ public class PostSearchLogAction extends ServiceAction {
 				serviceId = "-";
 			}
 			service.addLog(type, siteId, categoryId, keyword, prevKeyword, resultCount, reponseTime, serviceId);
-
-			/* 2. type_raw.log */
-			//FIXME 카테고리 리스트를 설정에 따라 변동될수 있도록 한다.
-			String typeCategory = request.getParameter("category");
-			String typePage = request.getParameter("page");
-			String typeSort = request.getParameter("sort");
-			String typeAge = request.getParameter("age");
-			String typeService = request.getParameter("service");
-			String typeLogin = request.getParameter("login");
-			String typeGender = request.getParameter("gender");
-			//- 로 전달시 해당 값은 통계에 넣지 않도록 함.
-			if(typeCategory == null || typeCategory.length() == 0){
-				typeCategory = "-";
-			}
-			if(typePage == null || typePage.length() == 0){
-				typePage = "-";
-			}
-			if(typeSort == null || typeSort.length() == 0){
-				typeSort = "-";
-			}
-			if(typeAge == null || typeAge.length() == 0){
-				typeAge = "-";
-			}
-			if(typeService == null || typeService.length() == 0){
-				typeService = "-";
-			}
-			if(typeLogin == null || typeLogin.length() == 0){
-				typeLogin = "-";
-			}
-			if(typeGender == null || typeGender.length() == 0){
-				typeGender = "-";
-			}
 			
-			service.addTypeLog(type, siteId, categoryId, keyword, typeCategory, typePage, typeSort, typeAge, typeService, typeLogin, typeGender);
+			SiteAttribute siteAttribute = ServiceManager.getInstance().getService(StatisticsService.class).getStatisticsSetting(siteId).getSiteAttribute();
+			List<TypeSetting> typeList = siteAttribute.getTypeList();
+			String[] types = new String[typeList.size() + 2];
+			//카테고리 리스트를 설정에 따라 변동될수 있도록.
+			for(int inx=0;inx<typeList.size();inx++) {
+				String typeData = request.getParameter(typeList.get(inx).getId());
+				if(typeData==null || typeData.length() == 0) {
+					typeData = "-";
+				}
+				types[2 + inx] = typeData;
+			}
+			types[0] = categoryId;
+			types[1] = keyword;
+
+			service.addTypeLog(type, siteId, types);
 			
 		} catch (Exception e) {
 			errorMessage = e.getMessage();

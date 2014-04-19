@@ -10,7 +10,7 @@ import org.fastcatgroup.analytics.analysis.config.SiteListSetting.SiteSetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.CategorySetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ClickTypeSetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.PopularKeywordSetting;
-import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.RealtimePopularKeywordSetting;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.RealTimePopularKeywordSetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.RelateKeywordSetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ServiceSetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.SiteAttribute;
@@ -37,7 +37,7 @@ public class StatisticsSettingTest {
 		settings.setCategoryList(categoryListSetting);
 		settings.setBanwords("무료,배송,쿠폰,할인");
 		settings.setFileEncoding("utf8");
-		RealtimePopularKeywordSetting realtimePopularKeyword = new RealtimePopularKeywordSetting(10,10,10);
+		RealTimePopularKeywordSetting realtimePopularKeyword = new RealTimePopularKeywordSetting(10,10,10);
 		settings.setRealtimePopularKeywordSetting(realtimePopularKeyword);
 		PopularKeywordSetting popularKeyword = new PopularKeywordSetting(10,10);
 		settings.setPopularKeywordSetting(popularKeyword);

@@ -2,14 +2,14 @@ package org.fastcatgroup.analytics.analysis;
 
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.PopularKeywordSetting;
-import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.RealtimePopularKeywordSetting;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.RealTimePopularKeywordSetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.RelateKeywordSetting;
 
 
 public class RealtimePopularKeywordGeneratorTest {
 
 	public StatisticsSettings getStatisticsSettings(String banwords, int rtPopMinHit, int popMinHit, int relMinHit){
-		RealtimePopularKeywordSetting realTimePopularKeywordConfig = new RealtimePopularKeywordSetting(10,10,10);
+		RealTimePopularKeywordSetting realTimePopularKeywordConfig = new RealTimePopularKeywordSetting(10,10,10);
 		PopularKeywordSetting popularKeywordConfig = new PopularKeywordSetting(10,10);
 		RelateKeywordSetting relateKeywordConfig = new RelateKeywordSetting(10);
 		realTimePopularKeywordConfig.setMinimumHitCount(rtPopMinHit);

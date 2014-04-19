@@ -14,7 +14,7 @@ public class StatisticsSettings {
 	private List<CategorySetting> categoryList;
 	private String banwords;
 	private String fileEncoding;
-	private RealtimePopularKeywordSetting realtimePopularKeywordSetting;
+	private RealTimePopularKeywordSetting realtimePopularKeywordSetting;
 	private PopularKeywordSetting popularKeywordSetting;
 	private RelateKeywordSetting relateKeywordSetting;
 	private SiteAttribute siteAttribute;
@@ -50,11 +50,11 @@ public class StatisticsSettings {
 	}
 	
 	@XmlElement(name="realtime-popular-keyword")
-	public RealtimePopularKeywordSetting getRealtimePopularKeywordSetting() {
+	public RealTimePopularKeywordSetting getRealtimePopularKeywordSetting() {
 		return realtimePopularKeywordSetting;
 	}
 	
-	public void setRealtimePopularKeywordSetting(RealtimePopularKeywordSetting setting) {
+	public void setRealtimePopularKeywordSetting(RealTimePopularKeywordSetting setting) {
 		this.realtimePopularKeywordSetting = setting;
 	}
 	
@@ -125,10 +125,10 @@ public class StatisticsSettings {
 	}
 	
 	@XmlType 
-	public static class RealtimePopularKeywordSetting extends PopularKeywordSetting {
+	public static class RealTimePopularKeywordSetting extends PopularKeywordSetting {
 		private Integer recentCount;
-		public RealtimePopularKeywordSetting() { }
-		public RealtimePopularKeywordSetting(Integer recentCount, Integer topCount, Integer minimumHitCount) { 
+		public RealTimePopularKeywordSetting() { }
+		public RealTimePopularKeywordSetting(Integer recentCount, Integer topCount, Integer minimumHitCount) { 
 			super(topCount, minimumHitCount);
 			this.recentCount = recentCount;
 		}

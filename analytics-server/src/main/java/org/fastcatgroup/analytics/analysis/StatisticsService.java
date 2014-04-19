@@ -13,6 +13,13 @@ import org.fastcatgroup.analytics.analysis.config.SiteListSetting;
 import org.fastcatgroup.analytics.analysis.config.SiteListSetting.SiteSetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.CategorySetting;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ClickTypeSetting;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.PopularKeywordSetting;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.RealTimePopularKeywordSetting;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.RelateKeywordSetting;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ServiceSetting;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.SiteAttribute;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.TypeSetting;
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
@@ -330,17 +337,41 @@ public class StatisticsService extends AbstractService {
 	}
 	
 	public SiteSetting newDefaultSite(String id, String name) {
+		//초기 사이트 구축시 입력되는 기본 데이터
 		SiteSetting ret = new SiteSetting(id, name);
-		
-		
 		StatisticsSettings statisticsSettings = new StatisticsSettings();
+		//금지어
 		statisticsSettings.setBanwords("");
+		//카테고리
 		List<CategorySetting> categoryList = new ArrayList<CategorySetting>();
 		categoryList.add(new CategorySetting("_root","ALL",false,false,false));
 		statisticsSettings.setCategoryList(categoryList);
+		//인코딩
 		statisticsSettings.setFileEncoding("utf-8");
 		
+		//인기키워드
+		PopularKeywordSetting popularKeywordSetting = new PopularKeywordSetting(10,2);
+		statisticsSettings.setPopularKeywordSetting(popularKeywordSetting);
 		
+		//연관키워드
+		RelateKeywordSetting relateKeywordSetting = new RelateKeywordSetting(2);
+		statisticsSettings.setRelateKeywordSetting(relateKeywordSetting);
+		
+		//실시간키워드
+		RealTimePopularKeywordSetting realtimePopularKeywordSetting = new RealTimePopularKeywordSetting(6,10,1);
+		statisticsSettings.setRealtimePopularKeywordSetting(realtimePopularKeywordSetting);
+		
+		//사이트속성
+		SiteAttribute siteAttribute = new SiteAttribute();
+		List<ClickTypeSetting> clickTypeList = new ArrayList<ClickTypeSetting>();
+		siteAttribute.setClickTypeList(clickTypeList);
+		List<ServiceSetting> serviceList = new ArrayList<ServiceSetting>();
+		siteAttribute.setServiceList(serviceList);
+		List<TypeSetting> typeList = new ArrayList<TypeSetting>();
+		siteAttribute.setTypeList(typeList);
+		statisticsSettings.setSiteAttribute(siteAttribute);
+		
+		ret.setStatisticsSettings(statisticsSettings);
 		return ret;
 	}
 }

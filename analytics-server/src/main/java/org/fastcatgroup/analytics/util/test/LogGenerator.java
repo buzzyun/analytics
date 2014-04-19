@@ -12,8 +12,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 
 public class LogGenerator {
@@ -78,22 +80,29 @@ public class LogGenerator {
 		new LogGenerator().generate(home, siteId, file, minQty, maxQty, fromDate, toDate, categoryList, types, typeValues, minClick, maxClick, clickIdList, clickTypeList);
 	}
 	
-	private void generate(File home, String siteId, File file, int minQty, int maxQty, Calendar fromDate, Calendar toDate, String[] categoryList, String[] types, List<String>[] typeValues, int minClick, int maxClick, String[] clickIdList, String[] clickTypeList) {
+	
+	private Map<String, File> fileMap;
+	
+	public LogGenerator() {
+		fileMap = new HashMap<String, File>();
+	}
+	
+	private void generate(File home, String siteId, File keywordFile, int minQty, int maxQty, Calendar fromDate, Calendar toDate, String[] categoryList, String[] types, List<String>[] typeValues, int minClick, int maxClick, String[] clickIdList, String[] clickTypeList) {
 		List<String> keywordList = new ArrayList<String>();
-		BufferedReader reader = null;
+		BufferedReader keywordReader = null;
 		try {
-			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+			keywordReader = new BufferedReader(new InputStreamReader(new FileInputStream(keywordFile)));
 			String line = null;
-			while ((line = reader.readLine()) != null) {
+			while ((line = keywordReader.readLine()) != null) {
 				line = line.trim();
 				keywordList.add(line);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			if (reader != null) {
+			if (keywordReader != null) {
 				try {
-					reader.close();
+					keywordReader.close();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -104,15 +113,40 @@ public class LogGenerator {
 		Random r = new Random(System.nanoTime());
 		
 		int[] qtyGenerate = new int[24];
+			
+		String[] typeValue = new String[types.length];
+		int count = 0;
 		
-		try {
+		Calendar calendar = (Calendar) fromDate.clone();
+		
+		while (calendar.compareTo(toDate) <= 0) {
+			File searchLogFile = getSearchLogFile(siteId, home, calendar);
+			File typeLogFile = getTypeLogFile(siteId, home, calendar);
+			File clickLogFile = getClickLogFile(siteId, home, calendar);
 			
-			String[] typeValue = new String[types.length];
-			int count = 0;
+			System.out.println("searchLogFile path = " + searchLogFile.getPath());
+			System.out.println("typeLogFile path = " + typeLogFile.getPath());
+			System.out.println("clickLogFile path = " + clickLogFile.getPath());
 			
-			Calendar calendar = (Calendar) fromDate.clone();
-			
-			while (calendar.before(toDate)) {
+			if(searchLogFile.exists()) {
+				System.out.println("deleting.."+searchLogFile.getAbsolutePath());
+				searchLogFile.delete();
+			}
+			if(typeLogFile.exists()) {
+				System.out.println("deleting.."+typeLogFile.getAbsolutePath());
+				typeLogFile.delete();
+			}
+			if(clickLogFile.exists()) {
+				System.out.println("deleting.."+clickLogFile.getAbsolutePath());
+				clickLogFile.delete();
+			}
+			BufferedWriter searchLogWriter = null;
+			BufferedWriter typeLogWriter = null;
+			BufferedWriter clickLogWriter = null;
+			try{
+				searchLogWriter = new BufferedWriter(new FileWriter(searchLogFile));
+				typeLogWriter = new BufferedWriter(new FileWriter(typeLogFile));
+				clickLogWriter = new BufferedWriter(new FileWriter(clickLogFile));
 				
 				//하루동안 입력될 데이터의 총갯수를 정한다.
 				int qtyTotalGenerate = minQty;
@@ -131,7 +165,7 @@ public class LogGenerator {
 				System.out.println("qtyTotal="+qtyTotalGenerate+".. / shffling..");
 				
 				//난수로 갯수를 섞는다.
-				r.setSeed(System.currentTimeMillis());
+//				r.setSeed(System.currentTimeMillis());
 				int randomCount = r.nextInt(10000);
 				for(int inx=0;inx< randomCount; inx++) {
 					int randomInxF = r.nextInt(24);
@@ -157,14 +191,14 @@ public class LogGenerator {
 						if(cateIndex < categoryList.length){
 							categoryId = categoryList[cateIndex];
 						}
-						r.setSeed(System.currentTimeMillis());
+//						r.setSeed(System.currentTimeMillis());
 				
 						int keyword0 = r.nextInt(keywordList.size());
 						int keyword1 = r.nextInt(keywordList.size());
 						String keyword = keywordList.get(keyword0);
 						String prevKeyword = keywordList.get(keyword1);
 						for (int i = 0; i < typeValue.length; i++) {
-							r.setSeed(System.currentTimeMillis());
+//							r.setSeed(System.currentTimeMillis());
 							typeValue[i] = typeValues[i].get(r.nextInt(typeValues[i].size()));
 						}
 						
@@ -179,12 +213,11 @@ public class LogGenerator {
 						
 						String timeId = (inx<10?"0"+inx:inx)+":"+(minute<10?"0"+minute:minute);
 						
-						String searchData = makeData(siteId, timeId, categoryId, keyword, prevKeyword, resultCount, resptime, types, typeValue);
-						insertSearchLog(home, calendar, searchData, (inx==0 && inx2==0));
+						String[] rawData = makeRawData(siteId, timeId, categoryId, keyword, prevKeyword, resultCount, resptime, types, typeValue);
+						insertSearchLog(searchLogWriter, typeLogWriter, rawData);
 						
 						//clicklog
 						int clickQty = r.nextInt(maxClick - minClick) + minClick;
-						String[] rawData = searchData.split("\t");
 						for (int clickInx = 0; clickInx < clickQty; clickInx++) {
 							String productId="";
 							String clickType="";
@@ -195,10 +228,11 @@ public class LogGenerator {
 							//	clickType = clickTypeList[];
 							//}
 							
-							r.setSeed(System.currentTimeMillis());
+//							r.setSeed(System.currentTimeMillis());
 							clickType = clickTypeList[ r.nextInt(clickTypeList.length) ];
-							insertClickLog(home, calendar, timeId, rawData[3], productId, clickType, rawData, (inx==0 && inx2==0 && clickInx==0));
+							insertClickLog(clickLogWriter, timeId, rawData[3], productId, clickType, rawData);
 						}
+//						System.out.println(">> "+count +" " + new Date(calendar.getTimeInMillis()));
 						count++;
 						if(count % 10000 == 0){
 							System.out.println("log " + count + "... / " + format.format(calendar.getTime()) );
@@ -206,8 +240,29 @@ public class LogGenerator {
 					}
 				}
 				calendar.add(Calendar.DAY_OF_MONTH, 1);
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			}finally{
+				if(searchLogWriter != null) {
+					try {
+						searchLogWriter.close();
+					} catch (IOException e) {
+					}
+				}
+				if(typeLogWriter != null) {
+					try {
+						typeLogWriter.close();
+					} catch (IOException e) {
+					}
+				}
+				if(clickLogWriter != null) {
+					try {
+						clickLogWriter.close();
+					} catch (IOException e) {
+					}
+				}
 			}
-		} finally {
 		}
 	}
 	
@@ -222,6 +277,7 @@ public class LogGenerator {
 				}
 				Date date = format.parse(dateStr);
 				calendar.setTime(date);
+				System.out.println("dateStr >>> " + dateStr +" : "+ date);
 			} catch (ParseException ignore) {
 				ignore.printStackTrace();
 			}
@@ -229,164 +285,88 @@ public class LogGenerator {
 		return calendar;
 	}
 
-	private String makeData(String siteId, String categoryId, String time, String keyword, String prevKeyword, int resultCount, int resptime, String[] types, String[] typeValue) {
-		
-		StringBuffer sb = new StringBuffer();
-		try{
-			sb.append(siteId);
-			sb.append("\t");
-			sb.append(categoryId);
-			sb.append("\t");
-			sb.append(time);
-			sb.append("\t");
-			sb.append(keyword);
-			sb.append("\t");
-			sb.append(prevKeyword);
-			sb.append("\t");
-			sb.append(resultCount);
-			sb.append("\t");
-			sb.append(resptime);
-			if (typeValue != null) {
-				for (int i = 0; i < types.length; i++) {
-					String value = typeValue[i];
-					sb.append("\t");
-					sb.append(value);
-				}
+	private String[] makeRawData(String siteId, String categoryId, String time, String keyword, String prevKeyword, int resultCount, int resptime, String[] types, String[] typeValue) {
+		String[] rawData = new String[7 + typeValue.length];
+		int i = 0;
+		rawData[i++] = siteId;
+		rawData[i++] = categoryId;
+		rawData[i++] = time;
+		rawData[i++] = keyword;
+		rawData[i++] = prevKeyword;
+		rawData[i++] = String.valueOf(resultCount);
+		rawData[i++] = String.valueOf(resptime);
+		if (typeValue != null) {
+			for (int j = 0; j < types.length; j++) {
+				rawData[i++] = typeValue[j];
 			}
-			
-		}catch(Exception e){
-			e.printStackTrace();
 		}
-		return sb.toString();
+		
+		return rawData;
 	}
 	
-	private void insertClickLog(File baseDir, Calendar calendar, String timeId, String keyword, String productId, String clickType, String[] rawData, boolean create) {
-		BufferedWriter writer = null;
-		try {
-			
-			File dateDir  = new File(baseDir, "date");
-			
-			int year = calendar.get(Calendar.YEAR);
-			int month = calendar.get(Calendar.MONTH) + 1;
-			int date = calendar.get(Calendar.DAY_OF_MONTH);
-			
-			dateDir = new File(dateDir, "Y"+(year<10?"0"+year:year));
-			dateDir = new File(dateDir, "M"+(month<10?"0"+month:month));
-			dateDir = new File(dateDir, "D"+(date<10?"0"+date:date));
-			
-			File dataDir = new File(dateDir, "data");
-			dataDir = new File(dataDir, rawData[0]);
-			
-			if(!dataDir.exists()) {
-				dataDir.mkdirs();
-			}
-			
-			File file = null;
-			
-			//click_raw log
-			file = new File(dataDir, "click_raw.log");
-			//System.out.println(file.getAbsolutePath());
-			if(create && file.exists()) {
-				System.out.println("deleting.."+file.getAbsolutePath());
-				file.delete();
-				writer = new BufferedWriter(new FileWriter(file));
-			} else {
-				writer = new BufferedWriter(new FileWriter(file, true));
-			}
-			
+	
+	
+	private File getSearchLogFile(String siteId, File baseDir, Calendar calendar){
+		return getLogFile(siteId, "raw.log", baseDir, calendar);
+	}
+	private File getTypeLogFile(String siteId, File baseDir, Calendar calendar){
+		return getLogFile(siteId, "type_raw.log", baseDir, calendar);
+	}
+	private File getClickLogFile(String siteId, File baseDir, Calendar calendar){
+		return getLogFile(siteId, "click_raw.log", baseDir, calendar);
+	}
+	private File getLogFile(String siteId, String fileName, File baseDir, Calendar calendar){
+		File dateDir  = new File(baseDir, "date");
+		
+		int year = calendar.get(Calendar.YEAR);
+		int month = calendar.get(Calendar.MONTH) + 1;
+		int date = calendar.get(Calendar.DAY_OF_MONTH);
+		
+		dateDir = new File(dateDir, "Y"+(year<10?"0"+year:year));
+		dateDir = new File(dateDir, "M"+(month<10?"0"+month:month));
+		dateDir = new File(dateDir, "D"+(date<10?"0"+date:date));
+		
+		File dataDir = new File(dateDir, "data");
+		dataDir = new File(dataDir, siteId);
+		
+		if(!dataDir.exists()) {
+			dataDir.mkdirs();
+		}
+		
+		return new File(dataDir, fileName);
+	}
+	private void insertClickLog(BufferedWriter writer, String timeId, String keyword, String productId, String clickType, String[] rawData) {
+		try {	
 			writer.append(timeId).append("\t") //시간
 			.append(keyword).append("\t") //키워드
 			.append(productId).append("\t") //상품id
 			.append(clickType).append("\n"); //클릭타입
-			
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			if(writer!=null) {
-				try {
-					writer.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
 		}
 	}
 
-	private void insertSearchLog(File baseDir, Calendar calendar, String data, boolean create) {
-		//System.out.println(data);
-		String[] rawData = data.split("\t");
-		BufferedWriter writer = null;
+	private void insertSearchLog(BufferedWriter rawLogWriter, BufferedWriter typeLogWriter, String[] rawData) {
 		try {
 			
-			File dateDir  = new File(baseDir, "date");
-			
-			int year = calendar.get(Calendar.YEAR);
-			int month = calendar.get(Calendar.MONTH) + 1;
-			int date = calendar.get(Calendar.DAY_OF_MONTH);
-			
-			dateDir = new File(dateDir, "Y"+(year<10?"0"+year:year));
-			dateDir = new File(dateDir, "M"+(month<10?"0"+month:month));
-			dateDir = new File(dateDir, "D"+(date<10?"0"+date:date));
-			
-			File dataDir = new File(dateDir, "data");
-			dataDir = new File(dataDir, rawData[0]);
-			
-			if(!dataDir.exists()) {
-				dataDir.mkdirs();
-			}
-			
-			File file = null;
-			
-			//raw log
-			file = new File(dataDir, "raw.log");
-			//System.out.println(file.getAbsolutePath());
-			if(create && file.exists()) {
-				System.out.println("deleting.."+file.getAbsolutePath());
-				file.delete();
-				writer = new BufferedWriter(new FileWriter(file));
-			} else {
-				writer = new BufferedWriter(new FileWriter(file, true));
-			}
-			writer.append(rawData[1]).append("\t").append(rawData[2]).append("\t")
+			rawLogWriter.append(rawData[1]).append("\t").append(rawData[2]).append("\t")
 				.append(rawData[3]).append("\t").append(rawData[4]).append("\t")
 				.append(rawData[5]).append("\t").append(rawData[6]).append("\t")
 				.append(rawData[7 + 4]); //서비스id 추가
-			writer.append("\n");
-			writer.flush();
+			rawLogWriter.append("\n");
+			rawLogWriter.flush();
 			
-			writer.close();
-			
-			//type log
-			file = new File(dataDir, "type_raw.log");
-			//System.out.println(file.getAbsolutePath());
-			if(create && file.exists()) {
-				System.out.println("deleting.."+file.getAbsolutePath());
-				file.delete();
-				writer = new BufferedWriter(new FileWriter(file));
-			} else {
-				writer = new BufferedWriter(new FileWriter(file, true));
-			}
-			
-			writer.append(rawData[1]).append("\t").append(rawData[2]).append("\t")
+			typeLogWriter.append(rawData[1]).append("\t").append(rawData[2]).append("\t")
 				.append(rawData[3]);
-			
 			//각 타입별 로그
 			for (int inx = 7; inx < rawData.length; inx++) {
-				writer.append("\t").append(rawData[inx]);
+				typeLogWriter.append("\t").append(rawData[inx]);
 			}
-			writer.append("\n");
-			writer.flush();
+			typeLogWriter.append("\n");
+			typeLogWriter.flush();
 			
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			if(writer!=null) {
-				try {
-					writer.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
 		}
 	}
 }

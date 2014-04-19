@@ -23,7 +23,7 @@
 	<select id="validateTable" parameterType="map" resultType="map">
 		select timeId, keyword, clickId, clickType, hit
 		from ${siteId}_click_target_hit_keyword
-		where categoryId = ''
+		where timeId = ''
 	</select>
 
 	<update id="dropTable" parameterType="map">

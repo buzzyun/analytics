@@ -13,6 +13,7 @@ import javax.xml.bind.JAXBException;
 import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig;
 import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.CategoryConfig;
 import org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.SiteCategoryConfig;
+import org.fastcatgroup.analytics.analysis.config.SiteListConfig;
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
@@ -63,6 +64,16 @@ public class StatisticsService extends AbstractService {
 		relateKeywordMap = new ConcurrentHashMap<String, Map<String, List<String>>>();
 
 		// 로드 siteCategoryConfig
+		
+		File siteConfigFile = new File(new File(environment.filePaths().file(),"conf"),"sites.xml");
+		try {
+			JAXBConfigs.readConfig(siteConfigFile, SiteListConfig.class);
+		} catch (JAXBException e) {
+			logger.error("", e);
+		}
+		
+		
+		
 		File siteCategoryConfigFile = new File(statisticsHome, "site-category.xml");
 		try {
 			siteCategoryListConfig = JAXBConfigs.readConfig(siteCategoryConfigFile, SiteCategoryListConfig.class);

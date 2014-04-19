@@ -29,7 +29,8 @@ public class GetServicePopularKeywordDumpAction extends ServiceAction {
 		String categoryId = request.getParameter("categoryId");
 		String fromDateStr = request.getParameter("from");
 		String toDateStr = request.getParameter("to");
-		int ln = request.getIntParameter("ln", 100);
+		int sn = request.getIntParameter("sn", 1);
+		int ln = request.getIntParameter("ln", 0);
 		String errorMessage = null;
 		File targetFile = null;
 		File tmpFile = null;
@@ -56,13 +57,16 @@ public class GetServicePopularKeywordDumpAction extends ServiceAction {
 			responseWriter.key("list").array();
 
 			int rank = 1;
-			for (String rline = null; (ln==0 || rank <= ln) && (rline = reader.readLine()) != null; rank++) {
+			for (String rline = null; (ln == 0 || rank <= (sn + ln))
+					&& (rline = reader.readLine()) != null; rank++) {
 				String [] data = rline.split("\t");
-				responseWriter.object();
-				responseWriter.key("rank").value(rank);
-				responseWriter.key("word").value(data[0].trim());
-				responseWriter.key("count").value(data[1].trim());
-				responseWriter.endObject();
+				if(rank >= sn)  {
+					responseWriter.object();
+					responseWriter.key("rank").value(rank);
+					responseWriter.key("word").value(data[0].trim());
+					responseWriter.key("count").value(data[1].trim());
+					responseWriter.endObject();
+				}
 			}
 			responseWriter.endArray();
 

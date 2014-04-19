@@ -61,7 +61,7 @@ public class NDaysClickKeywordHitCalculator extends Calculator<ClickLog> {
 			/*
 			 * 키워드별 type별 클릭대상별 클릭수.
 			 * */
-			KeyCountRunEntryParser clickTypeParser = new KeyCountRunEntryParser(new int[]{0, 1, 2}, 3 );
+			KeyCountRunEntryParser clickTypeParser = new KeyCountRunEntryParser(new int[]{0, 1}, 3 );
 			
 			MergeKeyCountProcessHandler mergeProcessHandler = new MergeKeyCountProcessHandler(clickLogFiles, workingDir, CLICK_TARGET_FILENAME, encoding, clickTypeParser);
 			//가중값배열.

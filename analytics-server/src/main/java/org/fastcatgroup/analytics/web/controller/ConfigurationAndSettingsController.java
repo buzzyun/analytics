@@ -166,20 +166,20 @@ public class ConfigurationAndSettingsController extends AbstractController {
 		
 		if("update".equals(mode)) {
 			categoryList.clear();
-			categoryList.add(new CategorySetting("_root","ALL",true,true,true));
+			categoryList.add(new CategorySetting("_root","ALL",false,false,false));
 			
 			int count = Integer.parseInt(request.getParameter("count"));
 			for (int inx = 1; inx <= count; inx++) {
 				String categoryIdGet = request.getParameter("categoryId"+inx);
 				String categoryNameGet = request.getParameter("categoryName"+inx);
 				if(categoryIdGet!=null && !"".equals(categoryIdGet)) {
-					categoryList.add(new CategorySetting(categoryIdGet, categoryNameGet, true,true,true));
+					categoryList.add(new CategorySetting(categoryIdGet, categoryNameGet, false,false,false));
 				}
 			}
 			statisticsService.writeConfig();
 		} else if("add".equals(mode)) {
 			boolean found = false;
-			CategorySetting categoryConfig = new CategorySetting(categoryId, categoryName, true,true,true);
+			CategorySetting categoryConfig = new CategorySetting(categoryId, categoryName, false,false,false);
 			for (int inx = 0; inx < categoryList.size(); inx++) {
 				if(categoryList.get(inx).getId().equals(categoryId)) {
 					categoryList.set(inx, categoryConfig);
@@ -188,7 +188,7 @@ public class ConfigurationAndSettingsController extends AbstractController {
 				}
 			}
 			if(!found) {
-				categoryList.add(new CategorySetting(categoryId, categoryName,true,true,true));
+				categoryList.add(new CategorySetting(categoryId, categoryName,false,false,false));
 			}
 			statisticsService.writeConfig();
 		} else if("remove".equals(mode)) {
@@ -216,7 +216,7 @@ public class ConfigurationAndSettingsController extends AbstractController {
 			if(!found) {
 				SiteSetting siteCategoryConfig = new SiteSetting(siteId, siteName);
 				List<CategorySetting> newCategoryList = new ArrayList<CategorySetting>();
-				newCategoryList.add(new CategorySetting("_root", "ALL",true,true,true));
+				newCategoryList.add(new CategorySetting("_root", "ALL",false,false,false));
 				StatisticsSettings statisticsSettings = new StatisticsSettings();
 				statisticsSettings.setCategoryList(newCategoryList);
 				siteCategoryConfig.setStatisticsSettings(statisticsSettings);

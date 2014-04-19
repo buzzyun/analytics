@@ -237,14 +237,6 @@ public class StatisticsService extends AbstractService {
 		return true;
 	}
 
-//	public CategoryStatistics categoryStatistics(String siteId, String categoryId) {
-//		Map<String, CategoryStatistics> map = categoryStatisticsMap.get(siteId);
-//		if(map!=null) {
-//			return map.get(categoryId);
-//		}
-//		return null;
-//	}
-
 	public void addLog(String type, String siteId, String... entries) {
 		// 현재 type은 사용되지 않음.
 		SiteSearchLogStatisticsModule module = siteStatisticsModuleMap.get(siteId);
@@ -336,5 +328,19 @@ public class StatisticsService extends AbstractService {
 		}
 		return list;
 	}
-
+	
+	public SiteSetting newDefaultSite(String id, String name) {
+		SiteSetting ret = new SiteSetting(id, name);
+		
+		
+		StatisticsSettings statisticsSettings = new StatisticsSettings();
+		statisticsSettings.setBanwords("");
+		List<CategorySetting> categoryList = new ArrayList<CategorySetting>();
+		categoryList.add(new CategorySetting("_root","ALL",false,false,false));
+		statisticsSettings.setCategoryList(categoryList);
+		statisticsSettings.setFileEncoding("utf-8");
+		
+		
+		return ret;
+	}
 }

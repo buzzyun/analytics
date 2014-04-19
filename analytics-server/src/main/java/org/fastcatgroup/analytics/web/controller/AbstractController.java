@@ -104,4 +104,31 @@ public class AbstractController {
 			response.setContentType("application/json; charset=" + responseCharset);
 		}
 	}
+	
+	public Integer getInt(String value, Integer defaultValue) {
+		try {
+			return Integer.parseInt(value.trim());
+		} catch (NullPointerException ignore) {
+		} catch (NumberFormatException ignore) {
+		}
+		return defaultValue;
+	}
+	
+	public String getString(Object obj, String defaultValue) {
+		try {
+			if(obj!=null) {
+				return String.valueOf(obj);
+			}
+		} catch (NullPointerException ignore) {
+		}
+		return defaultValue;
+	}
+	
+	public Boolean getBoolean(String bool, Boolean defaultValue) {
+		try {
+			return Boolean.valueOf(bool);
+		} catch (NullPointerException ignore) {
+		}
+		return defaultValue;
+	}
 }

@@ -1,12 +1,33 @@
 package org.fastcatgroup.analytics.web.controller;
 
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsService;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.CategorySetting;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ClickTypeSetting;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.PopularKeywordSetting;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.RealTimePopularKeywordSetting;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.RelateKeywordSetting;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ServiceSetting;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.SiteAttribute;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.TypeSetting;
 import org.fastcatgroup.analytics.control.JobService;
 import org.fastcatgroup.analytics.job.Job;
 import org.fastcatgroup.analytics.job.task.DailySearchLogAnalyticsTaskRunJob;
 import org.fastcatgroup.analytics.job.task.TestBulkLogAnalyticsTaskRunJob;
+import org.fastcatgroup.analytics.util.ResponseWriter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -108,13 +129,37 @@ public class ConfigurationMainController extends AbstractController {
 	public ModelAndView categorySetting(@PathVariable String siteId) throws Exception {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("configuration/settings/categorySetting");
+		StatisticsSettings statisticsSetting = getStatisticsService().getStatisticsSetting(siteId);
+		List<CategorySetting> categoryList = statisticsSetting.getCategoryList();
+		if(categoryList == null) { 
+			categoryList = new ArrayList<CategorySetting>();
+		}
+		mav.addObject("categoryList", categoryList);
 		return mav;
 	}
 	
-	@RequestMapping("/settings/keywordSetting")
+	@RequestMapping("/settings/siteSetting")
 	public ModelAndView keywordSetting(@PathVariable String siteId) throws Exception {
 		ModelAndView mav = new ModelAndView();
-		mav.setViewName("configuration/settings/keywordSetting");
+		mav.setViewName("configuration/settings/siteSetting");
+		StatisticsSettings statisticsSetting = getStatisticsService().getStatisticsSetting(siteId);
+		String banwords = statisticsSetting.getBanwords();
+		String fileEncoding = statisticsSetting.getFileEncoding();
+		PopularKeywordSetting popularKeywordSetting = statisticsSetting.getPopularKeywordSetting();
+		RelateKeywordSetting relateKeywordSetting = statisticsSetting.getRelateKeywordSetting();
+		RealTimePopularKeywordSetting realTimePopularKeywordSetting = statisticsSetting.getRealtimePopularKeywordSetting();
+		
+		if(banwords==null) { banwords = ""; }
+		if(fileEncoding==null) { fileEncoding = "utf-8"; }
+		if(popularKeywordSetting==null) { popularKeywordSetting = new PopularKeywordSetting(10,2); }
+		if(relateKeywordSetting==null) { relateKeywordSetting = new RelateKeywordSetting(2); }
+		if(realTimePopularKeywordSetting==null) { realTimePopularKeywordSetting = new RealTimePopularKeywordSetting(6,10,1); }
+		
+		mav.addObject("banWords", banwords);
+		mav.addObject("fileEncoding", fileEncoding);
+		mav.addObject("popularKeywordSetting",popularKeywordSetting);
+		mav.addObject("relateKeywordSetting",relateKeywordSetting);
+		mav.addObject("realTimePopularKeywordSetting",realTimePopularKeywordSetting);
 		return mav;
 	}
 	
@@ -122,6 +167,66 @@ public class ConfigurationMainController extends AbstractController {
 	public ModelAndView statisticsSetting(@PathVariable String siteId) throws Exception {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("configuration/settings/attributeSetting");
+		StatisticsSettings statisticsSetting = getStatisticsService().getStatisticsSetting(siteId);
+		SiteAttribute siteAttribute = statisticsSetting.getSiteAttribute();
+		
+		List<ClickTypeSetting> clickTypeList = siteAttribute.getClickTypeList();
+		List<ServiceSetting> serviceList = siteAttribute.getServiceList();
+		List<TypeSetting> typeList = siteAttribute.getTypeList();
+		
+		mav.addObject("clickTypeList", clickTypeList);
+		mav.addObject("serviceList", serviceList);
+		mav.addObject("typeList", typeList);
+		return mav;
+	}
+	
+	@RequestMapping("/settings/updateCategory")
+	public ModelAndView updateCategory(@PathVariable String siteId, HttpServletRequest request) throws Exception {
+		
+		ModelAndView mav = new ModelAndView();
+		
+		mav.setViewName("text");
+		
+		String mode = request.getParameter("mode");
+		
+		StatisticsSettings statisticsSetting = getStatisticsService().getStatisticsSetting(siteId);
+		List<CategorySetting> categoryList = null;
+		
+		if(statisticsSetting.getCategoryList()!=null) {
+			categoryList = statisticsSetting.getCategoryList();
+		} else {
+			categoryList = new ArrayList<CategorySetting>();
+		}
+		
+		Set<String> categoryIdSet = new HashSet<String>();
+		
+		Writer writer = new StringWriter();
+		ResponseWriter responseWriter = getDefaultResponseWriter(writer);
+		if("update".equals(mode)) {
+			categoryList.clear();
+			
+			int count = Integer.parseInt(request.getParameter("count"));
+			for (int inx = 0; inx < count; inx++) {
+				String categoryIdGet = getString(request.getParameter("categoryId"+inx),"");
+				String categoryNameGet = getString(request.getParameter("categoryName"+inx),"");
+				boolean useRealTimePopularKeyword = getBoolean(request.getParameter("useRealTimePopularKeyword"+inx), false);
+				boolean usePopularKeyword = getBoolean(request.getParameter("usePopularKeyword"+inx), false);
+				boolean useRelateKeyword = getBoolean(request.getParameter("useRelateKeyword"+inx), false);
+				if(categoryIdGet!=null && !"".equals(categoryIdGet)) {
+					categoryList.add(new CategorySetting(categoryIdGet, categoryNameGet, usePopularKeyword, useRelateKeyword, useRealTimePopularKeyword));
+					categoryIdSet.add(categoryIdGet);
+				}
+			}
+			if(!categoryIdSet.contains("_root")) {
+				categoryList.add(0, new CategorySetting("_root","ALL",false,false,false));
+			}
+			statisticsSetting.setCategoryList(categoryList);
+			getStatisticsService().writeConfig();
+		}
+		
+		responseWriter.object().key("success").value("true").key("status").value(1).endObject();
+		
+		mav.addObject("content", writer.toString());
 		return mav;
 	}
 }

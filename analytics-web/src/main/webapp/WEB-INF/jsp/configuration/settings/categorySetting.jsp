@@ -1,10 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@page import="org.json.*"%>
+<%@page import="org.json.*
+,java.util.List
+,org.fastcatgroup.analytics.analysis.config.StatisticsSettings.CategorySetting
+"%>
 
 <%
-	//JSONArray nodeList = (JSONArray) request.getAttribute("nodeList");
+List<CategorySetting> categoryList = (List<CategorySetting>)request.getAttribute("categoryList");
 %>
 <c:set var="ROOT_PATH" value="../.." />
 <c:import url="${ROOT_PATH}/inc/common.jsp" />
@@ -12,13 +15,116 @@
 <head>
 <c:import url="${ROOT_PATH}/inc/header.jsp" />
 
+<script type="text/javascript">
+
+$(document).ready(function() {
+	
+	$("form#category-form span.icon-minus-sign").parent("a.btn").click(function() {
+		var categoryId = /btn-remove-(.*)/.exec($(this).find("span").attr("id"))[1];
+		if(confirm("Category will remove. Are you OK?")) {
+			var form = $("form#category-form");
+// 			$.ajax({
+// 				url:"update-setting.html"
+// 				,type:"POST"
+// 				,data:{
+// 					mode:"remove"
+// 					,categoryId:categoryId
+// 				}, dataType:"json",
+// 				success:function(response) {
+// 					if(response["success"] == "true") {
+// 						location.href = location.href;
+// 					} else {
+// 			 			noty({text: "update failed !", layout:"topRight", timeout: 5000});
+// 					}
+// 				}, fail:function(response){
+// 				}
+// 			});
+		}
+	});
+	
+	
+	var addRowFunction = function(){
+		var tbody = $(this).parents("tbody");
+		var pivotTr = $(this).parents("tr");
+		var trTemplate = $("#schema_template tr");
+		var newTr = trTemplate.clone();
+		if(pivotTr.find("input").length > 0) {
+			pivotTr.after(newTr);
+		} else {
+			pivotTr.after(newTr);
+			pivotTr.remove();
+		}
+		var trFind = tbody.find("tr");
+		trFind.each(function() {
+			var newIndex = $.inArray(this, trFind);
+			$($(this).find("td")[0]).html(newIndex + 1);
+			$(this).find("input, select, textarea").each(function() {
+				var name = $(this).attr("name");
+				var key = /^([a-zA-Z0-9_-]+)[0-9]+/.exec(name)[1];
+				$(this).attr("name", key + newIndex);
+			});
+		});
+		newTr.find("span.icon-plus-sign").parent("a.btn").click(addRowFunction);
+	};
+	$("form#category-form span.icon-plus-sign").parent("a.btn").click(addRowFunction);
+	
+	$("div.form-actions input.btn-primary").click(function() {
+		updateCategory("category-form", "update");
+	});
+});
+
+function updateCategory(formId, mode) {
+	var form = $("#"+formId);
+	var valid = false;
+	if(mode == "remove") { 
+		valid = true; 
+	} else {
+		valid = form.valid();
+	}
+	
+	var data = {};
+	var tr = form.find("table tr");
+	for(var inx = 0 ; inx < tr.length ; inx++) {
+		var input = $(tr[inx]).find("input, select, textarea");
+		for(var inx2 = 0; inx2 < input.length ; inx2++) {
+			var name = input[inx2].name;
+			if(input[inx2].type=="checkbox") {
+				if(input[inx2].checked) {
+					data[name] = input[inx2].value;
+				}
+			} else {
+				data[name] = input[inx2].value;
+			}
+		}
+		data["count"] = inx;
+	}
+	data["mode"] = mode;
+	
+	if(valid) {
+		$.ajax({
+			url:"updateCategory.html",
+			type:"POST",
+			data:data, dataType:"json",
+			success:function(response) {
+				if(response["success"] == "true") {
+					location.href = location.href;
+				} else {
+		 			noty({text: "update failed !", layout:"topRight", timeout: 5000});
+				}
+			}, fail:function(response){
+			}
+		});
+	}
+}
+</script>
+
 </head>
 <body>
 	<c:import url="${ROOT_PATH}/inc/mainMenu.jsp" />
 	<div id="container">
-		<c:import url="${ROOT_PATH}/manager/sideMenu.jsp">
-			<c:param name="lcat" value="statistics" />
-			<c:param name="mcat" value="settings" />
+		<c:import url="${ROOT_PATH}/configuration/sideMenu.jsp">
+			<c:param name="lcat" value="settings" />
+			<c:param name="mcat" value="categorySetting" />
 		</c:import>
 		<div id="content">
 			<div class="container">
@@ -26,8 +132,8 @@
 				<div class="crumbs">
 					<ul id="breadcrumbs" class="breadcrumb">
 						<li><i class="icon-home"></i> Manager</li>
-						<li> Statistics</li>
-						<li class="current"> Settings</li>
+						<li> Settings</li>
+						<li class="current"> Category Settings</li>
 					</ul>
 
 				</div>
@@ -36,185 +142,82 @@
 				<!--=== Page Header ===-->
 				<div class="page-header">
 					<div class="page-title">
-						<h3>Settings</h3>
+						<h3>Category Settings</h3>
 					</div>
 				</div>
 				<!-- /Page Header -->
 
 				<div class="widget">
-					<div class="widget-header">
-						<h4>Category Settings</h4>
-					</div>
-					
 					<div class="widget-content">
-						<div class="bottom-space-sm"><a href="javascript:void(0);" data-toggle="modal" data-target="#newServerInfoModal" >
-						<span class="icon-plus-sign"></span> Add Category</a></div>
+						<form class="form-horizontal" role="form" id="category-form">
 						<table class="table table-hover table-bordered table-vertical-align-middle">
 							<thead>
 								<tr>
 									<th>#</th>
 									<th>Category ID</th>
 									<th>Name</th>
-									<th>Make Realtime Popular Keyword</th>
-									<th>Make Popular Keyword</th>
-									<th>Make Relate Keyword</th>
+									<th>Use Realtime Popular Keyword</th>
+									<th>Use Popular Keyword</th>
+									<th>Use Relate Keyword</th>
 									<th></th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr>
-									<td>1</td>
-									<td>ROOT</td>
-									<td>ROOT</td>
-									<td><label>Yes</label></td>
-									<td><label>Yes</label></td>
-									<td><label>Yes</label></td>
-									<td></td>
-								</tr>
-								<tr>
-									<td>2</td>
-									<td>total</td>
-									<td>통합검색</td>
-									<td><label>Yes</label></td>
-									<td><label>Yes</label></td>
-									<td><label>Yes</label></td>
-									<td><a data-toggle="modal" data-target="#categoryEditModal_" href="javascript:void(0);">Edit</a></td>
-								</tr>
-								<tr>
-									<td>3</td>
-									<td>mobile</td>
-									<td>모바일 검색</td>
-									<td><label>Yes</label></td>
-									<td><label>Yes</label></td>
-									<td><label>Yes</label></td>
-									<td><a data-toggle="modal" data-target="#categoryEditModal_" href="javascript:void(0);">Edit</a></td>
-								</tr>
-							<%-- <%
-							for(int i=0; i < nodeList.length(); i++){
-								String id = nodeList.getJSONObject(i).getString("id");
-								String name = nodeList.getJSONObject(i).getString("name");
-								String host = nodeList.getJSONObject(i).getString("host");
-								int port = nodeList.getJSONObject(i).getInt("port");
-								boolean enabled = nodeList.getJSONObject(i).getBoolean("enabled");
-								boolean active = nodeList.getJSONObject(i).getBoolean("active");
-								
-								String enabledStatus = enabled ? "<span class=\"text-primary\">Enabled</span>" : "<span class=\"text-danger\">Disabled</span>";
-								String activeStatus = active ? "<span class=\"text-primary\">Active</span>" : "<span class=\"text-danger\">InActive</span>";
+							<%
+							for(int cateInx=0; cateInx < categoryList.size();cateInx++) {
+								CategorySetting categorySetting = categoryList.get(cateInx);
 							%>
 								<tr>
-									<td><%=i+1 %></td>
-									<td><strong><%=id %></strong></td>
-									<td><%=name %></td>
-									<td><%=host %></td>
-									<td><%=port %></td>
-									<td><%=enabledStatus %></td>
-									<td><%=activeStatus %></td>
-									<td><a data-toggle="modal" data-target="#serverInfoModal_<%=i %>" href="javascript:void(0);">Edit</a></td>
+									<td><%=cateInx + 1 %></td>
+									<td><input class="form-control" type="text" name="categoryId<%=cateInx %>" value="<%=categorySetting.getId() %>" <%=cateInx==0?"readonly":"" %>/></td>
+									<td><input class="form-control" type="text" name="categoryName<%=cateInx %>" value="<%=categorySetting.getName() %>"/></td>
+									<td><input class="form-control" type="checkbox" name="useRealTimePopularKeyword<%=cateInx%>" value="true" <%=categorySetting.isUseRealTimePopularKeyword()?"checked":"" %>/></td>
+									<td><input class="form-control" type="checkbox" name="usePopularKeyword<%=cateInx%>" value="true" <%=categorySetting.isUsePopularKeyword()?"checked":"" %>/></td>
+									<td><input class="form-control" type="checkbox" name="useRelateKeyword<%=cateInx%>" value="true" <%=categorySetting.isUseRelateKeyword()?"checked":"" %>/></td>
+									<td>
+									<% 
+									if(cateInx > 0) { 
+									%>
+										<a class="btn btn-sm" href="javascript:{}">
+											<span class="icon-plus-sign" id="btn-add-<%=cateInx%>"></span>
+										</a>
+										<a class="btn btn-sm" href="javascript:{}">
+											<span class="icon-minus-sign text-danger" id="btn-remove-<%=cateInx%>"></span>
+										</a>
+									<%
+									}
+									%>
+									</td>
 								</tr>
 							<%
 							}
-							%> --%>
+							%>
 							</tbody>
+						</table>
+						</form>
+						<table class="hidden" id="schema_template">
+							<tr>
+								<td></td>
+								<td><input class="form-control" type="text" name="categoryId0" value=""/></td>
+								<td><input class="form-control" type="text" name="categoryName0" value=""/></td>
+								<td><input class="form-control" type="checkbox" name="useRealTimePopularKeyword0" value="true"/></td>
+								<td><input class="form-control" type="checkbox" name="usePopularKeyword0" value="true"/></td>
+								<td><input class="form-control" type="checkbox" name="useRelateKeyword0" value="true"/></td>
+								<td>
+									<a class="btn btn-sm" href="javascript:{}">
+										<span class="icon-plus-sign"></span>
+									</a>
+									<a class="btn btn-sm" href="javascript:{}">
+										<span class="icon-minus-sign text-danger"></span>
+									</a>
+								</td>
+							</tr>
 						</table>
 					</div>
 				</div>
 				
-				<div class="widget">
-					<div class="widget-header">
-						<h4>Common Settings</h4>
-					</div>
-					<div class="widget-content">
-						<div class="row">
-							<div class="col-md-12 form-horizontal">
-								<div class="form-group">
-									<label class="col-md-2 control-label">Banwords:</label>
-									<div class="col-md-10"><textarea placeholder="word#1, word#2, ..." style="width:100%"></textarea></div>
-								</div>
-								<div class="form-group">
-									<label class="col-md-2 control-label">File Encoding:</label>
-									<div class="col-md-10"><input class="form-control fcol2" name="fileEncoding" value="utf-8"/></div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				
-				<div class="widget">
-					<div class="widget-header">
-						<h4>Realtime Popular Keyword</h4>
-					</div>
-					<div class="widget-content">
-						<div class="row">
-							<div class="col-md-12 form-horizontal">
-								<div class="form-group">
-									<label class="col-md-2 control-label">Minimum Hit Count:</label>
-									<div class="col-md-10"><input type="text" name="" class="form-control digits required fcol1-1" value="5">
-									<p class="help-block">If keyword hit count is smaller than this, it's ignored.</p>
-									</div>
-								</div>
-								<div class="form-group">
-									<label class="col-md-2 control-label">Recent Log Using Size:</label>
-									<div class="col-md-10"><input type="text" name="" class="form-control digits required fcol1-1" value="6">
-									<p class="help-block">When aggregating keyword count with previos logs, this value set how many previous logs envolved.</p>
-									</div>
-									
-								</div>
-								<div class="form-group">
-									<label class="col-md-2 control-label">TopN Store Size:</label>
-									<div class="col-md-10"><input type="text" name="" class="form-control digits required fcol1-1" value="1000">
-									<p class="help-block">How many top keywords to store.</p>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				
-				<div class="widget">
-					<div class="widget-header">
-						<h4>Popular Keyword</h4>
-					</div>
-					<div class="widget-content">
-						<div class="row">
-							<div class="col-md-12 form-horizontal">
-								<div class="form-group">
-									<label class="col-md-2 control-label">Minimum Hit Count:</label>
-									<div class="col-md-10"><input type="text" name="" class="form-control digits required fcol1-1" value="5">
-									<p class="help-block">If keyword hit count is smaller than this, it's ignored.</p>
-									</div>
-								</div>
-								<div class="form-group">
-									<label class="col-md-2 control-label">TopN Store Size:</label>
-									<div class="col-md-10"><input type="text" name="" class="form-control digits required fcol1-1" value="1000">
-									<p class="help-block">How many top keywords to store.</p>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				
-				
-				<div class="widget">
-					<div class="widget-header">
-						<h4>Relate Keyword</h4>
-					</div>
-					<div class="widget-content">
-						<div class="row">
-							<div class="col-md-12 form-horizontal">
-								<div class="form-group">
-									<label class="col-md-2 control-label">Minimum Hit Count:</label>
-									<div class="col-md-10"><input type="text" name="" class="form-control digits required fcol1-1" value="3">
-									<p class="help-block">If keyword hit count is smaller than this, it's ignored.</p>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				
 				<div class="form-actions">
-					<input type="submit" value="Update Settings" class="btn btn-primary pull-right">
+					<input type="button" value="Update Settings" class="btn btn-primary pull-right">
 				</div>
 				<!-- /Page Content -->
 			</div>

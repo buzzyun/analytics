@@ -16,9 +16,9 @@
 <body>
 	<c:import url="${ROOT_PATH}/inc/mainMenu.jsp" />
 	<div id="container">
-		<c:import url="${ROOT_PATH}/manager/sideMenu.jsp">
-			<c:param name="lcat" value="statistics" />
-			<c:param name="mcat" value="settings" />
+		<c:import url="${ROOT_PATH}/configuration/sideMenu.jsp">
+			<c:param name="lcat" value="settings" />
+			<c:param name="mcat" value="attributeSetting" />
 		</c:import>
 		<div id="content">
 			<div class="container">
@@ -36,15 +36,12 @@
 				<!--=== Page Header ===-->
 				<div class="page-header">
 					<div class="page-title">
-						<h3>Settings</h3>
+						<h3>Attribute Settings</h3>
 					</div>
 				</div>
 				<!-- /Page Header -->
 
 				<div class="widget">
-					<div class="widget-header">
-						<h4>Category Settings</h4>
-					</div>
 					
 					<div class="widget-content">
 						<div class="bottom-space-sm"><a href="javascript:void(0);" data-toggle="modal" data-target="#newServerInfoModal" >
@@ -116,100 +113,6 @@
 							%> --%>
 							</tbody>
 						</table>
-					</div>
-				</div>
-				
-				<div class="widget">
-					<div class="widget-header">
-						<h4>Common Settings</h4>
-					</div>
-					<div class="widget-content">
-						<div class="row">
-							<div class="col-md-12 form-horizontal">
-								<div class="form-group">
-									<label class="col-md-2 control-label">Banwords:</label>
-									<div class="col-md-10"><textarea placeholder="word#1, word#2, ..." style="width:100%"></textarea></div>
-								</div>
-								<div class="form-group">
-									<label class="col-md-2 control-label">File Encoding:</label>
-									<div class="col-md-10"><input class="form-control fcol2" name="fileEncoding" value="utf-8"/></div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				
-				<div class="widget">
-					<div class="widget-header">
-						<h4>Realtime Popular Keyword</h4>
-					</div>
-					<div class="widget-content">
-						<div class="row">
-							<div class="col-md-12 form-horizontal">
-								<div class="form-group">
-									<label class="col-md-2 control-label">Minimum Hit Count:</label>
-									<div class="col-md-10"><input type="text" name="" class="form-control digits required fcol1-1" value="5">
-									<p class="help-block">If keyword hit count is smaller than this, it's ignored.</p>
-									</div>
-								</div>
-								<div class="form-group">
-									<label class="col-md-2 control-label">Recent Log Using Size:</label>
-									<div class="col-md-10"><input type="text" name="" class="form-control digits required fcol1-1" value="6">
-									<p class="help-block">When aggregating keyword count with previos logs, this value set how many previous logs envolved.</p>
-									</div>
-									
-								</div>
-								<div class="form-group">
-									<label class="col-md-2 control-label">TopN Store Size:</label>
-									<div class="col-md-10"><input type="text" name="" class="form-control digits required fcol1-1" value="1000">
-									<p class="help-block">How many top keywords to store.</p>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				
-				<div class="widget">
-					<div class="widget-header">
-						<h4>Popular Keyword</h4>
-					</div>
-					<div class="widget-content">
-						<div class="row">
-							<div class="col-md-12 form-horizontal">
-								<div class="form-group">
-									<label class="col-md-2 control-label">Minimum Hit Count:</label>
-									<div class="col-md-10"><input type="text" name="" class="form-control digits required fcol1-1" value="5">
-									<p class="help-block">If keyword hit count is smaller than this, it's ignored.</p>
-									</div>
-								</div>
-								<div class="form-group">
-									<label class="col-md-2 control-label">TopN Store Size:</label>
-									<div class="col-md-10"><input type="text" name="" class="form-control digits required fcol1-1" value="1000">
-									<p class="help-block">How many top keywords to store.</p>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				
-				
-				<div class="widget">
-					<div class="widget-header">
-						<h4>Relate Keyword</h4>
-					</div>
-					<div class="widget-content">
-						<div class="row">
-							<div class="col-md-12 form-horizontal">
-								<div class="form-group">
-									<label class="col-md-2 control-label">Minimum Hit Count:</label>
-									<div class="col-md-10"><input type="text" name="" class="form-control digits required fcol1-1" value="3">
-									<p class="help-block">If keyword hit count is smaller than this, it's ignored.</p>
-									</div>
-								</div>
-							</div>
-						</div>
 					</div>
 				</div>
 				

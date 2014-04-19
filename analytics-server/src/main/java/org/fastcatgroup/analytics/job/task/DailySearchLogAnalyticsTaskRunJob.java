@@ -167,13 +167,6 @@ public class DailySearchLogAnalyticsTaskRunJob extends Job {
 				
 				currentDay.add(Calendar.DAY_OF_MONTH, 1);
 				
-				while(taskRunner.queueSize() > 0) {
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException ignore) { 
-						break;
-					}
-				}
 			}
 		}
 		

@@ -94,7 +94,10 @@ public class ConfigurationAndSettingsController extends AbstractController {
 					currentSiteId = config.getId();
 					currentSiteName = config.getName();
 					currentSiteConfig = config;
-					categoryList = currentSiteConfig.getStatisticsSettings().getCategoryList();
+					
+					if(currentSiteConfig.getStatisticsSettings()!=null) {
+						categoryList = currentSiteConfig.getStatisticsSettings().getCategoryList();
+					}
 				}
 			}
 		} else {
@@ -203,6 +206,7 @@ public class ConfigurationAndSettingsController extends AbstractController {
 			String siteIdNew = request.getParameter("siteIdNew");
 			currentSiteConfig.setId(siteIdNew);
 			currentSiteConfig.setName(siteName);
+			
 			statisticsService.writeConfig();
 		} else if("addSite".equals(mode)) {
 			boolean found = false;
@@ -214,14 +218,7 @@ public class ConfigurationAndSettingsController extends AbstractController {
 			}
 			
 			if(!found) {
-				SiteSetting siteCategoryConfig = new SiteSetting(siteId, siteName);
-				List<CategorySetting> newCategoryList = new ArrayList<CategorySetting>();
-				newCategoryList.add(new CategorySetting("_root", "ALL",false,false,false));
-				StatisticsSettings statisticsSettings = new StatisticsSettings();
-				statisticsSettings.setCategoryList(newCategoryList);
-				siteCategoryConfig.setStatisticsSettings(statisticsSettings);
-				
-				siteList.add(siteCategoryConfig);
+				siteList.add(statisticsService.newDefaultSite(siteId, siteName));
 				statisticsService.writeConfig();
 			}
 		} else if("removeSite".equals(mode)) {

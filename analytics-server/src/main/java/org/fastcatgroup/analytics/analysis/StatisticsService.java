@@ -73,6 +73,7 @@ public class StatisticsService extends AbstractService {
 			for(SiteSetting siteSetting : siteList) {
 				String siteId = siteSetting.getId();
 				File statisticsFile = new File(confSiteDir, siteSetting.getId()+".xml");
+				
 				StatisticsSettings statisticsSettings = JAXBConfigs.readConfig(statisticsFile, StatisticsSettings.class);
 				siteSetting.setStatisticsSettings(statisticsSettings);
 				
@@ -97,6 +98,8 @@ public class StatisticsService extends AbstractService {
 		
 		List<SiteSetting> siteList = siteListSetting.getSiteList();
 		
+		logger.debug("siteList:{}", siteList);
+		
 		File[] statisticsFiles = new File[siteList.size()];
 		for (int inx = 0; inx < siteList.size(); inx++) {
 			statisticsFiles[inx] = new File(confSiteDir, siteList.get(inx).getId()+".xml");
@@ -105,13 +108,13 @@ public class StatisticsService extends AbstractService {
 		try {
 			JAXBConfigs.writeConfig(siteConfigFile, siteListSetting, SiteListSetting.class);
 		} catch (JAXBException e) {
-			logger.error("", e);
+			logger.error("error writing:{}", siteConfigFile, e);
 		}
 		for(int inx=0;inx<siteList.size();inx++) {
 			try {
-				JAXBConfigs.writeConfig(statisticsFiles[inx], siteList.get(inx), StatisticsSettings.class);
+				JAXBConfigs.writeConfig(statisticsFiles[inx], siteList.get(inx).getStatisticsSettings(), StatisticsSettings.class);
 			} catch (JAXBException e) {
-				logger.error("", e);
+				logger.error("error writing:{} / {}", statisticsFiles[inx], siteList.get(inx), e);
 			}
 		}
 	}
@@ -339,6 +342,12 @@ public class StatisticsService extends AbstractService {
 	public SiteSetting newDefaultSite(String id, String name) {
 		//초기 사이트 구축시 입력되는 기본 데이터
 		SiteSetting ret = new SiteSetting(id, name);
+		StatisticsSettings statisticsSettings  = newDefaultStatistics();
+		ret.setStatisticsSettings(statisticsSettings);
+		return ret;
+	}
+	
+	public StatisticsSettings newDefaultStatistics() {
 		StatisticsSettings statisticsSettings = new StatisticsSettings();
 		//금지어
 		statisticsSettings.setBanwords("");
@@ -371,7 +380,6 @@ public class StatisticsService extends AbstractService {
 		siteAttribute.setTypeList(typeList);
 		statisticsSettings.setSiteAttribute(siteAttribute);
 		
-		ret.setStatisticsSettings(statisticsSettings);
-		return ret;
+		return statisticsSettings;
 	}
 }

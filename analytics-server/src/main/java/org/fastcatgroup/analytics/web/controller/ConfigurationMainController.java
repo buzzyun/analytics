@@ -4,16 +4,13 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
-import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.CategorySetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ClickTypeSetting;
@@ -273,6 +270,79 @@ public class ConfigurationMainController extends AbstractController {
 			statisticsSetting.setRealtimePopularKeywordSetting(realtimePopularKeywordSetting);
 			statisticsSetting.setPopularKeywordSetting(popularKeywordSetting);
 			statisticsSetting.setRelateKeywordSetting(relateKeywordSetting);			
+			
+			getStatisticsService().writeConfig();
+		}
+		
+		responseWriter.object().key("success").value("true").key("status").value(1).endObject();
+		
+		mav.addObject("content", writer.toString());
+		return mav;
+	}
+	
+	@RequestMapping("/settings/updateAttribute")
+	public ModelAndView updateAttribute(@PathVariable String siteId, HttpServletRequest request) throws Exception {
+		
+		ModelAndView mav = new ModelAndView();
+		
+		mav.setViewName("text");
+		
+		String mode = request.getParameter("mode");
+		
+		StatisticsSettings statisticsSetting = getStatisticsService().getStatisticsSetting(siteId);
+		SiteAttribute siteAttribute = statisticsSetting.getSiteAttribute();
+		
+		List<TypeSetting> typeList = new ArrayList<TypeSetting>();
+		List<ServiceSetting> serviceList = new ArrayList<ServiceSetting>();
+		List<ClickTypeSetting> clickTypeList = new ArrayList<ClickTypeSetting>();
+		
+		Writer writer = new StringWriter();
+		ResponseWriter responseWriter = getDefaultResponseWriter(writer);
+		if("update".equals(mode)) {
+			
+			int count = Integer.parseInt(request.getParameter("count"));
+			
+			//type 속성 업데이트
+			for (int inx = 0; inx < count; inx++) {
+				String typeIdGet = request.getParameter("typeId"+inx);
+				String typeNameGet = getString(request.getParameter("typeName"+inx),"");
+				Boolean isPrime = getBoolean(request.getParameter("typePrime"+inx),false);
+				if(typeIdGet!=null) {
+					logger.trace("typeId:{}/typeName:{}/isPrime:{}", typeIdGet, typeNameGet, isPrime);
+					typeList.add(new TypeSetting(typeIdGet,typeNameGet,isPrime));
+				} else {
+					break;
+				}
+			}
+			
+			//service 속성 업데이트
+			for (int inx = 0; inx < count; inx++) {
+				String serviceIdGet = request.getParameter("serviceId"+inx);
+				String serviceNameGet = getString(request.getParameter("serviceName"+inx),"");
+				Boolean isPrime = (inx == getInt(request.getParameter("servicePrimeIndex"), -1));
+				if(serviceIdGet!=null) {
+					logger.trace("serviceId:{}/serviceName:{}/isPrime:{}", serviceIdGet, serviceNameGet, isPrime);
+					serviceList.add(new ServiceSetting(serviceIdGet,serviceNameGet,isPrime));
+				} else {
+					break;
+				}
+			}
+			
+			//click-type 속성 업데이트
+			for (int inx = 0; inx < count; inx++) {
+				String clickTypeIdGet = request.getParameter("clickTypeId"+inx);
+				String clickTypeNameGet = getString(request.getParameter("clickTypeName"+inx),"");
+				if(clickTypeIdGet!=null) {
+					logger.trace("clickTypeId:{}/clickTypeName:{}", clickTypeIdGet, clickTypeNameGet);
+					clickTypeList.add(new ClickTypeSetting(clickTypeIdGet,clickTypeNameGet));
+				} else {
+					break;
+				}
+			}
+			
+			siteAttribute.setTypeList(typeList);
+			siteAttribute.setServiceList(serviceList);
+			siteAttribute.setClickTypeList(clickTypeList);
 			
 			getStatisticsService().writeConfig();
 		}

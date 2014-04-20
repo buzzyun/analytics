@@ -203,34 +203,40 @@ public class StatisticsSettings {
 	}
 	
 	@XmlType public static class TypeSetting extends IdNameSetting {
-		private Boolean primary;
+		private Boolean prime;
 		public TypeSetting() { }
-		public TypeSetting(String id, String name, Boolean primary) { 
+		public TypeSetting(String id, String name, Boolean prime) { 
 			super(id, name); 
-			this.setPrimary(primary);
+			this.setPrime(prime);
 		}
-		@XmlAttribute(name = "isPrimary")
-		public Boolean getPrimary() {
-			return primary;
+		@XmlAttribute(name = "isPrime")
+		public boolean isPrime() {
+			if(prime!=null) {
+				return prime;
+			}
+			return false;
 		}
-		public void setPrimary(Boolean primary) {
-			this.primary = primary;
+		public void setPrime(Boolean prime) {
+			this.prime = prime;
 		}
 	}
 	
 	@XmlType public static class ServiceSetting extends IdNameSetting {
-		private Boolean primary;
+		private Boolean prime;
 		public ServiceSetting() { }
-		public ServiceSetting(String id, String name, Boolean primary) { 
+		public ServiceSetting(String id, String name, Boolean prime) { 
 			super(id, name); 
-			this.setPrimary(primary);
+			this.setPrime(prime);
 		}
-		@XmlAttribute(name = "isPrimary")
-		public Boolean getPrimary() {
-			return primary;
+		@XmlAttribute(name = "isPrime")
+		public boolean isPrime() {
+			if(prime!=null) {
+				return prime;
+			}
+			return false;
 		}
-		public void setPrimary(Boolean primary) {
-			this.primary = primary;
+		public void setPrime(Boolean prime) {
+			this.prime = prime;
 		}
 	}
 	

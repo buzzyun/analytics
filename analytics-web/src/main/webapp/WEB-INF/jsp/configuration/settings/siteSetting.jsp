@@ -19,7 +19,45 @@ RealTimePopularKeywordSetting realTimeKeywords = (RealTimePopularKeywordSetting)
 <html>
 <head>
 <c:import url="${ROOT_PATH}/inc/header.jsp" />
-
+<script type="text/javascript">
+$(document).ready(function() {
+	$("div.form-actions input.btn").click(function() {
+		var form=$("form#setting-form");
+		valid = form.valid();
+		if(valid) {
+			var data = {};
+			var input = form.find("input, select, textarea");
+			for(var inx = 0; inx < input.length ; inx++) {
+				var name = input[inx].name;
+				if(input[inx].type=="checkbox") {
+					if(input[inx].checked) {
+						data[name] = input[inx].value;
+					}
+				} else {
+					data[name] = input[inx].value;
+				}
+				data["mode"]="update";
+			}
+			$.ajax({
+				url:"updateSetting.html",
+				type:"POST",
+				data:data, dataType:"json",
+				success:function(response) {
+					if(response["success"] == "true") {
+			 			noty({text: "update success !", layout:"topRight"});
+			 			setTimeout(function() {
+							location.href = location.href;
+			 			},1000);
+					} else {
+			 			noty({text: "update failed !", layout:"topRight", timeout: 5000});
+					}
+				}, fail:function(response){
+				}
+			});
+		}
+	});
+});
+</script>
 </head>
 <body>
 	<c:import url="${ROOT_PATH}/inc/mainMenu.jsp" />
@@ -58,7 +96,7 @@ RealTimePopularKeywordSetting realTimeKeywords = (RealTimePopularKeywordSetting)
 							<div class="col-md-12 form-horizontal">
 								<div class="form-group">
 									<label class="col-md-2 control-label">Banwords:</label>
-									<div class="col-md-10"><textarea class="form-control" placeholder="word#1, word#2, ..." style="width:100%"><%=banWords %></textarea></div>
+									<div class="col-md-10"><textarea class="form-control" name="banWords" placeholder="word#1, word#2, ..." style="width:100%"><%=banWords %></textarea></div>
 								</div>
 								<div class="form-group">
 									<label class="col-md-2 control-label">File Encoding:</label>
@@ -78,20 +116,20 @@ RealTimePopularKeywordSetting realTimeKeywords = (RealTimePopularKeywordSetting)
 							<div class="col-md-12 form-horizontal">
 								<div class="form-group">
 									<label class="col-md-2 control-label">Minimum Hit Count:</label>
-									<div class="col-md-10"><input type="text" name="" class="form-control digits required fcol1-1" value="<%=realTimeKeywords.getMinimumHitCount()%>">
+									<div class="col-md-10"><input type="text" name="realTimeKeywordMinimumHit" class="form-control digits required fcol1-1" value="<%=realTimeKeywords.getMinimumHitCount()%>">
 									<p class="help-block">If keyword hit count is smaller than this, it's ignored.</p>
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-md-2 control-label">Recent Log Using Size:</label>
-									<div class="col-md-10"><input type="text" name="" class="form-control digits required fcol1-1" value="<%=realTimeKeywords.getRecentCount()%>">
+									<div class="col-md-10"><input type="text" name="realTimeKeywordRecentLog" class="form-control digits required fcol1-1" value="<%=realTimeKeywords.getRecentCount()%>">
 									<p class="help-block">When aggregating keyword count with previos logs, this value set how many previous logs envolved.</p>
 									</div>
 									
 								</div>
 								<div class="form-group">
 									<label class="col-md-2 control-label">TopN Store Size:</label>
-									<div class="col-md-10"><input type="text" name="" class="form-control digits required fcol1-1" value="<%=realTimeKeywords.getTopCount()%>">
+									<div class="col-md-10"><input type="text" name="realTimeKeywordTopSize" class="form-control digits required fcol1-1" value="<%=realTimeKeywords.getTopCount()%>">
 									<p class="help-block">How many top keywords to store.</p>
 									</div>
 								</div>
@@ -109,13 +147,13 @@ RealTimePopularKeywordSetting realTimeKeywords = (RealTimePopularKeywordSetting)
 							<div class="col-md-12 form-horizontal">
 								<div class="form-group">
 									<label class="col-md-2 control-label">Minimum Hit Count:</label>
-									<div class="col-md-10"><input type="text" name="" class="form-control digits required fcol1-1" value="<%=popularKeywords.getMinimumHitCount()%>">
+									<div class="col-md-10"><input type="text" name="popularKeywordMinimumHit" class="form-control digits required fcol1-1" value="<%=popularKeywords.getMinimumHitCount()%>">
 									<p class="help-block">If keyword hit count is smaller than this, it's ignored.</p>
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-md-2 control-label">TopN Store Size:</label>
-									<div class="col-md-10"><input type="text" name="" class="form-control digits required fcol1-1" value="<%=popularKeywords.getTopCount()%>">
+									<div class="col-md-10"><input type="text" name="popularKeywordTopSize" class="form-control digits required fcol1-1" value="<%=popularKeywords.getTopCount()%>">
 									<p class="help-block">How many top keywords to store.</p>
 									</div>
 								</div>
@@ -134,7 +172,7 @@ RealTimePopularKeywordSetting realTimeKeywords = (RealTimePopularKeywordSetting)
 							<div class="col-md-12 form-horizontal">
 								<div class="form-group">
 									<label class="col-md-2 control-label">Minimum Hit Count:</label>
-									<div class="col-md-10"><input type="text" name="" class="form-control digits required fcol1-1" value="<%=relateKeywords.getMinimumHitCount()%>">
+									<div class="col-md-10"><input type="text" name="relateKeywordMinimumHit" class="form-control digits required fcol1-1" value="<%=relateKeywords.getMinimumHitCount()%>">
 									<p class="help-block">If keyword hit count is smaller than this, it's ignored.</p>
 									</div>
 								</div>
@@ -145,7 +183,7 @@ RealTimePopularKeywordSetting realTimeKeywords = (RealTimePopularKeywordSetting)
 				</form>
 				
 				<div class="form-actions">
-					<input type="submit" value="Update Settings" class="btn btn-primary pull-right">
+					<input type="submit" value="Update Settings" class="btn btn-primary pull-right"/>
 				</div>
 				<!-- /Page Content -->
 			</div>

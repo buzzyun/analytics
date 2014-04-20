@@ -182,18 +182,18 @@ function updateCategory(formId, mode) {
 									<td><input class="form-control" type="checkbox" name="usePopularKeyword<%=cateInx%>" value="true" <%=categorySetting.isUsePopularKeyword()?"checked":"" %>/></td>
 									<td><input class="form-control" type="checkbox" name="useRelateKeyword<%=cateInx%>" value="true" <%=categorySetting.isUseRelateKeyword()?"checked":"" %>/></td>
 									<td>
-									<% 
-									if(cateInx > 0) { 
-									%>
 										<a class="btn btn-sm" href="javascript:{}">
 											<span class="icon-plus-sign" id="btn-add-<%=cateInx%>"></span>
 										</a>
+										<% 
+										if(cateInx > 0) { 
+										%>
 										<a class="btn btn-sm" href="javascript:{}">
 											<span class="icon-minus-sign text-danger" id="btn-remove-<%=cateInx%>"></span>
 										</a>
-									<%
-									}
-									%>
+										<%
+										}
+										%>
 									</td>
 								</tr>
 							<%

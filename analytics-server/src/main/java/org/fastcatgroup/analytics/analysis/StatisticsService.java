@@ -98,7 +98,7 @@ public class StatisticsService extends AbstractService {
 		
 		List<SiteSetting> siteList = siteListSetting.getSiteList();
 		
-		logger.debug("siteList:{}", siteList);
+		logger.trace("siteList:{}", siteList);
 		
 		File[] statisticsFiles = new File[siteList.size()];
 		for (int inx = 0; inx < siteList.size(); inx++) {

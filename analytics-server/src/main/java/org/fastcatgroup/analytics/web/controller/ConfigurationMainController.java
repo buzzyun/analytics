@@ -238,4 +238,48 @@ public class ConfigurationMainController extends AbstractController {
 		mav.addObject("content", writer.toString());
 		return mav;
 	}
+	
+	@RequestMapping("/settings/updateSetting")
+	public ModelAndView updateSetting(@PathVariable String siteId,
+			@RequestParam String mode,
+			@RequestParam String banWords,
+			@RequestParam String fileEncoding,
+			@RequestParam Integer realTimeKeywordMinimumHit,
+			@RequestParam Integer realTimeKeywordRecentLog,
+			@RequestParam Integer realTimeKeywordTopSize,
+			@RequestParam Integer popularKeywordMinimumHit,
+			@RequestParam Integer popularKeywordTopSize,
+			@RequestParam Integer relateKeywordMinimumHit
+			) throws Exception {
+		
+		ModelAndView mav = new ModelAndView();
+		
+		mav.setViewName("text");
+		
+		StatisticsSettings statisticsSetting = getStatisticsService().getStatisticsSetting(siteId);
+		
+		Writer writer = new StringWriter();
+		ResponseWriter responseWriter = getDefaultResponseWriter(writer);
+		if("update".equals(mode)) {
+			
+			RealTimePopularKeywordSetting realtimePopularKeywordSetting = new RealTimePopularKeywordSetting(
+					realTimeKeywordRecentLog, realTimeKeywordTopSize,
+					realTimeKeywordMinimumHit);
+			PopularKeywordSetting popularKeywordSetting = new PopularKeywordSetting(
+					popularKeywordTopSize, popularKeywordMinimumHit);
+			RelateKeywordSetting relateKeywordSetting = new RelateKeywordSetting(
+					relateKeywordMinimumHit);
+			
+			statisticsSetting.setRealtimePopularKeywordSetting(realtimePopularKeywordSetting);
+			statisticsSetting.setPopularKeywordSetting(popularKeywordSetting);
+			statisticsSetting.setRelateKeywordSetting(relateKeywordSetting);			
+			
+			getStatisticsService().writeConfig();
+		}
+		
+		responseWriter.object().key("success").value("true").key("status").value(1).endObject();
+		
+		mav.addObject("content", writer.toString());
+		return mav;
+	}
 }

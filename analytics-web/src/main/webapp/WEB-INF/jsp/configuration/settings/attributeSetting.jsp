@@ -70,7 +70,7 @@ $(document).ready(function() {
 function updateAttribute(formId, mode) {
 	
 	if(confirm("DANGER !! All Previous Data Should Erase.\n"+
-			"Cause Type Sync Not Match. Are you OK?")) {
+			"Cause Attribute Sequence Not Match. Are you OK?")) {
 		if(confirm("Are you Really OK?")) {
 			var form = $("#"+formId);
 			var valid = false;

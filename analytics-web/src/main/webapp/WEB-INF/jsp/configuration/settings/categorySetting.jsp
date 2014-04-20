@@ -18,34 +18,11 @@ List<CategorySetting> categoryList = (List<CategorySetting>)request.getAttribute
 <script type="text/javascript">
 
 $(document).ready(function() {
-	$("form#category-form span.icon-minus-sign").parent("a.btn").click(function() {
-		var form = $("form#category-form");
-		var inx = /btn-remove-(.*)/.exec($(this).find("span").attr("id"))[1];
-		var categoryId = form[0].elements["categoryId"+inx].value;
+	var removeRowFunction = function() {
 		if(confirm("Category will remove. Are you OK?")) {
-			var form = $("form#category-form");
-			$.ajax({
-				url:"updateCategory.html"
-				,type:"POST"
-				,data:{
-					mode:"remove"
-					,categoryId:categoryId
-				}, dataType:"json",
-				success:function(response) {
-					if(response["success"] == "true") {
-			 			noty({text: "update success !", layout:"topRight"});
-			 			setTimeout(function() {
-							location.href = location.href;
-			 			},1000);
-					} else {
-			 			noty({text: "update failed !", layout:"topRight", timeout: 5000});
-					}
-				}, fail:function(response){
-				}
-			});
+			$(this).parents("tr").remove();
 		}
-	});
-	
+	}
 	
 	var addRowFunction = function(){
 		var tbody = $(this).parents("tbody");
@@ -69,8 +46,10 @@ $(document).ready(function() {
 			});
 		});
 		newTr.find("span.icon-plus-sign").parent("a.btn").click(addRowFunction);
+		newTr.find("span.icon-minus-sign").parent("a.btn").click(removeRowFunction);
 	};
 	$("form#category-form span.icon-plus-sign").parent("a.btn").click(addRowFunction);
+	$("form#category-form span.icon-minus-sign").parent("a.btn").click(removeRowFunction);
 	
 	$("div.form-actions input.btn-primary").click(function() {
 		updateCategory("category-form", "update");

@@ -20,33 +20,11 @@ List<TypeSetting> typeList = (List<TypeSetting>) request.getAttribute("typeList"
 <script type="text/javascript">
 
 $(document).ready(function() {
-	$("form#attribute-form span.icon-minus-sign").parent("a.btn").click(function() {
-		var form = $("form#attribute-form");
-		var inx = /btn-remove-(.*)/.exec($(this).find("span").attr("id"))[1];
-		var categoryId = form[0].elements["categoryId"+inx].value;
-		if(confirm("Category will remove. Are you OK?")) {
-			var form = $("form#attribute-form");
-			$.ajax({
-				url:"updateCategory.html"
-				,type:"POST"
-				,data:{
-					mode:"remove"
-					,categoryId:categoryId
-				}, dataType:"json",
-				success:function(response) {
-					if(response["success"] == "true") {
-			 			noty({text: "update success !", layout:"topRight"});
-			 			setTimeout(function() {
-							location.href = location.href;
-			 			},1000);
-					} else {
-			 			noty({text: "update failed !", layout:"topRight", timeout: 5000});
-					}
-				}, fail:function(response){
-				}
-			});
+	var removeRowFunction = function() {
+		if(confirm("Attribute will remove. Are you OK?")) {
+			$(this).parents("tr").remove();
 		}
-	});
+	}
 	
 	
 	var addRowFunction = function(){
@@ -79,8 +57,10 @@ $(document).ready(function() {
 			});
 		});
 		newTr.find("span.icon-plus-sign").parent("a.btn").click(addRowFunction);
+		newTr.find("span.icon-minus-sign").parent("a.btn").click(removeRowFunction);
 	};
 	$("form#attribute-form span.icon-plus-sign").parent("a.btn").click(addRowFunction);
+	$("form#attribute-form span.icon-minus-sign").parent("a.btn").click(removeRowFunction);
 	
 	$("div.form-actions input.btn-primary").click(function() {
 		updateAttribute("attribute-form", "update");
@@ -89,7 +69,7 @@ $(document).ready(function() {
 
 function updateAttribute(formId, mode) {
 	
-	if(confirm("WARNING !! All Previous Data Should Erase.\n"+
+	if(confirm("DANGER !! All Previous Data Should Erase.\n"+
 			"Cause Type Sync Not Match. Are you OK?")) {
 		if(confirm("Are you Really OK?")) {
 			var form = $("#"+formId);

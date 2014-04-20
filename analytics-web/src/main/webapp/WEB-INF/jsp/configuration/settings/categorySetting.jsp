@@ -18,27 +18,31 @@ List<CategorySetting> categoryList = (List<CategorySetting>)request.getAttribute
 <script type="text/javascript">
 
 $(document).ready(function() {
-	
 	$("form#category-form span.icon-minus-sign").parent("a.btn").click(function() {
-		var categoryId = /btn-remove-(.*)/.exec($(this).find("span").attr("id"))[1];
+		var form = $("form#category-form");
+		var inx = /btn-remove-(.*)/.exec($(this).find("span").attr("id"))[1];
+		var categoryId = form[0].elements["categoryId"+inx].value;
 		if(confirm("Category will remove. Are you OK?")) {
 			var form = $("form#category-form");
-// 			$.ajax({
-// 				url:"update-setting.html"
-// 				,type:"POST"
-// 				,data:{
-// 					mode:"remove"
-// 					,categoryId:categoryId
-// 				}, dataType:"json",
-// 				success:function(response) {
-// 					if(response["success"] == "true") {
-// 						location.href = location.href;
-// 					} else {
-// 			 			noty({text: "update failed !", layout:"topRight", timeout: 5000});
-// 					}
-// 				}, fail:function(response){
-// 				}
-// 			});
+			$.ajax({
+				url:"updateCategory.html"
+				,type:"POST"
+				,data:{
+					mode:"remove"
+					,categoryId:categoryId
+				}, dataType:"json",
+				success:function(response) {
+					if(response["success"] == "true") {
+			 			noty({text: "update success !", layout:"topRight"});
+			 			setTimeout(function() {
+							location.href = location.href;
+			 			},1000);
+					} else {
+			 			noty({text: "update failed !", layout:"topRight", timeout: 5000});
+					}
+				}, fail:function(response){
+				}
+			});
 		}
 	});
 	
@@ -107,7 +111,10 @@ function updateCategory(formId, mode) {
 			data:data, dataType:"json",
 			success:function(response) {
 				if(response["success"] == "true") {
-					location.href = location.href;
+		 			noty({text: "update success !", layout:"topRight"});
+		 			setTimeout(function() {
+						location.href = location.href;
+		 			},1000);
 				} else {
 		 			noty({text: "update failed !", layout:"topRight", timeout: 5000});
 				}

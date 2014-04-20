@@ -222,6 +222,15 @@ public class ConfigurationMainController extends AbstractController {
 			}
 			statisticsSetting.setCategoryList(categoryList);
 			getStatisticsService().writeConfig();
+		} else if("remove".equals(mode)) {
+			String categoryId = getString(request.getParameter("categoryId"),"");
+			for (int inx = 0; inx < categoryList.size(); inx++) {
+				if(categoryList.get(inx).getId().equals(categoryId)) {
+					categoryList.remove(inx);
+					break;
+				}
+			}
+			getStatisticsService().writeConfig();
 		}
 		
 		responseWriter.object().key("success").value("true").key("status").value(1).endObject();

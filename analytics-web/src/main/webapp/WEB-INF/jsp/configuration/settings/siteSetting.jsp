@@ -48,6 +48,7 @@ RealTimePopularKeywordSetting realTimeKeywords = (RealTimePopularKeywordSetting)
 					</div>
 				</div>
 				<!-- /Page Header -->
+				<form class="form-horizontal" role="form" id="setting-form">
 				<div class="widget">
 					<div class="widget-header">
 						<h4>Common Settings</h4>
@@ -141,6 +142,7 @@ RealTimePopularKeywordSetting realTimeKeywords = (RealTimePopularKeywordSetting)
 						</div>
 					</div>
 				</div>
+				</form>
 				
 				<div class="form-actions">
 					<input type="submit" value="Update Settings" class="btn btn-primary pull-right">

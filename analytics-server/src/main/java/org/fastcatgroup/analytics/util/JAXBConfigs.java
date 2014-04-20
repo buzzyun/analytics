@@ -27,7 +27,7 @@ public class JAXBConfigs {
 	private static final Logger logger = LoggerFactory.getLogger(JAXBConfigs.class);
 	private static final String DEFAULT_CHARSET = "UTF-8";
 	public static <T> T readConfig(File file, Class<T> jaxbConfigClass) throws JAXBException {
-		logger.debug("readConfig file >> {}, {}", file.getAbsolutePath(), file.exists());
+		logger.trace("readConfig file >> {}, {}", file.getAbsolutePath(), file.exists());
 		
 		if(!file.exists()){
 			return null;
@@ -36,9 +36,9 @@ public class JAXBConfigs {
 		InputStream is = null;
 		try{
 			is = new FileInputStream(file);
-			logger.debug("read config file={}, {}", file.getName(), is);
+			logger.trace("read config file={}, {}", file.getName(), is);
 			T config = readConfig(is, jaxbConfigClass);
-//			logger.debug("read config {}, {}", config, file.getName());
+			logger.trace("read config {}, {}", config, file.getName());
 			return config;
 		}catch(Exception e){
 			logger.error("JAXBConfig file error "+file.getAbsolutePath(), e);
@@ -101,14 +101,14 @@ public class JAXBConfigs {
 	
 	
 	public static <T> void writeConfig(File file, Object jaxbConfig, Class<T> jaxbConfigClass) throws JAXBException {
-		logger.debug("writeConfig >> {}, {}, {}", file.getAbsolutePath(), jaxbConfig, jaxbConfigClass);
-//		for(StackTraceElement e : Thread.currentThread().getStackTrace()){
-//			logger.debug("> {}", e);
-//		}
+		//logger.debug("writeConfig >> {}, {}, {}", file.getAbsolutePath(), jaxbConfig, jaxbConfigClass);
+		//for(StackTraceElement e : Thread.currentThread().getStackTrace()){
+		//	logger.debug("> {}", e);
+		//}
 		Writer writer = null;
 		try{
 			if (!file.exists()) {
-				logger.debug("create {}", file.getAbsolutePath());
+				logger.trace("create {}", file.getAbsolutePath());
 				file.createNewFile();
 			}
 			
@@ -134,10 +134,10 @@ public class JAXBConfigs {
 		Marshaller marshaller = context.createMarshaller();
 		marshaller.setProperty(Marshaller.JAXB_ENCODING, DEFAULT_CHARSET);
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-//		logger.debug("removeXmlDeclaration!! {}", removeXmlDeclaration);
+		logger.trace("removeXmlDeclaration!! {}", removeXmlDeclaration);
 		if(removeXmlDeclaration){
 			marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
-//			marshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+			//marshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
 		}
 		
 		Writer writer = null;
@@ -157,10 +157,10 @@ public class JAXBConfigs {
 		Marshaller marshaller = context.createMarshaller();
 		marshaller.setProperty(Marshaller.JAXB_ENCODING, DEFAULT_CHARSET);
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-//		logger.debug("removeXmlDeclaration!! {}", removeXmlDeclaration);
+		//logger.debug("removeXmlDeclaration!! {}", removeXmlDeclaration);
 		if(removeXmlDeclaration){
 			marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
-//			marshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+			//marshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
 		}
 		marshaller.marshal(jaxbConfig, writer);
 	}

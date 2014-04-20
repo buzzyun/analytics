@@ -185,6 +185,9 @@ function updateAttribute(formId, mode) {
 								</tr>
 							</thead>
 							<tbody>
+							<%
+							if(typeList.size() > 0) {
+							%>
 								<%
 								for(int attrInx=0; attrInx < typeList.size();attrInx++) {
 									TypeSetting typeSetting = typeList.get(attrInx);
@@ -206,6 +209,19 @@ function updateAttribute(formId, mode) {
 								<%
 								}
 								%>
+							<%
+							} else {
+							%>
+								<tr>
+									<td colspan="5">
+									<a class="btn btn-sm" href="javascript:{}">
+										<span class="icon-plus-sign"></span>Add New
+									</a>
+									</td>
+								</tr>
+							<%
+							}
+							%>
 							</tbody>
 						</table>
 					</div>
@@ -225,6 +241,9 @@ function updateAttribute(formId, mode) {
 								</tr>
 							</thead>
 							<tbody>
+							<%
+							if(serviceList.size() > 0) {
+							%>
 								<%
 								for(int attrInx=0; attrInx < serviceList.size();attrInx++) {
 									ServiceSetting serviceSetting = serviceList.get(attrInx);
@@ -246,6 +265,19 @@ function updateAttribute(formId, mode) {
 								<%
 								}
 								%>
+							<%
+							} else {
+							%>
+								<tr>
+									<td colspan="5">
+									<a class="btn btn-sm" href="javascript:{}">
+										<span class="icon-plus-sign"></span>Add New
+									</a>
+									</td>
+								</tr>
+							<%
+							}
+							%>
 							</tbody>
 						</table>
 					</div>
@@ -264,6 +296,9 @@ function updateAttribute(formId, mode) {
 								</tr>
 							</thead>
 							<tbody>
+							<%
+							if(clickTypeList.size() > 0) {
+							%>
 								<%
 								for(int attrInx=0; attrInx < clickTypeList.size();attrInx++) {
 									ClickTypeSetting clickTypeSetting = clickTypeList.get(attrInx);
@@ -284,6 +319,19 @@ function updateAttribute(formId, mode) {
 								<%
 								}
 								%>
+							<%
+							} else {
+							%>
+								<tr>
+									<td colspan="4">
+									<a class="btn btn-sm" href="javascript:{}">
+										<span class="icon-plus-sign"></span>Add New
+									</a>
+									</td>
+								</tr>
+							<%
+							}
+							%>
 							</tbody>
 						</table>
 					</div>

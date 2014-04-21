@@ -90,6 +90,84 @@ public class AnalyticsDBService extends AbstractDBService {
 	protected boolean doClose() throws AnalyticsException {
 		return super.doClose();
 	}
+	
+	public void addNewSiteMappers(String siteId) {
+		for (Class<?> mapperDAO : mapperList) {
+			Class<? extends AnalyticsMapper> clazz = (Class<? extends AnalyticsMapper>) mapperDAO;
+			MapperSession<? extends AnalyticsMapper> mapperSession = (MapperSession<? extends AnalyticsMapper>) getMapperSession(clazz);
+			try {
+				addNewSiteMapper(siteId, mapperSession, clazz);
+			} finally {
+				mapperSession.closeSession();
+			}
+		}
+	}
+	
+	public void dropSiteMapper(String siteId) {
+		for (Class<?> mapperDAO : mapperList) {
+			if(!mapperDAO.equals(UserAccountMapper.class)) {
+				Class<? extends AnalyticsMapper> clazz = (Class<? extends AnalyticsMapper>) mapperDAO;
+				MapperSession<? extends AnalyticsMapper> mapperSession = (MapperSession<? extends AnalyticsMapper>) getMapperSession(clazz);
+				try {
+					dropSiteMapper(siteId, mapperSession, clazz);
+				} catch (Exception e) {
+					logger.error("",e);
+				} finally {
+					mapperSession.closeSession();
+				}
+			}
+		}
+	}
+	
+	public void dropSiteMapper(String siteId, MapperSession<? extends AnalyticsMapper> mapperSession, Class<? extends AnalyticsMapper> clazz) {
+		AnalyticsMapper managedMapper = mapperSession.getMapper();
+		try {
+			logger.debug("drop {}, {}", siteId, clazz.getSimpleName());
+			managedMapper.dropTable(siteId);
+			mapperSession.commit();
+		} catch (Exception ignore) {
+			logger.error("",ignore);
+		}
+	}
+	
+	public void addNewSiteMapper(String siteId, MapperSession<? extends AnalyticsMapper> mapperSession, Class<? extends AnalyticsMapper> clazz) {
+		AnalyticsMapper managedMapper = mapperSession.getMapper();
+		try {
+			try{
+				//mysql에서 이상하게 최초쿼리는 에러나서..
+				logger.debug("valiadte1 {}, {}", siteId, clazz.getSimpleName());
+				managedMapper.validateTable(siteId);
+			}catch(Exception ignore){
+			}
+			
+			
+			logger.debug("valiadte {}, {}", siteId, clazz.getSimpleName());
+			managedMapper.validateTable(siteId);
+		} catch (Exception e) {
+//					logger.error("valid error", e);
+			try {
+				logger.debug("drop {}, {}", siteId, clazz.getSimpleName());
+				managedMapper.dropTable(siteId);
+				mapperSession.commit();
+			} catch (Exception ignore) {
+			}
+			try {
+				logger.debug("create table {}, {}", siteId, clazz.getSimpleName());
+				managedMapper.createTable(siteId);
+				mapperSession.commit();
+				logger.debug("create index {}, {}", siteId, clazz.getSimpleName());
+				managedMapper.createIndex(siteId);
+				mapperSession.commit();
+				
+				if(managedMapper instanceof UserAccountMapper) {
+					UserAccountMapper mapper = (UserAccountMapper)managedMapper;
+					mapper.putEntry(new UserAccountVO(UserAccountVO.ADMIN_USER_NAME, UserAccountVO.ADMIN_USER_ID, "1111", "", ""));
+				}
+			} catch (Exception e2) {
+				logger.error("", e2);
+			}
+		}
+	}
 
 	@Override
 	protected void initMapper(Class<?>[] mapperList) throws AnalyticsException {
@@ -100,50 +178,14 @@ public class AnalyticsDBService extends AbstractDBService {
 		for (Class<?> mapperDAO : mapperList) {
 			
 			Class<? extends AnalyticsMapper> clazz = (Class<? extends AnalyticsMapper>) mapperDAO;
+			logger.debug("class : {}", clazz.getSimpleName());
 			MapperSession<? extends AnalyticsMapper> mapperSession = (MapperSession<? extends AnalyticsMapper>) getMapperSession(clazz);
-			AnalyticsMapper managedMapper = mapperSession.getMapper();
 			
 			for (SiteSetting siteConfig : siteCategoryConfig) {
 				String siteId = siteConfig.getId();
-				try {
-					try{
-						//mysql에서 이상하게 최초쿼리는 에러나서..
-						logger.debug("valiadte1 {}, {}", siteId, clazz.getSimpleName());
-						managedMapper.validateTable(siteId);
-					}catch(Exception ignore){
-					}
-					
-					logger.debug("valiadte {}, {}", siteId, clazz.getSimpleName());
-					managedMapper.validateTable(siteId);
-				} catch (Exception e) {
-//					logger.error("valid error", e);
-					try {
-						logger.debug("drop {}, {}", siteId, clazz.getSimpleName());
-						managedMapper.dropTable(siteId);
-						mapperSession.commit();
-					} catch (Exception ignore) {
-					}
-					try {
-						logger.debug("create table {}, {}", siteId, clazz.getSimpleName());
-						managedMapper.createTable(siteId);
-						mapperSession.commit();
-						logger.debug("create index {}, {}", siteId, clazz.getSimpleName());
-						managedMapper.createIndex(siteId);
-						mapperSession.commit();
-						
-						if(managedMapper instanceof UserAccountMapper) {
-							UserAccountMapper mapper = (UserAccountMapper)managedMapper;
-							mapper.putEntry(new UserAccountVO(UserAccountVO.ADMIN_USER_NAME, UserAccountVO.ADMIN_USER_ID, "1111", "", ""));
-						}
-					} catch (Exception e2) {
-						logger.error("", e2);
-					}
-				}
-
+				this.addNewSiteMapper(siteId, mapperSession, clazz);
 			}
 			mapperSession.closeSession();
 		}
-
 	}
-
 }

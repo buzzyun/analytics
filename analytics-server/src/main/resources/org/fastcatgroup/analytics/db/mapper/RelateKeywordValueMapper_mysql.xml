@@ -43,4 +43,8 @@
 		truncate table ${siteId}_relate_keyword_value
 	</delete>
 	
+	<update id="dropTable" parameterType="map">
+		drop table ${siteId}_relate_keyword_value
+	</update>
+	
 </mapper>

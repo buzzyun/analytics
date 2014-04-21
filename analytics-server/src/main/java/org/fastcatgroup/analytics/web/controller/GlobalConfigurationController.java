@@ -170,10 +170,10 @@ public class GlobalConfigurationController extends AbstractController {
 		
 		if("updateSite".equals(mode)) {
 			String siteIdNew = request.getParameter("siteIdNew");
-			currentSiteConfig.setId(siteIdNew);
+			//currentSiteConfig.setId(siteIdNew);
 			currentSiteConfig.setName(siteName);
-			statisticsService.removeSite(siteId);
-			statisticsService.addSite(siteIdNew, currentSiteConfig);
+			//statisticsService.removeSite(siteId);
+			//statisticsService.addSite(siteIdNew, currentSiteConfig);
 			statisticsService.writeConfig();
 		} else if("addSite".equals(mode)) {
 			boolean found = false;
@@ -184,7 +184,7 @@ public class GlobalConfigurationController extends AbstractController {
 				}
 			}
 			if(!found) {
-				siteList.add(statisticsService.newDefaultSite(siteId, siteName));
+				statisticsService.addSite(siteId, statisticsService.newDefaultSite(siteId, siteName));
 				statisticsService.writeConfig();
 			}
 		} else if("removeSite".equals(mode)) {

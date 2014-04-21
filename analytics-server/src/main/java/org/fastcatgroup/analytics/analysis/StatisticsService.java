@@ -352,6 +352,8 @@ public class StatisticsService extends AbstractService {
 		if(!statisticsSettingMap.containsKey(siteId)) {
 			this.siteListSetting.getSiteList().add(setting);
 			statisticsSettingMap.put(siteId, setting.getStatisticsSettings());
+			AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
+			dbService.addNewSiteMappers(siteId);
 		}
 	}
 	
@@ -361,6 +363,8 @@ public class StatisticsService extends AbstractService {
 			if(siteList.get(inx).getId().equals(siteId)) {
 				siteList.remove(inx);
 				statisticsSettingMap.remove(siteId);
+				AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
+				dbService.dropSiteMapper(siteId);
 				break;
 			}
 		}

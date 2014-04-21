@@ -27,7 +27,6 @@ $(document).ready(function(){
 		var siteName = $(this).find("input#siteName").val();
 		var editForm = $("form#edit-site-form");
 		editForm[0].siteId.value=siteId;
-		editForm[0].siteIdNew.value=siteId;
 		editForm[0].siteName.value=siteName;
 	});
 	$("form#site-form span.icon-minus-sign").parent("a.btn").click(function() {
@@ -49,7 +48,7 @@ function removeSite(siteId) {
 				}, dataType:"json",
 				success:function(response) {
 					if(response["success"] == "true") {
-						location.href = "settings.html";
+						location.href = "sites.html";
 					} else {
 			 			noty({text: "update failed !", layout:"topRight", timeout: 5000});
 					}
@@ -84,7 +83,7 @@ function update(formId, mode) {
 			success:function(response) {
 				if(response["success"] == "true") {
 					if(mode=="updateSite") {
-						location.href = "settings.html?siteId="+data["siteIdNew"];
+						location.href = "sites.html?siteId="+data["siteIdNew"];
 					} else {
 						location.href = location.href;
 					}
@@ -246,7 +245,7 @@ function update(formId, mode) {
 						<div class="form-group">
 							<label for="siteId" class="col-sm-3 control-label">Site Id</label>
 							<div class="col-sm-9">
-								<input type="text" class="form-control required" id="siteIdNew" name="siteIdNew" value="${currentSiteId}" placeholder="Site Id">
+								<label> ${currentSiteId} </label>
 							</div>
 						</div>
 						<div class="form-group">

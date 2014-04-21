@@ -206,9 +206,9 @@ public class CTRController extends AbstractController {
 		
 		SiteAttribute siteAttribute = this.getStatisticsService().getStatisticsSetting(siteId).getSiteAttribute();
 		List<ClickTypeSetting> clickTypeSettingList = siteAttribute.getClickTypeList();
-		List<String> clickTypeList = new ArrayList<String>();
+		List<String[]> clickTypeList = new ArrayList<String[]>();
 		for(ClickTypeSetting clickType : clickTypeSettingList) {
-			clickTypeList.add(clickType.getId());
+			clickTypeList.add(new String[] { clickType.getId(), clickType.getName() });
 		}
 		
 		Calendar calendar = null;
@@ -267,13 +267,13 @@ public class CTRController extends AbstractController {
 				mav.addObject("ctRate", String.format("%.1f", ctr) + "%");
 			}
 			
-			for(String clickType : clickTypeList){
+			for(String[] clickType : clickTypeList){
 				int typeHitValue = 0;
-				Integer typeHit = mapper.getTypeHit(siteId, timeId, clickType);
+				Integer typeHit = mapper.getTypeHit(siteId, timeId, clickType[0]);
 				if(typeHit != null){
 					typeHitValue = typeHit;
 				}
-				mav.addObject("ctCount_"+clickType, String.format("%,d", typeHitValue));
+				mav.addObject("ctCount_"+clickType[0], String.format("%,d", typeHitValue));
 			}
 				
 		} catch (Exception e) {
@@ -312,9 +312,9 @@ public class CTRController extends AbstractController {
 				kewordCtrList.add(String.format("%.1f", keywordCtRate)+"%");
 				
 				Map<String, String> typeCountMap = new HashMap<String, String>();
-				for(String clickType : clickTypeList){
-					int keywordClickTypeCount = clickKeywordHitMapper.getKeywordTypeClickCount(siteId, timeId, keyword, clickType);
-					typeCountMap.put(clickType, String.format("%,d", keywordClickTypeCount));
+				for(String[] clickType : clickTypeList){
+					int keywordClickTypeCount = clickKeywordHitMapper.getKeywordTypeClickCount(siteId, timeId, keyword, clickType[0]);
+					typeCountMap.put(clickType[0], String.format("%,d", keywordClickTypeCount));
 				}
 				typeCountMapList.add(typeCountMap);
 			}

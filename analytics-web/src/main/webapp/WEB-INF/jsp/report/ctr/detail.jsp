@@ -3,7 +3,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
-List<String> clickTypeList = (List<String>) request.getAttribute("clickTypeList");
+List<String[]> clickTypeList = (List<String[]>) request.getAttribute("clickTypeList");
 List<ClickKeywordHitVO> keywordList = (List<ClickKeywordHitVO>) request.getAttribute("keywordList");
 List<Map<String, String>> typeCountMapList = (List<Map<String, String>>) request.getAttribute("typeCountMapList");
 List<String> keywordSearchPvList = (List<String>) request.getAttribute("keywordSearchPvList");
@@ -123,10 +123,10 @@ $(document).ready(function(){
 							<div class="widget-content">
 								<ul class="stats">
 									<%
-									for(String clickType : clickTypeList) {
-										String ctCount = "ctCount_" + clickType;
+									for(String[] clickType : clickTypeList) {
+										String ctCount = "ctCount_" + clickType[0];
 									%>
-									<li><strong><%=request.getAttribute(ctCount) %></strong> <small><%=clickType %></small></li>
+									<li><strong><%=request.getAttribute(ctCount) %></strong> <small><%=clickType[1] %></small></li>
 									<%
 									}
 									%>
@@ -153,9 +153,9 @@ $(document).ready(function(){
 											<th>Click-through count</th>
 											<th>Click-through rate</th>
 											<%
-											for(String clickType : clickTypeList) {
+											for(String[] clickType : clickTypeList) {
 											%>
-											<th><%=clickType %></th>
+											<th><%=clickType[1] %></th>
 											<%
 											}
 											%>
@@ -174,9 +174,9 @@ $(document).ready(function(){
 											<td><%=vo.getCount() %></td>
 											<td><%=kewordCtrList.get(i) %></td>
 											<%
-											for(String clickType : clickTypeList) {
+											for(String[] clickType : clickTypeList) {
 											%>
-											<td><%=typeCountMap.get(clickType) %></td>
+											<td><%=typeCountMap.get(clickType[0]) %></td>
 											<%
 											}
 											%>

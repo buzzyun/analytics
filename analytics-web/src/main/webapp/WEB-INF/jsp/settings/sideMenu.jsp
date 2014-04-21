@@ -24,14 +24,14 @@
 				lcatCurrent = "configuration".equals(mcat);
 			%>
 			<li class="<%=lcatCurrent ? "current" :"" %>">
-				<a href="<c:url value="/settings/configuration.html"/>"><i class="icon-cog"></i> System Configuration</a>
+				<a href="<c:url value="/settings/system.html"/>"><i class="icon-cog"></i> System Configuration</a>
 			</li>
 			
 			<%
 				lcatCurrent = "settings".equals(mcat);
 			%>
 			<li class="<%=lcatCurrent ? "current" :"" %>">
-				<a href="<c:url value="/settings/settings.html"/>"><i class="icon-list"></i> Site Settings</a>
+				<a href="<c:url value="/settings/sites.html"/>"><i class="icon-list"></i> Sites Settings</a>
 			</li>
 		</ul>
 

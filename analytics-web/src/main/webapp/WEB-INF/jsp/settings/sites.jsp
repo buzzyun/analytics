@@ -119,7 +119,7 @@ function update(formId, mode) {
 				<!--=== Page Header ===-->
 				<div class="page-header">
 					<div class="page-title">
-						<h3>Site Settings</h3>
+						<h3>Sites Settings</h3>
 					</div>
 				</div>
 				<!-- /Page Header -->

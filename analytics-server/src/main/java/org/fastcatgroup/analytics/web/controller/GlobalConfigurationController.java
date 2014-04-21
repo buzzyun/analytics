@@ -30,10 +30,10 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/settings")
 public class GlobalConfigurationController extends AbstractController {
 	
-	@RequestMapping("/configuration")
+	@RequestMapping("/system")
 	public ModelAndView configuration(HttpSession session, HttpServletRequest request) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("/settings/configuration");
+		modelAndView.setViewName("/settings/system");
 		
 		Settings systemSettings = environment.settingManager().getSystemSettings();
 		
@@ -68,12 +68,12 @@ public class GlobalConfigurationController extends AbstractController {
 		return modelAndView;
 	}
 	
-	@RequestMapping("/settings")
+	@RequestMapping("/sites")
 	public ModelAndView settings(HttpSession session,
 		@RequestParam(required=false) String siteId,
 		@RequestParam(required=false) String categoryName ) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("/settings/settings");
+		modelAndView.setViewName("/settings/sites");
 		
 		StatisticsService statisticsService = ServiceManager.getInstance().getService(StatisticsService.class);
 		

@@ -4,7 +4,7 @@
 <%@ page import="java.util.*" %>
 <%@ page import="java.text.DecimalFormat" %>
 <%@ page import="org.fastcatgroup.analytics.db.vo.*" %>
-<%@ page import="org.fastcatgroup.analytics.analysis.SearchStatisticsProperties" %>
+<%@ page import="org.fastcatgroup.analytics.analysis.StatisticsUtils" %>
 <%
 String categoryId = request.getParameter("categoryId");
 List<SearchHitVO> list = (List<SearchHitVO>) request.getAttribute("list");

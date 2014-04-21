@@ -3,7 +3,7 @@
 <%@page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@page import="java.text.DecimalFormat" %>
-<%@page import="org.fastcatgroup.analytics.analysis.SearchStatisticsProperties" %>
+<%@page import="org.fastcatgroup.analytics.analysis.StatisticsUtils" %>
 <%@page import="org.fastcatgroup.analytics.analysis.config.StatisticsSettings.TypeSetting" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%

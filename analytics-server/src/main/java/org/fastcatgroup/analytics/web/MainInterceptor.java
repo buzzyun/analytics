@@ -57,6 +57,8 @@ public class MainInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
 		
+		StatisticsService statisticsService = ServiceManager.getInstance().getService(StatisticsService.class);
+		
 		String uri = request.getRequestURI();
 		if(uri.contains("/report/")){
 			modelAndView.addObject("_menuType", "report");
@@ -66,21 +68,24 @@ public class MainInterceptor extends HandlerInterceptorAdapter {
 		
 		Map<String, Object> pathVariables = (Map<String, Object>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
 		String currentSiteId = (String) pathVariables.get("siteId");
+		
+		//if(siteList!=null) {
+		//	if(statisticsService.getSiteListSetting().getSiteList().size() != siteList.size()) {
+		//		siteList = null;
+		//	}
+		//}
 
-		if (siteList == null) {
+		//if (siteList == null) {
 			synchronized (this) {
 				siteList = new ArrayList<String[]>();
-				StatisticsService s = ServiceManager.getInstance().getService(StatisticsService.class);
-				
-				SiteListSetting siteCategoryListConfig = s.getSiteListSetting();
-				List<SiteSetting> list = siteCategoryListConfig.getSiteList();
+				List<SiteSetting> list = statisticsService.getSiteListSetting().getSiteList();
 				for (SiteSetting siteCategoryConfig : list) {
 					String siteId = siteCategoryConfig.getId();
 					String siteName = siteCategoryConfig.getName();
 					siteList.add(new String[] { siteId, siteName });
 				}
 			}
-		}
+		//}
 		
 		logger.trace("siteList:{}", siteList);
 		

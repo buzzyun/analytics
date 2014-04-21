@@ -162,51 +162,17 @@ public class ConfigurationAndSettingsController extends AbstractController {
 			}
 		}
 		
-		logger.debug("mode : {} / siteId : {} / categoryList : {}", mode, currentSiteId, categoryList);
+		logger.trace("mode : {} / siteId : {} / categoryList : {}", mode, currentSiteId, categoryList);
 		
 		Writer writer = new StringWriter();
 		ResponseWriter responseWriter = getDefaultResponseWriter(writer);
 		
-		if("update".equals(mode)) {
-			categoryList.clear();
-			categoryList.add(new CategorySetting("_root","ALL",false,false,false));
-			
-			int count = Integer.parseInt(request.getParameter("count"));
-			for (int inx = 1; inx <= count; inx++) {
-				String categoryIdGet = request.getParameter("categoryId"+inx);
-				String categoryNameGet = request.getParameter("categoryName"+inx);
-				if(categoryIdGet!=null && !"".equals(categoryIdGet)) {
-					categoryList.add(new CategorySetting(categoryIdGet, categoryNameGet, false,false,false));
-				}
-			}
-			statisticsService.writeConfig();
-		} else if("add".equals(mode)) {
-			boolean found = false;
-			CategorySetting categoryConfig = new CategorySetting(categoryId, categoryName, false,false,false);
-			for (int inx = 0; inx < categoryList.size(); inx++) {
-				if(categoryList.get(inx).getId().equals(categoryId)) {
-					categoryList.set(inx, categoryConfig);
-					found = true;
-					break;
-				}
-			}
-			if(!found) {
-				categoryList.add(new CategorySetting(categoryId, categoryName,false,false,false));
-			}
-			statisticsService.writeConfig();
-		} else if("remove".equals(mode)) {
-			for (int inx = 0; inx < categoryList.size(); inx++) {
-				if(categoryList.get(inx).getId().equals(categoryId)) {
-					categoryList.remove(inx);
-					break;
-				}
-			}
-			statisticsService.writeConfig();
-		} else if("updateSite".equals(mode)) {
+		if("updateSite".equals(mode)) {
 			String siteIdNew = request.getParameter("siteIdNew");
 			currentSiteConfig.setId(siteIdNew);
 			currentSiteConfig.setName(siteName);
-			
+			statisticsService.removeSite(siteId);
+			statisticsService.addSite(siteIdNew, currentSiteConfig);
 			statisticsService.writeConfig();
 		} else if("addSite".equals(mode)) {
 			boolean found = false;
@@ -216,18 +182,13 @@ public class ConfigurationAndSettingsController extends AbstractController {
 					break;
 				}
 			}
-			
 			if(!found) {
 				siteList.add(statisticsService.newDefaultSite(siteId, siteName));
 				statisticsService.writeConfig();
 			}
 		} else if("removeSite".equals(mode)) {
-			for(int inx=0;inx < siteList.size(); inx++) {
-				if(siteList.get(inx).getId().equals(siteId)) {
-					siteList.remove(inx);
-					break;
-				}
-			}
+			statisticsService.removeSite(siteId);
+			statisticsService.deleteConfig(siteId);
 			statisticsService.writeConfig();
 		}
 		responseWriter.object().key("success").value("true").key("status").value(1).endObject();

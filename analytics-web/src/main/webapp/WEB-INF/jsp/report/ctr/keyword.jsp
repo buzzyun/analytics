@@ -3,7 +3,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
-List<String> clickTypeList = (List<String>) request.getAttribute("clickTypeList");
+List<String[]> clickTypeList = (List<String[]>) request.getAttribute("clickTypeList");
 String keyword = request.getParameter("keyword");
 String timeText = (String) request.getAttribute("timeText");
 if(timeText == null ) {
@@ -112,10 +112,10 @@ $(document).ready(function(){
 									<li class="text-success"><strong>${ctCount }</strong> <small>Click-through count</small></li>
 									<li class="text-primary"><strong>${ctRate }</strong> <small>Click-through rate</small></li>
 									<%
-									for(String clickType : clickTypeList) {
-										String count = (String) request.getAttribute("ctCount_"+clickType);
+									for(String[] clickType : clickTypeList) {
+										String count = (String) request.getAttribute("ctCount_"+clickType[0]);
 									%>
-									<li><strong><%=count %></strong> <small><%=clickType %></small></li>
+									<li><strong><%=count %></strong> <small><%=clickType[1] %></small></li>
 									<%
 									}
 									%>
@@ -145,9 +145,9 @@ $(document).ready(function(){
 											<th>#</th>
 											<th>Click Target</th>
 											<%
-											for(String clickType : clickTypeList) {
+											for(String[] clickType : clickTypeList) {
 											%>
-											<th><%=clickType %></th>
+											<th><%=clickType[1] %></th>
 											<%
 											}
 											%>
@@ -162,8 +162,8 @@ $(document).ready(function(){
 											<td><%=i+1 %></td>
 											<td><a href="#"><%=vo.getClickId() %></a></td>
 											<%
-											for(String clickType : clickTypeList) {
-												if(clickType.equals(vo.getClickType())){
+											for(String[] clickType : clickTypeList) {
+												if(clickType[0].equals(vo.getClickType())){
 													%><td><%=vo.getCount() %></td><%
 												}else{
 													%><td>0</td><%	

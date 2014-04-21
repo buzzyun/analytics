@@ -91,6 +91,15 @@ public class StatisticsService extends AbstractService {
 		}
 	}
 	
+	public void deleteConfig(String siteId) {
+		File confDir = new File(environment.filePaths().file(),"conf");
+		File confSiteDir = new File(confDir,"sites");
+		File file = new File(confSiteDir, siteId+".xml");
+		if(file.exists()) {
+			file.delete();
+		}
+	}
+	
 	public void writeConfig() {
 		File confDir = new File(environment.filePaths().file(),"conf");
 		File confSiteDir = new File(confDir,"sites");
@@ -337,6 +346,24 @@ public class StatisticsService extends AbstractService {
 			
 		}
 		return list;
+	}
+	
+	public void addSite(String siteId, SiteSetting setting) {
+		if(!statisticsSettingMap.containsKey(siteId)) {
+			this.siteListSetting.getSiteList().add(setting);
+			statisticsSettingMap.put(siteId, setting.getStatisticsSettings());
+		}
+	}
+	
+	public void removeSite(String siteId) {
+		List<SiteSetting> siteList = getSiteListSetting().getSiteList();
+		for(int inx=0;inx < siteList.size(); inx++) {
+			if(siteList.get(inx).getId().equals(siteId)) {
+				siteList.remove(inx);
+				statisticsSettingMap.remove(siteId);
+				break;
+			}
+		}
 	}
 	
 	public SiteSetting newDefaultSite(String id, String name) {

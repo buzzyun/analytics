@@ -43,10 +43,10 @@ public class CTRController extends AbstractController {
 		SiteAttribute siteAttribute = this.getStatisticsService().getStatisticsSetting(siteId).getSiteAttribute();
 		List<ClickTypeSetting> clickTypeSettingList = siteAttribute.getClickTypeList();
 		List<ServiceSetting> serviceSettingList = siteAttribute.getServiceList();
-		List<String> clickTypeList = new ArrayList<String>();
-		for(ClickTypeSetting clickType : clickTypeSettingList) {
-			clickTypeList.add(clickType.getId());
-		}
+//		List<String> clickTypeList = new ArrayList<String>();
+//		for(ClickTypeSetting clickType : clickTypeSettingList) {
+//			clickTypeList.add(clickType.getId());
+//		}
 		
 		Calendar startTime = null;
 		Calendar endTime = null;
@@ -162,16 +162,17 @@ public class CTRController extends AbstractController {
 		mav.addObject("searchPvList", searchPvList);
 		try {
 			ClickHitMapper clickMapper = clickMapperSession.getMapper();
-			for(String clickType : clickTypeList){
+			for(ClickTypeSetting clickType : clickTypeSettingList){
+				String clickTypeId =  clickType.getId();
 				startTime = (Calendar) startTime2.clone();
 				List<Integer> typeHitList = new ArrayList<Integer>();
 				while (startTime.getTimeInMillis() <= endTime.getTimeInMillis()) {
 					String timeId = StatisticsUtils.getTimeId(startTime, timeTypeCode);
-					Integer hit = clickMapper.getTypeHit(siteId, timeId, clickType);
+					Integer hit = clickMapper.getTypeHit(siteId, timeId, clickTypeId);
 					typeHitList.add(hit);
 					startTime.add(timeTypeCode, 1);
 				}
-				mav.addObject("clickType_"+clickType, typeHitList);
+				mav.addObject("clickType_"+clickTypeId, typeHitList);
 			}
 			
 			startTime = (Calendar) startTime2.clone();
@@ -186,7 +187,7 @@ public class CTRController extends AbstractController {
 			mav.addObject("clickHitList", clickHitList);
 			mav.addObject("timeText", timeText);
 			mav.addObject("labelList", labelList);
-			mav.addObject("clickTypeList", clickTypeList);
+			mav.addObject("clickTypeSettingList", clickTypeSettingList);
 		} catch (Exception e) {
 			logger.error("", e);
 		} finally {

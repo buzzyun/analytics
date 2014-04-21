@@ -7,7 +7,7 @@
 <%@ page import="org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ClickTypeSetting" %>
 <%@ page import="org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ServiceSetting" %>
 <%
-List<String> clickTypeList = (List<String>) request.getAttribute("clickTypeList");
+List<ClickTypeSetting> clickTypeSettingList = (List<ClickTypeSetting>) request.getAttribute("clickTypeSettingList");
 List<Integer> searchPvList = (List<Integer>) request.getAttribute("searchPvList");
 List<Integer> clickHitList = (List<Integer>) request.getAttribute("clickHitList");
 List<String> labelList = (List<String>) request.getAttribute("labelList");
@@ -20,11 +20,11 @@ if(timeText == null ) {
 DecimalFormat format = new DecimalFormat("#,###");
 
 ListableCounter totalSearchCounter = searchPathCounter.get("total");
-int totalSearchCount = 0;
+int primeSearchCount = 0;
 if(totalSearchCounter != null) {
-	totalSearchCount = totalSearchCounter.value();
+	primeSearchCount = totalSearchCounter.value();
 }
-float totalSearchRate = 0f;
+float primeSearchRate = 0f;
 %>
 <c:set var="ROOT_PATH" value="../.." />
 
@@ -65,7 +65,7 @@ $(document).ready(function() {
 		totalClickHit += clickHit;
 		float rate = 0f;
 		if(pv>0) {
-			rate = Math.round(clickHit * 100f / pv) / 100f;
+			rate = Math.round(clickHit * 10000f / pv) / 100f;
 		}
 		
 		Integer searchCount = 0;
@@ -75,7 +75,7 @@ $(document).ready(function() {
 		if(searchCount==null) { searchCount=0; }
 		float searchRate=0f;
 		if(pv>0) {
-			searchRate = Math.round(searchCount *100f / pv) / 100f;
+			searchRate = Math.round(searchCount *10000f / pv) / 100f;
 		}
 	%>
 		searchPvData[<%=i%>]=[<%=i%>,<%=pv%>];
@@ -88,7 +88,7 @@ $(document).ready(function() {
 	}
 	if(totalPv > 0) {
 		totalClickRate = Math.round(totalClickHit * 10000f / totalPv) / 100f;
-		totalSearchRate = Math.round(totalSearchCount * 10000f / totalPv) / 100f;
+		primeSearchRate = Math.round(primeSearchCount * 10000f / totalPv) / 100f;
 	}
 	%>
 		
@@ -118,6 +118,10 @@ $(document).ready(function() {
 		points:{ show:true },
 		yaxis: 2
 	}];
+
+	function yFormatter(v, axis) {
+		return Math.ceil(v) + " %";
+	}
 	
 	$.plot("#chart_search_rate", search_through_data, $.extend(true, {}, 
 		Plugins.getFlotDefaults(), {
@@ -126,7 +130,7 @@ $(document).ready(function() {
 				tickSize : [ 1, "month" ],
 				ticks : ticks,
 				tickLength : 0,
-			}, yaxes: [ { min:"0" },{ min:"0", position: "right" }
+			}, yaxes: [ { min:"0" },{ min:"0", position: "right", tickFormatter: yFormatter }
 			], grid : {
 				hoverable : true,
 				clickable : true
@@ -143,13 +147,13 @@ $(document).ready(function() {
 		lines: { show: true },
 		points:{ show:true }
 	}, {
-		label : "Click Through Count",
+		label : "Click-through Count",
 		data : clickHitData,
 		color : "#468847",
 		lines: { show: true },
 		points:{ show:true }
 	}, {
-		label : "Click Through Rate",
+		label : "Click-through Rate",
 		data : searchClickRate,
 		color : "rgba(66,139,202,0.3)",
 		lines: { show: false},
@@ -164,11 +168,12 @@ $(document).ready(function() {
 	
 	<%
 	List<Integer> typeCountList = new ArrayList<Integer>();
-	for(int typeInx=0;typeInx < clickTypeList.size(); typeInx++) {
-		String clickType = clickTypeList.get(typeInx);
-		List<Integer> clickList = (List<Integer>)request.getAttribute("clickType_"+clickType);
+	for(int typeInx=0;typeInx < clickTypeSettingList.size(); typeInx++) {
+		ClickTypeSetting clickType = clickTypeSettingList.get(typeInx);
+		String clickTypeId = clickType.getId();
+		List<Integer> clickList = (List<Integer>) request.getAttribute("clickType_"+clickTypeId);
 		int typeCount = 0;
-		for(int inx=0;inx<clickList.size();inx++) { 
+		for(int inx=0; inx < clickList.size(); inx++) { 
 			Integer clickCount = clickList.get(inx);
 			if(clickCount==null) {
 				clickCount = 0;
@@ -179,6 +184,7 @@ $(document).ready(function() {
 	}
 	%>
 	
+	
 	$.plot("#chart_ctr", ctr_data, $.extend(true, {}, Plugins
 	.getFlotDefaults(), {
 		xaxis : {
@@ -187,7 +193,7 @@ $(document).ready(function() {
 			ticks : ticks,
 			tickLength : 0
 		},
-		yaxes: [ { min:"0" },{ min:"0", position: "right" } ],
+		yaxes: [ { min:"0" },{ min:"0", position: "right", tickFormatter: yFormatter } ],
 		grid : { hoverable : true, clickable : true },
 		tooltip : true,
 		tooltipOpts : { content : '%s: %y' }
@@ -260,8 +266,8 @@ $(document).ready(function() {
 							<div class="widget-content">
 								<ul class="stats">
 									<li><strong><%=format.format(totalPv) %></strong> <small>Search PV</small></li>
-									<li class="text-success"><strong><%=format.format(totalSearchCount) %></strong> <small>Total Search</small></li>
-									<li class="text-primary"><strong><%=totalSearchRate %>%</strong> <small>Total Search Rate</small></li>
+									<li class="text-success"><strong><%=format.format(primeSearchCount) %></strong> <small>Total Search</small></li>
+									<li class="text-primary"><strong><%=primeSearchRate %>%</strong> <small>Total Search Rate</small></li>
 								</ul>
 							</div>
 							<div class="divider"></div>
@@ -269,11 +275,11 @@ $(document).ready(function() {
 								<ul class="stats">
 									<%
 									for(ServiceSetting service : serviceList) {
-										if("_etc".equals(service.getId()) || "total".equals(service.getId())) {
+										if("_etc".equals(service.getId()) || service.isPrime()) {
 											continue;
 										}
 									%>
-									<li class="light"><strong><%=format.format(searchPathCounter.get(service.getId()).value())%></strong> <small><%=service.getId()%></small></li>
+									<li class="light"><strong><%=format.format(searchPathCounter.get(service.getId()).value())%></strong> <small><%=service.getName()%></small></li>
 									<%
 									}
 									%>
@@ -305,11 +311,11 @@ $(document).ready(function() {
 							<div class="widget-content">
 								<ul class="stats">
 									<% 
-									for(int typeInx=0;typeInx < clickTypeList.size(); typeInx++) {
-										String clickType = clickTypeList.get(typeInx);
+									for(int typeInx=0; typeInx < clickTypeSettingList.size(); typeInx++) {
+										String clickTypeName = clickTypeSettingList.get(typeInx).getName();
 										int typeCount = typeCountList.get(typeInx);
 									%>
-										<li class="light"><strong><%=format.format(typeCount) %></strong> <small><%=clickType %></small></li>
+										<li class="light"><strong><%=format.format(typeCount) %></strong> <small><%=clickTypeName %></small></li>
 									<%
 									}
 									%>

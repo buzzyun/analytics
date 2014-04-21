@@ -358,7 +358,7 @@ function showRatioTab(typeId){
 						<% 
 						for ( int typeInx=0; typeInx < typeArray.size(); typeInx ++ ) { 
 						%>
-							<li class="<%=typeId.equals(typeArray.get(typeInx).getId()) ? "active" : "" %>"><a href="javascript:showRatioTab('<%=typeArray.get(typeInx).getId()%>')"><%=typeArray.get(typeInx).getId() %></a></li>
+							<li class="<%=typeId.equals(typeArray.get(typeInx).getId()) ? "active" : "" %>"><a href="javascript:showRatioTab('<%=typeArray.get(typeInx).getId()%>')"><%=typeArray.get(typeInx).getName() %></a></li>
 						<% 
 						} 
 						%>

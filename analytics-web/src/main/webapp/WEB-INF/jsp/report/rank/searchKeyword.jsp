@@ -131,7 +131,7 @@ $(document).ready(function(){
 						<%
 						for(int typeInx=0; typeInx < typeArray.length; typeInx++ ) {
 						%>
-							<li class="<%=keywordType.equals(typeArray[typeInx]) ? "active" : "" %>"><a href="javascript:showKeywordTab('<%=typeArray[typeInx]%>')"><%=typeArray[typeInx]%></a></li>
+							<li class="<%=keywordType.equals(typeArray[typeInx]) ? "active" : "" %>"><a href="javascript:showKeywordTab('<%=typeArray[typeInx]%>')"><%=typeArray[typeInx].toUpperCase()%></a></li>
 						<%
 						}
 						%>

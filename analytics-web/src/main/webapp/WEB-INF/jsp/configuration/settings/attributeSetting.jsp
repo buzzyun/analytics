@@ -20,26 +20,9 @@ List<TypeSetting> typeList = (List<TypeSetting>) request.getAttribute("typeList"
 <script type="text/javascript">
 
 $(document).ready(function() {
-	var removeRowFunction = function() {
-		if(confirm("Attribute will remove. Are you OK?")) {
-			$(this).parents("tr").remove();
-		}
-	}
 	
 	
-	var addRowFunction = function(){
-		var tableId = $(this).parents("table").attr("id");
-		var tbody = $(this).parents("tbody");
-		var pivotTr = $(this).parents("tr");
-		var trTemplate = $("#schema_template tr#"+tableId);
-		var newTr = trTemplate.clone();
-		newTr.removeAttr("id");
-		if(pivotTr.find("input, select, textarea").length > 0) {
-			pivotTr.after(newTr);
-		} else {
-			pivotTr.after(newTr);
-			pivotTr.remove();
-		}
+	var tableRefreshFunc = function(tbody) {
 		var trFind = tbody.find("tr");
 		trFind.each(function() {
 			var newIndex = $.inArray(this, trFind);
@@ -56,6 +39,29 @@ $(document).ready(function() {
 				}
 			});
 		});
+	}
+	
+	var removeRowFunction = function() {
+		if(confirm("Attribute will remove. Are you OK?")) {
+			var tbody = $(this).parents("tbody");
+			$(this).parents("tr").remove();
+			tableRefreshFunc(tbody);
+		}
+	}
+	
+	var addRowFunction = function(){
+		var tableId = $(this).parents("table").attr("id");
+		var pivotTr = $(this).parents("tr");
+		var trTemplate = $("#schema_template tr#"+tableId);
+		var newTr = trTemplate.clone();
+		newTr.removeAttr("id");
+		if(pivotTr.find("input, select, textarea").length > 0) {
+			pivotTr.after(newTr);
+		} else {
+			pivotTr.after(newTr);
+			pivotTr.remove();
+		}
+		tableRefreshFunc($(this).parents("tbody"));
 		newTr.find("span.icon-plus-sign").parent("a.btn").click(addRowFunction);
 		newTr.find("span.icon-minus-sign").parent("a.btn").click(removeRowFunction);
 	};

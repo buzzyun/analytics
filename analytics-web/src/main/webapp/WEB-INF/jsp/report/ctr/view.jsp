@@ -26,6 +26,9 @@ for(ServiceSetting serviceSetting : serviceList) {
 		break;
 	}
 }
+if(primeServiceSetting == null) {
+	primeServiceSetting = new ServiceSetting("","",false);
+}
 String primeServiceId = primeServiceSetting.getId();
 String primeServiceName = primeServiceSetting.getName();
 ListableCounter primeSearchCounter = searchPathCounter.get(primeServiceId);

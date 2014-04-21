@@ -69,6 +69,12 @@ public class StatisticsService extends AbstractService {
 		List<SiteSetting> siteList = null;
 		try {
 			siteListSetting = JAXBConfigs.readConfig(siteConfigFile, SiteListSetting.class);
+			if(siteListSetting == null) {
+				siteList = new ArrayList<SiteSetting>();
+				siteListSetting = new SiteListSetting();
+				siteListSetting.setSiteList(siteList);
+			}
+			
 			siteList = siteListSetting.getSiteList();
 			for(SiteSetting siteSetting : siteList) {
 				String siteId = siteSetting.getId();

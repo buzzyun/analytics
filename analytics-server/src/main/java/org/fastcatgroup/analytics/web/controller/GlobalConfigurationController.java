@@ -102,13 +102,15 @@ public class GlobalConfigurationController extends AbstractController {
 				}
 			}
 		} else {
-			currentSiteConfig = siteList.get(0);
-			if(currentSiteConfig!=null) {
-				currentSiteId = currentSiteConfig.getId();
-				currentSiteName = currentSiteConfig.getName();
-				StatisticsSettings statisticsSettings = currentSiteConfig.getStatisticsSettings();
-				if(statisticsSettings.getCategoryList()!=null) {
-					categoryList = statisticsSettings.getCategoryList();
+			if(siteList.size() > 0) {
+				currentSiteConfig = siteList.get(0);
+				if(currentSiteConfig!=null) {
+					currentSiteId = currentSiteConfig.getId();
+					currentSiteName = currentSiteConfig.getName();
+					StatisticsSettings statisticsSettings = currentSiteConfig.getStatisticsSettings();
+					if(statisticsSettings.getCategoryList()!=null) {
+						categoryList = statisticsSettings.getCategoryList();
+					}
 				}
 			}
 		}

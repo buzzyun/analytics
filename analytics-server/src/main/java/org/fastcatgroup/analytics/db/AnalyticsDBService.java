@@ -126,7 +126,6 @@ public class AnalyticsDBService extends AbstractDBService {
 			managedMapper.dropTable(siteId);
 			mapperSession.commit();
 		} catch (Exception ignore) {
-			logger.error("",ignore);
 		}
 	}
 	

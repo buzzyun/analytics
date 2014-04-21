@@ -71,11 +71,13 @@ public class StatisticsService extends AbstractService {
 			siteListSetting = JAXBConfigs.readConfig(siteConfigFile, SiteListSetting.class);
 			if(siteListSetting == null) {
 				siteList = new ArrayList<SiteSetting>();
-				siteListSetting = new SiteListSetting();
-				siteListSetting.setSiteList(siteList);
 			}
 			
 			siteList = siteListSetting.getSiteList();
+			if(siteList == null) {
+				siteList = new ArrayList<SiteSetting>();
+				siteListSetting.setSiteList(siteList);
+			}
 			for(SiteSetting siteSetting : siteList) {
 				String siteId = siteSetting.getId();
 				File statisticsFile = new File(confSiteDir, siteSetting.getId()+".xml");

@@ -157,11 +157,6 @@ public class AnalyticsDBService extends AbstractDBService {
 				logger.debug("create index {}, {}", siteId, clazz.getSimpleName());
 				managedMapper.createIndex(siteId);
 				mapperSession.commit();
-				
-				if(managedMapper instanceof UserAccountMapper) {
-					UserAccountMapper mapper = (UserAccountMapper)managedMapper;
-					mapper.putEntry(new UserAccountVO(UserAccountVO.ADMIN_USER_NAME, UserAccountVO.ADMIN_USER_ID, "1111", "", ""));
-				}
 			} catch (Exception e2) {
 				logger.error("", e2);
 			}
@@ -175,16 +170,24 @@ public class AnalyticsDBService extends AbstractDBService {
 		List<SiteSetting> siteCategoryConfig = config.getSiteList();
 
 		for (Class<?> mapperDAO : mapperList) {
-			
 			Class<? extends AnalyticsMapper> clazz = (Class<? extends AnalyticsMapper>) mapperDAO;
-			logger.debug("class : {}", clazz.getSimpleName());
-			MapperSession<? extends AnalyticsMapper> mapperSession = (MapperSession<? extends AnalyticsMapper>) getMapperSession(clazz);
-			
-			for (SiteSetting siteConfig : siteCategoryConfig) {
-				String siteId = siteConfig.getId();
-				this.addNewSiteMapper(siteId, mapperSession, clazz);
+			if(!clazz.equals(UserAccountMapper.class)) {
+				logger.debug("class : {}", clazz.getSimpleName());
+				MapperSession<? extends AnalyticsMapper> mapperSession = (MapperSession<? extends AnalyticsMapper>) getMapperSession(clazz);
+				
+				for (SiteSetting siteConfig : siteCategoryConfig) {
+					String siteId = siteConfig.getId();
+					this.addNewSiteMapper(siteId, mapperSession, clazz);
+				}
+				mapperSession.closeSession();
 			}
-			mapperSession.closeSession();
+		}
+		
+		try {
+			MapperSession<UserAccountMapper> mapperSession = getMapperSession(UserAccountMapper.class);
+			this.addNewSiteMapper("", mapperSession, UserAccountMapper.class);
+		} catch (Exception e) {
+			logger.error("",e);
 		}
 	}
 }

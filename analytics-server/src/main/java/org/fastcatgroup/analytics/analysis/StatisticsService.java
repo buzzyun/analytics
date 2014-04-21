@@ -113,6 +113,10 @@ public class StatisticsService extends AbstractService {
 		File confSiteDir = new File(confDir,"sites");
 		File siteConfigFile = new File(confDir,"sites.xml");
 		
+		if(!confSiteDir.exists()) {
+			confSiteDir.mkdirs();
+		}
+		
 		List<SiteSetting> siteList = siteListSetting.getSiteList();
 		
 		logger.trace("siteList:{}", siteList);

@@ -13,6 +13,7 @@ import org.fastcatgroup.analytics.analysis.config.SiteListSetting.SiteSetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.CategorySetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ClickTypeSetting;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.TypeSetting;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
 import org.fastcatgroup.analytics.db.mapper.ClickHitMapper;
@@ -55,8 +56,8 @@ public class ReportMainController extends AbstractController {
 	@RequestMapping("/dashboard")
 	public ModelAndView dashboard(@PathVariable String siteId) {
 		
-		AnalyticsDBService dbService = ServiceManager.getInstance().getService(
-				AnalyticsDBService.class);
+		AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
+		StatisticsSettings statisticsSetting = getStatisticsService().getStatisticsSetting(siteId);
 		
 		MapperSession<SearchHitMapper> hitSession = null;
 		MapperSession<SearchKeywordRankMapper> rankSession = null;
@@ -128,7 +129,12 @@ public class ReportMainController extends AbstractController {
 			mav.addObject("newKeywordList", newKeywordList);
 			
 			//타입별
-			String[] types = new String[] { "category", "login", "age" };
+			List<String> types = new ArrayList<String>();
+			for(TypeSetting typeSetting : statisticsSetting.getSiteAttribute().getTypeList()){
+				if(typeSetting.isPrime()){
+					types.add(typeSetting.getId());
+				}
+			}
 			String[] typeRateListArray = environment.settingManager().getSystemSettings().getStringArray("dashboard.typeRateList", ",");
 			List<String> typeRateList = null;
 			if(typeRateListArray == null){
@@ -137,10 +143,10 @@ public class ReportMainController extends AbstractController {
 				typeRateList = Arrays.asList(typeRateListArray);
 			}
 			@SuppressWarnings("unchecked")
-			List<SearchTypeHitVO>[] typeListArray = new List[types.length];
+			List<SearchTypeHitVO>[] typeListArray = new List[types.size()];
 			
-			for(int typeInx=0; typeInx < types.length; typeInx++) {
-				String typeId = types[typeInx];
+			for (int typeInx = 0; typeInx < types.size(); typeInx++) {
+				String typeId = types.get(typeInx);
 				List<SearchTypeHitVO> typeList = typeMapper.getEntryList(siteId, categoryId, timeId, typeId);
 				typeListArray[typeInx] = typeList;
 			}
@@ -154,7 +160,7 @@ public class ReportMainController extends AbstractController {
 			
 			toDate.add(Calendar.MONTH, 1);
 			
-			StatisticsSettings statisticsSetting = getStatisticsService().getStatisticsSetting(siteId);
+			
 			
 			List<ClickTypeSetting> clickTypeList = statisticsSetting.getSiteAttribute().getClickTypeList();
 			

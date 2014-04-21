@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.Calendar;
 import java.util.List;
 
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.calculator.Calculator;
 import org.fastcatgroup.analytics.analysis.calculator.WeeklyKeywordHitAndRankCalculator;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
@@ -28,7 +28,7 @@ public class WeeklySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 		File baseDir = environment.filePaths().getStatisticsRoot().file("search", "date");
 		
 		//주의 최초로 되돌린다.
-		Calendar prevCalendar = SearchStatisticsProperties.getLastDayOfWeek(calendar);
+		Calendar prevCalendar = StatisticsUtils.getLastDayOfWeek(calendar);
 		prevCalendar.add(Calendar.DAY_OF_MONTH, -7);
 		int topCount = 10;
 		

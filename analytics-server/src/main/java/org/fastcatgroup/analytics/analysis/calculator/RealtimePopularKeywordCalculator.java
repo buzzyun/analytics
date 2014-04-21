@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.fastcatgroup.analytics.analysis.SearchLogValidator;
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.handler.CheckFileEmptyHandler;
 import org.fastcatgroup.analytics.analysis.handler.KeyCountLogSortHandler;
 import org.fastcatgroup.analytics.analysis.handler.KeywordRankDiffHandler;
@@ -40,14 +40,14 @@ public class RealtimePopularKeywordCalculator extends Calculator<SearchLog> {
 	
 	@Override
 	protected CategoryProcess<SearchLog> newCategoryProcess(String categoryId){
-		String encoding = SearchStatisticsProperties.encoding;
+		String encoding = StatisticsUtils.encoding;
 		File workingDir = new File(baseDir, categoryId);
-		int runKeySize = SearchStatisticsProperties.runKeySize;
+		int runKeySize = StatisticsUtils.runKeySize;
 
 		File storeDir = new File(workingDir, "store");
 		String tmpLogFilename = "0.log";
-		int maxKeywordLength = SearchStatisticsProperties.maxKeywordLength;
-		int realtimeSearchLogLimit = SearchStatisticsProperties.realtimeSearchLogLimit;
+		int maxKeywordLength = StatisticsUtils.maxKeywordLength;
+		int realtimeSearchLogLimit = StatisticsUtils.realtimeSearchLogLimit;
 		
 		logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
 		KeyCountRunEntryParser entryParser = new KeyCountRunEntryParser();

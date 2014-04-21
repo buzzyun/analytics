@@ -8,11 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.config.SiteListSetting.SiteSetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.CategorySetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ClickTypeSetting;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.TypeSetting;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
 import org.fastcatgroup.analytics.db.mapper.ClickHitMapper;
@@ -55,8 +56,8 @@ public class ReportMainController extends AbstractController {
 	@RequestMapping("/dashboard")
 	public ModelAndView dashboard(@PathVariable String siteId) {
 		
-		AnalyticsDBService dbService = ServiceManager.getInstance().getService(
-				AnalyticsDBService.class);
+		AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
+		StatisticsSettings statisticsSetting = getStatisticsService().getStatisticsSetting(siteId);
 		
 		MapperSession<SearchHitMapper> hitSession = null;
 		MapperSession<SearchKeywordRankMapper> rankSession = null;
@@ -83,15 +84,15 @@ public class ReportMainController extends AbstractController {
 			ClickHitMapper clickMapper = clickSession.getMapper();
 			
 			//일주일치와 그 전주의 일자별 데이터를 가져온다.
-			Calendar calendar = SearchStatisticsProperties.getCalendar();
-			Calendar fromDate = SearchStatisticsProperties.getFirstDayOfWeek(calendar);
-			Calendar toDate = SearchStatisticsProperties.getLastDayOfWeek(calendar);
+			Calendar calendar = StatisticsUtils.getCalendar();
+			Calendar fromDate = StatisticsUtils.getFirstDayOfWeek(calendar);
+			Calendar toDate = StatisticsUtils.getLastDayOfWeek(calendar);
 			
-			String fromTimeId = SearchStatisticsProperties.getTimeId(fromDate, Calendar.DAY_OF_MONTH);
-			String toTimeId = SearchStatisticsProperties.getTimeId(toDate, Calendar.DAY_OF_MONTH);
+			String fromTimeId = StatisticsUtils.getTimeId(fromDate, Calendar.DAY_OF_MONTH);
+			String toTimeId = StatisticsUtils.getTimeId(toDate, Calendar.DAY_OF_MONTH);
 			
-			String timeText = SearchStatisticsProperties.toDatetimeString(fromDate)
-					+ " - " + SearchStatisticsProperties.toDatetimeString(toDate);
+			String timeText = StatisticsUtils.toDatetimeString(fromDate)
+					+ " - " + StatisticsUtils.toDatetimeString(toDate);
 			
 			List<SearchHitVO> currentWeek = fillData(
 					hitMapper.getEntryListBetween(siteId, categoryId,
@@ -99,8 +100,8 @@ public class ReportMainController extends AbstractController {
 			
 			fromDate.add(Calendar.DAY_OF_MONTH, -7);
 			toDate.add(Calendar.DAY_OF_MONTH, -7);
-			fromTimeId = SearchStatisticsProperties.getTimeId(fromDate, Calendar.DAY_OF_MONTH);
-			toTimeId = SearchStatisticsProperties.getTimeId(toDate, Calendar.DAY_OF_MONTH);
+			fromTimeId = StatisticsUtils.getTimeId(fromDate, Calendar.DAY_OF_MONTH);
+			toTimeId = StatisticsUtils.getTimeId(toDate, Calendar.DAY_OF_MONTH);
 			
 			List<SearchHitVO> lastWeek = fillData(
 					hitMapper.getEntryListBetween(siteId, categoryId,
@@ -114,7 +115,7 @@ public class ReportMainController extends AbstractController {
 			Calendar lastDay = (Calendar) calendar.clone();
 			lastDay.add(Calendar.DAY_OF_MONTH, -1);
 			
-			String timeId = SearchStatisticsProperties.getTimeId(lastDay, Calendar.DAY_OF_MONTH);
+			String timeId = StatisticsUtils.getTimeId(lastDay, Calendar.DAY_OF_MONTH);
 			List<RankKeywordVO> popularKeywordList = rankMapper.getEntryList(
 					siteId, categoryId, timeId, null, 0, 0, 10);
 			List<RankKeywordVO> hotKeywordList = rankMapper.getEntryList(
@@ -128,7 +129,12 @@ public class ReportMainController extends AbstractController {
 			mav.addObject("newKeywordList", newKeywordList);
 			
 			//타입별
-			String[] types = new String[] { "category", "login", "age" };
+			List<String> types = new ArrayList<String>();
+			for(TypeSetting typeSetting : statisticsSetting.getSiteAttribute().getTypeList()){
+				if(typeSetting.isPrime()){
+					types.add(typeSetting.getId());
+				}
+			}
 			String[] typeRateListArray = environment.settingManager().getSystemSettings().getStringArray("dashboard.typeRateList", ",");
 			List<String> typeRateList = null;
 			if(typeRateListArray == null){
@@ -137,10 +143,10 @@ public class ReportMainController extends AbstractController {
 				typeRateList = Arrays.asList(typeRateListArray);
 			}
 			@SuppressWarnings("unchecked")
-			List<SearchTypeHitVO>[] typeListArray = new List[types.length];
+			List<SearchTypeHitVO>[] typeListArray = new List[types.size()];
 			
-			for(int typeInx=0; typeInx < types.length; typeInx++) {
-				String typeId = types[typeInx];
+			for (int typeInx = 0; typeInx < types.size(); typeInx++) {
+				String typeId = types.get(typeInx);
 				List<SearchTypeHitVO> typeList = typeMapper.getEntryList(siteId, categoryId, timeId, typeId);
 				typeListArray[typeInx] = typeList;
 			}
@@ -154,7 +160,7 @@ public class ReportMainController extends AbstractController {
 			
 			toDate.add(Calendar.MONTH, 1);
 			
-			StatisticsSettings statisticsSetting = getStatisticsService().getStatisticsSetting(siteId);
+			
 			
 			List<ClickTypeSetting> clickTypeList = statisticsSetting.getSiteAttribute().getClickTypeList();
 			
@@ -166,8 +172,8 @@ public class ReportMainController extends AbstractController {
 			}
 			int timeInx = 0;
 			for (;fromDate.getTimeInMillis() <= toDate.getTimeInMillis();timeInx++) {
-				timeId = SearchStatisticsProperties.getTimeId(fromDate, Calendar.MONTH);
-				String label = SearchStatisticsProperties.toDatetimeString(fromDate, Calendar.MONTH);
+				timeId = StatisticsUtils.getTimeId(fromDate, Calendar.MONTH);
+				String label = StatisticsUtils.toDatetimeString(fromDate, Calendar.MONTH);
 				labelList.add(label);
 				
 				List<SearchPathHitVO> pvList = pathMapper.getEntryByTimeId(siteId, timeId);
@@ -260,18 +266,18 @@ public class ReportMainController extends AbstractController {
 		if (list != null && list.size() > 0) {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			for (int timeInx = 0; fromDate.getTimeInMillis() <= toDate.getTimeInMillis(); timeInx++) {
-				String timeString = SearchStatisticsProperties.toDatetimeString(fromDate, Calendar.DAY_OF_MONTH);
+				String timeString = StatisticsUtils.toDatetimeString(fromDate, Calendar.DAY_OF_MONTH);
 				logger.trace("timeString > {}", timeString);
 				int hit = 0;
 				if(timeInx < list.size()) {
 					SearchHitVO vo = list.get(timeInx);
-					Calendar timeCurrent = SearchStatisticsProperties.parseTimeId(vo.getTimeId());
+					Calendar timeCurrent = StatisticsUtils.parseTimeId(vo.getTimeId());
 					if(logger.isTraceEnabled()) {
 						logger.trace("startTime > {} : timeCurrent > {}:{}", sdf.format(fromDate.getTime()), 
 								sdf.format(timeCurrent.getTime()), vo.getTimeId());
 					}
 
-					if (SearchStatisticsProperties.isEquals(fromDate, timeCurrent, Calendar.DAY_OF_MONTH)) {
+					if (StatisticsUtils.isEquals(fromDate, timeCurrent, Calendar.DAY_OF_MONTH)) {
 						hit = vo.getHit();
 						vo.setTimeId(timeString);
 						list.set(timeInx, vo);
@@ -297,7 +303,7 @@ public class ReportMainController extends AbstractController {
 
 				fromDate.add(Calendar.DAY_OF_MONTH, 1);
 				if(logger.isTraceEnabled()) {
-					logger.trace("startTime:{}", SearchStatisticsProperties.toDatetimeString(fromDate, Calendar.DAY_OF_MONTH));
+					logger.trace("startTime:{}", StatisticsUtils.toDatetimeString(fromDate, Calendar.DAY_OF_MONTH));
 					logger.trace("startTime:{} / endTime:{}",sdf.format(fromDate.getTime()), sdf.format(toDate.getTime()));
 				}
 			}

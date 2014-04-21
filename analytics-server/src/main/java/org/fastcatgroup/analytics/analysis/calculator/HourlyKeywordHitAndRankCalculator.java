@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.fastcatgroup.analytics.analysis.SearchLogValidator;
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.handler.ProcessHandler;
 import org.fastcatgroup.analytics.analysis.handler.SearchHourLogKeyCountHandler;
 import org.fastcatgroup.analytics.analysis.handler.UpdateHourlySearchHitHandler;
@@ -30,11 +30,11 @@ public class HourlyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 	
 	@Override
 	protected CategoryProcess<SearchLog> newCategoryProcess(String categoryId){
-		String encoding = SearchStatisticsProperties.encoding;
+		String encoding = StatisticsUtils.encoding;
 		File workingDir = new File(baseDir, categoryId);
 		
-		int maxKeywordLength = SearchStatisticsProperties.maxKeywordLength;
-		int runKeySize = SearchStatisticsProperties.runKeySize;
+		int maxKeywordLength = StatisticsUtils.maxKeywordLength;
+		int runKeySize = StatisticsUtils.runKeySize;
 		
 		KeyCountRunEntryParser entryParser = new KeyCountRunEntryParser();
 		CategoryProcess<SearchLog> categoryProcess = new CategoryProcess<SearchLog>(categoryId);

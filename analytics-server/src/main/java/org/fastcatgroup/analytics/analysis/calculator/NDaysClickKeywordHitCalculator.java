@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.fastcatgroup.analytics.analysis.NullLogHandler;
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.handler.MergeKeyCountProcessHandler;
 import org.fastcatgroup.analytics.analysis.log.ClickLog;
 import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
@@ -36,9 +36,9 @@ public class NDaysClickKeywordHitCalculator extends Calculator<ClickLog> {
 			
 		if(categoryId.equals("_root")) {
 		
-			String encoding = SearchStatisticsProperties.encoding;
+			String encoding = StatisticsUtils.encoding;
 			
-			File workingDir = new File(SearchStatisticsProperties.getDayDataDir(baseDir, calendar), siteId);
+			File workingDir = new File(StatisticsUtils.getDayDataDir(baseDir, calendar), siteId);
 			
 			if(!workingDir.exists()) {
 				try {
@@ -49,7 +49,7 @@ public class NDaysClickKeywordHitCalculator extends Calculator<ClickLog> {
 			File[] clickLogFiles = new File[nDays];
 			Calendar dailyCalendar = (Calendar) calendar.clone();
 			for (int inx = 0; inx < nDays; inx++) {
-				File timeDir = SearchStatisticsProperties.getDayDataDir(baseDir, dailyCalendar);
+				File timeDir = StatisticsUtils.getDayDataDir(baseDir, dailyCalendar);
 				clickLogFiles[inx] = new File(new File(timeDir, siteId), CLICK_COUNT_FILENAME);
 				dailyCalendar.add(Calendar.DAY_OF_MONTH, -1);
 			}

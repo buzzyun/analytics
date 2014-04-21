@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.fastcatgroup.analytics.analysis.DailyRawLogger;
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.calculator.Calculator;
 import org.fastcatgroup.analytics.analysis.calculator.DailyKeywordHitAndRankCalculator;
 import org.fastcatgroup.analytics.analysis.calculator.HourlyKeywordHitAndRankCalculator;
@@ -37,7 +37,7 @@ public class HourlySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 		// baseDir : statistics/search/date/Y####/M##/D##/data/{siteId} 경로
 		File dir = environment.filePaths().getStatisticsRoot().file("search", "date");
 		
-		File baseDir = new File(SearchStatisticsProperties.getDayDataDir(dir, calendar), siteId);
+		File baseDir = new File(StatisticsUtils.getDayDataDir(dir, calendar), siteId);
 		
 		Set<String> banWords = null;
 		int minimumHitCount = 1;
@@ -45,7 +45,7 @@ public class HourlySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 
 		//당일치 로그만 이용한다.
 		File logFile = new File(baseDir, RAW_LOG_FILENAME);
-		String encoding = SearchStatisticsProperties.encoding;
+		String encoding = StatisticsUtils.encoding;
 		try {
 			logReader = new SearchLogReader(new File[] { logFile }, encoding);
 			//logger.debug("logReader:{}", logReader);

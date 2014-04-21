@@ -10,7 +10,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.CategorySetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ClickTypeSetting;
@@ -58,15 +58,15 @@ public class ConfigurationMainController extends AbstractController {
 
 			String[] dateArr = date.split(" - ");
 
-			calendar1 = SearchStatisticsProperties.parseDatetimeString(dateArr[0], true);
+			calendar1 = StatisticsUtils.parseDatetimeString(dateArr[0], true);
 
 			if (dateArr.length > 1) {
-				calendar2 = SearchStatisticsProperties.parseDatetimeString(dateArr[1], false);
+				calendar2 = StatisticsUtils.parseDatetimeString(dateArr[1], false);
 			} else {
 				calendar2 = calendar1;
 			}
-			timeId1 = SearchStatisticsProperties.getTimeId(calendar1, Calendar.DAY_OF_MONTH);
-			timeId2 = SearchStatisticsProperties.getTimeId(calendar2, Calendar.DAY_OF_MONTH);
+			timeId1 = StatisticsUtils.getTimeId(calendar1, Calendar.DAY_OF_MONTH);
+			timeId2 = StatisticsUtils.getTimeId(calendar2, Calendar.DAY_OF_MONTH);
 			if ("searchStatictics".equals(taskType)) {
 				Job job = new DailySearchLogAnalyticsTaskRunJob(siteId, timeId1, timeId2);
 				JobService.getInstance().offer(job);
@@ -77,11 +77,11 @@ public class ConfigurationMainController extends AbstractController {
 			}
 
 		} else {
-			calendar1 = SearchStatisticsProperties.getCalendar();
+			calendar1 = StatisticsUtils.getCalendar();
 			calendar1.add(Calendar.DATE, -1);
 		}
 
-		mav.addObject("date", SearchStatisticsProperties.toDatetimeString(calendar1));
+		mav.addObject("date", StatisticsUtils.toDatetimeString(calendar1));
 		return mav;
 	}
 
@@ -104,19 +104,19 @@ public class ConfigurationMainController extends AbstractController {
 					dateArr[i] = dateArr[i].trim();
 				}
 
-				calendar1 = SearchStatisticsProperties.parseDatetimeString(dateArr[0], true);
-				calendar2 = SearchStatisticsProperties.parseDatetimeString(dateArr[1], false);
+				calendar1 = StatisticsUtils.parseDatetimeString(dateArr[0], true);
+				calendar2 = StatisticsUtils.parseDatetimeString(dateArr[1], false);
 				
-				timeId1 = SearchStatisticsProperties.getTimeId(calendar1, Calendar.DAY_OF_MONTH);
-				timeId2 = SearchStatisticsProperties.getTimeId(calendar2, Calendar.DAY_OF_MONTH);
+				timeId1 = StatisticsUtils.getTimeId(calendar1, Calendar.DAY_OF_MONTH);
+				timeId2 = StatisticsUtils.getTimeId(calendar2, Calendar.DAY_OF_MONTH);
 				
 				Job job = new TestBulkLogAnalyticsTaskRunJob(siteId, timeId1, timeId2);
 				JobService.getInstance().offer(job);
 			}
 			mav.addObject("date", date);
 		}else{
-			Calendar now = SearchStatisticsProperties.getCalendar();
-			String timeString = SearchStatisticsProperties.toDatetimeString(now, Calendar.DAY_OF_MONTH);
+			Calendar now = StatisticsUtils.getCalendar();
+			String timeString = StatisticsUtils.toDatetimeString(now, Calendar.DAY_OF_MONTH);
 			mav.addObject("date", timeString + " - " + timeString);
 		}
 		return mav;

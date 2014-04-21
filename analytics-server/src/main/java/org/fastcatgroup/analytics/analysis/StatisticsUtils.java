@@ -9,8 +9,8 @@ import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SearchStatisticsProperties {
-	private static Logger logger = LoggerFactory.getLogger(SearchStatisticsProperties.class);
+public class StatisticsUtils {
+	private static Logger logger = LoggerFactory.getLogger(StatisticsUtils.class);
 	
 	public static final String encoding = "utf-8";
 	public static int runKeySize = 10 * 10000;
@@ -206,7 +206,7 @@ public class SearchStatisticsProperties {
 	
 	public static Calendar parseDatetimeString(String timeString, boolean start) {
 		try {
-			Calendar calendar = SearchStatisticsProperties.getCalendar();
+			Calendar calendar = StatisticsUtils.getCalendar();
 			calendar.setTime(dateTimeFormat.parse(timeString));
 			if(start) {
 				calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -264,7 +264,7 @@ public class SearchStatisticsProperties {
 			int month = Integer.parseInt(timeId.substring(5,7)) - 1;
 			int day = Integer.parseInt(timeId.substring(7,9));
 			int hour = Integer.parseInt(timeId.substring(9,11));
-			Calendar calendar = SearchStatisticsProperties.getCalendar();
+			Calendar calendar = StatisticsUtils.getCalendar();
 			calendar.set(Calendar.YEAR, year);
 			calendar.set(Calendar.MONTH, month);
 			calendar.set(Calendar.DAY_OF_MONTH, day);
@@ -277,7 +277,7 @@ public class SearchStatisticsProperties {
 			int year = Integer.parseInt(timeId.substring(1,5));
 			int month = Integer.parseInt(timeId.substring(5,7)) - 1;
 			int day = Integer.parseInt(timeId.substring(7,9));
-			Calendar calendar = SearchStatisticsProperties.getCalendar();
+			Calendar calendar = StatisticsUtils.getCalendar();
 			calendar.set(Calendar.YEAR, year);
 			calendar.set(Calendar.MONTH, month);
 			calendar.set(Calendar.DAY_OF_MONTH, day);
@@ -289,7 +289,7 @@ public class SearchStatisticsProperties {
 		}else if(type == 'W'){
 			int year = Integer.parseInt(timeId.substring(1,5));
 			int week = Integer.parseInt(timeId.substring(5,7));
-			Calendar calendar = SearchStatisticsProperties.getCalendar();
+			Calendar calendar = StatisticsUtils.getCalendar();
 			calendar.set(Calendar.YEAR, year);
 			calendar.set(Calendar.WEEK_OF_YEAR, week);
 			calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
@@ -301,7 +301,7 @@ public class SearchStatisticsProperties {
 		}else if(type == 'M'){
 			int year = Integer.parseInt(timeId.substring(1,5));
 			int month = Integer.parseInt(timeId.substring(5,7)) - 1;
-			Calendar calendar = SearchStatisticsProperties.getCalendar();
+			Calendar calendar = StatisticsUtils.getCalendar();
 			calendar.set(Calendar.YEAR, year);
 			calendar.set(Calendar.MONTH, month);
 			calendar.set(Calendar.DAY_OF_MONTH, 1);
@@ -312,7 +312,7 @@ public class SearchStatisticsProperties {
 			return calendar;
 		}else if(type == 'Y'){
 			int year = Integer.parseInt(timeId.substring(1,5));
-			Calendar calendar = SearchStatisticsProperties.getCalendar();
+			Calendar calendar = StatisticsUtils.getCalendar();
 			calendar.set(Calendar.YEAR, year);
 			calendar.set(Calendar.MONTH, 0);
 			calendar.set(Calendar.DAY_OF_MONTH, 1);

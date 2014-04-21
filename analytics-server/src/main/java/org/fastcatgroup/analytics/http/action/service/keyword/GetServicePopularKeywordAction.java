@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
 import org.fastcatgroup.analytics.db.vo.RankKeywordVO.RankDiffType;
@@ -43,7 +43,7 @@ public class GetServicePopularKeywordAction extends ServiceAction {
 		int interval = request.getIntParameter("interval", 1);
 		String errorMessage = null;
 
-		Calendar calendar = SearchStatisticsProperties.getCalendar();
+		Calendar calendar = StatisticsUtils.getCalendar();
 		
 		try {
 			//String timeId = null;
@@ -51,15 +51,15 @@ public class GetServicePopularKeywordAction extends ServiceAction {
 			if (interval != 0) {
 				if ("D".equalsIgnoreCase(timeType)) {
 					calendar.add(Calendar.DATE, -interval);
-					timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DATE);
+					timeId = StatisticsUtils.getTimeId(calendar, Calendar.DATE);
 					list = statisticsService.getPopularKeywordList(siteId, categoryId, timeId);
 				} else if ("W".equalsIgnoreCase(timeType)) {
 					calendar.add(Calendar.WEEK_OF_YEAR, -interval);
-					timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.WEEK_OF_YEAR);
+					timeId = StatisticsUtils.getTimeId(calendar, Calendar.WEEK_OF_YEAR);
 					list = statisticsService.getPopularKeywordList(siteId, categoryId, timeId);
 				} else if ("M".equalsIgnoreCase(timeType)) {
 					calendar.add(Calendar.MONTH, -interval);
-					timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.MONTH);
+					timeId = StatisticsUtils.getTimeId(calendar, Calendar.MONTH);
 					list = statisticsService.getPopularKeywordList(siteId, categoryId, timeId);
 				}
 			} else {
@@ -70,7 +70,7 @@ public class GetServicePopularKeywordAction extends ServiceAction {
 				File baseDir = environment.filePaths().getStatisticsRoot().file("search", "date");
 				
 				Calendar dailyCalendar = (Calendar) calendar.clone();
-				File timeDir = SearchStatisticsProperties.getDayDataDir(baseDir, dailyCalendar);
+				File timeDir = StatisticsUtils.getDayDataDir(baseDir, dailyCalendar);
 				File file = new File(new File(new File(timeDir, siteId), categoryId),POPULAR_FILENAME);
 				BufferedReader reader = null;
 				

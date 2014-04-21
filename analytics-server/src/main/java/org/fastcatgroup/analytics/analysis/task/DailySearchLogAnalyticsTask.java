@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.fastcatgroup.analytics.analysis.DailyRawLogger;
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.analysis.calculator.Calculator;
 import org.fastcatgroup.analytics.analysis.calculator.DailyKeywordHitAndRankCalculator;
@@ -46,14 +46,14 @@ public class DailySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 		
 		Calendar prevCalendar = (Calendar) calendar.clone();
 		prevCalendar.add(Calendar.DAY_OF_MONTH, -1);
-		File baseDir = new File(SearchStatisticsProperties.getDayDataDir(dir, calendar), siteId);
-		File prevDir = new File(SearchStatisticsProperties.getDayDataDir(dir, prevCalendar), siteId);
+		File baseDir = new File(StatisticsUtils.getDayDataDir(dir, calendar), siteId);
+		File prevDir = new File(StatisticsUtils.getDayDataDir(dir, prevCalendar), siteId);
 		Set<String> banWords = null;
 		int minimumHitCount = 1;
 		int topCount = 10;
 
 		File logFile = new File(baseDir, RAW_LOG_FILENAME);
-		String encoding = SearchStatisticsProperties.encoding;
+		String encoding = StatisticsUtils.encoding;
 		try {
 			logReader = new SearchLogReader(new File[] { logFile }, encoding);
 		} catch (IOException e) {

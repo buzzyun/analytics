@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.fastcatgroup.analytics.analysis.NullLogHandler;
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.handler.KeyCountLogSortHandler;
 import org.fastcatgroup.analytics.analysis.handler.KeyCountProcessHandler;
 import org.fastcatgroup.analytics.analysis.handler.KeywordRankDiffHandler;
@@ -36,12 +36,12 @@ public class WeeklyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 	
 	@Override
 	protected CategoryProcess<SearchLog> newCategoryProcess(String categoryId){
-		String encoding = SearchStatisticsProperties.encoding;
+		String encoding = StatisticsUtils.encoding;
 		
-		int diff = SearchStatisticsProperties.getDateDiff(prevCalendar, calendar);
+		int diff = StatisticsUtils.getDateDiff(prevCalendar, calendar);
 		
-		File workingDir = new File(new File(SearchStatisticsProperties.getWeekDataDir(baseDir, calendar), siteId), categoryId);
-		File prevWorkingDir = new File(new File(SearchStatisticsProperties.getWeekDataDir(baseDir, prevCalendar), siteId), categoryId);
+		File workingDir = new File(new File(StatisticsUtils.getWeekDataDir(baseDir, calendar), siteId), categoryId);
+		File prevWorkingDir = new File(new File(StatisticsUtils.getWeekDataDir(baseDir, prevCalendar), siteId), categoryId);
 		
 		if(!workingDir.exists()) {
 			try {
@@ -55,22 +55,22 @@ public class WeeklyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 			} catch (IOException ignore) { }
 		}
 		
-		String timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.WEEK_OF_YEAR);
-		int runKeySize = SearchStatisticsProperties.runKeySize;
+		String timeId = StatisticsUtils.getTimeId(calendar, Calendar.WEEK_OF_YEAR);
+		int runKeySize = StatisticsUtils.runKeySize;
 		
 		//logger.debug("daily calendar : {}", new java.text.SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()));
 		File[] keyCountFiles = new File[diff];
 		File[] keyEmptyFiles = new File[diff];
 		Calendar dailyCalendar = (Calendar) calendar.clone();
 		for(int inx=0;inx < diff; inx++) {
-			File timeDir = SearchStatisticsProperties.getDayDataDir(baseDir, dailyCalendar);
+			File timeDir = StatisticsUtils.getDayDataDir(baseDir, dailyCalendar);
 			keyCountFiles[inx] = new File(new File(new File( timeDir, siteId), categoryId), KEY_COUNT_FILENAME);
 			keyEmptyFiles[inx] = new File(new File(new File( timeDir, siteId), categoryId), KEY_COUNT_EMPTY_FILENAME);
 			dailyCalendar.add(Calendar.DAY_OF_MONTH, -1);
 		}
 		
-		String dateFrom = SearchStatisticsProperties.getTimeId(dailyCalendar, Calendar.DAY_OF_MONTH);
-		String dateTo = SearchStatisticsProperties.getTimeId(calendar, Calendar.DAY_OF_MONTH);
+		String dateFrom = StatisticsUtils.getTimeId(dailyCalendar, Calendar.DAY_OF_MONTH);
+		String dateTo = StatisticsUtils.getTimeId(calendar, Calendar.DAY_OF_MONTH);
 		
 		//일주일치의 일자별 key-count log들을 머징한다.
 		CategoryProcess<SearchLog> categoryProcess = new CategoryProcess<SearchLog>(categoryId);

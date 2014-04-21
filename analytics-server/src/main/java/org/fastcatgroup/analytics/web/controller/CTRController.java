@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ClickTypeSetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ServiceSetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.SiteAttribute;
@@ -69,8 +69,8 @@ public class CTRController extends AbstractController {
 			}
 			
 			logger.debug("timeFrom > {} ~~ {}", timeFrom, timeTo);
-			startTime = SearchStatisticsProperties.parseDatetimeString(timeFrom, true);
-			endTime = SearchStatisticsProperties.parseDatetimeString(timeTo, false);
+			startTime = StatisticsUtils.parseDatetimeString(timeFrom, true);
+			endTime = StatisticsUtils.parseDatetimeString(timeTo, false);
 		} else {
 			endTime = Calendar.getInstance();
 			startTime = Calendar.getInstance();
@@ -80,16 +80,16 @@ public class CTRController extends AbstractController {
 			endTime.add(Calendar.MONTH, 1);
 			endTime.set(Calendar.DAY_OF_MONTH, -1);
 			
-			String timeFrom = SearchStatisticsProperties.toDatetimeString(startTime);
-			String timeTo = SearchStatisticsProperties.toDatetimeString(endTime);
+			String timeFrom = StatisticsUtils.toDatetimeString(startTime);
+			String timeTo = StatisticsUtils.toDatetimeString(endTime);
 			timeText = timeFrom + " - " + timeTo;
 		}
 		
 		Calendar startTime2 = (Calendar) startTime.clone();
 		
 		int timeTypeCode = Calendar.MONTH;
-		String startTimeId = SearchStatisticsProperties.getTimeId(startTime, timeTypeCode);
-		String endTimeId = SearchStatisticsProperties.getTimeId(endTime, timeTypeCode);
+		String startTimeId = StatisticsUtils.getTimeId(startTime, timeTypeCode);
+		String endTimeId = StatisticsUtils.getTimeId(endTime, timeTypeCode);
 		logger.debug("New time id >> {} ~ {}", startTimeId, endTimeId);
 		
 		AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
@@ -113,8 +113,8 @@ public class CTRController extends AbstractController {
 			startTime = (Calendar) startTime2.clone();
 			int timeInx = 0;
 			for (;startTime.getTimeInMillis() <= endTime.getTimeInMillis();timeInx++) {
-				String timeId = SearchStatisticsProperties.getTimeId(startTime, timeTypeCode);
-				String label = SearchStatisticsProperties.toDatetimeString(startTime, Calendar.MONTH);
+				String timeId = StatisticsUtils.getTimeId(startTime, timeTypeCode);
+				String label = StatisticsUtils.toDatetimeString(startTime, Calendar.MONTH);
 				labelList.add(label);
 				List<SearchPathHitVO> list = searchPathHitMapper.getEntryByTimeId(siteId, timeId);
 				if (list != null) {
@@ -166,7 +166,7 @@ public class CTRController extends AbstractController {
 				startTime = (Calendar) startTime2.clone();
 				List<Integer> typeHitList = new ArrayList<Integer>();
 				while (startTime.getTimeInMillis() <= endTime.getTimeInMillis()) {
-					String timeId = SearchStatisticsProperties.getTimeId(startTime, timeTypeCode);
+					String timeId = StatisticsUtils.getTimeId(startTime, timeTypeCode);
 					Integer hit = clickMapper.getTypeHit(siteId, timeId, clickType);
 					typeHitList.add(hit);
 					startTime.add(timeTypeCode, 1);
@@ -177,7 +177,7 @@ public class CTRController extends AbstractController {
 			startTime = (Calendar) startTime2.clone();
 			List<Integer> clickHitList = new ArrayList<Integer>();
 			while (startTime.getTimeInMillis() <= endTime.getTimeInMillis()) {
-				String timeId = SearchStatisticsProperties.getTimeId(startTime, timeTypeCode);
+				String timeId = StatisticsUtils.getTimeId(startTime, timeTypeCode);
 				Integer hit = clickMapper.getHit(siteId, timeId);
 				clickHitList.add(hit);
 				startTime.add(timeTypeCode, 1);
@@ -213,14 +213,14 @@ public class CTRController extends AbstractController {
 		
 		Calendar calendar = null;
 		if(timeText != null) {
-			calendar = SearchStatisticsProperties.parseDatetimeString(timeText, true);
+			calendar = StatisticsUtils.parseDatetimeString(timeText, true);
 		} else {
 			calendar = Calendar.getInstance();
-			timeText = SearchStatisticsProperties.toDatetimeString(calendar);
+			timeText = StatisticsUtils.toDatetimeString(calendar);
 		}
 		
 		int timeTypeCode = Calendar.MONTH;
-		String timeId = SearchStatisticsProperties.getTimeId(calendar, timeTypeCode);
+		String timeId = StatisticsUtils.getTimeId(calendar, timeTypeCode);
 		logger.debug("New time id >> {}", timeId);
 		
 		
@@ -349,14 +349,14 @@ public class CTRController extends AbstractController {
 		mav.setViewName("report/ctr/keyword");
 		Calendar calendar = null;
 		if(timeText != null) {
-			calendar = SearchStatisticsProperties.parseDatetimeString(timeText, true);
+			calendar = StatisticsUtils.parseDatetimeString(timeText, true);
 		} else {
 			calendar = Calendar.getInstance();
-			timeText = SearchStatisticsProperties.toDatetimeString(calendar);
+			timeText = StatisticsUtils.toDatetimeString(calendar);
 		}
 		
 		int timeTypeCode = Calendar.MONTH;
-		String timeId = SearchStatisticsProperties.getTimeId(calendar, timeTypeCode);
+		String timeId = StatisticsUtils.getTimeId(calendar, timeTypeCode);
 		logger.debug("New time id >> {}", timeId);
 		
 		SiteAttribute siteAttribute = this.getStatisticsService().getStatisticsSetting(siteId).getSiteAttribute();

@@ -3,7 +3,7 @@ package org.fastcatgroup.analytics.analysis.schedule;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.junit.Test;
 
 public class ScheduleTest {
@@ -28,10 +28,10 @@ public class ScheduleTest {
 	public void testNextDaytime(){
 		int timeInDay = 0;
 		int hour = 1;
-		Calendar now = SearchStatisticsProperties.getCalendar();
+		Calendar now = StatisticsUtils.getCalendar();
 		now.set(Calendar.HOUR_OF_DAY, hour);
 		System.out.println("now > " + new Date(now.getTimeInMillis()));
-		Calendar calendar = SearchStatisticsProperties.getCalendar();
+		Calendar calendar = StatisticsUtils.getCalendar();
 		calendar.set(Calendar.HOUR_OF_DAY, timeInDay);
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);

@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.Calendar;
 import java.util.List;
 
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.TypeSetting;
 import org.fastcatgroup.analytics.analysis.handler.TypeSearchLogKeyCountHandler;
 import org.fastcatgroup.analytics.analysis.handler.UpdateSearchTypeHitHandler;
@@ -21,7 +21,7 @@ public class DailyTypeHitCalculator extends Calculator<TypeSearchLog> {
 	
 	@Override
 	protected CategoryProcess<TypeSearchLog> newCategoryProcess(String categoryId){
-		String timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DATE);
+		String timeId = StatisticsUtils.getTimeId(calendar, Calendar.DATE);
 		
 		CategoryProcess<TypeSearchLog> categoryProcess = new CategoryProcess<TypeSearchLog>(categoryId);
 		new TypeSearchLogKeyCountHandler(categoryId, typeList).attachLogHandlerTo(categoryProcess);

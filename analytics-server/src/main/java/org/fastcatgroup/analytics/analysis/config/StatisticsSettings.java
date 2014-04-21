@@ -209,8 +209,9 @@ public class StatisticsSettings {
 			super(id, name); 
 			this.setPrime(prime);
 		}
+		
 		@XmlAttribute(name = "isPrime")
-		public boolean isPrime() {
+		public Boolean isPrime() {
 			if(prime!=null) {
 				return prime;
 			}
@@ -229,7 +230,7 @@ public class StatisticsSettings {
 			this.setPrime(prime);
 		}
 		@XmlAttribute(name = "isPrime")
-		public boolean isPrime() {
+		public Boolean isPrime() {
 			if(prime!=null) {
 				return prime;
 			}

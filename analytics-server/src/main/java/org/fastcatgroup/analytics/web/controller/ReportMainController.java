@@ -129,29 +129,32 @@ public class ReportMainController extends AbstractController {
 			mav.addObject("newKeywordList", newKeywordList);
 			
 			//타입별
-			List<String> types = new ArrayList<String>();
+			List<TypeSetting> primeTypeList = new ArrayList<TypeSetting>();
 			for(TypeSetting typeSetting : statisticsSetting.getSiteAttribute().getTypeList()){
 				if(typeSetting.isPrime()){
-					types.add(typeSetting.getId());
+					primeTypeList.add(typeSetting);
 				}
 			}
-			String[] typeRateListArray = environment.settingManager().getSystemSettings().getStringArray("dashboard.typeRateList", ",");
-			List<String> typeRateList = null;
-			if(typeRateListArray == null){
-				typeRateList = new ArrayList<String>(0);
-			}else{
-				typeRateList = Arrays.asList(typeRateListArray);
-			}
-			@SuppressWarnings("unchecked")
-			List<SearchTypeHitVO>[] typeListArray = new List[types.size()];
+			logger.debug(">>>primeTypeList > {}", primeTypeList);
 			
-			for (int typeInx = 0; typeInx < types.size(); typeInx++) {
-				String typeId = types.get(typeInx);
+//			String[] typeRateListArray = environment.settingManager().getSystemSettings().getStringArray("dashboard.typeRateList", ",");
+//			List<String> typeRateList = null;
+//			if(typeRateListArray == null){
+//				typeRateList = new ArrayList<String>(0);
+//			}else{
+//				typeRateList = Arrays.asList(typeRateListArray);
+//			}
+			@SuppressWarnings("unchecked")
+			List<SearchTypeHitVO>[] typeHitListArray = new List[primeTypeList.size()];
+			
+			for (int typeInx = 0; typeInx < primeTypeList.size(); typeInx++) {
+				String typeId = primeTypeList.get(typeInx).getId();
 				List<SearchTypeHitVO> typeList = typeMapper.getEntryList(siteId, categoryId, timeId, typeId);
-				typeListArray[typeInx] = typeList;
+				typeHitListArray[typeInx] = typeList;
 			}
-			logger.debug(">>>typeRateList {}", typeRateList);
-			mav.addObject("typeListArray", typeListArray);
+			logger.debug(">>>typeHitListArray {}, {}", "", typeHitListArray);
+			mav.addObject("primeTypeList", primeTypeList);
+			mav.addObject("typeHitListArray", typeHitListArray);
 			mav.addObject("timeText", timeText);
 			
 			fromDate = (Calendar) calendar.clone();
@@ -160,10 +163,8 @@ public class ReportMainController extends AbstractController {
 			
 			toDate.add(Calendar.MONTH, 1);
 			
-			
-			
 			List<ClickTypeSetting> clickTypeList = statisticsSetting.getSiteAttribute().getClickTypeList();
-			
+		
 			List<String> labelList = new ArrayList<String>();
 			List<Integer> searchPvList = new ArrayList<Integer>();
 			Map<String, ListableCounter> clickHitList = new HashMap<String, ListableCounter>();

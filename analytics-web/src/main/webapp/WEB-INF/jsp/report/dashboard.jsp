@@ -4,9 +4,9 @@
 <%@page import="java.util.*" %>
 <%@page import="java.text.DecimalFormat" %>
 <%@page import="org.fastcatgroup.analytics.db.vo.*" %>
-<%@page import="org.fastcatgroup.analytics.analysis.SearchStatisticsProperties" %>
+<%@page import="org.fastcatgroup.analytics.analysis.StatisticsUtils" %>
 <%@page import="org.fastcatgroup.analytics.util.ListableCounter"%>
-<%@page import="org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ClickTypeSetting"%>
+<%@page import="org.fastcatgroup.analytics.analysis.config.StatisticsSettings.*"%>
 <%
 
 List<SearchHitVO> currentWeek = (List<SearchHitVO>) request.getAttribute("currentWeekData");
@@ -16,6 +16,9 @@ List<ClickTypeSetting> clickTypeList = (List<ClickTypeSetting>) request.getAttri
 List<Integer> searchPvList = (List<Integer>) request.getAttribute("searchPvList");
 Map<String, ListableCounter> clickHitList = (Map<String,ListableCounter>) request.getAttribute("clickHitList");
 List<String> labelList = (List<String>) request.getAttribute("labelList");
+
+List<SearchTypeHitVO>[] typeHitListArray = (List<SearchTypeHitVO>[])request.getAttribute("typeHitListArray");
+List<TypeSetting> primeTypeList  = (List<TypeSetting>)request.getAttribute("primeTypeList");
 
 String timeText = (String) request.getAttribute("timeText");
 int totalCurrentWeek = 0;
@@ -117,16 +120,16 @@ DecimalFormat format = new DecimalFormat("#,###");
 					clickHit+=value;
 				}
 			}
-			float searchRate=0f;
+			float clickThroughRate=0f;
 			if(pv>0) {
-				searchRate = Math.round(clickHit * 100f / pv) / 100f;
+				clickThroughRate = Math.round(clickHit * 10000f / pv) / 100f;
 			}
 			totalPv += pv;
 			totalClickHit += clickHit;
 			%>
 			ctr1[<%=i%>]=[<%=i%>,<%=pv%>];
 			ctr2[<%=i%>]=[<%=i%>,<%=clickHit%>];
-			ctr3[<%=i%>]=[<%=i%>,<%=searchRate%>];
+			ctr3[<%=i%>]=[<%=i%>,<%=clickThroughRate%>];
 			ticks[<%=i%>]=[<%=i%>,<%=labelList.get(i)%>];
 			<%
 		}
@@ -141,13 +144,13 @@ DecimalFormat format = new DecimalFormat("#,###");
 				lines: { show: true },
 				points:{ show:true }
 			}, {
-				label : "Click Through Count",
+				label : "Click-through Count",
 				data : ctr2,
 				color : "#468847",
 				lines: { show: true },
 				points:{ show:true }
 			}, {
-				label : "Click Through Rate",
+				label : "Click-through Rate",
 				data : ctr3,
 				color : "rgba(66,139,202,0.3)",
 				lines: { show: false},
@@ -160,6 +163,10 @@ DecimalFormat format = new DecimalFormat("#,###");
 				yaxis: 2
 			} ];
 			
+			function yFormatter(v, axis) {
+				return Math.ceil(v) + " %";
+			}
+			
 			$.plot("#chart_dashboard_ctr", ctr_data, $.extend(true, {}, Plugins
 				.getFlotDefaults(), {
 					xaxis : {
@@ -168,7 +175,7 @@ DecimalFormat format = new DecimalFormat("#,###");
 						ticks : ticks,
 						tickLength : 0
 					}, yaxes: [
-					  { min:"0" },{ min:"0", position: "right" }
+					  { min:"0" },{ min:"0", position: "right", tickFormatter: yFormatter }
 					], grid : {
 						hoverable : true,
 						clickable : true
@@ -195,43 +202,44 @@ DecimalFormat format = new DecimalFormat("#,###");
 			);
 			// 서비스별 Data
 			<%
-			List<SearchTypeHitVO>[] typeListArray = (List<SearchTypeHitVO>[])request.getAttribute("typeListArray");
-			for(int inx=0;inx<typeListArray.length; inx++) {
-				List<SearchTypeHitVO>typeList = typeListArray[inx];
-				if(typeList.size() > 0) {
-					String typeId = typeList.get(0).getTypeId();
-					%>
-					var <%=typeId%>_rate_data = [
-						<%
-						for(int typeInx=0;typeInx < typeList.size(); typeInx++) {
-							SearchTypeHitVO vo = typeList.get(typeInx);
-							%>
-							<% if(typeInx > 0) { %>, <% } %>
-							{ label:"<%=vo.getDtype()%>", data: <%=vo.getHit()%> }
-							
-						<%
-						}
+			//TODO 
+			for(int inx = 0; inx < primeTypeList.size(); inx++) {
+				TypeSetting typeSetting = primeTypeList.get(inx);
+				String typeId = typeSetting.getId();
+				String typeName = typeSetting.getName();
+				
+				List<SearchTypeHitVO> typeHitList = typeHitListArray[inx];
+				%>
+				var <%=typeId%>_rate_data = [
+					<%
+					for(int typeInx=0;typeInx < typeHitList.size(); typeInx++) {
+						SearchTypeHitVO vo = typeHitList.get(typeInx);
 						%>
-					];
-					$.plot("#chart_<%=typeId%>_rate", <%=typeId%>_rate_data, $.extend(true, {}, Plugins.getFlotDefaults(), {
-						series: {
-							pie: {
-								show: true,
-								radius: 1,
-								label: {
-									show: true
-								}
+						<% if(typeInx > 0) { %>, <% } %>
+						{ label:"<%=vo.getDtype()%>", data: <%=vo.getHit()%> }
+						
+					<%
+					}
+					%>
+				];
+				$.plot("#chart_<%=typeId%>_rate", <%=typeId%>_rate_data, $.extend(true, {}, Plugins.getFlotDefaults(), {
+					series: {
+						pie: {
+							show: true,
+							radius: 1,
+							label: {
+								show: true
 							}
-						}, grid: {
-							hoverable: true
-						}, tooltip: true,
-						tooltipOpts: {
-							content: '%p.0%, %s', // show percentages, rounding to 2 decimal places
-							shifts: { x: 20, y: 0 }
 						}
-					}));
-					<%	
-				}
+					}, grid: {
+						hoverable: true
+					}, tooltip: true,
+					tooltipOpts: {
+						content: '%p.0%, %s', // show percentages, rounding to 2 decimal places
+						shifts: { x: 20, y: 0 }
+					}
+				}));
+				<%	
 			}
 			%>
 		});
@@ -442,23 +450,22 @@ DecimalFormat format = new DecimalFormat("#,###");
 				<!-- - -->
 				<div class="row">
 				<% 
-				for(int inx = 0;inx < typeListArray.length; inx++) {
-					List<SearchTypeHitVO> typeList = typeListArray[inx];
-					if(typeList.size() > 0) {
-						String typeId = typeList.get(0).getTypeId();
+				for(int inx = 0; inx < primeTypeList.size(); inx++) {
+					TypeSetting typeSetting = primeTypeList.get(inx);
+					String typeId = typeSetting.getId();
+					String typeName = typeSetting.getName();
 					%>
 					<div class="col-md-4">
 						<div class="widget box">
 							<div class="widget-header">
-								<h4><%=typeId %> Ratio</h4>
+								<h4><%=typeName %></h4>
 							</div>
 							<div class="widget-content">
 								<div id="chart_<%=typeId %>_rate" class="chart"></div>
 							</div>
 						</div>
-					</div>
-					<% 
-					}
+					</div>	
+				<%
 				}
 				%>
 				</div>
@@ -490,7 +497,7 @@ DecimalFormat format = new DecimalFormat("#,###");
 									<%
 									for(ClickTypeSetting clickType : clickTypeList) {
 									%>
-									<li class="light"><strong><%=format.format(clickHitList.get(clickType.getId()).value()) %></strong> <small><%=clickType.getId() %></small></li>
+									<li class="light"><strong><%=format.format(clickHitList.get(clickType.getId()).value()) %></strong> <small><%=clickType.getName() %></small></li>
 									<%
 									}
 									%>

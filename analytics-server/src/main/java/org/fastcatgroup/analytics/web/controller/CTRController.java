@@ -361,9 +361,9 @@ public class CTRController extends AbstractController {
 		
 		SiteAttribute siteAttribute = this.getStatisticsService().getStatisticsSetting(siteId).getSiteAttribute();
 		List<ClickTypeSetting> clickTypeSettingList = siteAttribute.getClickTypeList();
-		List<String> clickTypeList = new ArrayList<String>();
+		List<String[]> clickTypeList = new ArrayList<String[]>();
 		for(ClickTypeSetting clickType : clickTypeSettingList) {
-			clickTypeList.add(clickType.getId());
+			clickTypeList.add(new String[] { clickType.getId(), clickType.getName() });
 		}
 		
 		mav.addObject("timeText", timeText);
@@ -410,13 +410,13 @@ public class CTRController extends AbstractController {
 				float ctr = ((float) ctCount / (float) searchPv) * 100.0f;
 				mav.addObject("ctRate", String.format("%.1f", ctr) + "%");
 			}
-			for(String clickType : clickTypeList){
+			for(String[] clickType : clickTypeList){
 				int typeHitValue = 0;
-				Integer typeHit = clickKeywordHitMapper.getKeywordTypeClickCount(siteId, timeId, keyword, clickType);
+				Integer typeHit = clickKeywordHitMapper.getKeywordTypeClickCount(siteId, timeId, keyword, clickType[0]);
 				if(typeHit != null){
 					typeHitValue = typeHit;
 				}
-				mav.addObject("ctCount_"+clickType, String.format("%,d", typeHitValue));
+				mav.addObject("ctCount_"+clickType[0], String.format("%,d", typeHitValue));
 			}
 
 		} catch (Exception e) {

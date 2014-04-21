@@ -70,7 +70,7 @@ public class StatisticsService extends AbstractService {
 		try {
 			siteListSetting = JAXBConfigs.readConfig(siteConfigFile, SiteListSetting.class);
 			if(siteListSetting == null) {
-				siteList = new ArrayList<SiteSetting>();
+				siteListSetting = new SiteListSetting();
 			}
 			
 			siteList = siteListSetting.getSiteList();

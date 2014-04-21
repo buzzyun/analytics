@@ -4,9 +4,9 @@
 <%@page import="java.util.*" %>
 <%@page import="java.text.DecimalFormat" %>
 <%@page import="org.fastcatgroup.analytics.db.vo.*" %>
-<%@page import="org.fastcatgroup.analytics.analysis.SearchStatisticsProperties" %>
+<%@page import="org.fastcatgroup.analytics.analysis.StatisticsUtils" %>
 <%@page import="org.fastcatgroup.analytics.util.ListableCounter"%>
-<%@page import="org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ClickTypeSetting"%>
+<%@page import="org.fastcatgroup.analytics.analysis.config.StatisticsSettings.*"%>
 <%
 
 List<SearchHitVO> currentWeek = (List<SearchHitVO>) request.getAttribute("currentWeekData");
@@ -16,6 +16,9 @@ List<ClickTypeSetting> clickTypeList = (List<ClickTypeSetting>) request.getAttri
 List<Integer> searchPvList = (List<Integer>) request.getAttribute("searchPvList");
 Map<String, ListableCounter> clickHitList = (Map<String,ListableCounter>) request.getAttribute("clickHitList");
 List<String> labelList = (List<String>) request.getAttribute("labelList");
+
+List<SearchTypeHitVO>[] typeHitListArray = (List<SearchTypeHitVO>[])request.getAttribute("typeHitListArray");
+List<TypeSetting> primeTypeList  = (List<TypeSetting>)request.getAttribute("primeTypeList");
 
 String timeText = (String) request.getAttribute("timeText");
 int totalCurrentWeek = 0;
@@ -195,43 +198,44 @@ DecimalFormat format = new DecimalFormat("#,###");
 			);
 			// 서비스별 Data
 			<%
-			List<SearchTypeHitVO>[] typeListArray = (List<SearchTypeHitVO>[])request.getAttribute("typeListArray");
-			for(int inx=0;inx<typeListArray.length; inx++) {
-				List<SearchTypeHitVO>typeList = typeListArray[inx];
-				if(typeList.size() > 0) {
-					String typeId = typeList.get(0).getTypeId();
-					%>
-					var <%=typeId%>_rate_data = [
-						<%
-						for(int typeInx=0;typeInx < typeList.size(); typeInx++) {
-							SearchTypeHitVO vo = typeList.get(typeInx);
-							%>
-							<% if(typeInx > 0) { %>, <% } %>
-							{ label:"<%=vo.getDtype()%>", data: <%=vo.getHit()%> }
-							
-						<%
-						}
+			//TODO 
+			for(int inx = 0; inx < primeTypeList.size(); inx++) {
+				TypeSetting typeSetting = primeTypeList.get(inx);
+				String typeId = typeSetting.getId();
+				String typeName = typeSetting.getName();
+				
+				List<SearchTypeHitVO> typeHitList = typeHitListArray[inx];
+				%>
+				var <%=typeId%>_rate_data = [
+					<%
+					for(int typeInx=0;typeInx < typeHitList.size(); typeInx++) {
+						SearchTypeHitVO vo = typeHitList.get(typeInx);
 						%>
-					];
-					$.plot("#chart_<%=typeId%>_rate", <%=typeId%>_rate_data, $.extend(true, {}, Plugins.getFlotDefaults(), {
-						series: {
-							pie: {
-								show: true,
-								radius: 1,
-								label: {
-									show: true
-								}
+						<% if(typeInx > 0) { %>, <% } %>
+						{ label:"<%=vo.getDtype()%>", data: <%=vo.getHit()%> }
+						
+					<%
+					}
+					%>
+				];
+				$.plot("#chart_<%=typeId%>_rate", <%=typeId%>_rate_data, $.extend(true, {}, Plugins.getFlotDefaults(), {
+					series: {
+						pie: {
+							show: true,
+							radius: 1,
+							label: {
+								show: true
 							}
-						}, grid: {
-							hoverable: true
-						}, tooltip: true,
-						tooltipOpts: {
-							content: '%p.0%, %s', // show percentages, rounding to 2 decimal places
-							shifts: { x: 20, y: 0 }
 						}
-					}));
-					<%	
-				}
+					}, grid: {
+						hoverable: true
+					}, tooltip: true,
+					tooltipOpts: {
+						content: '%p.0%, %s', // show percentages, rounding to 2 decimal places
+						shifts: { x: 20, y: 0 }
+					}
+				}));
+				<%	
 			}
 			%>
 		});
@@ -442,23 +446,22 @@ DecimalFormat format = new DecimalFormat("#,###");
 				<!-- - -->
 				<div class="row">
 				<% 
-				for(int inx = 0;inx < typeListArray.length; inx++) {
-					List<SearchTypeHitVO> typeList = typeListArray[inx];
-					if(typeList.size() > 0) {
-						String typeId = typeList.get(0).getTypeId();
+				for(int inx = 0; inx < primeTypeList.size(); inx++) {
+					TypeSetting typeSetting = primeTypeList.get(inx);
+					String typeId = typeSetting.getId();
+					String typeName = typeSetting.getName();
 					%>
 					<div class="col-md-4">
 						<div class="widget box">
 							<div class="widget-header">
-								<h4><%=typeId %> Ratio</h4>
+								<h4><%=typeName %></h4>
 							</div>
 							<div class="widget-content">
 								<div id="chart_<%=typeId %>_rate" class="chart"></div>
 							</div>
 						</div>
-					</div>
-					<% 
-					}
+					</div>	
+				<%
 				}
 				%>
 				</div>

@@ -19,10 +19,19 @@ if(timeText == null ) {
 }
 DecimalFormat format = new DecimalFormat("#,###");
 
-ListableCounter totalSearchCounter = searchPathCounter.get("total");
+ServiceSetting primeServiceSetting = null; 
+for(ServiceSetting serviceSetting : serviceList) {
+	if(serviceSetting.isPrime()) {
+		primeServiceSetting = serviceSetting;
+		break;
+	}
+}
+String primeServiceId = primeServiceSetting.getId();
+String primeServiceName = primeServiceSetting.getName();
+ListableCounter primeSearchCounter = searchPathCounter.get(primeServiceId);
 int primeSearchCount = 0;
-if(totalSearchCounter != null) {
-	primeSearchCount = totalSearchCounter.value();
+if(primeSearchCounter != null) {
+	primeSearchCount = primeSearchCounter.value();
 }
 float primeSearchRate = 0f;
 %>
@@ -69,8 +78,8 @@ $(document).ready(function() {
 		}
 		
 		Integer searchCount = 0;
-		if(totalSearchCounter!=null) {
-			searchCount = totalSearchCounter.list().get(i);
+		if(primeSearchCounter!=null) {
+			searchCount = primeSearchCounter.list().get(i);
 		}
 		if(searchCount==null) { searchCount=0; }
 		float searchRate=0f;
@@ -266,8 +275,8 @@ $(document).ready(function() {
 							<div class="widget-content">
 								<ul class="stats">
 									<li><strong><%=format.format(totalPv) %></strong> <small>Search PV</small></li>
-									<li class="text-success"><strong><%=format.format(primeSearchCount) %></strong> <small>Total Search</small></li>
-									<li class="text-primary"><strong><%=primeSearchRate %>%</strong> <small>Total Search Rate</small></li>
+									<li class="text-success"><strong><%=format.format(primeSearchCount) %></strong> <small><%=primeServiceName %></small></li>
+									<li class="text-primary"><strong><%=primeSearchRate %>%</strong> <small><%=primeServiceName %> %</small></li>
 								</ul>
 							</div>
 							<div class="divider"></div>

@@ -43,9 +43,9 @@ public class CTRController extends AbstractController {
 		SiteAttribute siteAttribute = this.getStatisticsService().getStatisticsSetting(siteId).getSiteAttribute();
 		List<ClickTypeSetting> clickTypeSettingList = siteAttribute.getClickTypeList();
 		List<ServiceSetting> serviceSettingList = siteAttribute.getServiceList();
-		List<String> clickTypeList = new ArrayList<String>();
+		List<String[]> clickTypeList = new ArrayList<String[]>();
 		for(ClickTypeSetting clickType : clickTypeSettingList) {
-			clickTypeList.add(clickType.getId());
+			clickTypeList.add(new String[] { clickType.getId(), clickType.getName() });
 		}
 		
 		Calendar startTime = null;
@@ -162,16 +162,16 @@ public class CTRController extends AbstractController {
 		mav.addObject("searchPvList", searchPvList);
 		try {
 			ClickHitMapper clickMapper = clickMapperSession.getMapper();
-			for(String clickType : clickTypeList){
+			for(String[] clickType : clickTypeList){
 				startTime = (Calendar) startTime2.clone();
 				List<Integer> typeHitList = new ArrayList<Integer>();
 				while (startTime.getTimeInMillis() <= endTime.getTimeInMillis()) {
 					String timeId = StatisticsUtils.getTimeId(startTime, timeTypeCode);
-					Integer hit = clickMapper.getTypeHit(siteId, timeId, clickType);
+					Integer hit = clickMapper.getTypeHit(siteId, timeId, clickType[0]);
 					typeHitList.add(hit);
 					startTime.add(timeTypeCode, 1);
 				}
-				mav.addObject("clickType_"+clickType, typeHitList);
+				mav.addObject("clickType_"+clickType[0], typeHitList);
 			}
 			
 			startTime = (Calendar) startTime2.clone();

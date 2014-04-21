@@ -7,7 +7,7 @@
 <%@ page import="org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ClickTypeSetting" %>
 <%@ page import="org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ServiceSetting" %>
 <%
-List<String> clickTypeList = (List<String>) request.getAttribute("clickTypeList");
+List<String[]> clickTypeList = (List<String[]>) request.getAttribute("clickTypeList");
 List<Integer> searchPvList = (List<Integer>) request.getAttribute("searchPvList");
 List<Integer> clickHitList = (List<Integer>) request.getAttribute("clickHitList");
 List<String> labelList = (List<String>) request.getAttribute("labelList");
@@ -165,8 +165,8 @@ $(document).ready(function() {
 	<%
 	List<Integer> typeCountList = new ArrayList<Integer>();
 	for(int typeInx=0;typeInx < clickTypeList.size(); typeInx++) {
-		String clickType = clickTypeList.get(typeInx);
-		List<Integer> clickList = (List<Integer>)request.getAttribute("clickType_"+clickType);
+		String[] clickType = clickTypeList.get(typeInx);
+		List<Integer> clickList = (List<Integer>)request.getAttribute("clickType_"+clickType[0]);
 		int typeCount = 0;
 		for(int inx=0;inx<clickList.size();inx++) { 
 			Integer clickCount = clickList.get(inx);
@@ -273,7 +273,7 @@ $(document).ready(function() {
 											continue;
 										}
 									%>
-									<li class="light"><strong><%=format.format(searchPathCounter.get(service.getId()).value())%></strong> <small><%=service.getId()%></small></li>
+									<li class="light"><strong><%=format.format(searchPathCounter.get(service.getId()).value())%></strong> <small><%=service.getName()%></small></li>
 									<%
 									}
 									%>
@@ -306,10 +306,10 @@ $(document).ready(function() {
 								<ul class="stats">
 									<% 
 									for(int typeInx=0;typeInx < clickTypeList.size(); typeInx++) {
-										String clickType = clickTypeList.get(typeInx);
+										String[] clickType = clickTypeList.get(typeInx);
 										int typeCount = typeCountList.get(typeInx);
 									%>
-										<li class="light"><strong><%=format.format(typeCount) %></strong> <small><%=clickType %></small></li>
+										<li class="light"><strong><%=format.format(typeCount) %></strong> <small><%=clickType[1] %></small></li>
 									<%
 									}
 									%>

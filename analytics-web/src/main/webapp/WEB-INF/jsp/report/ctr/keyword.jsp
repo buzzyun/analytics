@@ -115,7 +115,7 @@ $(document).ready(function(){
 									for(String[] clickType : clickTypeList) {
 										String count = (String) request.getAttribute("ctCount_"+clickType[0]);
 									%>
-									<li><strong><%=count %></strong> <small><%=clickType[]1 %></small></li>
+									<li><strong><%=count %></strong> <small><%=clickType[1] %></small></li>
 									<%
 									}
 									%>

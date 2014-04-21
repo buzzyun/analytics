@@ -18,9 +18,26 @@ List<CategorySetting> categoryList = (List<CategorySetting>)request.getAttribute
 <script type="text/javascript">
 
 $(document).ready(function() {
+	
+	var tableRefreshFunc = function(tbody) {
+		var trFind = tbody.find("tr");
+		trFind.each(function() {
+			var newIndex = $.inArray(this, trFind);
+			$($(this).find("td")[0]).html(newIndex + 1);
+			$(this).find("input, select, textarea").each(function() {
+				var name = $(this).attr("name");
+				var match = /^([a-zA-Z0-9_-]+)[0-9]+/.exec(name);
+				var key = match?match[1]:"";
+				$(this).attr("name", key + newIndex);
+			});
+		});
+	}
+	
 	var removeRowFunction = function() {
 		if(confirm("Category will remove. Are you OK?")) {
+			var tbody = $(this).parents("tbody");
 			$(this).parents("tr").remove();
+			tableRefreshFunc(tbody);
 		}
 	}
 	
@@ -35,16 +52,7 @@ $(document).ready(function() {
 			pivotTr.after(newTr);
 			pivotTr.remove();
 		}
-		var trFind = tbody.find("tr");
-		trFind.each(function() {
-			var newIndex = $.inArray(this, trFind);
-			$($(this).find("td")[0]).html(newIndex + 1);
-			$(this).find("input, select, textarea").each(function() {
-				var name = $(this).attr("name");
-				var key = /^([a-zA-Z0-9_-]+)[0-9]+/.exec(name)[1];
-				$(this).attr("name", key + newIndex);
-			});
-		});
+		tableRefreshFunc($(this).parents("tbody"));
 		newTr.find("span.icon-plus-sign").parent("a.btn").click(addRowFunction);
 		newTr.find("span.icon-minus-sign").parent("a.btn").click(removeRowFunction);
 	};

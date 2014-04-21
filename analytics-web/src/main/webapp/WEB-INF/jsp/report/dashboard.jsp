@@ -120,16 +120,16 @@ DecimalFormat format = new DecimalFormat("#,###");
 					clickHit+=value;
 				}
 			}
-			float searchRate=0f;
+			float clickThroughRate=0f;
 			if(pv>0) {
-				searchRate = Math.round(clickHit * 100f / pv) / 100f;
+				clickThroughRate = Math.round(clickHit * 10000f / pv) / 100f;
 			}
 			totalPv += pv;
 			totalClickHit += clickHit;
 			%>
 			ctr1[<%=i%>]=[<%=i%>,<%=pv%>];
 			ctr2[<%=i%>]=[<%=i%>,<%=clickHit%>];
-			ctr3[<%=i%>]=[<%=i%>,<%=searchRate%>];
+			ctr3[<%=i%>]=[<%=i%>,<%=clickThroughRate%>];
 			ticks[<%=i%>]=[<%=i%>,<%=labelList.get(i)%>];
 			<%
 		}
@@ -144,13 +144,13 @@ DecimalFormat format = new DecimalFormat("#,###");
 				lines: { show: true },
 				points:{ show:true }
 			}, {
-				label : "Click Through Count",
+				label : "Click-through Count",
 				data : ctr2,
 				color : "#468847",
 				lines: { show: true },
 				points:{ show:true }
 			}, {
-				label : "Click Through Rate",
+				label : "Click-through Rate",
 				data : ctr3,
 				color : "rgba(66,139,202,0.3)",
 				lines: { show: false},
@@ -163,6 +163,10 @@ DecimalFormat format = new DecimalFormat("#,###");
 				yaxis: 2
 			} ];
 			
+			function yFormatter(v, axis) {
+				return Math.ceil(v) + " %";
+			}
+			
 			$.plot("#chart_dashboard_ctr", ctr_data, $.extend(true, {}, Plugins
 				.getFlotDefaults(), {
 					xaxis : {
@@ -171,7 +175,7 @@ DecimalFormat format = new DecimalFormat("#,###");
 						ticks : ticks,
 						tickLength : 0
 					}, yaxes: [
-					  { min:"0" },{ min:"0", position: "right" }
+					  { min:"0" },{ min:"0", position: "right", tickFormatter: yFormatter }
 					], grid : {
 						hoverable : true,
 						clickable : true
@@ -493,7 +497,7 @@ DecimalFormat format = new DecimalFormat("#,###");
 									<%
 									for(ClickTypeSetting clickType : clickTypeList) {
 									%>
-									<li class="light"><strong><%=format.format(clickHitList.get(clickType.getId()).value()) %></strong> <small><%=clickType.getId() %></small></li>
+									<li class="light"><strong><%=format.format(clickHitList.get(clickType.getId()).value()) %></strong> <small><%=clickType.getName() %></small></li>
 									<%
 									}
 									%>

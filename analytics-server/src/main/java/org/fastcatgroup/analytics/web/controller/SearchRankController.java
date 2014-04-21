@@ -3,7 +3,7 @@ package org.fastcatgroup.analytics.web.controller;
 import java.util.Calendar;
 import java.util.List;
 
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.config.SiteListSetting.SiteSetting;
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
@@ -77,13 +77,13 @@ public class SearchRankController extends AbstractController {
 		}
 		
 		if(timeText == null){
-			Calendar calendar = SearchStatisticsProperties.getCalendar();
+			Calendar calendar = StatisticsUtils.getCalendar();
 			calendar.add(Calendar.DATE, -1);
-			timeText = SearchStatisticsProperties.toDatetimeString(calendar);
+			timeText = StatisticsUtils.toDatetimeString(calendar);
 		}
 		
-		Calendar calendar = SearchStatisticsProperties.parseDatetimeString(timeText, true);
-		String timeId = SearchStatisticsProperties.getTimeId(calendar, timeTypeCode);
+		Calendar calendar = StatisticsUtils.parseDatetimeString(timeText, true);
+		String timeId = StatisticsUtils.getTimeId(calendar, timeTypeCode);
 		logger.debug(">> timeText> {}, timeId > {}", timeText, timeId);
 		MapperSession<SearchKeywordRankMapper> keywordRankMapperSession = null;
 		MapperSession<SearchKeywordEmptyMapper> keywordEmptyMapperSession = null;

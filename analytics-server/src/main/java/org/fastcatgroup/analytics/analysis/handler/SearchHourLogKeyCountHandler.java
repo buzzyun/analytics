@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.fastcatgroup.analytics.analysis.LogValidator;
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
 import org.fastcatgroup.analytics.analysis.log.SearchLogResult;
@@ -24,8 +24,8 @@ public class SearchHourLogKeyCountHandler extends CategoryLogHandler<SearchLog> 
 	public SearchHourLogKeyCountHandler(String categoryId, File baseDir, String targetFilename, int minimumHitCount, LogValidator<SearchLog> logValidator,
 			KeyCountRunEntryParser entryParser) {
 		super(categoryId);
-		int runKeySize = SearchStatisticsProperties.runKeySize;
-		String encoding = SearchStatisticsProperties.encoding;
+		int runKeySize = StatisticsUtils.runKeySize;
+		String encoding = StatisticsUtils.encoding;
 		this.logValidator = logValidator;
 		searchLogCount = new int[24];
 		searchLogMaxTime = new int[24];

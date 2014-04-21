@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.analysis.config.SiteListSetting;
 import org.fastcatgroup.analytics.analysis.config.SiteListSetting.SiteSetting;
@@ -49,7 +49,7 @@ public class RelateSearchLogAnalyticsTaskRunAction extends ServiceAction {
 			}
 
 			/* 연관어. */
-			Calendar calendar = SearchStatisticsProperties.parseTimeId(timeId);
+			Calendar calendar = StatisticsUtils.parseTimeId(timeId);
 			TimeSchedule schedule = new TimeSchedule(calendar.getTimeInMillis(), 0);
 			RelateSearchLogAnalyticsTask task = new RelateSearchLogAnalyticsTask(siteId, categoryIdList, schedule, 0);
 			task.setEnvironment(environment);

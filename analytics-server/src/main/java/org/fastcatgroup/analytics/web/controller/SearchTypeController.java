@@ -3,7 +3,7 @@ package org.fastcatgroup.analytics.web.controller;
 import java.util.Calendar;
 import java.util.List;
 
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.SiteAttribute;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.TypeSetting;
@@ -36,9 +36,9 @@ public class SearchTypeController extends AbstractController {
 		
 		
 		if(timeText == null){
-			Calendar calendar = SearchStatisticsProperties.getCalendar();
+			Calendar calendar = StatisticsUtils.getCalendar();
 			calendar.add(Calendar.DATE, -1);
-			String timeTo = SearchStatisticsProperties.toDatetimeString(calendar);
+			String timeTo = StatisticsUtils.toDatetimeString(calendar);
 			timeText = timeTo + " - " + timeTo;
 		}
 		
@@ -71,10 +71,10 @@ public class SearchTypeController extends AbstractController {
 			//error
 		}
 		logger.debug("timeFrom > {} ~~ {}", timeFrom, timeTo);
-		Calendar startTime = SearchStatisticsProperties.parseDatetimeString(timeFrom, true);
-		Calendar endTime = SearchStatisticsProperties.parseDatetimeString(timeTo, false);
-		String startTimeId = SearchStatisticsProperties.getTimeId(startTime, timeTypeCode);
-		String endTimeId = SearchStatisticsProperties.getTimeId(endTime, timeTypeCode);
+		Calendar startTime = StatisticsUtils.parseDatetimeString(timeFrom, true);
+		Calendar endTime = StatisticsUtils.parseDatetimeString(timeTo, false);
+		String startTimeId = StatisticsUtils.getTimeId(startTime, timeTypeCode);
+		String endTimeId = StatisticsUtils.getTimeId(endTime, timeTypeCode);
 		logger.debug("New time id >> {} ~ {} > {}", startTimeId, endTimeId, timeViewType);
 		
 		AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);

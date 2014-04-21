@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import org.fastcatgroup.analytics.analysis.KeyCountLogAggregator;
 import org.fastcatgroup.analytics.analysis.LogValidator;
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.log.RelateKeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.log.RelateSearchLog;
 
@@ -20,8 +20,8 @@ public class RelateSearchLogKeyCountHandler extends CategoryLogHandler<RelateSea
 	public RelateSearchLogKeyCountHandler(String categoryId, File baseDir, String targetFilename, int minimumHitCount, LogValidator<RelateSearchLog> logValidator,
 			RelateKeyCountRunEntryParser entryParser) {
 		super(categoryId);
-		int runKeySize = SearchStatisticsProperties.runKeySize;
-		String encoding = SearchStatisticsProperties.encoding;
+		int runKeySize = StatisticsUtils.runKeySize;
+		String encoding = StatisticsUtils.encoding;
 		aggregator = new KeyCountLogAggregator<RelateSearchLog>(baseDir, targetFilename, runKeySize, encoding, minimumHitCount, entryParser);
 		this.logValidator = logValidator;
 	}

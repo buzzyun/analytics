@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.analysis.config.SiteListSetting;
 import org.fastcatgroup.analytics.analysis.config.SiteListSetting.SiteSetting;
@@ -65,17 +65,17 @@ public class TestBulkLogAnalyticsTaskRunJob extends Job {
 		
 		if (timeId1 != null && timeId2 != null) {
 			
-			Calendar currentDay = SearchStatisticsProperties.parseTimeId(timeId1);
-			Calendar lastDay = SearchStatisticsProperties.parseTimeId(timeId2);
+			Calendar currentDay = StatisticsUtils.parseTimeId(timeId1);
+			Calendar lastDay = StatisticsUtils.parseTimeId(timeId2);
 			
-			SearchStatisticsProperties.setTimeFrom(currentDay);
-			SearchStatisticsProperties.setTimeTo(lastDay);
+			StatisticsUtils.setTimeFrom(currentDay);
+			StatisticsUtils.setTimeTo(lastDay);
 			
 			while(currentDay.compareTo(lastDay) <= 0) {
 				long st = System.currentTimeMillis();
 				logger.info("#####################################");
 				logger.info("####");
-				logger.info("#### CALCULATING.{} / {}", SearchStatisticsProperties.toDatetimeString(currentDay), SearchStatisticsProperties.toDatetimeString(lastDay));
+				logger.info("#### CALCULATING.{} / {}", StatisticsUtils.toDatetimeString(currentDay), StatisticsUtils.toDatetimeString(lastDay));
 				logger.info("####");
 				logger.info("#####################################");
 				SimpleTaskRunner taskRunner = new SimpleTaskRunner("search-log-task-runner", JobService.getInstance(), environment);
@@ -167,7 +167,7 @@ public class TestBulkLogAnalyticsTaskRunJob extends Job {
 					logger.error("", e);
 				}
 				logger.info("#####################################");
-				logger.info("#### Done {}, time = {}s", SearchStatisticsProperties.toDatetimeString(currentDay), (System.currentTimeMillis() -st) / 1000);
+				logger.info("#### Done {}, time = {}s", StatisticsUtils.toDatetimeString(currentDay), (System.currentTimeMillis() -st) / 1000);
 				logger.info("#####################################");
 				
 				currentDay.add(Calendar.DAY_OF_MONTH, 1);

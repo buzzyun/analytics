@@ -2,7 +2,7 @@ package org.fastcatgroup.analytics.analysis.schedule;
 
 import java.util.Calendar;
 
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 
 public class EveryDaySchedule extends Schedule {
 	private int timeInDay;
@@ -17,8 +17,8 @@ public class EveryDaySchedule extends Schedule {
 
 	@Override
 	public void updateSchduleTime() {
-		Calendar now = SearchStatisticsProperties.getCalendar();
-		Calendar calendar = SearchStatisticsProperties.getCalendar();
+		Calendar now = StatisticsUtils.getCalendar();
+		Calendar calendar = StatisticsUtils.getCalendar();
 		calendar.set(Calendar.HOUR_OF_DAY, timeInDay);
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);

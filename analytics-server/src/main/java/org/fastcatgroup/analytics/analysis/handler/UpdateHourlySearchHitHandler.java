@@ -2,7 +2,7 @@ package org.fastcatgroup.analytics.analysis.handler;
 
 import java.util.Calendar;
 
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.log.SearchLogResult;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
@@ -44,7 +44,7 @@ public class UpdateHourlySearchHitHandler extends ProcessHandler {
 			
 			calendar.set(Calendar.HOUR_OF_DAY, timeInx);
 			
-			String timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.HOUR_OF_DAY);
+			String timeId = StatisticsUtils.getTimeId(calendar, Calendar.HOUR_OF_DAY);
 			try {
 				SearchHitMapper mapper = mapperSession.getMapper();
 	

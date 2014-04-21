@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.fastcatgroup.analytics.analysis.RollingRawLogger;
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.calculator.Calculator;
 import org.fastcatgroup.analytics.analysis.calculator.RealtimePopularKeywordCalculator;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
@@ -43,7 +43,7 @@ public class RealtimeSearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 		int topCount = 10;
 
 		File logFile = new File(baseDir, RAW_LOG_FILENAME);
-		String encoding = SearchStatisticsProperties.encoding;
+		String encoding = StatisticsUtils.encoding;
 		try {
 			logReader = new SearchLogReader(new File[] { logFile }, encoding);
 		} catch (IOException e) {

@@ -6,7 +6,7 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.fastcatgroup.analytics.analysis.KeyCountLogAggregator;
 import org.fastcatgroup.analytics.analysis.LogValidator;
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
 
@@ -24,8 +24,8 @@ public class RealtimeSearchLogKeyCountHandler extends CategoryLogHandler<SearchL
 			storeDir.mkdirs();
 		}
 		rollingStoredLogs(storeDir, realtimeSearchLogLimit);
-		int runKeySize = SearchStatisticsProperties.runKeySize;
-		String encoding = SearchStatisticsProperties.encoding;
+		int runKeySize = StatisticsUtils.runKeySize;
+		String encoding = StatisticsUtils.encoding;
 		aggregator = new KeyCountLogAggregator<SearchLog>(storeDir, targetFilename, runKeySize, encoding, minimumHitCount, entryParser);
 		this.logValidator = logValidator;
 	}

@@ -11,45 +11,45 @@ public class SearchStatisticsPropertiesTest {
 	@Test
 	public void test() {
 		
-		Calendar calendar = SearchStatisticsProperties.getCalendar();
+		Calendar calendar = StatisticsUtils.getCalendar();
 		int type = Calendar.HOUR_OF_DAY;
-		String timeId = SearchStatisticsProperties.getTimeId(calendar, type);
+		String timeId = StatisticsUtils.getTimeId(calendar, type);
 		System.out.println("HOUR_OF_DAY :" + timeId);
 		
 		type = Calendar.WEEK_OF_YEAR;
-		timeId = SearchStatisticsProperties.getTimeId(calendar, type);
+		timeId = StatisticsUtils.getTimeId(calendar, type);
 		System.out.println("WEEK_OF_YEAR :" + timeId);
 		
 		type = Calendar.MONTH;
-		timeId = SearchStatisticsProperties.getTimeId(calendar, type);
+		timeId = StatisticsUtils.getTimeId(calendar, type);
 		System.out.println("MONTH :" + timeId);
 		
 		type = Calendar.YEAR;
-		timeId = SearchStatisticsProperties.getTimeId(calendar, type);
+		timeId = StatisticsUtils.getTimeId(calendar, type);
 		System.out.println("YEAR :" + timeId);
 	}
 	
 	@Test
 	public void testParseTimeId() {
 		String timeId = "Y2013";
-		Calendar calendar = SearchStatisticsProperties.parseTimeId(timeId);
+		Calendar calendar = StatisticsUtils.parseTimeId(timeId);
 		System.out.println(timeId + " : " + new Date(calendar.getTimeInMillis()));
 		
 		timeId = "M201307";
-		calendar = SearchStatisticsProperties.parseTimeId(timeId);
+		calendar = StatisticsUtils.parseTimeId(timeId);
 		System.out.println(timeId + " : " + new Date(calendar.getTimeInMillis()));
 		
 		
 		timeId = "W201345";
-		calendar = SearchStatisticsProperties.parseTimeId(timeId);
+		calendar = StatisticsUtils.parseTimeId(timeId);
 		System.out.println(timeId + " : " + new Date(calendar.getTimeInMillis()));
 		
 		timeId = "D20130722";
-		calendar = SearchStatisticsProperties.parseTimeId(timeId);
+		calendar = StatisticsUtils.parseTimeId(timeId);
 		System.out.println(timeId + " : " + new Date(calendar.getTimeInMillis()));
 		
 		timeId = "H2013072214";
-		calendar = SearchStatisticsProperties.parseTimeId(timeId);
+		calendar = StatisticsUtils.parseTimeId(timeId);
 		System.out.println(timeId + " : " + new Date(calendar.getTimeInMillis()));
 		
 	}
@@ -60,14 +60,14 @@ public class SearchStatisticsPropertiesTest {
 		Calendar startTime = null;
 		Calendar endTime = null;
 		
-		startTime = SearchStatisticsProperties.getCorrectedStartTime(Calendar.getInstance(Locale.GERMAN), type);
-		endTime = SearchStatisticsProperties.getCorrectedEndTime(Calendar.getInstance(Locale.GERMAN), type);
+		startTime = StatisticsUtils.getCorrectedStartTime(Calendar.getInstance(Locale.GERMAN), type);
+		endTime = StatisticsUtils.getCorrectedEndTime(Calendar.getInstance(Locale.GERMAN), type);
 		
 		System.out.println("start = " + startTime.getTime());
 		System.out.println("end = " + endTime.getTime());
 		
-		String startTimeId = SearchStatisticsProperties.getTimeId(startTime, type);
-		String endTimeId = SearchStatisticsProperties.getTimeId(endTime, type);
+		String startTimeId = StatisticsUtils.getTimeId(startTime, type);
+		String endTimeId = StatisticsUtils.getTimeId(endTime, type);
 		
 		System.out.println("start = " + startTimeId);
 		System.out.println("end = " + endTimeId);
@@ -75,7 +75,7 @@ public class SearchStatisticsPropertiesTest {
 	
 	@Test
 	public void testCalendarLocale() {
-		Calendar today = SearchStatisticsProperties.getCalendar();
+		Calendar today = StatisticsUtils.getCalendar();
 		System.out.println("default > " + today.getFirstDayOfWeek() + " > " + today.getTime() + " : " + today.get(Calendar.DAY_OF_WEEK));
 		today.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 		System.out.println(">>> " + today.getTime() + " : " + today.get(Calendar.WEEK_OF_YEAR));	

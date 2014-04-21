@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.fastcatgroup.analytics.analysis.NullLogHandler;
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.TypeSetting;
 import org.fastcatgroup.analytics.analysis.handler.ProcessHandler;
 import org.fastcatgroup.analytics.analysis.handler.SearchTypeDatabaseProcessHandler;
@@ -26,10 +26,10 @@ public class YearlyTypeHitCalculator extends Calculator<TypeSearchLog> {
 	@Override
 	@SuppressWarnings("unchecked")
 	protected CategoryProcess<TypeSearchLog> newCategoryProcess(String categoryId){
-		String timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.YEAR);
+		String timeId = StatisticsUtils.getTimeId(calendar, Calendar.YEAR);
 		
-		String prevTimeId = SearchStatisticsProperties.getTimeId(prevCalendar, Calendar.MONTH);
-		String currTimeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.MONTH);
+		String prevTimeId = StatisticsUtils.getTimeId(prevCalendar, Calendar.MONTH);
+		String currTimeId = StatisticsUtils.getTimeId(calendar, Calendar.MONTH);
 		//logger.debug("calculating {} ~ {}", prevTimeId, currTimeId);
 		//1년치의 월별 로그를 데이터베이스를 사용하여 머징한다.
 		CategoryProcess<TypeSearchLog> categoryProcess = new CategoryProcess<TypeSearchLog>(categoryId);

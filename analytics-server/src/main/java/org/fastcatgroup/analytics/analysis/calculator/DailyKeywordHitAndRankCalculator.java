@@ -11,7 +11,7 @@ import org.fastcatgroup.analytics.analysis.KeyCountEmptyLogAggregator;
 import org.fastcatgroup.analytics.analysis.KeyCountLogAggregator;
 import org.fastcatgroup.analytics.analysis.LogAggregatorContainer;
 import org.fastcatgroup.analytics.analysis.SearchLogValidator;
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.ServiceCountLogAggregator;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ServiceSetting;
 import org.fastcatgroup.analytics.analysis.handler.KeyCountLogSortHandler;
@@ -47,7 +47,7 @@ public class DailyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 	
 	@Override
 	protected CategoryProcess<SearchLog> newCategoryProcess(String categoryId){
-		String encoding = SearchStatisticsProperties.encoding;
+		String encoding = StatisticsUtils.encoding;
 		File workingDir = new File(baseDir, categoryId);
 		File prevWorkingDir = new File(prevDir, categoryId);
 		
@@ -63,9 +63,9 @@ public class DailyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 			} catch (IOException ignore) { }
 		}
 		
-		String timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.DATE);
-		int maxKeywordLength = SearchStatisticsProperties.maxKeywordLength;
-		int runKeySize = SearchStatisticsProperties.runKeySize;
+		String timeId = StatisticsUtils.getTimeId(calendar, Calendar.DATE);
+		int maxKeywordLength = StatisticsUtils.maxKeywordLength;
+		int runKeySize = StatisticsUtils.runKeySize;
 
 		logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
 		KeyCountRunEntryParser entryParser = new KeyCountRunEntryParser();

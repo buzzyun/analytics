@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Calendar;
 
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.calculator.DumpPopularKeywordHitCalculator;
 import org.fastcatgroup.analytics.http.ActionMapping;
 import org.fastcatgroup.analytics.http.action.ActionRequest;
@@ -37,8 +37,8 @@ public class GetServicePopularKeywordDumpAction extends ServiceAction {
 		BufferedReader reader = null;
 		try {
 			
-			Calendar fromDate = SearchStatisticsProperties.parseDatetimeString(fromDateStr, true);
-			Calendar toDate = SearchStatisticsProperties.parseDatetimeString(toDateStr, false);
+			Calendar fromDate = StatisticsUtils.parseDatetimeString(fromDateStr, true);
+			Calendar toDate = StatisticsUtils.parseDatetimeString(toDateStr, false);
 			
 			tmpFile = File.createTempFile(this.getClass().getName(), ".tmp1");
 			targetFile = File.createTempFile(this.getClass().getName(), ".tmp2");

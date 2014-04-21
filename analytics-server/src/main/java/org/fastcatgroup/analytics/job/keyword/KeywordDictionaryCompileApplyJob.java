@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.analysis.config.SiteListSetting;
 import org.fastcatgroup.analytics.analysis.config.SiteListSetting.SiteSetting;
@@ -42,7 +42,7 @@ public class KeywordDictionaryCompileApplyJob extends Job {
 
 		SimpleDateFormat dateFormat = null;
 
-		Calendar calendar = SearchStatisticsProperties.getCalendar();
+		Calendar calendar = StatisticsUtils.getCalendar();
 
 		KeywordService keywordService = ServiceManager.getInstance().getService(KeywordService.class);
 

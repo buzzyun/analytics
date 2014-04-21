@@ -6,7 +6,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.fastcatgroup.analytics.analysis.DailyRawLogger;
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.analysis.calculator.Calculator;
 import org.fastcatgroup.analytics.analysis.calculator.DailyTypeHitCalculator;
@@ -44,10 +44,10 @@ public class DailyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchLog
 		logger.debug("@@@@typeList > {} {}", "", typeList);
 		Calendar prevCalendar = (Calendar) calendar.clone();
 		prevCalendar.add(Calendar.DAY_OF_MONTH, -1);
-		File baseDir = new File(SearchStatisticsProperties.getDayDataDir(dir, calendar), siteId);
+		File baseDir = new File(StatisticsUtils.getDayDataDir(dir, calendar), siteId);
 
 		File logFile = new File(baseDir, TYPE_RAW_FILENAME);
-		String encoding = SearchStatisticsProperties.encoding;
+		String encoding = StatisticsUtils.encoding;
 		try {
 			if(logFile.exists()){
 				logReader = new TypeSearchLogReader(new File[] { logFile }, encoding);

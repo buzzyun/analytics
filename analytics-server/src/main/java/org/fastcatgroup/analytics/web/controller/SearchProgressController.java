@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
 import org.fastcatgroup.analytics.db.MapperSession;
 import org.fastcatgroup.analytics.db.mapper.SearchHitMapper;
@@ -32,13 +32,13 @@ public class SearchProgressController extends AbstractController {
 		mav.setViewName("report/progress/hit");
 		
 		if(timeText == null){
-			Calendar calendar = SearchStatisticsProperties.getCalendar();
+			Calendar calendar = StatisticsUtils.getCalendar();
 			calendar.add(Calendar.DATE, -7);
-			String timeFrom = SearchStatisticsProperties.toDatetimeString(calendar);
+			String timeFrom = StatisticsUtils.toDatetimeString(calendar);
 			
-			calendar = SearchStatisticsProperties.getCalendar();
+			calendar = StatisticsUtils.getCalendar();
 			calendar.add(Calendar.DATE, -1);
-			String timeTo = SearchStatisticsProperties.toDatetimeString(calendar);
+			String timeTo = StatisticsUtils.toDatetimeString(calendar);
 			
 			timeText = timeFrom + " - " + timeTo;
 		}
@@ -72,10 +72,10 @@ public class SearchProgressController extends AbstractController {
 			//error
 		}
 		logger.debug("timeFrom > {} ~~ {}", timeFrom, timeTo);
-		Calendar startTime = SearchStatisticsProperties.parseDatetimeString(timeFrom,true);
-		Calendar endTime = SearchStatisticsProperties.parseDatetimeString(timeTo,false);
-		String startTimeId = SearchStatisticsProperties.getTimeId(startTime, timeTypeCode);
-		String endTimeId = SearchStatisticsProperties.getTimeId(endTime, timeTypeCode);
+		Calendar startTime = StatisticsUtils.parseDatetimeString(timeFrom,true);
+		Calendar endTime = StatisticsUtils.parseDatetimeString(timeTo,false);
+		String startTimeId = StatisticsUtils.getTimeId(startTime, timeTypeCode);
+		String endTimeId = StatisticsUtils.getTimeId(endTime, timeTypeCode);
 		logger.debug("New time id >> {} ~ {} > {}", startTimeId, endTimeId, timeViewType);
 		
 		AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
@@ -99,7 +99,7 @@ public class SearchProgressController extends AbstractController {
 				
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				for (int timeInx = 0; startTime.getTimeInMillis() <= endTime.getTimeInMillis(); timeInx++) {
-					String timeString = SearchStatisticsProperties.toDatetimeString(startTime, timeTypeCode);
+					String timeString = StatisticsUtils.toDatetimeString(startTime, timeTypeCode);
 					
 					logger.trace("timeString > {}", timeString);
 					int hit = 0;
@@ -107,13 +107,13 @@ public class SearchProgressController extends AbstractController {
 					if(timeInx < list.size()) {
 
 						SearchHitVO vo = list.get(timeInx);
-						Calendar timeCurrent = SearchStatisticsProperties.parseTimeId(vo.getTimeId());
+						Calendar timeCurrent = StatisticsUtils.parseTimeId(vo.getTimeId());
 						if(logger.isTraceEnabled()) {
 							logger.trace("startTime > {} : timeCurrent > {}:{}", sdf.format(startTime.getTime()), 
 									sdf.format(timeCurrent.getTime()), vo.getTimeId());
 						}
 						
-						if (SearchStatisticsProperties.isEquals(startTime, timeCurrent, timeTypeCode)) {
+						if (StatisticsUtils.isEquals(startTime, timeCurrent, timeTypeCode)) {
 							hit = vo.getHit();
 							vo.setTimeId(timeString);
 							list.set(timeInx, vo);
@@ -139,7 +139,7 @@ public class SearchProgressController extends AbstractController {
 					
 					startTime.add(timeTypeCode, 1);
 					if(logger.isTraceEnabled()) {
-						logger.trace("startTime:{}", SearchStatisticsProperties.toDatetimeString(startTime, timeTypeCode));
+						logger.trace("startTime:{}", StatisticsUtils.toDatetimeString(startTime, timeTypeCode));
 						logger.trace("startTime:{} / endTime:{}",sdf.format(startTime.getTime()), sdf.format(endTime.getTime()));
 					}
 				}

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.fastcatgroup.analytics.analysis.RelateSearchLogValidator;
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.handler.KeyCountLogSortHandler;
 import org.fastcatgroup.analytics.analysis.handler.ProcessHandler;
 import org.fastcatgroup.analytics.analysis.handler.RelateSearchLogKeyCountHandler;
@@ -33,10 +33,10 @@ public class DailyRelateKeywordCalculator extends Calculator<RelateSearchLog> {
 	
 	@Override
 	protected CategoryProcess<RelateSearchLog> newCategoryProcess(String categoryId){
-		String encoding = SearchStatisticsProperties.encoding;
+		String encoding = StatisticsUtils.encoding;
 		File workingDir = new File(baseDir, categoryId);
 		
-		int runKeySize = SearchStatisticsProperties.runKeySize;
+		int runKeySize = StatisticsUtils.runKeySize;
 
 		logger.debug("Process Dir = {}", workingDir.getAbsolutePath());
 		RelateKeyCountRunEntryParser entryParser = new RelateKeyCountRunEntryParser();

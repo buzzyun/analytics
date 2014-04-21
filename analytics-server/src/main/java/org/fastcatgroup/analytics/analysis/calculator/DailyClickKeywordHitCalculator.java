@@ -10,7 +10,7 @@ import org.fastcatgroup.analytics.analysis.AbstractLogAggregator;
 import org.fastcatgroup.analytics.analysis.EntryParser;
 import org.fastcatgroup.analytics.analysis.KeyCountLogAggregator;
 import org.fastcatgroup.analytics.analysis.NullLogHandler;
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.handler.MergeClickTypeCountProcessHandler;
 import org.fastcatgroup.analytics.analysis.log.ClickLog;
 import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
@@ -41,8 +41,8 @@ public class DailyClickKeywordHitCalculator extends Calculator<ClickLog> {
 		new NullLogHandler<ClickLog>(categoryId).attachLogHandlerTo(categoryProcess);
 			
 		if(categoryId.equals("_root")) {
-			String encoding = SearchStatisticsProperties.encoding;
-			File workingDir = new File(SearchStatisticsProperties.getDayDataDir(baseDir, calendar), siteId);
+			String encoding = StatisticsUtils.encoding;
+			File workingDir = new File(StatisticsUtils.getDayDataDir(baseDir, calendar), siteId);
 			
 			if(!workingDir.exists()) {
 				try {
@@ -50,12 +50,12 @@ public class DailyClickKeywordHitCalculator extends Calculator<ClickLog> {
 				} catch (IOException ignore) { }
 			}
 			
-			int runKeySize = SearchStatisticsProperties.runKeySize;
+			int runKeySize = StatisticsUtils.runKeySize;
 			
 			//
 			//현재날자 클릭로그 
 			File[] clickLogFiles = new File[] { new File(
-				new File(SearchStatisticsProperties.getDayDataDir(baseDir,
+				new File(StatisticsUtils.getDayDataDir(baseDir,
 					calendar), siteId), CLICK_RAW_FILENAME) };
 			
 			logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);

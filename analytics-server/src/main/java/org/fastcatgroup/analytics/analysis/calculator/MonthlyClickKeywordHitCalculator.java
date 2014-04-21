@@ -10,7 +10,7 @@ import org.fastcatgroup.analytics.analysis.AbstractLogAggregator;
 import org.fastcatgroup.analytics.analysis.EntryParser;
 import org.fastcatgroup.analytics.analysis.KeyCountLogAggregator;
 import org.fastcatgroup.analytics.analysis.NullLogHandler;
-import org.fastcatgroup.analytics.analysis.SearchStatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.handler.MergeClickTypeCountProcessHandler;
 import org.fastcatgroup.analytics.analysis.handler.ProcessHandler;
 import org.fastcatgroup.analytics.analysis.handler.UpdateClickKeywordTargetTypeCountHandler;
@@ -45,9 +45,9 @@ public class MonthlyClickKeywordHitCalculator extends Calculator<ClickLog> {
 			
 		if(categoryId.equals("_root")) {
 		
-			String encoding = SearchStatisticsProperties.encoding;
+			String encoding = StatisticsUtils.encoding;
 			
-			File workingDir = new File(SearchStatisticsProperties.getDayDataDir(baseDir, calendar), siteId);
+			File workingDir = new File(StatisticsUtils.getDayDataDir(baseDir, calendar), siteId);
 			
 			if(!workingDir.exists()) {
 				try {
@@ -55,8 +55,8 @@ public class MonthlyClickKeywordHitCalculator extends Calculator<ClickLog> {
 				} catch (IOException ignore) { }
 			}
 			
-			String timeId = SearchStatisticsProperties.getTimeId(calendar, Calendar.MONTH);
-			int runKeySize = SearchStatisticsProperties.runKeySize;
+			String timeId = StatisticsUtils.getTimeId(calendar, Calendar.MONTH);
+			int runKeySize = StatisticsUtils.runKeySize;
 			
 			//
 			//1일부터 현재일자 (DAY_OF_MONTH) 까지.
@@ -65,7 +65,7 @@ public class MonthlyClickKeywordHitCalculator extends Calculator<ClickLog> {
 			File[] clickLogFiles = new File[diff];
 			Calendar dailyCalendar = (Calendar) calendar.clone();
 			for (int inx = 0; inx < diff; inx++) {
-				File timeDir = SearchStatisticsProperties.getDayDataDir(baseDir, dailyCalendar);
+				File timeDir = StatisticsUtils.getDayDataDir(baseDir, dailyCalendar);
 				clickLogFiles[inx] = new File(new File(timeDir, siteId), CLICK_RAW_FILENAME);
 				dailyCalendar.add(Calendar.DAY_OF_MONTH, -1);
 			}

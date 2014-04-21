@@ -1,4 +1,3 @@
-<%@page import="org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig"%>
 <%@page import="org.fastcatgroup.analytics.db.vo.RelateKeywordVO"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"

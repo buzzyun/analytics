@@ -132,6 +132,12 @@ public class StatisticsUtils {
 		int hour = calendar.get(Calendar.HOUR_OF_DAY);
 		int week = calendar.get(Calendar.WEEK_OF_YEAR);
 		
+		//년말에 작년과 신년 사이에 한 주가 걸쳐있다면 년도를 증가해준다.
+		logger.trace("y:{}/m:{}/d:{}/w:{}",year,month,day,week);
+		if(month == 12 && week == 1) {
+			year++;
+		}
+		
 		String[] component = new String[5];
 		
 		String yearString = String.valueOf(year);
@@ -157,8 +163,6 @@ public class StatisticsUtils {
 		}
 		
 		//일요일을 주의 마지막으로 간주한다.
-		
-		
 		
 		if (week < 10) {
 			weekString = "0" + week;
@@ -232,28 +236,30 @@ public class StatisticsUtils {
 		return toDatetimeString(calendar, Calendar.DAY_OF_MONTH);
 	}
 	
-	static SimpleDateFormat hourDateFormat = new SimpleDateFormat("yyyy.MM.dd HH");
-	static SimpleDateFormat dayDateFormat = new SimpleDateFormat("yyyy.MM.dd");
-	static SimpleDateFormat weekDateFormat = new SimpleDateFormat("yyyy.ww");
-	static SimpleDateFormat monthDateFormat = new SimpleDateFormat("yyyy.MM");
-	static SimpleDateFormat yearDateFormat = new SimpleDateFormat("yyyy");
-	
 	public static String toDatetimeString(Calendar calendar, int type) {
+		String timeId = null;
+		String[] timeComponent = getTimeComponent(calendar);
+		
+		String yearString = timeComponent[0];
+		String monthString = timeComponent[1];
+		String dayString = timeComponent[2];
+		String hourString = timeComponent[3];
+		String weekString = timeComponent[4];
+		
 		if(type == Calendar.HOUR_OF_DAY){
-			return hourDateFormat.format(calendar.getTime());
+			timeId = yearString + "." + monthString + "." + dayString + " " + hourString;
 		}else if(type == Calendar.DAY_OF_MONTH){
-			return dayDateFormat.format(calendar.getTime());
+			timeId = yearString + "." + monthString + "." + dayString;
 		}else if(type == Calendar.WEEK_OF_YEAR){
-			return weekDateFormat.format(calendar.getTime());
+			timeId = yearString + "." + weekString;
 		}else if(type == Calendar.MONTH){
-			return monthDateFormat.format(calendar.getTime());
+			timeId = yearString + "." + monthString;
 		}else if(type == Calendar.YEAR){
-			return yearDateFormat.format(calendar.getTime());
+			timeId = yearString;
 		}
 		
-		return dateTimeFormat.format(calendar.getTime());
+		return timeId;
 	}
-	
 	
 	
 	///한주의 시작을 월요일로 만드는 Locale.GERMAN 을 사용한다.

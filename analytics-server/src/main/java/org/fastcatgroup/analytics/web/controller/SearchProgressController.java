@@ -98,8 +98,12 @@ public class SearchProgressController extends AbstractController {
 			if (list != null && list.size() > 0) {
 				
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				for(int inx=0;inx<list.size();inx++) {
+					SearchHitVO vo = list.get(inx);
+					logger.trace("vo time:{}", vo.getTimeId());
+				}
 				for (int timeInx = 0; startTime.getTimeInMillis() <= endTime.getTimeInMillis(); timeInx++) {
-					String timeString = StatisticsUtils.toDatetimeString(startTime, timeTypeCode);
+					String timeString = StatisticsUtils.getTimeId(startTime, timeTypeCode);
 					
 					logger.trace("timeString > {}", timeString);
 					int hit = 0;
@@ -108,12 +112,8 @@ public class SearchProgressController extends AbstractController {
 
 						SearchHitVO vo = list.get(timeInx);
 						Calendar timeCurrent = StatisticsUtils.parseTimeId(vo.getTimeId());
-						if(logger.isTraceEnabled()) {
-							logger.trace("startTime > {} : timeCurrent > {}:{}", sdf.format(startTime.getTime()), 
-									sdf.format(timeCurrent.getTime()), vo.getTimeId());
-						}
 						
-						if (StatisticsUtils.isEquals(startTime, timeCurrent, timeTypeCode)) {
+						if(timeString.equals(vo.getTimeId())) {
 							hit = vo.getHit();
 							vo.setTimeId(timeString);
 							list.set(timeInx, vo);
@@ -142,6 +142,13 @@ public class SearchProgressController extends AbstractController {
 						logger.trace("startTime:{}", StatisticsUtils.toDatetimeString(startTime, timeTypeCode));
 						logger.trace("startTime:{} / endTime:{}",sdf.format(startTime.getTime()), sdf.format(endTime.getTime()));
 					}
+				}
+				for(int inx=0;inx<list.size();inx++) {
+					SearchHitVO vo = list.get(inx);
+					Calendar parsedTime = StatisticsUtils.parseTimeId(vo.getTimeId());
+					String timeStr = StatisticsUtils.toDatetimeString(parsedTime, timeTypeCode);
+					logger.trace("vo time:{}={} / {}", vo.getTimeId(), timeStr, parsedTime.getTime());
+					vo.setTimeId(timeStr);
 				}
 			}
 			mav.addObject("categoryId", categoryId);

@@ -2,14 +2,10 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page import="org.fastcatgroup.analytics.analysis.vo.*"%>
-<%@page import="org.fastcatgroup.analytics.analysis.config.SiteCategoryListConfig.*"%>
 <%@page import="org.fastcatgroup.analytics.analysis.StatisticsUtils" %>
 <%@page import="java.text.SimpleDateFormat" %>
 <%@page import="java.util.*"%>
 <%
-List<SiteCategoryConfig> siteCategoryList = (List<SiteCategoryConfig>) request.getAttribute("siteCategoryList");
-List<RankKeyword> rankList = (List<RankKeyword>) request.getAttribute("rankList");
-String categoryId = request.getParameter("categoryId");
 String date = (String) request.getAttribute("date");
 
 %>

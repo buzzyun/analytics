@@ -43,7 +43,7 @@ $(document).ready(function(){
 	<div id="container">
 		<c:import url="${ROOT_PATH}/configuration/sideMenu.jsp">
 			<c:param name="lcat" value="management" />
-			<c:param name="mcat" value="run" />
+			<c:param name="mcat" value="advanceRun" />
 		</c:import>
 			
 		<div id="content">

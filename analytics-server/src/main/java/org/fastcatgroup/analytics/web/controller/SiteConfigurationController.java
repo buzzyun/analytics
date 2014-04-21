@@ -33,7 +33,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/{siteId}/configuration")
-public class ConfigurationMainController extends AbstractController {
+public class SiteConfigurationController extends AbstractController {
 
 	@RequestMapping("/index")
 	public ModelAndView index(@PathVariable String siteId) {
@@ -85,10 +85,10 @@ public class ConfigurationMainController extends AbstractController {
 		return mav;
 	}
 
-	@RequestMapping("/management/runTestRange")
+	@RequestMapping("/management/advanceRun")
 	public ModelAndView runTestRange(@PathVariable String siteId, @RequestParam(required = false) String date) throws Exception {
 		ModelAndView mav = new ModelAndView();
-		mav.setViewName("configuration/management/runTestRange");
+		mav.setViewName("configuration/management/advanceRun");
 
 		Calendar calendar1 = null;
 		Calendar calendar2 = null;

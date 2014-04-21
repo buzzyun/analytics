@@ -27,9 +27,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-public class ConfigurationAndSettingsController extends AbstractController {
+@RequestMapping("/settings")
+public class GlobalConfigurationController extends AbstractController {
 	
-	@RequestMapping("/settings/configuration")
+	@RequestMapping("/configuration")
 	public ModelAndView configuration(HttpSession session, HttpServletRequest request) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("/settings/configuration");
@@ -67,7 +68,7 @@ public class ConfigurationAndSettingsController extends AbstractController {
 		return modelAndView;
 	}
 	
-	@RequestMapping("/settings/settings")
+	@RequestMapping("/settings")
 	public ModelAndView settings(HttpSession session,
 		@RequestParam(required=false) String siteId,
 		@RequestParam(required=false) String categoryName ) throws Exception {
@@ -120,7 +121,7 @@ public class ConfigurationAndSettingsController extends AbstractController {
 		return modelAndView;
 	}
 	
-	@RequestMapping("/settings/update-setting")
+	@RequestMapping("/update-setting")
 	public ModelAndView updateSettings(HttpSession session, HttpServletRequest request,
 		@RequestParam(required=false) String mode,
 		@RequestParam(required=false) String siteId,

@@ -53,7 +53,9 @@ public class WebAdminService extends AbstractService {
 		
 		server = new Server(webPort);
 		File tempDir = environment.filePaths().file("web", "temp");
-		tempDir.mkdir();
+		logger.info("Web application tempDir > {}", tempDir.getAbsolutePath());
+		tempDir.delete();
+//		tempDir.mkdir();
 		
 		WebAppContext webapp = new WebAppContext();
 		webapp.setContextPath("/analytics");

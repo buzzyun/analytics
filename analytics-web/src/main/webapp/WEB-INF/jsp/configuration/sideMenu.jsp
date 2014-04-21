@@ -13,41 +13,32 @@
 	<div id="sidebar-content">
 		<!--=== Navigation ===-->
 		<ul id="nav">
-			<%
-			boolean lcatCurrent = "management".equals(lcat);
-			%>
-			<li class="<%=lcatCurrent ? "current" :"" %>"><a href="javascript:void(0);"> <i
-					class="icon-bar-chart"></i> Management
-			</a>
-				<ul class="sub-menu">
-					<li class="<%=(lcatCurrent && "run".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/configuration/management/run.html"/>">
-							<i class="icon-angle-right"></i> Run Statistics 
-					</a></li> 
-				</ul>
-			</li>
-			<%
-			lcatCurrent = "settings".equals(lcat);
-			%>
-			<li class="<%=lcatCurrent ? "current" :"" %>"><a href=""> <i
-					class="icon-cog"></i> Statistics Settings 
-			</a>
-				<ul class="sub-menu">
-					<li class="<%=(lcatCurrent && "siteSetting".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/configuration/settings/siteSetting.html"/>">
-							<i class="icon-angle-right"></i> Site Settings
-					</a></li> 
-					<li class="<%=(lcatCurrent && "categorySetting".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/configuration/settings/categorySetting.html"/>">
-							<i class="icon-angle-right"></i> Category Settings
-					</a></li> 
-					<li class="<%=(lcatCurrent && "attributeSetting".equals(mcat)) ? "current" : "" %>"><a
-						href="<c:url value="/${siteId}/configuration/settings/attributeSetting.html"/>">
-							<i class="icon-angle-right"></i> Attribute Settings
-					</a></li> 
-				</ul>
-			</li>
 			
+			<li class="<%="siteSetting".equals(mcat) ? "current" :"" %>">
+				<a href="<c:url value="/${siteId}/configuration/settings/siteSetting.html"/>">
+					<i class="icon-cog"></i> Site Settings
+				</a>
+			</li>
+			<li class="<%="categorySetting".equals(mcat) ? "current" :"" %>">
+				<a href="<c:url value="/${siteId}/configuration/settings/categorySetting.html"/>">
+					<i class="icon-cog"></i> Category Settings
+				</a>
+			</li>
+			<li class="<%="attributeSetting".equals(mcat) ? "current" :"" %>">
+				<a href="<c:url value="/${siteId}/configuration/settings/attributeSetting.html"/>">
+					<i class="icon-cog"></i> Attribute Settings
+				</a>
+			</li>
+			<li class="<%="run".equals(mcat) ? "current" :"" %>">
+				<a href="<c:url value="/${siteId}/configuration/management/run.html"/>">
+					<i class="icon-play"></i> Run Statistics
+				</a>
+			</li>
+			<li class="<%="advanceRun".equals(mcat) ? "current" :"" %>">
+				<a href="<c:url value="/${siteId}/configuration/management/advanceRun.html"/>">
+					<i class="icon-play"></i> Advance Run Statistics
+				</a>
+			</li>
 		</ul>
 
 	</div>

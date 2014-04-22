@@ -14,7 +14,7 @@
 			email varchar(60),
 			sms varchar(60),
 			primary key (id)
-		) ENGINE=InnoDB, CHARACTER SET=utf8 COLLATE utf8_unicode_ci;
+		) ${option}
 	</update>
 	
 	<update id="createIndex" >

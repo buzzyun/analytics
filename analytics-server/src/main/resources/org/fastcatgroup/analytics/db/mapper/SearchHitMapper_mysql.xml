@@ -13,7 +13,7 @@
 			avgTime int,
 			maxTime int,
 			primary key (categoryId, timeId)
-		) ENGINE=InnoDB, CHARACTER SET=utf8 COLLATE utf8_unicode_ci;
+		) ${option}
 	</update>
 	
 	<select id="validateTable" parameterType="map" resultType="map">

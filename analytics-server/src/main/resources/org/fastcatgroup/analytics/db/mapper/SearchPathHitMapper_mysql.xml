@@ -11,7 +11,7 @@
 			searchId varchar(30), 
 			hit int,
 			primary key (timeId, searchId)
-		) ENGINE=InnoDB, CHARACTER SET=utf8 COLLATE utf8_unicode_ci;
+		) ${option}
 	</update>
 	
 	<select id="validateTable" parameterType="map" resultType="map">

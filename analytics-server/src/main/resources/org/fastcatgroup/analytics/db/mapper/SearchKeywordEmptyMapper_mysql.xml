@@ -15,7 +15,7 @@
 			rankDiffType varchar(3),
 			rankDiff int,
 			primary key (categoryId, timeId, rank)
-		) ENGINE=InnoDB, CHARACTER SET=utf8 COLLATE utf8_unicode_ci;
+		) ${option}
 	</update>
 	
 	<update id="createIndex" parameterType="map">

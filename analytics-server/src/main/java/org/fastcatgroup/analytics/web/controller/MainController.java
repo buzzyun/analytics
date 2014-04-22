@@ -50,7 +50,7 @@ public class MainController extends AbstractController {
 		MapperSession<UserAccountMapper> mapperSession = analyticsDBService.getMapperSession(UserAccountMapper.class);
 		UserAccountMapper mapper = mapperSession.getMapper();
 		UserAccountVO account = mapper.getEntryByUserId(userId);
-		if (account.isEqualsEncryptedPassword(password)) {
+		if (account != null && account.isEqualsEncryptedPassword(password)) {
 			// 로그인이 올바를 경우 메인 화면으로 이동한다.
 			ModelAndView mav = new ModelAndView();
 			if (redirect != null && redirect.length() > 0) {

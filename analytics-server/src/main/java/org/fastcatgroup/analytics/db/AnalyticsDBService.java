@@ -174,18 +174,31 @@ public class AnalyticsDBService extends AbstractDBService {
 			if(!clazz.equals(UserAccountMapper.class)) {
 				logger.debug("class : {}", clazz.getSimpleName());
 				MapperSession<? extends AnalyticsMapper> mapperSession = (MapperSession<? extends AnalyticsMapper>) getMapperSession(clazz);
-				
-				for (SiteSetting siteConfig : siteCategoryConfig) {
-					String siteId = siteConfig.getId();
-					this.addNewSiteMapper(siteId, mapperSession, clazz);
+				try {
+					for (SiteSetting siteConfig : siteCategoryConfig) {
+						String siteId = siteConfig.getId();
+						this.addNewSiteMapper(siteId, mapperSession, clazz);
+					}
+				} finally {
+					if (mapperSession != null) {
+						mapperSession.closeSession();
+					}
 				}
-				mapperSession.closeSession();
 			}
 		}
 		
 		try {
 			MapperSession<UserAccountMapper> mapperSession = getMapperSession(UserAccountMapper.class);
 			this.addNewSiteMapper("", mapperSession, UserAccountMapper.class);
+			
+			UserAccountMapper userAccountMapper = mapperSession.getMapper();
+			try{
+				userAccountMapper.putEntry(new UserAccountVO("Administrator", "admin", "1111", "", ""));
+			} finally {
+				if (mapperSession != null) {
+					mapperSession.closeSession();
+				}
+			}
 		} catch (Exception e) {
 			logger.error("",e);
 		}

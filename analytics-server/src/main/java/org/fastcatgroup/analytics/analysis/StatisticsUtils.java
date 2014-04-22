@@ -125,7 +125,7 @@ public class StatisticsUtils {
 		return calendar;
 	}
 	
-	public static String[] getTimeComponent(Calendar calendar) {
+	public static String[] getTimeComponent(Calendar calendar, int type) {
 		int year = calendar.get(Calendar.YEAR);
 		int month = calendar.get(Calendar.MONTH) + 1;
 		int day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -134,7 +134,7 @@ public class StatisticsUtils {
 		
 		//년말에 작년과 신년 사이에 한 주가 걸쳐있다면 년도를 증가해준다.
 		logger.trace("y:{}/m:{}/d:{}/w:{}",year,month,day,week);
-		if(month == 12 && week == 1) {
+		if(month == 12 && week == 1 && type==Calendar.WEEK_OF_YEAR) {
 			year++;
 		}
 		
@@ -183,7 +183,7 @@ public class StatisticsUtils {
 	public static String getTimeId(Calendar calendar, int type) {
 		String timeId = null;
 		
-		String[] timeComponent = getTimeComponent(calendar);
+		String[] timeComponent = getTimeComponent(calendar, type);
 		
 		String yearString = timeComponent[0];
 		String monthString = timeComponent[1];
@@ -238,7 +238,7 @@ public class StatisticsUtils {
 	
 	public static String toDatetimeString(Calendar calendar, int type) {
 		String timeId = null;
-		String[] timeComponent = getTimeComponent(calendar);
+		String[] timeComponent = getTimeComponent(calendar, type);
 		
 		String yearString = timeComponent[0];
 		String monthString = timeComponent[1];

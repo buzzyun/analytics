@@ -14,6 +14,7 @@ import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.RealTimePop
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.RelateKeywordSetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ServiceSetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.SiteAttribute;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.SiteProperties;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.TypeSetting;
 import org.fastcatgroup.analytics.util.JAXBConfigs;
 import org.junit.Test;
@@ -35,8 +36,8 @@ public class StatisticsSettingTest {
 		categoryListSetting.add(new CategorySetting("_root","전체",true,true,true));
 		categoryListSetting.add(new CategorySetting("cate1","카테고리1",true,true,true));
 		settings.setCategoryList(categoryListSetting);
-		settings.setBanwords("무료,배송,쿠폰,할인");
-		settings.setFileEncoding("utf8");
+		settings.setSiteProperties(new SiteProperties());
+		settings.getSiteProperties().setBanwords("무료,배송,쿠폰,할인");
 		RealTimePopularKeywordSetting realtimePopularKeyword = new RealTimePopularKeywordSetting(10,10,10);
 		settings.setRealtimePopularKeywordSetting(realtimePopularKeyword);
 		PopularKeywordSetting popularKeyword = new PopularKeywordSetting(10,10);

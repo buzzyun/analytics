@@ -1,12 +1,17 @@
 package org.fastcatgroup.analytics.analysis.calculator;
 
+import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.KEY_COUNT_FILENAME;
+import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.KEY_COUNT_RANK_FILENAME;
+import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.KEY_COUNT_RANK_PREV_FILENAME;
+import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.REALTIME_POPULAR_FILENAME;
+
 import java.io.File;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
 import org.fastcatgroup.analytics.analysis.SearchLogValidator;
-import org.fastcatgroup.analytics.analysis.StatisticsUtils;
+import org.fastcatgroup.analytics.analysis.StatisticsProperties;
 import org.fastcatgroup.analytics.analysis.handler.CheckFileEmptyHandler;
 import org.fastcatgroup.analytics.analysis.handler.KeyCountLogSortHandler;
 import org.fastcatgroup.analytics.analysis.handler.KeywordRankDiffHandler;
@@ -19,8 +24,6 @@ import org.fastcatgroup.analytics.analysis.handler.UpdateRealtimePopularKeywordH
 import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
 
-import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.*;
-
 /**
  * 실시간 인기검색어 계산기.
  * 
@@ -30,24 +33,29 @@ public class RealtimePopularKeywordCalculator extends Calculator<SearchLog> {
 	private Set<String> banWords;
 	private int minimumHitCount;
 	private int topCount;
-	
-	public RealtimePopularKeywordCalculator(String name, Calendar calendar, File baseDir, String siteId, List<String> categoryIdList, Set<String> banWords, int minimumHitCount, int topCount) {
+	private int maxKeywordLength;
+	private int realtimeSearchLogLimit;
+	 
+	public RealtimePopularKeywordCalculator(String name, Calendar calendar, File baseDir, String siteId, List<String> categoryIdList, Set<String> banWords, int minimumHitCount, int topCount
+			, int maxKeywordLength, int realtimeSearchLogLimit) {
 		super(name, calendar, baseDir, siteId, categoryIdList);
 		this.banWords = banWords;
 		this.minimumHitCount = minimumHitCount;
 		this.topCount = topCount;
+		this.maxKeywordLength = maxKeywordLength;
+		this.realtimeSearchLogLimit = realtimeSearchLogLimit;
 	}
 	
 	@Override
 	protected CategoryProcess<SearchLog> newCategoryProcess(String categoryId){
-		String encoding = StatisticsUtils.encoding;
+		String encoding = StatisticsProperties.encoding;
 		File workingDir = new File(baseDir, categoryId);
-		int runKeySize = StatisticsUtils.runKeySize;
+		int runKeySize = StatisticsProperties.runKeySize;
 
 		File storeDir = new File(workingDir, "store");
 		String tmpLogFilename = "0.log";
-		int maxKeywordLength = StatisticsUtils.maxKeywordLength;
-		int realtimeSearchLogLimit = StatisticsUtils.realtimeSearchLogLimit;
+//		int maxKeywordLength = StatisticsUtils.maxKeywordLength;
+//		int realtimeSearchLogLimit = StatisticsUtils.realtimeSearchLogLimit;
 		
 		logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
 		KeyCountRunEntryParser entryParser = new KeyCountRunEntryParser();

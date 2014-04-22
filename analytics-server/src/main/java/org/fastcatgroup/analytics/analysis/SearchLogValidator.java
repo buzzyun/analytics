@@ -6,8 +6,8 @@ import org.fastcatgroup.analytics.analysis.log.SearchLog;
 
 public class SearchLogValidator implements LogValidator<SearchLog> {
 	
-	Set<String> banWords;
-	int maxKeywordLength;
+	private Set<String> banWords;
+	private int maxKeywordLength;
 	
 	public SearchLogValidator(Set<String> banWords, int maxKeywordLength) {
 		this.banWords = banWords;

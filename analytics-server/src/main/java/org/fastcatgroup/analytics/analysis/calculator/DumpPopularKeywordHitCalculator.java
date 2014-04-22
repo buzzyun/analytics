@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.fastcatgroup.analytics.analysis.NullLogHandler;
+import org.fastcatgroup.analytics.analysis.StatisticsProperties;
 import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.handler.KeyCountLogSortHandler;
 import org.fastcatgroup.analytics.analysis.handler.MergeKeyCountProcessHandler;
@@ -38,7 +39,7 @@ public class DumpPopularKeywordHitCalculator extends Calculator<ClickLog> {
 		int runKeySize = 1000;
 		
 		if(categoryId.equals("_root")) {
-			String encoding = StatisticsUtils.encoding;
+			String encoding = StatisticsProperties.encoding;
 			
 			Calendar dailyCalendar = (Calendar) calendar.clone();
 			

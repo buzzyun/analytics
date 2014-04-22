@@ -19,7 +19,7 @@ public class RealtimePopularKeywordGeneratorTest {
 		relateKeywordConfig.setMinimumHitCount(relMinHit);
 		
 		StatisticsSettings statisticsSettings = new StatisticsSettings();
-		statisticsSettings.setBanwords(banwords);
+		statisticsSettings.getSiteProperties().setBanwords(banwords);
 		statisticsSettings.setRealtimePopularKeywordSetting(realTimePopularKeywordConfig);
 		statisticsSettings.setPopularKeywordSetting(popularKeywordConfig);
 		statisticsSettings.setRelateKeywordSetting(relateKeywordConfig);

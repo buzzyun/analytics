@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.fastcatgroup.analytics.analysis.NullLogHandler;
+import org.fastcatgroup.analytics.analysis.StatisticsProperties;
 import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.handler.MergeKeyCountProcessHandler;
 import org.fastcatgroup.analytics.analysis.log.ClickLog;
@@ -20,15 +21,15 @@ import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankCo
  * */
 public class NDaysClickKeywordHitCalculator extends Calculator<ClickLog> {
 	
-	private int topCount;
+	private int nDays;
 	
-	public NDaysClickKeywordHitCalculator(String name, Calendar calendar, File baseDir, String siteId, List<String> categoryIdList) {
+	public NDaysClickKeywordHitCalculator(String name, Calendar calendar, File baseDir, String siteId, List<String> categoryIdList, int nDays) {
 		super(name, calendar, baseDir, siteId, categoryIdList);
+		this.nDays = nDays;
 	}
 	
 	@Override
 	protected CategoryProcess<ClickLog> newCategoryProcess(String categoryId){
-		int nDays = 90; //90일.
 		
 		CategoryProcess<ClickLog> categoryProcess = new CategoryProcess<ClickLog>(categoryId);
 		
@@ -36,7 +37,7 @@ public class NDaysClickKeywordHitCalculator extends Calculator<ClickLog> {
 			
 		if(categoryId.equals("_root")) {
 		
-			String encoding = StatisticsUtils.encoding;
+			String encoding = StatisticsProperties.encoding;
 			
 			File workingDir = new File(StatisticsUtils.getDayDataDir(baseDir, calendar), siteId);
 			
@@ -55,7 +56,7 @@ public class NDaysClickKeywordHitCalculator extends Calculator<ClickLog> {
 			}
 			
 			//nDays치의 일자별 click-row log들을 머징한다.
-			logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
+			logger.debug("Process Dir = {}, nDays = {}", workingDir.getAbsolutePath(), nDays);
 			//File file = new File(workingDir, CLICK_TARGET_FILENAME);
 			
 			/*

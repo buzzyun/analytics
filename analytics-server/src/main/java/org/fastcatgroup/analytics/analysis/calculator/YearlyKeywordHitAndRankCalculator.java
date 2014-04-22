@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.fastcatgroup.analytics.analysis.NullLogHandler;
+import org.fastcatgroup.analytics.analysis.StatisticsProperties;
 import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.handler.KeyCountLogSortHandler;
 import org.fastcatgroup.analytics.analysis.handler.KeyCountProcessHandler;
@@ -39,7 +40,7 @@ public class YearlyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		
 		logger.debug("category:{} / process:{}", categoryId, this);
 		
-		String encoding = StatisticsUtils.encoding;
+		String encoding = StatisticsProperties.encoding;
 		
 		int diff = StatisticsUtils.getMonthDiff(prevCalendar, calendar);
 		
@@ -59,7 +60,7 @@ public class YearlyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		}
 		
 		String timeId = StatisticsUtils.getTimeId(calendar, Calendar.YEAR);
-		int runKeySize = StatisticsUtils.runKeySize;
+		int runKeySize = StatisticsProperties.runKeySize;
 		
 		//logger.debug("daily calendar : {}", new java.text.SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()));
 		File[] keyCountFiles = new File[diff];

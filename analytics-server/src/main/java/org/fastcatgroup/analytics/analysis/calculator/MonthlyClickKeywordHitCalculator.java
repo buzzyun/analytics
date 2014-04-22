@@ -10,6 +10,7 @@ import org.fastcatgroup.analytics.analysis.AbstractLogAggregator;
 import org.fastcatgroup.analytics.analysis.EntryParser;
 import org.fastcatgroup.analytics.analysis.KeyCountLogAggregator;
 import org.fastcatgroup.analytics.analysis.NullLogHandler;
+import org.fastcatgroup.analytics.analysis.StatisticsProperties;
 import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.handler.MergeClickTypeCountProcessHandler;
 import org.fastcatgroup.analytics.analysis.handler.ProcessHandler;
@@ -45,7 +46,7 @@ public class MonthlyClickKeywordHitCalculator extends Calculator<ClickLog> {
 			
 		if(categoryId.equals("_root")) {
 		
-			String encoding = StatisticsUtils.encoding;
+			String encoding = StatisticsProperties.encoding;
 			
 			File workingDir = new File(StatisticsUtils.getDayDataDir(baseDir, calendar), siteId);
 			
@@ -56,7 +57,7 @@ public class MonthlyClickKeywordHitCalculator extends Calculator<ClickLog> {
 			}
 			
 			String timeId = StatisticsUtils.getTimeId(calendar, Calendar.MONTH);
-			int runKeySize = StatisticsUtils.runKeySize;
+			int runKeySize = StatisticsProperties.runKeySize;
 			
 			//
 			//1일부터 현재일자 (DAY_OF_MONTH) 까지.

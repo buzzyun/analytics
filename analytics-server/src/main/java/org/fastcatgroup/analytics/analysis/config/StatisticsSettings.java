@@ -1,6 +1,8 @@
 package org.fastcatgroup.analytics.analysis.config;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -12,11 +14,11 @@ import javax.xml.bind.annotation.XmlType;
 public class StatisticsSettings {
 	
 	private List<CategorySetting> categoryList;
-	private String banwords;
-	private String fileEncoding;
 	private RealTimePopularKeywordSetting realtimePopularKeywordSetting;
 	private PopularKeywordSetting popularKeywordSetting;
 	private RelateKeywordSetting relateKeywordSetting;
+	private CTRSetting ctrSetting;
+	private SiteProperties siteProperties;
 	private SiteAttribute siteAttribute;
 	
 	public StatisticsSettings() { }
@@ -31,23 +33,6 @@ public class StatisticsSettings {
 		this.categoryList = categoryList;
 	}
 	
-	@XmlElement(name="banwords")
-	public String getBanwords() {
-		return banwords;
-	}
-	
-	public void setBanwords(String banwords) {
-		this.banwords = banwords;
-	}
-	
-	@XmlElement(name="file-encoding")
-	public String getFileEncoding() {
-		return fileEncoding;
-	}
-	
-	public void setFileEncoding(String fileEncoding) {
-		this.fileEncoding = fileEncoding;
-	}
 	
 	@XmlElement(name="realtime-popular-keyword")
 	public RealTimePopularKeywordSetting getRealtimePopularKeywordSetting() {
@@ -76,6 +61,24 @@ public class StatisticsSettings {
 		this.relateKeywordSetting = setting;
 	}
 	
+	@XmlElement(name="ctr")
+	public CTRSetting getCtrSetting() {
+		return ctrSetting;
+	}
+
+	public void setCtrSetting(CTRSetting ctrSetting) {
+		this.ctrSetting = ctrSetting;
+	}
+	
+	@XmlElement(name="properties")
+	public SiteProperties getSiteProperties() {
+		return siteProperties;
+	}
+
+	public void setSiteProperties(SiteProperties siteProperties) {
+		this.siteProperties = siteProperties;
+	}
+
 	@XmlElement(name="site-attribute")
 	public SiteAttribute getSiteAttribute() {
 		return siteAttribute;
@@ -84,6 +87,43 @@ public class StatisticsSettings {
 	public void setSiteAttribute (SiteAttribute siteAttribute) {
 		this.siteAttribute = siteAttribute;
 	}
+	
+	@XmlType
+	public static class SiteProperties {
+		
+		private String banwords;
+		private int maxKeywordLength;
+		
+		@XmlElement
+		public String getBanwords() {
+			return banwords;
+		}
+		
+		public void setBanwords(String banwords) {
+			this.banwords = banwords;
+		}
+
+		public Set<String> getBanwordSet() {
+			String[] list = banwords.split("\t");
+			Set<String> set = new HashSet<String>();
+			for(String w : list) {
+				set.add(w);
+			}
+			return set;
+		}
+		
+		@XmlElement
+		public int getMaxKeywordLength() {
+			return maxKeywordLength;
+		}
+
+		public void setMaxKeywordLength(int maxKeywordLength) {
+			this.maxKeywordLength = maxKeywordLength;
+		}
+		
+		
+	}
+	
 	
 	@XmlType 
 	public static class SiteAttribute {
@@ -164,6 +204,25 @@ public class StatisticsSettings {
 		public RelateKeywordSetting() { }
 		public RelateKeywordSetting(Integer i) { super(i); } 
 	}
+	
+	@XmlType 
+	public static class CTRSetting {
+		private Integer dumpFileDaySize;
+		
+		public CTRSetting() { }
+
+		@XmlElement
+		public Integer getDumpFileDaySize() {
+			return dumpFileDaySize;
+		}
+
+		public void setDumpFileDaySize(Integer dumpFileDaySize) {
+			this.dumpFileDaySize = dumpFileDaySize;
+		}
+		
+		
+	}
+	
 	
 	@XmlType(propOrder = { "useRelateKeyword", "usePopularKeyword", "useRealTimePopularKeyword"})
 	public static class CategorySetting extends IdNameSetting {

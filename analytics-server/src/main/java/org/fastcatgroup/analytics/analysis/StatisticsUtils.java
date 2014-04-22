@@ -12,13 +12,6 @@ import org.slf4j.LoggerFactory;
 public class StatisticsUtils {
 	private static Logger logger = LoggerFactory.getLogger(StatisticsUtils.class);
 	
-	public static final String encoding = "utf-8";
-	public static int runKeySize = 10 * 10000;
-	public static int realtimeSearchLogLimit = 6; //이전 타임 6개까지 저장.
-	public static int maxKeywordLength = 20;
-
-	public static final String ROOT_ID = "_root";
-	
 	public static int getDateDiff(Calendar c1, Calendar c2) {
 		return (int) ((c2.getTimeInMillis() - c1.getTimeInMillis()) / (1000 * 60 * 60 * 24));
 	}

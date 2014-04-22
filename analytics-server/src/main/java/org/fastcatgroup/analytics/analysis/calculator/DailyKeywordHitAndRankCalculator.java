@@ -11,8 +11,11 @@ import org.fastcatgroup.analytics.analysis.KeyCountEmptyLogAggregator;
 import org.fastcatgroup.analytics.analysis.KeyCountLogAggregator;
 import org.fastcatgroup.analytics.analysis.LogAggregatorContainer;
 import org.fastcatgroup.analytics.analysis.SearchLogValidator;
+import org.fastcatgroup.analytics.analysis.StatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.ServiceCountLogAggregator;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ServiceSetting;
 import org.fastcatgroup.analytics.analysis.handler.KeyCountLogSortHandler;
 import org.fastcatgroup.analytics.analysis.handler.KeywordRankDiffHandler;
@@ -25,6 +28,7 @@ import org.fastcatgroup.analytics.analysis.handler.UpdateKeywordHitHandler;
 import org.fastcatgroup.analytics.analysis.handler.UpdateSearchHitHandler;
 import org.fastcatgroup.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
+import org.fastcatgroup.analytics.service.ServiceManager;
 
 import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.*;
 
@@ -47,7 +51,7 @@ public class DailyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 	
 	@Override
 	protected CategoryProcess<SearchLog> newCategoryProcess(String categoryId){
-		String encoding = StatisticsUtils.encoding;
+		String encoding = StatisticsProperties.encoding;
 		File workingDir = new File(baseDir, categoryId);
 		File prevWorkingDir = new File(prevDir, categoryId);
 		
@@ -64,8 +68,10 @@ public class DailyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		}
 		
 		String timeId = StatisticsUtils.getTimeId(calendar, Calendar.DATE);
-		int maxKeywordLength = StatisticsUtils.maxKeywordLength;
-		int runKeySize = StatisticsUtils.runKeySize;
+		
+		StatisticsSettings statisticsSettings = ServiceManager.getInstance().getService(StatisticsService.class).getStatisticsSetting(siteId);
+		int maxKeywordLength = statisticsSettings.getSiteProperties().getMaxKeywordLength();
+		int runKeySize = StatisticsProperties.runKeySize;
 
 		logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
 		KeyCountRunEntryParser entryParser = new KeyCountRunEntryParser();

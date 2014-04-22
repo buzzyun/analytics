@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
+import org.fastcatgroup.analytics.analysis.StatisticsProperties;
 import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.calculator.Calculator;
 import org.fastcatgroup.analytics.analysis.calculator.DailyRelateKeywordCalculator;
@@ -35,9 +36,8 @@ public class RelateSearchLogAnalyticsTask extends AnalyticsTask<RelateSearchLog>
 		int minimumHitCount = 5;
 
 		File logFile = new File(baseDir, RAW_LOG_FILENAME);
-		String encoding = StatisticsUtils.encoding;
 		try {
-			logReader = new FileListLogReader<RelateSearchLog>(new File[] {logFile}, encoding){
+			logReader = new FileListLogReader<RelateSearchLog>(new File[] {logFile}, StatisticsProperties.encoding){
 
 				@Override
 				protected RelateSearchLog makeLog(String[] el) {

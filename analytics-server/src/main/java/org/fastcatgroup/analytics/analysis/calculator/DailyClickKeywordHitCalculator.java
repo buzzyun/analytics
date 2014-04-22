@@ -10,6 +10,7 @@ import org.fastcatgroup.analytics.analysis.AbstractLogAggregator;
 import org.fastcatgroup.analytics.analysis.EntryParser;
 import org.fastcatgroup.analytics.analysis.KeyCountLogAggregator;
 import org.fastcatgroup.analytics.analysis.NullLogHandler;
+import org.fastcatgroup.analytics.analysis.StatisticsProperties;
 import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.handler.MergeClickTypeCountProcessHandler;
 import org.fastcatgroup.analytics.analysis.log.ClickLog;
@@ -41,7 +42,7 @@ public class DailyClickKeywordHitCalculator extends Calculator<ClickLog> {
 		new NullLogHandler<ClickLog>(categoryId).attachLogHandlerTo(categoryProcess);
 			
 		if(categoryId.equals("_root")) {
-			String encoding = StatisticsUtils.encoding;
+			String encoding = StatisticsProperties.encoding;
 			File workingDir = new File(StatisticsUtils.getDayDataDir(baseDir, calendar), siteId);
 			
 			if(!workingDir.exists()) {
@@ -50,7 +51,7 @@ public class DailyClickKeywordHitCalculator extends Calculator<ClickLog> {
 				} catch (IOException ignore) { }
 			}
 			
-			int runKeySize = StatisticsUtils.runKeySize;
+			int runKeySize = StatisticsProperties.runKeySize;
 			
 			//
 			//현재날자 클릭로그 

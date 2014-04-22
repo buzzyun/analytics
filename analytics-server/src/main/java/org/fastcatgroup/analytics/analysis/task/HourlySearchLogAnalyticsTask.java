@@ -1,5 +1,7 @@
 package org.fastcatgroup.analytics.analysis.task;
 
+import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.RAW_LOG_FILENAME;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
@@ -7,15 +9,16 @@ import java.util.List;
 import java.util.Set;
 
 import org.fastcatgroup.analytics.analysis.DailyRawLogger;
+import org.fastcatgroup.analytics.analysis.StatisticsProperties;
+import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.calculator.Calculator;
-import org.fastcatgroup.analytics.analysis.calculator.DailyKeywordHitAndRankCalculator;
 import org.fastcatgroup.analytics.analysis.calculator.HourlyKeywordHitAndRankCalculator;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings;
 import org.fastcatgroup.analytics.analysis.log.SearchLog;
 import org.fastcatgroup.analytics.analysis.log.SearchLogReader;
 import org.fastcatgroup.analytics.analysis.schedule.Schedule;
-
-import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankConstants.*;
+import org.fastcatgroup.analytics.service.ServiceManager;
 
 /**
  * 시간대별 검색로그 계산 task 내부에 인기검색어, 검색횟수 calculator를 가지고 있다.
@@ -39,22 +42,20 @@ public class HourlySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 		
 		File baseDir = new File(StatisticsUtils.getDayDataDir(dir, calendar), siteId);
 		
-		Set<String> banWords = null;
-		int minimumHitCount = 1;
-		int topCount = 10;
+		StatisticsSettings statisticsSettings = ServiceManager.getInstance().getService(StatisticsService.class).getStatisticsSetting(siteId);
+		Set<String> banWords = statisticsSettings.getSiteProperties().getBanwordSet();
 
 		//당일치 로그만 이용한다.
 		File logFile = new File(baseDir, RAW_LOG_FILENAME);
-		String encoding = StatisticsUtils.encoding;
 		try {
-			logReader = new SearchLogReader(new File[] { logFile }, encoding);
+			logReader = new SearchLogReader(new File[] { logFile }, StatisticsProperties.encoding);
 			//logger.debug("logReader:{}", logReader);
 		} catch (IOException e) {
 			logger.error("", e);
 		}
 
 		// calc를 카테고리별로 모두 만든다.
-		Calculator<SearchLog> popularKeywordCalculator = new HourlyKeywordHitAndRankCalculator("Hourly popular keyword calculator", calendar, baseDir, siteId, categoryIdList, banWords, minimumHitCount, topCount);
+		Calculator<SearchLog> popularKeywordCalculator = new HourlyKeywordHitAndRankCalculator("Hourly popular keyword calculator", calendar, baseDir, siteId, categoryIdList, banWords);
 		addCalculator(popularKeywordCalculator);
 		
 	}

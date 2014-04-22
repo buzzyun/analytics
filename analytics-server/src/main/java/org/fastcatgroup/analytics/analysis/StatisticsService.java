@@ -12,6 +12,7 @@ import javax.xml.bind.JAXBException;
 import org.fastcatgroup.analytics.analysis.config.SiteListSetting;
 import org.fastcatgroup.analytics.analysis.config.SiteListSetting.SiteSetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.CTRSetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.CategorySetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ClickTypeSetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.PopularKeywordSetting;
@@ -19,6 +20,7 @@ import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.RealTimePop
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.RelateKeywordSetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ServiceSetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.SiteAttribute;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.SiteProperties;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.TypeSetting;
 import org.fastcatgroup.analytics.analysis.vo.RankKeyword;
 import org.fastcatgroup.analytics.db.AnalyticsDBService;
@@ -47,7 +49,6 @@ public class StatisticsService extends AbstractService {
 	private Map<String, Map<String, List<String>>> relateKeywordMap;
 	private Map<String, SiteSearchLogStatisticsModule> siteStatisticsModuleMap;
 	private Map<String, StatisticsSettings> statisticsSettingMap;
-	//private Map<String, Map<String, CategoryStatistics>> categoryStatisticsMap;
 
 	public StatisticsService(Environment environment, Settings settings, ServiceManager serviceManager) {
 		super(environment, settings, serviceManager);
@@ -97,6 +98,11 @@ public class StatisticsService extends AbstractService {
 		} catch (JAXBException e) {
 			logger.error("", e);
 		}
+		
+		StatisticsProperties.runKeySize = settings.getInt("runKeySize", 10 * 10000);
+		StatisticsProperties.encoding = settings.getString("encoding", "utf-8");
+		StatisticsProperties.ROOT_ID = settings.getString("rootId", "_root");
+		StatisticsProperties.ROOT_NAME = settings.getString("rootName", "ALL");
 	}
 	
 	public void deleteConfig(String siteId) {
@@ -392,14 +398,10 @@ public class StatisticsService extends AbstractService {
 	
 	public StatisticsSettings newDefaultStatistics() {
 		StatisticsSettings statisticsSettings = new StatisticsSettings();
-		//금지어
-		statisticsSettings.setBanwords("");
 		//카테고리
 		List<CategorySetting> categoryList = new ArrayList<CategorySetting>();
-		categoryList.add(new CategorySetting("_root","ALL",false,false,false));
+		categoryList.add(new CategorySetting(StatisticsProperties.ROOT_ID, StatisticsProperties.ROOT_NAME, false, false, false));
 		statisticsSettings.setCategoryList(categoryList);
-		//인코딩
-		statisticsSettings.setFileEncoding("utf-8");
 		
 		//인기키워드
 		PopularKeywordSetting popularKeywordSetting = new PopularKeywordSetting(10,2);
@@ -413,7 +415,15 @@ public class StatisticsService extends AbstractService {
 		RealTimePopularKeywordSetting realtimePopularKeywordSetting = new RealTimePopularKeywordSetting(6,10,1);
 		statisticsSettings.setRealtimePopularKeywordSetting(realtimePopularKeywordSetting);
 		
-		//사이트속성
+		//CTR
+		CTRSetting ctrSetting = new CTRSetting();
+		statisticsSettings.setCtrSetting(ctrSetting);
+		
+		//Site Properties
+		SiteProperties siteProperties = new SiteProperties(); 
+		statisticsSettings.setSiteProperties(siteProperties);
+		
+		//Site Attribute
 		SiteAttribute siteAttribute = new SiteAttribute();
 		List<ClickTypeSetting> clickTypeList = new ArrayList<ClickTypeSetting>();
 		siteAttribute.setClickTypeList(clickTypeList);

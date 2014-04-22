@@ -140,20 +140,20 @@ public class SiteConfigurationController extends AbstractController {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("configuration/settings/siteSetting");
 		StatisticsSettings statisticsSetting = getStatisticsService().getStatisticsSetting(siteId);
-		String banwords = statisticsSetting.getBanwords();
-		String fileEncoding = statisticsSetting.getFileEncoding();
+		String banwords = statisticsSetting.getSiteProperties().getBanwords();
 		PopularKeywordSetting popularKeywordSetting = statisticsSetting.getPopularKeywordSetting();
 		RelateKeywordSetting relateKeywordSetting = statisticsSetting.getRelateKeywordSetting();
 		RealTimePopularKeywordSetting realTimePopularKeywordSetting = statisticsSetting.getRealtimePopularKeywordSetting();
 		
+		int defaultMinimumHitCount = 2;
+		int defaultTopCount = 10;
+		int defaultRealtimeRecentCount = 6;
 		if(banwords==null) { banwords = ""; }
-		if(fileEncoding==null) { fileEncoding = "utf-8"; }
-		if(popularKeywordSetting==null) { popularKeywordSetting = new PopularKeywordSetting(10,2); }
-		if(relateKeywordSetting==null) { relateKeywordSetting = new RelateKeywordSetting(2); }
-		if(realTimePopularKeywordSetting==null) { realTimePopularKeywordSetting = new RealTimePopularKeywordSetting(6,10,1); }
+		if(popularKeywordSetting==null) { popularKeywordSetting = new PopularKeywordSetting(defaultTopCount, defaultMinimumHitCount); }
+		if(relateKeywordSetting==null) { relateKeywordSetting = new RelateKeywordSetting(defaultMinimumHitCount); }
+		if(realTimePopularKeywordSetting==null) { realTimePopularKeywordSetting = new RealTimePopularKeywordSetting(defaultRealtimeRecentCount, defaultTopCount, defaultMinimumHitCount); }
 		
 		mav.addObject("banWords", banwords);
-		mav.addObject("fileEncoding", fileEncoding);
 		mav.addObject("popularKeywordSetting",popularKeywordSetting);
 		mav.addObject("relateKeywordSetting",relateKeywordSetting);
 		mav.addObject("realTimePopularKeywordSetting",realTimePopularKeywordSetting);

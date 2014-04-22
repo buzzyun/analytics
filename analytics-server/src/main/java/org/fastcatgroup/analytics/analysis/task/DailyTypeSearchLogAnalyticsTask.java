@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.fastcatgroup.analytics.analysis.DailyRawLogger;
+import org.fastcatgroup.analytics.analysis.StatisticsProperties;
 import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.StatisticsService;
 import org.fastcatgroup.analytics.analysis.calculator.Calculator;
@@ -47,10 +48,9 @@ public class DailyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchLog
 		File baseDir = new File(StatisticsUtils.getDayDataDir(dir, calendar), siteId);
 
 		File logFile = new File(baseDir, TYPE_RAW_FILENAME);
-		String encoding = StatisticsUtils.encoding;
 		try {
 			if(logFile.exists()){
-				logReader = new TypeSearchLogReader(new File[] { logFile }, encoding);
+				logReader = new TypeSearchLogReader(new File[] { logFile }, StatisticsProperties.encoding);
 			}
 		} catch (IOException e) {
 			logger.error("", e);

@@ -105,7 +105,7 @@ public class DBMapperTest {
 					SearchHitVO vo;
 					List<SearchHitVO> list;
 					try {
-						mapper.createTable(site);
+						mapper.createTable(site,"");
 						mapper.createIndex(site);
 						mapper.validateTable(site);
 						//입력자료 설정
@@ -161,7 +161,7 @@ public class DBMapperTest {
 					List<SearchKeywordHitVO> list;
 					List<String> keywordList;
 					try {
-						mapper.createTable(site);
+						mapper.createTable(site,"");
 						mapper.createIndex(site);
 						mapper.validateTable(site);
 						
@@ -238,7 +238,7 @@ public class DBMapperTest {
 					List<SearchTypeHitVO> list;
 					List<String> typeList;
 					try {
-						mapper.createTable(site);
+						mapper.createTable(site,"");
 						mapper.createIndex(site);
 						mapper.validateTable(site);
 						

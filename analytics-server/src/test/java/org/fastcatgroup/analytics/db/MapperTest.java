@@ -27,7 +27,7 @@ public class MapperTest {
 	class TestMapper implements AnalyticsMapper {
 
 		@Override
-		public void createTable(String siteId) throws Exception {
+		public void createTable(String siteId, String option) throws Exception {
 			// TODO Auto-generated method stub
 			
 		}

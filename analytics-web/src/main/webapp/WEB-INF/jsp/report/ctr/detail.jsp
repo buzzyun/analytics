@@ -36,6 +36,9 @@ $(document).ready(function(){
 	
 });
 
+function goDetail(keyword){
+	submitForm("keyword.html", {"keyword" : keyword}, "post");
+}
 
 </script>
 
@@ -169,7 +172,7 @@ $(document).ready(function(){
 									%>
 										<tr>
 											<td><%=i+1 %></td>
-											<td><%=vo.getKeyword() %></td>
+											<td><a href="javascript:goDetail('<%=vo.getKeyword() %>')"><%=vo.getKeyword() %></a></td>
 											<td><%=keywordSearchPvList.get(i) %></td>
 											<td><%=vo.getCount() %></td>
 											<td><%=kewordCtrList.get(i) %></td>

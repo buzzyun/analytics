@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.fastcatgroup.analytics.analysis.StatisticsUtils;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.CTRSetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.CategorySetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ClickTypeSetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.PopularKeywordSetting;
@@ -19,6 +20,7 @@ import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.RealTimePop
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.RelateKeywordSetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ServiceSetting;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.SiteAttribute;
+import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.SiteProperties;
 import org.fastcatgroup.analytics.analysis.config.StatisticsSettings.TypeSetting;
 import org.fastcatgroup.analytics.control.JobService;
 import org.fastcatgroup.analytics.job.Job;
@@ -140,23 +142,25 @@ public class SiteConfigurationController extends AbstractController {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("configuration/settings/siteSetting");
 		StatisticsSettings statisticsSetting = getStatisticsService().getStatisticsSetting(siteId);
-		String banwords = statisticsSetting.getSiteProperties().getBanwords();
+		SiteProperties siteProperties = statisticsSetting.getSiteProperties();
 		PopularKeywordSetting popularKeywordSetting = statisticsSetting.getPopularKeywordSetting();
 		RelateKeywordSetting relateKeywordSetting = statisticsSetting.getRelateKeywordSetting();
 		RealTimePopularKeywordSetting realTimePopularKeywordSetting = statisticsSetting.getRealtimePopularKeywordSetting();
+		CTRSetting ctrSetting = statisticsSetting.getCtrSetting();
 		
 		int defaultMinimumHitCount = 2;
 		int defaultTopCount = 10;
 		int defaultRealtimeRecentCount = 6;
-		if(banwords==null) { banwords = ""; }
+		
 		if(popularKeywordSetting==null) { popularKeywordSetting = new PopularKeywordSetting(defaultTopCount, defaultMinimumHitCount); }
 		if(relateKeywordSetting==null) { relateKeywordSetting = new RelateKeywordSetting(defaultMinimumHitCount); }
 		if(realTimePopularKeywordSetting==null) { realTimePopularKeywordSetting = new RealTimePopularKeywordSetting(defaultRealtimeRecentCount, defaultTopCount, defaultMinimumHitCount); }
 		
-		mav.addObject("banWords", banwords);
+		mav.addObject("siteProperties", siteProperties);
+		mav.addObject("realTimePopularKeywordSetting",realTimePopularKeywordSetting);
 		mav.addObject("popularKeywordSetting",popularKeywordSetting);
 		mav.addObject("relateKeywordSetting",relateKeywordSetting);
-		mav.addObject("realTimePopularKeywordSetting",realTimePopularKeywordSetting);
+		mav.addObject("ctrSetting",ctrSetting);
 		return mav;
 	}
 	
@@ -239,14 +243,15 @@ public class SiteConfigurationController extends AbstractController {
 	@RequestMapping("/settings/updateSetting")
 	public ModelAndView updateSetting(@PathVariable String siteId,
 			@RequestParam String mode,
-			@RequestParam String banWords,
-			@RequestParam String fileEncoding,
+			@RequestParam String banwords,
+			@RequestParam Integer maxKeywordLength,
 			@RequestParam Integer realTimeKeywordMinimumHit,
 			@RequestParam Integer realTimeKeywordRecentLog,
 			@RequestParam Integer realTimeKeywordTopSize,
 			@RequestParam Integer popularKeywordMinimumHit,
 			@RequestParam Integer popularKeywordTopSize,
-			@RequestParam Integer relateKeywordMinimumHit
+			@RequestParam Integer relateKeywordMinimumHit,
+			@RequestParam Integer dumpFileDaySize
 			) throws Exception {
 		
 		ModelAndView mav = new ModelAndView();
@@ -266,11 +271,17 @@ public class SiteConfigurationController extends AbstractController {
 					popularKeywordTopSize, popularKeywordMinimumHit);
 			RelateKeywordSetting relateKeywordSetting = new RelateKeywordSetting(
 					relateKeywordMinimumHit);
-			
+			SiteProperties siteProperties = new SiteProperties();
+			siteProperties.setBanwords(banwords);
+			siteProperties.setMaxKeywordLength(maxKeywordLength);
+			statisticsSetting.setSiteProperties(siteProperties);
 			statisticsSetting.setRealtimePopularKeywordSetting(realtimePopularKeywordSetting);
 			statisticsSetting.setPopularKeywordSetting(popularKeywordSetting);
-			statisticsSetting.setRelateKeywordSetting(relateKeywordSetting);			
+			statisticsSetting.setRelateKeywordSetting(relateKeywordSetting);		
 			
+			CTRSetting ctrSetting = new CTRSetting();
+			ctrSetting.setDumpFileDaySize(dumpFileDaySize);
+			statisticsSetting.setCtrSetting(ctrSetting);
 			getStatisticsService().writeConfig();
 		}
 		

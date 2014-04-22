@@ -182,7 +182,7 @@ function updateAttribute(formId, mode) {
 									<td><%=attrInx + 1 %></td>
 									<td><input class="form-control" type="text" name="typeId<%=attrInx %>" value="<%=typeSetting.getId() %>"/></td>
 									<td><input class="form-control" type="text" name="typeName<%=attrInx %>" value="<%=typeSetting.getName() %>"/></td>
-									<td><input class="form-control" type="checkbox" name="typePrime<%=attrInx%>" value="true" <%=typeSetting.isPrime()?"checked":""%>/></td>
+									<td><label class="checkbox"><input class="form-control" type="checkbox" name="typePrime<%=attrInx%>" value="true" <%=typeSetting.isPrime()?"checked":""%>/></label></td>
 									<td>
 										<a class="btn btn-sm" href="javascript:{}">
 											<span class="icon-plus-sign" id="btn-add-<%=attrInx%>"></span>
@@ -238,7 +238,7 @@ function updateAttribute(formId, mode) {
 									<td><%=attrInx + 1 %></td>
 									<td><input class="form-control" type="text" name="serviceId<%=attrInx %>" value="<%=serviceSetting.getId() %>"/></td>
 									<td><input class="form-control" type="text" name="serviceName<%=attrInx %>" value="<%=serviceSetting.getName() %>"/></td>
-									<td><input class="form-control" type="radio" name="servicePrimeIndex" value="<%=attrInx%>" <%=serviceSetting.isPrime()?"checked":""%>/></td>
+									<td><label class="radio"><input class="form-control" type="radio" name="servicePrimeIndex" value="<%=attrInx%>" <%=serviceSetting.isPrime()?"checked":""%>/></label></td>
 									<td>
 										<a class="btn btn-sm" href="javascript:{}">
 											<span class="icon-plus-sign" id="btn-add-<%=attrInx%>"></span>
@@ -329,7 +329,7 @@ function updateAttribute(formId, mode) {
 						<td></td>
 						<td><input class="form-control" type="text" name="typeId0" value=""/></td>
 						<td><input class="form-control" type="text" name="typeName0" value=""/></td>
-						<td><input class="form-control" type="checkbox" name="typePrime0" value="true"/></td>
+						<td><label class="checkbox"><input class="form-control" type="checkbox" name="typePrime0" value="true"/></label></td>
 						<td>
 							<a class="btn btn-sm" href="javascript:{}">
 								<span class="icon-plus-sign" id="btn-add-0"></span>
@@ -343,7 +343,7 @@ function updateAttribute(formId, mode) {
 						<td></td>
 						<td><input class="form-control" type="text" name="serviceId0" value=""/></td>
 						<td><input class="form-control" type="text" name="serviceName0" value=""/></td>
-						<td><input class="form-control" type="radio" name="servicePrimeIndex" value=""/></td>
+						<td><label class="radio"><input class="form-control" type="radio" name="servicePrimeIndex" value=""/></label></td>
 						<td>
 							<a class="btn btn-sm" href="javascript:{}">
 								<span class="icon-plus-sign" id="btn-add-0"></span>

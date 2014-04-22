@@ -102,7 +102,6 @@ public class StatisticsService extends AbstractService {
 		StatisticsProperties.runKeySize = settings.getInt("runKeySize", 10 * 10000);
 		StatisticsProperties.encoding = settings.getString("encoding", "utf-8");
 		StatisticsProperties.ROOT_ID = settings.getString("rootId", "_root");
-		StatisticsProperties.ROOT_NAME = settings.getString("rootName", "ALL");
 	}
 	
 	public void deleteConfig(String siteId) {
@@ -400,7 +399,7 @@ public class StatisticsService extends AbstractService {
 		StatisticsSettings statisticsSettings = new StatisticsSettings();
 		//카테고리
 		List<CategorySetting> categoryList = new ArrayList<CategorySetting>();
-		categoryList.add(new CategorySetting(StatisticsProperties.ROOT_ID, StatisticsProperties.ROOT_NAME, false, false, false));
+		categoryList.add(new CategorySetting(StatisticsProperties.ROOT_ID, "ALL", false, false, false));
 		statisticsSettings.setCategoryList(categoryList);
 		
 		//인기키워드

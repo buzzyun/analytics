@@ -49,7 +49,7 @@ $(document).ready(function(){
 					<ul id="breadcrumbs" class="breadcrumb">
 						<li><i class="icon-home"></i> <a href="javascript:void(0);">Configuration</a></li>
 						<li><a href="#">Management</a></li>
-						<li><a href="#">Run Test Range Statistics</a></li>
+						<li><a href="#">Advance Run Statistics</a></li>
 					</ul>
 				</div>
 				<!-- /Breadcrumbs line -->
@@ -57,7 +57,7 @@ $(document).ready(function(){
 				<!--=== Page Header ===-->
 				<div class="page-header">
 					<div class="page-title page-title-sm">
-						<h3>Run Test Range Statistics</h3>
+						<h3>Advance Run Statistics</h3>
 					</div>
 				</div>
 				<!-- /Page Header -->
@@ -75,6 +75,9 @@ $(document).ready(function(){
 							</div>
 						</div>
 					</div>
+				</div>
+				<div class="alert alert-warning">
+					This doesn't make week, month and year statistics on daily tasks, but only make them at the end of the period. 
 				</div>
 			</div>
 		</div>

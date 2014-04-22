@@ -2,16 +2,14 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page import="org.json.*
-,org.fastcatgroup.analytics.analysis.config.StatisticsSettings.PopularKeywordSetting
-,org.fastcatgroup.analytics.analysis.config.StatisticsSettings.RealTimePopularKeywordSetting
-,org.fastcatgroup.analytics.analysis.config.StatisticsSettings.RelateKeywordSetting
+,org.fastcatgroup.analytics.analysis.config.StatisticsSettings.*
 "%>
 <%
-String banWords = (String)request.getAttribute("banWords");
-String fileEncoding = (String)request.getAttribute("fileEncoding");
+SiteProperties siteProperties = (SiteProperties) request.getAttribute("siteProperties");
 PopularKeywordSetting popularKeywords = (PopularKeywordSetting) request.getAttribute("popularKeywordSetting");
 RelateKeywordSetting relateKeywords = (RelateKeywordSetting) request.getAttribute("relateKeywordSetting");
 RealTimePopularKeywordSetting realTimeKeywords = (RealTimePopularKeywordSetting) request.getAttribute("realTimePopularKeywordSetting");
+CTRSetting ctrSetting = (CTRSetting) request.getAttribute("ctrSetting");
 
 %>
 <c:set var="ROOT_PATH" value="../.." />
@@ -96,11 +94,15 @@ $(document).ready(function() {
 							<div class="col-md-12 form-horizontal">
 								<div class="form-group">
 									<label class="col-md-2 control-label">Banwords:</label>
-									<div class="col-md-10"><textarea class="form-control" name="banWords" placeholder="word#1, word#2, ..." style="width:100%"><%=banWords %></textarea></div>
+									<div class="col-md-10"><textarea class="form-control" name="banwords" placeholder="" style="width:100%"><%=siteProperties != null ? siteProperties.getBanwords() : "" %></textarea>
+									<p class="help-block">One by one each line</p>
+									</div>
 								</div>
 								<div class="form-group">
-									<label class="col-md-2 control-label">File Encoding:</label>
-									<div class="col-md-10"><input class="form-control fcol2" name="fileEncoding" value="<%=fileEncoding%>"/></div>
+									<label class="col-md-2 control-label">Max Keyword Length:</label>
+									<div class="col-md-10"><input class="form-control fcol2 digits required" name="maxKeywordLength" value="<%=siteProperties != null ? siteProperties.getMaxKeywordLength() : 0 %>"/>
+									<p class="help-block">If keyword length is larger than this, it's ignored.</p>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -174,6 +176,24 @@ $(document).ready(function() {
 									<label class="col-md-2 control-label">Minimum Hit Count:</label>
 									<div class="col-md-10"><input type="text" name="relateKeywordMinimumHit" class="form-control digits required fcol1-1" value="<%=relateKeywords.getMinimumHitCount()%>">
 									<p class="help-block">If keyword hit count is smaller than this, it's ignored.</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="widget">
+					<div class="widget-header">
+						<h4>Click-through Rate</h4>
+					</div>
+					<div class="widget-content">
+						<div class="row">
+							<div class="col-md-12 form-horizontal">
+								<div class="form-group">
+									<label class="col-md-2 control-label">Dump-file Day Size:</label>
+									<div class="col-md-10"><input type="text" name="dumpFileDaySize" class="form-control digits required fcol1-1" value="<%=ctrSetting.getDumpFileDaySize()%>">
+									<p class="help-block">Merge click log files within N days from now</p>
 									</div>
 								</div>
 							</div>

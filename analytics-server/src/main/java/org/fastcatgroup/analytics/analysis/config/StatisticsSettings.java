@@ -213,10 +213,13 @@ public class StatisticsSettings {
 
 		@XmlElement
 		public Integer getDumpFileDaySize() {
-			return dumpFileDaySize;
+			return dumpFileDaySize == null ? 0 : dumpFileDaySize;
 		}
 
 		public void setDumpFileDaySize(Integer dumpFileDaySize) {
+			if(dumpFileDaySize == null) {
+				dumpFileDaySize = 0;
+			}
 			this.dumpFileDaySize = dumpFileDaySize;
 		}
 		

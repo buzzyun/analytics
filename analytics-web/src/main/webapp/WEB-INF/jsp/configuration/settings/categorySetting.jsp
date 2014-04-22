@@ -165,9 +165,9 @@ function updateCategory(formId, mode) {
 									<td><%=cateInx + 1 %></td>
 									<td><input class="form-control" type="text" name="categoryId<%=cateInx %>" value="<%=categorySetting.getId() %>" <%=cateInx==0?"readonly":"" %>/></td>
 									<td><input class="form-control" type="text" name="categoryName<%=cateInx %>" value="<%=categorySetting.getName() %>"/></td>
-									<td><input class="form-control" type="checkbox" name="useRealTimePopularKeyword<%=cateInx%>" value="true" <%=categorySetting.isUseRealTimePopularKeyword()?"checked":"" %>/></td>
-									<td><input class="form-control" type="checkbox" name="usePopularKeyword<%=cateInx%>" value="true" <%=categorySetting.isUsePopularKeyword()?"checked":"" %>/></td>
-									<td><input class="form-control" type="checkbox" name="useRelateKeyword<%=cateInx%>" value="true" <%=categorySetting.isUseRelateKeyword()?"checked":"" %>/></td>
+									<td><label class="checkbox"><input class="form-control" type="checkbox" name="useRealTimePopularKeyword<%=cateInx%>" value="true" <%=categorySetting.isUseRealTimePopularKeyword()?"checked":"" %>/></label></td>
+									<td><label class="checkbox"><input class="form-control" type="checkbox" name="usePopularKeyword<%=cateInx%>" value="true" <%=categorySetting.isUsePopularKeyword()?"checked":"" %>/></label></td>
+									<td><label class="checkbox"><input class="form-control" type="checkbox" name="useRelateKeyword<%=cateInx%>" value="true" <%=categorySetting.isUseRelateKeyword()?"checked":"" %>/></label></td>
 									<td>
 										<a class="btn btn-sm" href="javascript:{}">
 											<span class="icon-plus-sign" id="btn-add-<%=cateInx%>"></span>
@@ -194,9 +194,9 @@ function updateCategory(formId, mode) {
 								<td></td>
 								<td><input class="form-control" type="text" name="categoryId0" value=""/></td>
 								<td><input class="form-control" type="text" name="categoryName0" value=""/></td>
-								<td><input class="form-control" type="checkbox" name="useRealTimePopularKeyword0" value="true"/></td>
-								<td><input class="form-control" type="checkbox" name="usePopularKeyword0" value="true"/></td>
-								<td><input class="form-control" type="checkbox" name="useRelateKeyword0" value="true"/></td>
+								<td><label class="checkbox"><input class="form-control" type="checkbox" name="useRealTimePopularKeyword0" value="true"/></label></td>
+								<td><label class="checkbox"><input class="form-control" type="checkbox" name="usePopularKeyword0" value="true"/></label></td>
+								<td><label class="checkbox"><input class="form-control" type="checkbox" name="useRelateKeyword0" value="true"/></label></td>
 								<td>
 									<a class="btn btn-sm" href="javascript:{}">
 										<span class="icon-plus-sign"></span>

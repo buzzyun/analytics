@@ -4,7 +4,7 @@ import org.apache.ibatis.annotations.Param;
 
 
 public interface AnalyticsMapper {
-	public void createTable(@Param("siteId") String siteId) throws Exception;
+	public void createTable(@Param("siteId") String siteId, @Param("option") String option) throws Exception;
 	
 	public void createIndex(@Param("siteId") String siteId) throws Exception;
 	

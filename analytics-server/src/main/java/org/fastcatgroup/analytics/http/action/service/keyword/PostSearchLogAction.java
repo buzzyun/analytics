@@ -58,7 +58,7 @@ public class PostSearchLogAction extends ServiceAction {
 			String prevKeyword = request.getParameter("prev");
 			String resultCount = request.getParameter("resultCount");
 			String reponseTime = request.getParameter("resptime");
-			String serviceId = request.getParameter("service");
+			String serviceId = request.getParameter("searchService");
 			
 			//keyword가 null이거나 20보다 크면 버린다.
 			//tab글자는 space로 치환한다.

@@ -152,7 +152,7 @@ public class AnalyticsDBService extends AbstractDBService {
 			}
 			try {
 				logger.debug("create table {}, {}", siteId, clazz.getSimpleName());
-				managedMapper.createTable(siteId);
+				managedMapper.createTable(siteId, settings.getString("option", ""));
 				mapperSession.commit();
 				logger.debug("create index {}, {}", siteId, clazz.getSimpleName());
 				managedMapper.createIndex(siteId);

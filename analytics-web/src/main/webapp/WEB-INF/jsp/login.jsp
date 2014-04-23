@@ -75,8 +75,8 @@ $(document).ready(function(){
 	<div class="footer">
 		<div class="copy">
 			<p class="address">
-				Copyright(c) Fastcat Group. All rights reserved.<br /> <i
-					class="icon-envelope-alt"></i> contact@fastcatgroup.org<br /> <i
+				Copyright(c) Fastcatsearch. All rights reserved.<br /> <i
+					class="icon-envelope-alt"></i> contact@fastcatsearch.org<br /> <i
 					class="glyphicon glyphicon-phone-alt"></i> +82-2-508-1151<br /> 2F
 				Samseong-dong 122-30 Gangnam-gu Seoul, Korea<br />
 			</p>

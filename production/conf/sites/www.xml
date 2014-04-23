@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<statistics>
+    <category-list>
+        <category useRelateKeyword="false" usePopularKeyword="false" useRealTimePopularKeyword="false" id="_root" name="ALL"/>
+    </category-list>
+    <ctr>
+        <dumpFileDaySize>90</dumpFileDaySize>
+    </ctr>
+    <popular-keyword>
+        <minimumHitCount>2</minimumHitCount>
+        <topCount>10</topCount>
+    </popular-keyword>
+    <realtime-popular-keyword>
+        <minimumHitCount>1</minimumHitCount>
+        <topCount>10</topCount>
+        <recentLogUsingCount>6</recentLogUsingCount>
+    </realtime-popular-keyword>
+    <relate-keyword>
+        <minimumHitCount>2</minimumHitCount>
+    </relate-keyword>
+    <site-attribute>
+        <click-type-list/>
+        <service-list/>
+        <type-list/>
+    </site-attribute>
+    <properties>
+        <banwords></banwords>
+        <maxKeywordLength>0</maxKeywordLength>
+    </properties>
+</statistics>

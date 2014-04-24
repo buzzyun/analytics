@@ -20,9 +20,11 @@ public class SearchLogValidator implements LogValidator<SearchLog> {
 			return false;
 		}
 		
-		if (banWords != null) {
+		if (banWords != null && banWords.size() > 0) {
 			for (String banWord : banWords) {
-				if (logData.keyword().contains(banWord)) {
+				
+				if (banWord != null && !"".equals(banWord)
+						&& logData.keyword().contains(banWord)) {
 					// 금지어의 경우 로그에 기록하지 않는다.
 					return false;
 				}

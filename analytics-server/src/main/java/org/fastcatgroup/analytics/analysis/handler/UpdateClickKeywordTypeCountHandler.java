@@ -36,25 +36,28 @@ public class UpdateClickKeywordTypeCountHandler extends ProcessHandler {
 		MapperSession<ClickKeywordHitMapper> mapperSession = dbService.getMapperSession(ClickKeywordHitMapper.class);
 		try {
 			
-			br = new BufferedReader(new FileReader(file));
-			ClickKeywordHitMapper mapper = mapperSession.getMapper();
+			if(file.exists()) {
 			
-			mapper.updateClear(siteId, timeId);
-			mapperSession.commit();
-			for(String rline = null; (rline = br.readLine())!=null;) {
-				String[] data = rline.split("\t");
+				br = new BufferedReader(new FileReader(file));
+				ClickKeywordHitMapper mapper = mapperSession.getMapper();
 				
-				String keyword = data[0];
-				String clickType = data[1];
-				
-				int count = 0;
-				try {
-					count = Integer.parseInt(data[2]);
-				} catch (NumberFormatException ignore) { }
-				
-				logger.trace("#### UpdateClickKeywordTypeHit {} >> {} > {} / {}", timeId, clickType, mapper);
-				mapper.putEntry(siteId, timeId, keyword, clickType, count);
-				
+				mapper.updateClear(siteId, timeId);
+				mapperSession.commit();
+				for(String rline = null; (rline = br.readLine())!=null;) {
+					String[] data = rline.split("\t");
+					
+					String keyword = data[0];
+					String clickType = data[1];
+					
+					int count = 0;
+					try {
+						count = Integer.parseInt(data[2]);
+					} catch (NumberFormatException ignore) { }
+					
+					logger.trace("#### UpdateClickKeywordTypeHit {} >> {} > {} / {}", timeId, clickType, mapper);
+					mapper.putEntry(siteId, timeId, keyword, clickType, count);
+					
+				}
 			}
 		} finally {
 			if (mapperSession != null) {

@@ -37,29 +37,31 @@ public class UpdateClickTypeCountHandler extends ProcessHandler {
 		MapperSession<ClickHitMapper> mapperSession = dbService.getMapperSession(ClickHitMapper.class);
 		try {
 			
-			br = new BufferedReader(new FileReader(file));
-			ClickHitMapper mapper = mapperSession.getMapper();
-			
-			for(String rline = null; (rline = br.readLine())!=null;) {
-				String[] data = rline.split("\t");
+			if(file.exists()) {
+				br = new BufferedReader(new FileReader(file));
+				ClickHitMapper mapper = mapperSession.getMapper();
 				
-				String clickType = data[0];
-				
-				int count = 0;
-				try {
-					count = Integer.parseInt(data[1]);
-				} catch (NumberFormatException ignore) { }
-				
-				logger.debug("#### UpdateClickTypeHit {} >> {} > {} / {}", timeId, clickType, mapper);
-				
-				ClickHitVO vo = mapper.getEntry(siteId, timeId, clickType);
-				
-				if(vo != null){
-					mapper.updateEntry(siteId, timeId, clickType, count);
-				} else {
-					mapper.putEntry(siteId, timeId, clickType, count);
+				for(String rline = null; (rline = br.readLine())!=null;) {
+					String[] data = rline.split("\t");
+					
+					String clickType = data[0];
+					
+					int count = 0;
+					try {
+						count = Integer.parseInt(data[1]);
+					} catch (NumberFormatException ignore) { }
+					
+					logger.debug("#### UpdateClickTypeHit {} >> {} > {} / {}", timeId, clickType, mapper);
+					
+					ClickHitVO vo = mapper.getEntry(siteId, timeId, clickType);
+					
+					if(vo != null){
+						mapper.updateEntry(siteId, timeId, clickType, count);
+					} else {
+						mapper.putEntry(siteId, timeId, clickType, count);
+					}
+					
 				}
-				
 			}
 		} finally {
 			if (mapperSession != null) {

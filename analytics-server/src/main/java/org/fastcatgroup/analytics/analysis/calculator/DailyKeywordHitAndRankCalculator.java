@@ -78,6 +78,7 @@ public class DailyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		CategoryProcess<SearchLog> categoryProcess = new CategoryProcess<SearchLog>(categoryId);
 		SearchLogValidator logValidator = new SearchLogValidator(banWords, maxKeywordLength);
 		
+logger.debug("--------------------------------------------------------------------------------");
 		LogAggregatorContainer<SearchLog> aggregator = new LogAggregatorContainer<SearchLog>();
 		aggregator.addAggregator(new KeyCountLogAggregator<SearchLog>(workingDir, KEY_COUNT_FILENAME, runKeySize, encoding, minimumHitCount, entryParser));
 		aggregator.addAggregator(new KeyCountEmptyLogAggregator<SearchLog>(workingDir, KEY_COUNT_EMPTY_FILENAME, runKeySize, encoding, minimumHitCount, entryParser));

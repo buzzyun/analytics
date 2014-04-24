@@ -37,31 +37,34 @@ public class UpdateClickKeywordTargetTypeCountHandler extends ProcessHandler {
 		MapperSession<ClickKeywordTargetHitMapper> mapperSession = dbService.getMapperSession(ClickKeywordTargetHitMapper.class);
 		try {
 			
-			br = new BufferedReader(new InputStreamReader(new FileInputStream(file), encoding));
-			ClickKeywordTargetHitMapper mapper = mapperSession.getMapper();
+			if(file.exists()) {
 			
-			mapper.updateClear(siteId, timeId);
-			
-			for(String rline = null; (rline = br.readLine())!=null;) {
-				String[] data = rline.split("\t");
+				br = new BufferedReader(new InputStreamReader(new FileInputStream(file), encoding));
+				ClickKeywordTargetHitMapper mapper = mapperSession.getMapper();
 				
-				if(data.length < 4) {
-					logger.debug("unparsable data:{} / {}",rline, file);
-					continue;
+				mapper.updateClear(siteId, timeId);
+				
+				for(String rline = null; (rline = br.readLine())!=null;) {
+					String[] data = rline.split("\t");
+					
+					if(data.length < 4) {
+						logger.debug("unparsable data:{} / {}",rline, file);
+						continue;
+					}
+					
+					String keyword = data[0];
+					String target = data[1];
+					String clickType = data[2];
+					
+					int count = 0;
+					try {
+						count = Integer.parseInt(data[3]);
+					} catch (NumberFormatException ignore) { }
+					
+					logger.trace("#### UpdateClickKeywordTargetTypeHit {} >> {} > {} / {}", timeId, clickType, mapper);
+					mapper.putEntry(siteId, timeId, keyword, target, clickType, count);
+					
 				}
-				
-				String keyword = data[0];
-				String target = data[1];
-				String clickType = data[2];
-				
-				int count = 0;
-				try {
-					count = Integer.parseInt(data[3]);
-				} catch (NumberFormatException ignore) { }
-				
-				logger.trace("#### UpdateClickKeywordTargetTypeHit {} >> {} > {} / {}", timeId, clickType, mapper);
-				mapper.putEntry(siteId, timeId, keyword, target, clickType, count);
-				
 			}
 		} finally {
 			if (mapperSession != null) {

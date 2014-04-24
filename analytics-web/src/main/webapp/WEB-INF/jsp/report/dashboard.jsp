@@ -306,7 +306,7 @@ DecimalFormat format = new DecimalFormat("#,###");
 											Period Search PV</small></li>
 									<%
 									double rate = 0;
-									if(totalCurrentWeek > 0) {
+									if(totalLastWeek > 0) {
 										rate = 10000.0 * (totalCurrentWeek - totalLastWeek) / totalLastWeek;
 									}
 									rate = Math.round(rate) / 100;

@@ -192,11 +192,14 @@ public class AnalyticsDBService extends AbstractDBService {
 			this.addNewSiteMapper("", mapperSession, UserAccountMapper.class);
 			
 			UserAccountMapper userAccountMapper = mapperSession.getMapper();
-			try{
-				userAccountMapper.putEntry(new UserAccountVO("Administrator", "admin", "1111", "", ""));
-			} finally {
-				if (mapperSession != null) {
-					mapperSession.closeSession();
+			
+			if(userAccountMapper.getCount() == 0) {
+				try{
+					userAccountMapper.putEntry(new UserAccountVO("Administrator", "admin", "1111", "", ""));
+				} finally {
+					if (mapperSession != null) {
+						mapperSession.closeSession();
+					}
 				}
 			}
 		} catch (Exception e) {

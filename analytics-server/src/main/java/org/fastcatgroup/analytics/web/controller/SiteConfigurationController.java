@@ -251,7 +251,8 @@ public class SiteConfigurationController extends AbstractController {
 			@RequestParam Integer popularKeywordMinimumHit,
 			@RequestParam Integer popularKeywordTopSize,
 			@RequestParam Integer relateKeywordMinimumHit,
-			@RequestParam Integer dumpFileDaySize
+			@RequestParam Integer dumpFileDaySize,
+			@RequestParam String targetFilePath
 			) throws Exception {
 		
 		ModelAndView mav = new ModelAndView();
@@ -281,6 +282,7 @@ public class SiteConfigurationController extends AbstractController {
 			
 			CTRSetting ctrSetting = new CTRSetting();
 			ctrSetting.setDumpFileDaySize(dumpFileDaySize);
+			ctrSetting.setTargetFilePath(targetFilePath);
 			statisticsSetting.setCtrSetting(ctrSetting);
 			getStatisticsService().writeConfig();
 		}

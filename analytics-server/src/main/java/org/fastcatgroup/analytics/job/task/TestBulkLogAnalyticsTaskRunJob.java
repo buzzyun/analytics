@@ -157,7 +157,7 @@ public class TestBulkLogAnalyticsTaskRunJob extends Job {
 				}
 				
 				TimeSchedule schedule11 = new TimeSchedule(currentDay.getTimeInMillis(), 0);
-				NDaysClickLogAnalyticsTask task11 = new NDaysClickLogAnalyticsTask(siteId, categoryIdList, schedule11, 11);
+				NDaysClickLogAnalyticsTask task11 = new NDaysClickLogAnalyticsTask(siteId, categoryIdList, false, schedule11, 11);
 				taskRunner.addTask(task11);
 				
 				taskRunner.start();

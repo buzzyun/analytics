@@ -19,6 +19,7 @@ import org.fastcatgroup.analytics.analysis.task.MonthlyClickLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.MonthlySearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.MonthlyTypeSearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.NDaysClickLogAnalyticsTask;
+import org.fastcatgroup.analytics.analysis.task.RelateSearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.WeeklySearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.WeeklyTypeSearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.YearlySearchLogAnalyticsTask;
@@ -152,8 +153,16 @@ public class DailySearchLogAnalyticsTaskRunJob extends Job {
 				
 				/* 3. N-Days */
 				TimeSchedule schedule11 = new TimeSchedule(currentDay.getTimeInMillis(), 0);
-				NDaysClickLogAnalyticsTask task11 = new NDaysClickLogAnalyticsTask(siteId, categoryIdList, schedule11, 11);
+				NDaysClickLogAnalyticsTask task11 = new NDaysClickLogAnalyticsTask(siteId, categoryIdList, false, schedule11, 11);
 				taskRunner.addTask(task11);
+				
+				
+				/********************
+				 ** 연관검색어
+				 ********************/
+				TimeSchedule schedule12 = new TimeSchedule(currentDay.getTimeInMillis(), 0);
+				RelateSearchLogAnalyticsTask task12 = new RelateSearchLogAnalyticsTask(siteId, categoryIdList, schedule12, 12);
+				taskRunner.addTask(task12);
 				
 				taskRunner.start();
 				try {

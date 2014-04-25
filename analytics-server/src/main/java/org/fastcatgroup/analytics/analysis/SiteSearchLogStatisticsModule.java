@@ -17,10 +17,13 @@ import org.fastcatgroup.analytics.analysis.schedule.EveryYearSchedule;
 import org.fastcatgroup.analytics.analysis.schedule.FixedSchedule;
 import org.fastcatgroup.analytics.analysis.schedule.Schedule;
 import org.fastcatgroup.analytics.analysis.schedule.ScheduledTaskRunner;
+import org.fastcatgroup.analytics.analysis.task.DailyClickLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.DailySearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.DailyTypeSearchLogAnalyticsTask;
+import org.fastcatgroup.analytics.analysis.task.MonthlyClickLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.MonthlySearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.MonthlyTypeSearchLogAnalyticsTask;
+import org.fastcatgroup.analytics.analysis.task.NDaysClickLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.RealtimeSearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.RelateSearchLogAnalyticsTask;
 import org.fastcatgroup.analytics.analysis.task.WeeklySearchLogAnalyticsTask;
@@ -174,6 +177,24 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		Schedule yearlySchedule2 = new EveryDaySchedule(0, delayInSeconds);
 		YearlyTypeSearchLogAnalyticsTask yearlyTypeSearchLogAnalyticsTask = new YearlyTypeSearchLogAnalyticsTask(siteId, categoryIdList, yearlySchedule2, 8);
 		dailyTaskRunner.addTask(yearlyTypeSearchLogAnalyticsTask);
+		
+		/**
+		 * 클릭로그 통계
+		 */
+		/* 1. Daily */
+		Schedule clickLogSchedule = new EveryDaySchedule(0, delayInSeconds);
+		DailyClickLogAnalyticsTask dailyClickLogAnalyticsTask = new DailyClickLogAnalyticsTask(siteId, categoryIdList, clickLogSchedule, 9);
+		dailyTaskRunner.addTask(dailyClickLogAnalyticsTask);
+		
+		/* 2. Monthly */
+		Schedule clickLogMonthlySchedule = new EveryDaySchedule(0, delayInSeconds);
+		MonthlyClickLogAnalyticsTask monthlyClickLogAnalyticsTask = new MonthlyClickLogAnalyticsTask(siteId, categoryIdList, clickLogMonthlySchedule, 10);
+		dailyTaskRunner.addTask(monthlyClickLogAnalyticsTask);
+		
+		/* 3. N-Days */
+		Schedule clickLogNDaysSchedule = new EveryDaySchedule(0, delayInSeconds);
+		NDaysClickLogAnalyticsTask nDaysClickLogAnalyticsTask = new NDaysClickLogAnalyticsTask(siteId, categoryIdList, true, clickLogNDaysSchedule, 11);
+		dailyTaskRunner.addTask(nDaysClickLogAnalyticsTask);
 
 		dailyTaskRunner.start();
 		return true;

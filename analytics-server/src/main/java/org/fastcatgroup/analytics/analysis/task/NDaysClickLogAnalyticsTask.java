@@ -20,9 +20,12 @@ import org.fastcatgroup.analytics.service.ServiceManager;
 public class NDaysClickLogAnalyticsTask extends AnalyticsTask<ClickLog> {
 
 	private static final long serialVersionUID = 4212969890908932929L;
+	
+	private boolean copyTo;
 
-	public NDaysClickLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
+	public NDaysClickLogAnalyticsTask(String siteId, List<String> categoryIdList, boolean copyTo, Schedule schedule, int priority) {
 		super(siteId, categoryIdList, schedule, priority);
+		this.copyTo = copyTo;
 	}
 
 	@Override
@@ -30,11 +33,15 @@ public class NDaysClickLogAnalyticsTask extends AnalyticsTask<ClickLog> {
 		File baseDir = environment.filePaths().getStatisticsRoot().file("search", "date");
 		CTRSetting ctrSetting = ServiceManager.getInstance().getService(StatisticsService.class).getStatisticsSetting(siteId).getCtrSetting();
 		Integer nDays = ctrSetting.getDumpFileDaySize();
+		String targetFilePath = null;
+		if(copyTo) {
+			targetFilePath = ctrSetting.getTargetFilePath();
+		}
 		if(nDays == null) {
 			return;
 		}
 		// calc를 카테고리별로 모두 만든다.
-		Calculator<ClickLog> popularKeywordCalculator = new NDaysClickKeywordHitCalculator("NDays click log calculator", calendar, baseDir, siteId, categoryIdList, nDays);
+		Calculator<ClickLog> popularKeywordCalculator = new NDaysClickKeywordHitCalculator("NDays click log calculator", calendar, baseDir, siteId, categoryIdList, nDays, targetFilePath);
 		addCalculator(popularKeywordCalculator);
 	}
 }

@@ -196,6 +196,12 @@ $(document).ready(function() {
 									<p class="help-block">Merge click log files within N days from now</p>
 									</div>
 								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">Target-file Path:</label>
+									<div class="col-md-10"><input type="text" name="targetFilePath" class="form-control digits required fcol1-1" value="<%=ctrSetting.getTargetFilePath()%>">
+									<p class="help-block">File Path for Click-log Statistics Result</p>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>

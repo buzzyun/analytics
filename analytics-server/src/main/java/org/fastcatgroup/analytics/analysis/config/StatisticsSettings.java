@@ -208,7 +208,8 @@ public class StatisticsSettings {
 	@XmlType 
 	public static class CTRSetting {
 		private Integer dumpFileDaySize;
-		
+		private String targetFilePath;
+
 		public CTRSetting() { }
 
 		@XmlElement
@@ -223,7 +224,14 @@ public class StatisticsSettings {
 			this.dumpFileDaySize = dumpFileDaySize;
 		}
 		
-		
+		@XmlElement
+		public String getTargetFilePath() {
+			return targetFilePath;
+		}
+
+		public void setTargetFilePath(String targetFilePath) {
+			this.targetFilePath = targetFilePath;
+		}
 	}
 	
 	

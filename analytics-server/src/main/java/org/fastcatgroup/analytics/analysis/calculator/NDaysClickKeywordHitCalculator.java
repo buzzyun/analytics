@@ -22,10 +22,12 @@ import static org.fastcatgroup.analytics.analysis.calculator.KeywordHitAndRankCo
 public class NDaysClickKeywordHitCalculator extends Calculator<ClickLog> {
 	
 	private int nDays;
+	private String targetFilePath;
 	
-	public NDaysClickKeywordHitCalculator(String name, Calendar calendar, File baseDir, String siteId, List<String> categoryIdList, int nDays) {
+	public NDaysClickKeywordHitCalculator(String name, Calendar calendar, File baseDir, String siteId, List<String> categoryIdList, int nDays, String targetFilePath) {
 		super(name, calendar, baseDir, siteId, categoryIdList);
 		this.nDays = nDays;
+		this.targetFilePath = targetFilePath;
 	}
 	
 	@Override
@@ -64,7 +66,18 @@ public class NDaysClickKeywordHitCalculator extends Calculator<ClickLog> {
 			 * */
 			KeyCountRunEntryParser clickTypeParser = new KeyCountRunEntryParser(new int[]{0, 1}, 3 );
 			
+			File file = new File(workingDir, CLICK_TARGET_FILENAME);
 			MergeKeyCountProcessHandler mergeProcessHandler = new MergeKeyCountProcessHandler(clickLogFiles, workingDir, CLICK_TARGET_FILENAME, encoding, clickTypeParser);
+			
+			if(targetFilePath!=null && !"".equals(targetFilePath)) {
+				
+				try {
+					FileUtils.copyFile(file, new File(targetFilePath));
+				} catch (IOException e) {
+					logger.error("", e);
+				};
+			}
+			
 			//가중값배열.
 			float[] weightList = mergeProcessHandler.weightList();
 			for(int inx=0;inx<weightList.length;inx++) {

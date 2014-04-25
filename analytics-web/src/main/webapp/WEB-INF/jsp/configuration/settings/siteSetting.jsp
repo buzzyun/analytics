@@ -198,7 +198,7 @@ $(document).ready(function() {
 								</div>
 								<div class="form-group">
 									<label class="col-md-2 control-label">Target-file Path:</label>
-									<div class="col-md-10"><input type="text" name="targetFilePath" class="form-control digits required fcol1-1" value="<%=ctrSetting.getTargetFilePath()%>">
+									<div class="col-md-5"><input type="text" name="targetFilePath" class="form-control" value="<%=ctrSetting.getTargetFilePath()%>">
 									<p class="help-block">File Path for Click-log Statistics Result</p>
 									</div>
 								</div>

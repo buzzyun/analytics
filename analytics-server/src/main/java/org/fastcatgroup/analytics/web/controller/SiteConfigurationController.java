@@ -280,6 +280,8 @@ public class SiteConfigurationController extends AbstractController {
 			statisticsSetting.setPopularKeywordSetting(popularKeywordSetting);
 			statisticsSetting.setRelateKeywordSetting(relateKeywordSetting);		
 			
+			logger.trace("targetFilePath:{}", targetFilePath);
+			
 			CTRSetting ctrSetting = new CTRSetting();
 			ctrSetting.setDumpFileDaySize(dumpFileDaySize);
 			ctrSetting.setTargetFilePath(targetFilePath);

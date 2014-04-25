@@ -69,9 +69,12 @@ public class NDaysClickKeywordHitCalculator extends Calculator<ClickLog> {
 			File file = new File(workingDir, CLICK_TARGET_FILENAME);
 			MergeKeyCountProcessHandler mergeProcessHandler = new MergeKeyCountProcessHandler(clickLogFiles, workingDir, CLICK_TARGET_FILENAME, encoding, clickTypeParser);
 			
+			logger.trace("targetFilePath:{}", targetFilePath);
+			
 			if(targetFilePath!=null && !"".equals(targetFilePath)) {
 				
 				try {
+					logger.trace("click log copy {} -> {}", file.getAbsolutePath(), targetFilePath);
 					FileUtils.copyFile(file, new File(targetFilePath));
 				} catch (IOException e) {
 					logger.error("", e);

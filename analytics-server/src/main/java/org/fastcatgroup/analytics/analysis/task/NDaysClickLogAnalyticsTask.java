@@ -37,6 +37,7 @@ public class NDaysClickLogAnalyticsTask extends AnalyticsTask<ClickLog> {
 		if(copyTo) {
 			targetFilePath = ctrSetting.getTargetFilePath();
 		}
+		logger.trace("copyTo:{}, targetFilePath:{}", copyTo, targetFilePath);
 		if(nDays == null) {
 			return;
 		}

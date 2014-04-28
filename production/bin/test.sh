@@ -26,4 +26,4 @@ LIB=$SERVER_HOME/lib
 #for background service
 FASTCAT_CLASSPATH=".:bin"
 for jarfile in `find $LIB | grep [.]jar$`; do FASTCAT_CLASSPATH="$FASTCAT_CLASSPATH:$jarfile"; done
-java -Xmx512m -server -Dfile.encoding=UTF-8 -Dlogback.configurationFile=$CONF/logback.xml -Dderby.stream.error.file=logs/db.log -classpath $FASTCAT_CLASSPATH org.fastcatgroup.analytics.server.CatServer $SERVER_HOME
+java -Xmx512m -server -Dfile.encoding=UTF-8 -Dlogback.configurationFile=$CONF/logback.xml -Dderby.stream.error.file=logs/db.log -classpath $FASTCAT_CLASSPATH org.fastcatsearch.analytics.server.CatServer $SERVER_HOME

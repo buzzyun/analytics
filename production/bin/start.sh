@@ -28,6 +28,6 @@ trap '' 1 2
 #for background service
 FASTCAT_CLASSPATH=".:bin"
 for jarfile in `find $LIB | grep [.]jar$`; do FASTCAT_CLASSPATH="$FASTCAT_CLASSPATH:$jarfile"; done
-java -Xmx512m -server -Dfile.encoding=UTF-8 -Dlogback.configurationFile=$CONF/logback.xml -Dderby.stream.error.file=logs/db.log -classpath $FASTCAT_CLASSPATH org.fastcatgroup.analytics.server.CatServer $SERVER_HOME >logs/output.log 2>&1 &
+java -Xmx512m -server -Dfile.encoding=UTF-8 -Dlogback.configurationFile=$CONF/logback.xml -Dderby.stream.error.file=logs/db.log -classpath $FASTCAT_CLASSPATH org.fastcatsearch.analytics.server.CatServer $SERVER_HOME >logs/output.log 2>&1 &
 
 echo fastcatsearch-analytics start. see logs/system.log file.

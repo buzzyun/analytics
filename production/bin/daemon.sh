@@ -31,15 +31,16 @@ DEBUG_OPT="-verbosegc -XX:+PrintGCDetails -Dcom.sun.management.jmxremote"
 
 if [ "$1" = "debug" ] ; then
 	
-	exec java -Dserver.home=$SERVER_HOME $JVM_OPTS $JAVA_OPTS $DEBUG_OPT -classpath $LIB/fastcatsearch-bootstrap.jar org.fastcatsearch.server.Bootstrap start
+	java -Dserver.home=$SERVER_HOME $JVM_OPTS $JAVA_OPTS $DEBUG_OPT -classpath $LIB/analytics-server-bootstrap.jar org.fastcatsearch.analytics.server.Bootstrap start
 
 elif [ "$1" = "run" ] ; then
 
-	exec java -Dserver.home=$SERVER_HOME $JVM_OPTS $JAVA_OPTS -classpath $LIB/fastcatsearch-bootstrap.jar org.fastcatsearch.server.Bootstrap start
+	java -Dserver.home=$SERVER_HOME $JVM_OPTS $JAVA_OPTS -classpath $LIB/analytics-server-bootstrap.jar org.fastcatsearch.analytics.server.Bootstrap start
 
 elif [ "$1" = "start" ] ; then
-
-	nohup java -Dserver.home=$SERVER_HOME $JVM_OPTS $JAVA_OPTS -classpath $LIB/fastcatsearch-bootstrap.jar org.fastcatsearch.server.Bootstrap start >> $LOG 2>&1 &
+	trap '' 1
+	
+	java -Dserver.home=$SERVER_HOME $JVM_OPTS $JAVA_OPTS -classpath $LIB/analytics-server-bootstrap.jar org.fastcatsearch.analytics.server.Bootstrap start >> $LOG 2>&1 &
 	echo "$!" > ".pid"
 	echo "Start Daemon PID = $!"
 	

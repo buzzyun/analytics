@@ -15,7 +15,7 @@ public class Bootstrap {
 	private Object serverDaemon = null;
 
 	protected ClassLoader serverLoader = null;
-	private final String serverClass = "org.fastcatgroup.analytics.server.CatServer";
+	private final String serverClass = "org.fastcatsearch.analytics.server.CatServer";
 
 	private String serverHome;
 	private final String LIB_PATH = "/lib/"; 

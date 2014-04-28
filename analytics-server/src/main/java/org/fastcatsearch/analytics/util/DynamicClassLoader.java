@@ -185,8 +185,8 @@ public class DynamicClassLoader {
 	public static Enumeration<URL> getResources(String name){
 		CompoundEnumeration<URL> compoundEnumeration = new CompoundEnumeration<URL>();
 		try{
-			Enumeration<URL> e = ClassLoader.getSystemResources(name);
-			logger.debug("ClassLoader.getSystemResources {} > {}, {}", name, e, e!= null ? e.hasMoreElements() : "");
+//			Enumeration<URL> e = ClassLoader.getSystemResources(name);
+			Enumeration<URL> e = Thread.currentThread().getContextClassLoader().getResources(name);
 			if(e != null && e.hasMoreElements()){
 				compoundEnumeration.add(e);
 			}

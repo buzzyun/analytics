@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.ibatis.session.SqlSession;
-import org.fastcatsearch.analytics.db.mapper.AnalyticsMapper;
 import org.fastcatsearch.analytics.env.Environment;
 import org.fastcatsearch.analytics.env.Settings;
 import org.fastcatsearch.analytics.exception.AnalyticsException;
@@ -31,13 +30,6 @@ public abstract class AbstractDBService extends AbstractService {
 	
 	public AbstractDBService(Environment environment, Settings settings, ServiceManager serviceManager) {
 		super(environment, settings, serviceManager);
-		
-		
-		
-		//TODO 
-//		String absoluteDbPath = environment.filePaths().file(dbUrl).getAbsolutePath();
-		// system관련 mapper설정.
-
 	}
 
 	public CommonDBHandler dbHandler() {

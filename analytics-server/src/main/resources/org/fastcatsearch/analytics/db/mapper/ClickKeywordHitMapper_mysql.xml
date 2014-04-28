@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="org.fastcatsearch.analytics.db.mapper.ClickKeywordHitMapper">
+
+	<update id="createTable" parameterType="map" >
+		create table ${siteId}_click_hit_keyword (
+			timeId varchar(11),
+			keyword varchar(128),
+			clickType varchar(30),
+			hit int,
+			primary key (timeId, keyword, clickType)
+		) ${option}
+	</update>
+	
+	<update id="createIndex" parameterType="map" >
+		create index timeId_${siteId}_click_hit_keyword on ${siteId}_click_hit_keyword(timeId, keyword, clickType)
+	</update>
+	
+	<select id="validateTable" parameterType="map" resultType="map">
+		select timeId, keyword, clickType, hit
+		from ${siteId}_click_hit_keyword
+		where timeId = ''
+	</select>
+
+	<update id="dropTable" parameterType="map">
+		drop table ${siteId}_click_hit_keyword
+	</update>
+
+	<delete id="truncate" parameterType="map">
+		truncate table ${siteId}_click_hit_keyword 
+	</delete>
+
+	<select id="getKeywordEntryList" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.ClickKeywordHitVO">
+		select * from (
+			select keyword, sum(hit) as count from ${siteId}_click_hit_keyword 
+			where timeId=#{timeId}
+			group by keyword
+			order by count desc
+		) as A limit ${topCount}
+	</select>
+	
+	<select id="getKeywordClickCount" parameterType="map" resultType="int">
+		select sum(hit) from ${siteId}_click_hit_keyword 
+		<where>
+			timeId=#{timeId}
+			and keyword = #{keyword}
+		</where>
+	</select>
+	
+	<select id="getKeywordTypeClickCount" parameterType="map" resultType="int">
+		select hit from ${siteId}_click_hit_keyword 
+		<where>
+			timeId=#{timeId}
+			and keyword = #{keyword}
+			and clickType = #{clickType}
+		</where>
+	</select>
+	
+	<delete id="updateClear" parameterType="map">
+		delete from ${siteId}_click_hit_keyword
+		<where>
+			timeId=#{timeId}
+		</where>
+	</delete>
+	
+	<insert id="putEntry" parameterType="map" useGeneratedKeys="true" >
+		insert ignore into ${siteId}_click_hit_keyword 
+		(timeId, keyword, clickType, hit) values (#{timeId}, #{keyword}, #{clickType}, #{hit})
+	</insert>
+
+
+</mapper>

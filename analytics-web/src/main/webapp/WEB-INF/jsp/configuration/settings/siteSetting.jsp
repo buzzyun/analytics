@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page import="org.json.*
-,org.fastcatgroup.analytics.analysis.config.StatisticsSettings.*
+,org.fastcatsearch.analytics.analysis.config.StatisticsSettings.*
 "%>
 <%
 SiteProperties siteProperties = (SiteProperties) request.getAttribute("siteProperties");

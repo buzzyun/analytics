@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.fastcatsearch.analytics.db.mapper.RelateKeywordMapper">
+
+	<update id="createTable" parameterType="map">
+		create table ${siteId}_relate_keyword (
+			id int not null auto_increment,
+			keyword varchar(64),
+			updateTime timestamp,
+			primary key (id)
+		) ${option}
+	</update>
+	
+	<update id="createIndex" parameterType="map">
+		create index id_${siteId}_relate_keyword on ${siteId}_relate_keyword(id)
+	</update>
+	
+	<select id="validateTable" parameterType="map" resultType="map">
+		select id, keyword, updateTime
+		from ${siteId}_relate_keyword
+		limit 1
+	</select>
+
+	<update id="dropTable" parameterType="map">
+		drop table ${siteId}_relate_keyword
+	</update>
+	
+	<select id="getEntry" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.RelateKeywordVO">
+		select a.id, a.keyword, 
+		concat(group_concat(b.value)) value, 
+		a.updateTime
+		from ${siteId}_relate_keyword a left join ${siteId}_relate_keyword_value b on b.keyId = a.id
+		where keyword = #{keyword}
+		group by a.id
+	</select>
+	
+	<select id="getEntryList" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.RelateKeywordVO">
+		select a.id, a.keyword, 
+		concat(group_concat(b.value)) value, 
+		a.updateTime
+		from ${siteId}_relate_keyword a left join ${siteId}_relate_keyword_value b on b.keyId = a.id
+		group by a.id
+		<if test="end > 0">
+		limit #{start}, #{end}
+		</if>
+	</select>
+	
+	<select id="getEntryById" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.RelateKeywordVO">
+		select a.id, a.keyword, 
+		concat(group_concat(b.value)) value, 
+		a.updateTime
+		from ${siteId}_relate_keyword a left join ${siteId}_relate_keyword_value b on b.keyId = a.id
+		where a.id=#{id}
+		group by a.id
+	</select>
+	<select id="getEntryListByWhereCondition" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.RelateKeywordVO">
+		select a.id, a.keyword, 
+		concat(group_concat(b.value)) value, 
+		a.updateTime
+		from (
+			select a.*
+			from ${siteId}_relate_keyword a left join ${siteId}_relate_keyword_value b on b.keyId = a.id
+			<if test="whereCondition != ''">
+			where ${whereCondition}
+			</if>
+			group by a.id
+		) a left join ${siteId}_relate_keyword_value b on b.keyId = a.id
+		group by a.id
+		limit #{start}, #{end}
+	</select>
+	
+	<select id="getEntryListByKeyword" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.RelateKeywordVO">
+		select a.id, a.keyword, 
+		concat(group_concat(b.value)) value, 
+		a.updateTime
+		from (
+			select a.*
+			from ${siteId}_relate_keyword a left join ${siteId}_relate_keyword_value b on b.keyId = a.id
+			<if test="exactMatch == true">
+			where (a.keyword=#{keyword} or b.value=#{keyword})
+			</if>
+			<if test="exactMatch == false">
+			where (a.keyword like concat('%',#{keyword},'%') or concat('%',b.value=#{keyword},'%'))
+			</if>
+			group by a.id
+		) a left join ${siteId}_relate_keyword_value b on b.keyId = a.id
+		group by a.id
+		limit #{start}, #{end}
+	</select>
+	
+	<select id="getCountByWhereCondition" parameterType="map" resultType="int">
+		select count(*) from (select a.id from ${siteId}_relate_keyword a left join 
+		${siteId}_relate_keyword_value b on b.keyId = a.id
+		<if test="whereCondition != ''">
+		where ${whereCondition}
+		</if>
+		group by a.id) a
+	</select>
+
+	<select id="getCountByKeyword" parameterType="map" resultType="int">
+		select count(*) from (select a.id from ${siteId}_relate_keyword a left join 
+		${siteId}_relate_keyword_value b on b.keyId = a.id
+		<if test="exactMatch == true">
+		where (a.keyword=#{keyword} or b.value=#{keyword})
+		</if>
+		<if test="exactMatch == false">
+		where (a.keyword like concat('%',#{keyword},'%') or concat('%',b.value=#{keyword},'%'))
+		</if>
+		group by a.id) a
+	</select>
+	
+	<select id="getCount" parameterType="map" resultType="int">
+		select count(*) from ${siteId}_relate_keyword
+	</select>
+	
+	<insert id="putEntry" parameterType="map" useGeneratedKeys="true" keyProperty="entry.id">
+		insert into ${siteId}_relate_keyword 
+		(keyword,updateTime) 
+		select * from (select #{entry.keyword},#{entry.updateTime} ) a
+		where (select count(*) from ${siteId}_relate_keyword where keyword=#{entry.keyword} ) = 0
+	</insert>
+	
+	<update id="updateEntry" parameterType="map">
+		update ${siteId}_relate_keyword set 
+		keyword = #{entry.keyword},
+		updateTime = #{entry.updateTime}
+		where id = #{entry.id}
+	</update>
+	
+	<delete id="deleteEntry" parameterType="int">
+		delete from ${siteId}_relate_keyword where id=#{id}
+	</delete>
+	
+	<delete id="deleteEntryList" parameterType="map">
+		delete from ${siteId}_relate_keyword
+		where id in (${idList})
+	</delete>
+	
+	<delete id="truncate" parameterType="map">
+		truncate table ${siteId}_relate_keyword
+	</delete>
+	
+</mapper>

@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@page import="org.fastcatgroup.analytics.analysis.vo.*"%>
-<%@page import="org.fastcatgroup.analytics.analysis.StatisticsUtils" %>
+<%@page import="org.fastcatsearch.analytics.analysis.vo.*"%>
+<%@page import="org.fastcatsearch.analytics.analysis.StatisticsUtils" %>
 <%@page import="java.text.SimpleDateFormat" %>
 <%@page import="java.util.*"%>
 <%

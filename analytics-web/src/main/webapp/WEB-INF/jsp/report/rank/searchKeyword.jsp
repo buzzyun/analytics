@@ -2,9 +2,9 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="java.util.*" %>
-<%@ page import="org.fastcatgroup.analytics.db.vo.*" %>
-<%@ page import="org.fastcatgroup.analytics.db.vo.RankKeywordVO.RankDiffType" %>
-<%@ page import="org.fastcatgroup.analytics.analysis.config.StatisticsSettings.TypeSetting" %>
+<%@ page import="org.fastcatsearch.analytics.db.vo.*" %>
+<%@ page import="org.fastcatsearch.analytics.db.vo.RankKeywordVO.RankDiffType" %>
+<%@ page import="org.fastcatsearch.analytics.analysis.config.StatisticsSettings.TypeSetting" %>
 
 <%
 String categoryId = (String) request.getAttribute("categoryId");

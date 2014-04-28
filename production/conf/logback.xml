@@ -26,7 +26,7 @@
 	</logger>
 	
 	<logger name="org.apache.ibatis" level="INFO" additivity="false" />
-	<logger name="org.fastcatgroup.analytics.db.mapper" level="INFO" additivity="false" />
+	<logger name="org.fastcatsearch.analytics.db.mapper" level="INFO" additivity="false" />
 	
 	<root level="debug">
 		<!--<appender-ref ref="STDOUT" /> -->

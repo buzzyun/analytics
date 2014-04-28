@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="org.fastcatsearch.analytics.db.mapper.SearchTypeHitMapper">
+
+	<update id="createTable" parameterType="map" >
+		create table ${siteId}_type_hit (
+			categoryId varchar(64),
+			timeId varchar(11),
+			typeId varchar(32),
+			dtype varchar(32),
+			hit int,
+			primary key (categoryId, timeId, typeId, dtype)
+		) ${option}
+	</update>
+	
+	<update id="createIndex" parameterType="map" >
+		create index dtype_${siteId}_type_hit on ${siteId}_type_hit(dtype)
+	</update>
+	
+	<select id="validateTable" parameterType="map" resultType="map">
+		select categoryId, timeId, typeId, dtype, hit
+		from ${siteId}_type_hit
+		limit 1
+	</select>
+
+	<update id="dropTable" parameterType="map">
+		drop table ${siteId}_type_hit
+	</update>
+
+	<delete id="truncate" parameterType="map">
+		truncate table ${siteId}_type_hit 
+	</delete>
+	
+	<select id="getEntry" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.SearchTypeHitVO">
+		select * from ${siteId}_type_hit 
+		where categoryId = #{categoryId}
+		and timeId=#{timeId}
+		and typeId=#{typeId}
+		and dtype=#{dtype}
+	</select>
+	
+	<select id="getCount" parameterType="map" resultType="int">
+		select count(*) from ${siteId}_type_hit 
+		where categoryId = #{categoryId}
+		and timeId=#{timeId}
+		and typeId=#{typeId}
+	</select>
+	
+	<select id="getEntryList" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.SearchTypeHitVO">
+		select * from ${siteId}_type_hit 
+		where categoryId = #{categoryId}
+		and timeId=#{timeId}
+		and typeId=#{typeId}
+	</select>
+	
+	
+	<select id="getEntryListBetween" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.SearchTypeHitVO">
+		select * from ${siteId}_type_hit 
+		<where>
+			categoryId=#{categoryId}
+			<if test="from != null and from != ''">
+				and timeId &gt;= #{from} 
+			</if>
+			<if test="to != null and to !=''">
+				and timeId &lt;= #{to}
+			</if>
+			and typeId=#{typeId}
+		</where>
+		order by timeId asc
+	</select>
+	
+	<select id="getEntryListGroupByType" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.SearchTypeHitVO">
+		select categoryId, timeId, typeId, dtype, sum(hit) as hit
+		from ${siteId}_type_hit 
+		<where>
+			categoryId=#{categoryId}
+			<if test="timeFrom != null and timeFrom != ''">
+				and timeId &gt;= #{timeFrom} 
+			</if>
+			<if test="timeTo != null and timeTo !=''">
+				and timeId &lt;= #{timeTo}
+			</if>
+		</where>
+		group by typeId, dtype
+	</select>
+	
+	<select id="getTypeCountListBetween" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.SearchTypeHitVO">
+		select dtype, sum(hit) as hit from ${siteId}_type_hit 
+		<where>
+			categoryId=#{categoryId}
+			<if test="from != null and from != ''">
+				and timeId &gt;= #{from} 
+			</if>
+			<if test="to != null and to !=''">
+				and timeId &lt;= #{to}
+			</if>
+			and typeId=#{typeId}
+		</where>
+		group by dtype
+		order by hit desc
+	</select>
+	
+	<insert id="putEntry" parameterType="map" useGeneratedKeys="true" >
+		insert into ${siteId}_type_hit 
+		(categoryId, timeId, typeId, dtype, hit) 
+		values 
+		(#{categoryId}, #{timeId}, #{typeId}, #{dtype}, #{hit})
+	</insert>
+	
+	<update id="updateClear" parameterType="map">
+		delete from ${siteId}_type_hit 
+		where categoryId = #{categoryId}
+		and timeId = #{timeId}
+		and typeId = #{typeId}
+	</update>
+	
+</mapper>

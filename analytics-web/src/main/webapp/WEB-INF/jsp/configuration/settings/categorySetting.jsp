@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page import="org.json.*
 ,java.util.List
-,org.fastcatgroup.analytics.analysis.config.StatisticsSettings.CategorySetting
+,org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CategorySetting
 "%>
 
 <%

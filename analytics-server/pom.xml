@@ -3,13 +3,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.fastcatgroup.analytics</groupId>
+	<groupId>org.fastcatsearch.analytics</groupId>
 	<artifactId>analytics-server</artifactId>
 	<name>analytics-server</name>
 	<parent>
 		<groupId>org.fastcatgroup</groupId>
 		<artifactId>analytics</artifactId>
-		<version>1.14.3</version>
+		<version>1.14.5</version>
 	</parent>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

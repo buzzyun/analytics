@@ -1,4 +1,4 @@
-<%@page import="org.fastcatgroup.analytics.db.vo.RelateKeywordVO"%>
+<%@page import="org.fastcatsearch.analytics.db.vo.RelateKeywordVO"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>

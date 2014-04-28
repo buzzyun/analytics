@@ -3,9 +3,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page import="org.json.*
 ,java.util.List
-,org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ClickTypeSetting
-,org.fastcatgroup.analytics.analysis.config.StatisticsSettings.TypeSetting
-,org.fastcatgroup.analytics.analysis.config.StatisticsSettings.ServiceSetting
+,org.fastcatsearch.analytics.analysis.config.StatisticsSettings.ClickTypeSetting
+,org.fastcatsearch.analytics.analysis.config.StatisticsSettings.TypeSetting
+,org.fastcatsearch.analytics.analysis.config.StatisticsSettings.ServiceSetting
 "%>
 <%
 List<ClickTypeSetting> clickTypeList = (List<ClickTypeSetting>) request.getAttribute("clickTypeList");

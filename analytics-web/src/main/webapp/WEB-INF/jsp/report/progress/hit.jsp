@@ -3,8 +3,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="java.util.*" %>
 <%@ page import="java.text.DecimalFormat" %>
-<%@ page import="org.fastcatgroup.analytics.db.vo.*" %>
-<%@ page import="org.fastcatgroup.analytics.analysis.StatisticsUtils" %>
+<%@ page import="org.fastcatsearch.analytics.db.vo.*" %>
+<%@ page import="org.fastcatsearch.analytics.analysis.StatisticsUtils" %>
 <%
 String categoryId = request.getParameter("categoryId");
 List<SearchHitVO> list = (List<SearchHitVO>) request.getAttribute("list");

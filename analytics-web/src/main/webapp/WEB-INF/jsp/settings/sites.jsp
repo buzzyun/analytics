@@ -2,9 +2,9 @@
 	pageEncoding="UTF-8"%>
 <%@ page import="
 java.util.*,
-org.fastcatgroup.analytics.db.vo.*,
-org.fastcatgroup.analytics.analysis.config.SiteListSetting.SiteSetting,
-org.fastcatgroup.analytics.analysis.config.StatisticsSettings.CategorySetting
+org.fastcatsearch.analytics.db.vo.*,
+org.fastcatsearch.analytics.analysis.config.SiteListSetting.SiteSetting,
+org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CategorySetting
 " %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 

@@ -4,7 +4,7 @@
 java.util.Map,
 java.util.HashMap,
 java.util.List,
-org.fastcatgroup.analytics.db.vo.UserAccountVO
+org.fastcatsearch.analytics.db.vo.UserAccountVO
 " %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 

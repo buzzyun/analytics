@@ -20,8 +20,20 @@
     </relate-keyword>
     <site-attribute>
         <click-type-list/>
-        <service-list/>
-        <type-list/>
+        <service-list>
+            <service isPrime="true" name="통합검색" id="totalsearch"/>
+            <service isPrime="false" name="자동완성" id="autocomplete"/>
+            <service isPrime="false" name="인기검색어" id="popularkeyword"/>
+        </service-list>
+        <type-list>
+            <type isPrime="false" name="카테고리별" id="category"/>
+            <type isPrime="false" name="페이지별" id="page"/>
+            <type isPrime="true" name="정렬방식별" id="sort"/>
+            <type isPrime="true" name="연령대별" id="age"/>
+            <type isPrime="false" name="서비스별" id="service"/>
+            <type isPrime="true" name="로그인여부별" id="login"/>
+            <type isPrime="false" name="성별" id="gender"/>
+        </type-list>
     </site-attribute>
     <properties>
         <banwords></banwords>

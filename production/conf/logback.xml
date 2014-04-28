@@ -18,40 +18,6 @@
 		</rollingPolicy>
 	</appender>
 
-	<appender name="searchlog" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>${log.path}/search.log</file>
-
-		<encoder>
-			<pattern>[%date] %m%n</pattern>
-		</encoder>
-		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<FileNamePattern>${log.path}/search.%d{yyyy-MM-dd}.log</FileNamePattern>
-			<MaxHistory>7</MaxHistory>
-		</rollingPolicy>
-	</appender>
-
-	<appender name="indexinglog" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>${log.path}/indexing.log</file>
-
-		<encoder>
-			<pattern>[%date] %m%n</pattern>
-		</encoder>
-		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<FileNamePattern>${log.path}/indexing.%d{yyyy-MM-dd}.log</FileNamePattern>
-			<MaxHistory>7</MaxHistory>
-		</rollingPolicy>
-	</appender>
-	
-	<logger name="SEARCH_LOG" level="INFO" additivity="false">
-		<appender-ref ref="searchlog" />
-	</logger>
-
-	<logger name="INDEXING_LOG" level="INFO" additivity="false">
-		<appender-ref ref="systemlog" />
-		<appender-ref ref="STDOUT" />
-		<appender-ref ref="indexinglog" />
-	</logger>
-
 	<logger name="org.eclipse.jetty" level="INFO" additivity="false">
 		<appender-ref ref="systemlog" />
 	</logger>
@@ -63,7 +29,7 @@
 	<logger name="org.fastcatgroup.analytics.db.mapper" level="INFO" additivity="false" />
 	
 	<root level="debug">
-		<appender-ref ref="STDOUT" />
+		<!--<appender-ref ref="STDOUT" /> -->
 		<appender-ref ref="systemlog" />
 	</root>
 

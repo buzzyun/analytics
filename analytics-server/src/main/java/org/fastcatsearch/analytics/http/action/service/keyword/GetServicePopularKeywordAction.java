@@ -67,6 +67,8 @@ public class GetServicePopularKeywordAction extends ServiceAction {
 				//파일기반에서 덤프 하도록 한다.
 				//ln 이 0 인 경우 모조리 덤프 한다.
 				
+				calendar = StatisticsUtils.parseTimeId(timeId);
+				
 				File baseDir = environment.filePaths().getStatisticsRoot().file("search", "date");
 				
 				Calendar dailyCalendar = (Calendar) calendar.clone();

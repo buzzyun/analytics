@@ -11,7 +11,7 @@ public class RollingRawLoggerTest {
 	@Test
 	public void test() {
 		File baseDir = new File("/tmp");
-		RollingRawLogger logger = new RollingRawLogger(baseDir, "total", "tmp.log");
+		RollingRawLogger logger = new RollingRawLogger(baseDir, "tmp.log");
 		
 		Random r = new Random(System.currentTimeMillis());
 		for (int i = 0; i < 100000; i++) {

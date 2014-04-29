@@ -55,7 +55,7 @@ public class DumpPopularKeywordHitCalculator extends Calculator<ClickLog> {
 			
 			for (int inx = 0; inx < diff; inx++) {
 				File timeDir = StatisticsUtils.getDayDataDir(baseDir, dailyCalendar);
-				clickLogFiles[inx] = new File(new File(new File(timeDir, siteId), categoryId),KEY_COUNT_FILENAME);
+				clickLogFiles[inx] = new File(new File(timeDir, categoryId),KEY_COUNT_FILENAME);
 				dailyCalendar.add(Calendar.DAY_OF_MONTH, -1);
 			}
 			

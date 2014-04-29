@@ -36,7 +36,6 @@ public class DailyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchLog
 
 	@Override
 	protected void prepare(Calendar calendar) {
-		// baseDir : statistics/search/date/Y####/M##/D##/data/{siteId} 경로
 		File dir = environment.filePaths().getStatisticsRoot().file(siteId, "date");
 		
 		Calendar prevCalendar = (Calendar) calendar.clone();

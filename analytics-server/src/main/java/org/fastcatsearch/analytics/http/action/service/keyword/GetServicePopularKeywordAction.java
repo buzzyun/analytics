@@ -70,7 +70,7 @@ public class GetServicePopularKeywordAction extends ServiceAction {
 				
 				Calendar dailyCalendar = (Calendar) calendar.clone();
 				File timeDir = StatisticsUtils.getDayDataDir(baseDir, dailyCalendar);
-				File file = new File(new File(new File(timeDir, siteId), categoryId), POPULAR_FILENAME);
+				File file = new File(new File(timeDir, categoryId), POPULAR_FILENAME);
 				BufferedReader reader = null;
 				
 				try {

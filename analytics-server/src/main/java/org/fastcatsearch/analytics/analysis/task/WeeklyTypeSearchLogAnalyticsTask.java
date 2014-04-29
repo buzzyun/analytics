@@ -25,7 +25,6 @@ public class WeeklyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchLo
 
 	@Override
 	protected void prepare(Calendar calendar) {
-		// baseDir : statistics/search/date/Y####/W##/data/{siteId} 경로
 		File baseDir = environment.filePaths().getStatisticsRoot().file(siteId, "date");
 		
 		//주의 최초로 되돌린다.

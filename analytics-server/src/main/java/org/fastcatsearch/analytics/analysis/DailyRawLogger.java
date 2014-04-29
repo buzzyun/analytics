@@ -14,12 +14,10 @@ public class DailyRawLogger {
 
 	private BufferedLogger writer;
 	private File baseDir;
-	private String siteId;
 	private String fileName;
 
-	public DailyRawLogger(Calendar calendar, File baseDir, String siteId, String fileName) {
+	public DailyRawLogger(Calendar calendar, File baseDir, String fileName) {
 		this.baseDir = baseDir;
-		this.siteId = siteId;
 		this.fileName = fileName;
 		this.writer = newLogger(StatisticsUtils.getCalendar());
 	}
@@ -34,7 +32,7 @@ public class DailyRawLogger {
 	}
 
 	private BufferedLogger newLogger(Calendar calendar) {
-		File targetDir = new File(StatisticsUtils.getDayDataDir(baseDir, calendar), siteId);
+		File targetDir = StatisticsUtils.getDayDataDir(baseDir, calendar);
 		targetDir.mkdirs();
 
 		File logFile = new File(targetDir, fileName);

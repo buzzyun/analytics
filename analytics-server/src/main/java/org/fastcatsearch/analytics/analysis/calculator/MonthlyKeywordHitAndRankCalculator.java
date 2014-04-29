@@ -45,8 +45,8 @@ public class MonthlyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		
 		int diff = StatisticsUtils.getDateDiff(prevCalendar, calendar);
 		
-		File workingDir = new File(new File(StatisticsUtils.getMonthDataDir(baseDir, calendar), siteId), categoryId);
-		File prevWorkingDir = new File(new File(StatisticsUtils.getMonthDataDir(baseDir, prevCalendar), siteId), categoryId);
+		File workingDir = new File(StatisticsUtils.getMonthDataDir(baseDir, calendar), categoryId);
+		File prevWorkingDir = new File(StatisticsUtils.getMonthDataDir(baseDir, prevCalendar), categoryId);
 		
 		if(!workingDir.exists()) {
 			try {

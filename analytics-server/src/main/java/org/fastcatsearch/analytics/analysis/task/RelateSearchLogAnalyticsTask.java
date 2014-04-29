@@ -28,7 +28,6 @@ public class RelateSearchLogAnalyticsTask extends AnalyticsTask<RelateSearchLog>
 
 	@Override
 	public void prepare(Calendar calendar) {
-		// baseDir : statistics/search/date/Y####/M##/D##/data/{siteId} 경로
 		File dir = environment.filePaths().getStatisticsRoot().file(siteId, "date");
 		File baseDir = new File(StatisticsUtils.getDayDataDir(dir, calendar), siteId);
 		

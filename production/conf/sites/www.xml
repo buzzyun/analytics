@@ -5,6 +5,7 @@
     </category-list>
     <ctr>
         <dumpFileDaySize>90</dumpFileDaySize>
+        <targetFilePath></targetFilePath>
     </ctr>
     <popular-keyword>
         <minimumHitCount>2</minimumHitCount>
@@ -16,6 +17,7 @@
         <minimumHitCount>1</minimumHitCount>
         <topCount>10</topCount>
         <recentLogUsingCount>6</recentLogUsingCount>
+        <periodInSeconds>300</periodInSeconds>
     </realtime-popular-keyword>
     <relate-keyword>
         <minimumHitCount>2</minimumHitCount>
@@ -40,5 +42,7 @@
     <properties>
         <banwords></banwords>
         <maxKeywordLength>0</maxKeywordLength>
+        <schdeuleDelayInSeconds>5</schdeuleDelayInSeconds>
+        <dailyScheduleTime>0</dailyScheduleTime>
     </properties>
 </statistics>

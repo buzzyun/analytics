@@ -69,8 +69,8 @@ public class YearlyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		Calendar dailyCalendar = (Calendar) calendar.clone();
 		for(int inx=0;inx < diff; inx++) {
 			File timeDir = StatisticsUtils.getDayDataDir(baseDir, dailyCalendar);
-			keyCountFiles[inx] = new File(new File(new File( timeDir, siteId), categoryId), KEY_COUNT_FILENAME);
-			keyEmptyFiles[inx] = new File(new File(new File( timeDir, siteId), categoryId), KEY_COUNT_EMPTY_FILENAME);
+			keyCountFiles[inx] = new File(new File(timeDir, categoryId), KEY_COUNT_FILENAME);
+			keyEmptyFiles[inx] = new File(new File(timeDir, categoryId), KEY_COUNT_EMPTY_FILENAME);
 			dailyCalendar.add(Calendar.MONTH, -1);
 		}
 		

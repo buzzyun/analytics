@@ -42,8 +42,8 @@ public class WeeklyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		
 		int diff = StatisticsUtils.getDateDiff(prevCalendar, calendar);
 		
-		File workingDir = new File(new File(StatisticsUtils.getWeekDataDir(baseDir, calendar), siteId), categoryId);
-		File prevWorkingDir = new File(new File(StatisticsUtils.getWeekDataDir(baseDir, prevCalendar), siteId), categoryId);
+		File workingDir = new File(StatisticsUtils.getWeekDataDir(baseDir, calendar), categoryId);
+		File prevWorkingDir = new File(StatisticsUtils.getWeekDataDir(baseDir, prevCalendar), categoryId);
 		
 		if(!workingDir.exists()) {
 			try {
@@ -66,8 +66,8 @@ public class WeeklyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		Calendar dailyCalendar = (Calendar) calendar.clone();
 		for(int inx=0;inx < diff; inx++) {
 			File timeDir = StatisticsUtils.getDayDataDir(baseDir, dailyCalendar);
-			keyCountFiles[inx] = new File(new File(new File( timeDir, siteId), categoryId), KEY_COUNT_FILENAME);
-			keyEmptyFiles[inx] = new File(new File(new File( timeDir, siteId), categoryId), KEY_COUNT_EMPTY_FILENAME);
+			keyCountFiles[inx] = new File(new File(timeDir, categoryId), KEY_COUNT_FILENAME);
+			keyEmptyFiles[inx] = new File(new File(timeDir, categoryId), KEY_COUNT_EMPTY_FILENAME);
 			dailyCalendar.add(Calendar.DAY_OF_MONTH, -1);
 		}
 		

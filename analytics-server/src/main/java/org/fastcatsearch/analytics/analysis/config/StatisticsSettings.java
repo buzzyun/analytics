@@ -93,6 +93,8 @@ public class StatisticsSettings {
 		
 		private String banwords;
 		private int maxKeywordLength;
+		private int scheduleDelayInSeconds;
+		private int dailyScheduleTime;
 		
 		@XmlElement
 		public String getBanwords() {
@@ -120,6 +122,25 @@ public class StatisticsSettings {
 		public void setMaxKeywordLength(int maxKeywordLength) {
 			this.maxKeywordLength = maxKeywordLength;
 		}
+		
+		@XmlElement
+		public int getScheduleDelayInSeconds() {
+			return scheduleDelayInSeconds;
+		}
+
+		public void setScheduleDelayInSeconds(int scheduleDelayInSeconds) {
+			this.scheduleDelayInSeconds = scheduleDelayInSeconds;
+		}
+
+		@XmlElement
+		public int getDailyScheduleTime() {
+			return dailyScheduleTime;
+		}
+
+		public void setDailyScheduleTime(int dailyScheduleTime) {
+			this.dailyScheduleTime = dailyScheduleTime;
+		}
+
 		
 		
 	}
@@ -168,6 +189,7 @@ public class StatisticsSettings {
 	public static class RealTimePopularKeywordSetting extends KeywordSetting {
 		private Integer topCount;
 		private Integer recentCount;
+		private Integer periodInSeconds;
 		
 		public RealTimePopularKeywordSetting() { }
 		public RealTimePopularKeywordSetting(Integer recentCount, Integer topCount, Integer minimumHitCount) { 
@@ -190,6 +212,13 @@ public class StatisticsSettings {
 		}
 		public void setRecentCount(Integer recentCount) {
 			this.recentCount = recentCount;
+		}
+		@XmlElement
+		public Integer getPeriodInSeconds() {
+			return periodInSeconds;
+		}
+		public void setPeriodInSeconds(Integer periodInSeconds) {
+			this.periodInSeconds = periodInSeconds;
 		}
 		
 	}

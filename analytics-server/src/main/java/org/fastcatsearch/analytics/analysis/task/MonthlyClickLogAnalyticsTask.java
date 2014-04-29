@@ -23,7 +23,6 @@ public class MonthlyClickLogAnalyticsTask extends AnalyticsTask<ClickLog> {
 
 	@Override
 	protected void prepare(Calendar calendar) {
-		// baseDir : statistics/search/date/Y####/M##/data/{siteId} 경로
 		File baseDir = environment.filePaths().getStatisticsRoot().file(siteId, "date");
 		
 		// calc를 카테고리별로 모두 만든다.

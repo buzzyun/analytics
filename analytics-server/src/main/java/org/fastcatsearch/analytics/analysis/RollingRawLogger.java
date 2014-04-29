@@ -24,8 +24,8 @@ public class RollingRawLogger {
 	private String targetFilename;
 	private int sequence;
 
-	public RollingRawLogger(File dir, String siteId, String targetFilename) {
-		this.baseDir = new File(dir, siteId);
+	public RollingRawLogger(File baseDir, String targetFilename) {
+		this.baseDir = baseDir;
 		if(!baseDir.exists()){
 			baseDir.mkdirs();
 		}

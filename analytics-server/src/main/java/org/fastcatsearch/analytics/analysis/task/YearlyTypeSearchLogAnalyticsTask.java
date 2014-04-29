@@ -23,7 +23,6 @@ public class YearlyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchLo
 
 	@Override
 	protected void prepare(Calendar calendar) {
-		// baseDir : statistics/search/date/Y####/{siteId} 경로
 		File baseDir = environment.filePaths().getStatisticsRoot().file(siteId, "date");
 		
 		//해당년도의 마지막 일자로 되돌린다.

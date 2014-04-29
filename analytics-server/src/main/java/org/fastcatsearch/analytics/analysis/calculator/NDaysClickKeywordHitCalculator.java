@@ -2,6 +2,7 @@ package org.fastcatsearch.analytics.analysis.calculator;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -56,13 +57,23 @@ public class NDaysClickKeywordHitCalculator extends Calculator<ClickLog> {
 				} catch (IOException ignore) { }
 			}
 			
+			//가중값배열.
+			float[] weightList = new float[nDays];
+			Arrays.fill(weightList, 1.0f);
+			float decayFactor = ctrSetting.getFileDailyDecayFactor();
+			
 			File[] clickLogFiles = new File[nDays];
 			Calendar dailyCalendar = (Calendar) calendar.clone();
 			for (int inx = 0; inx < nDays; inx++) {
 				File timeDir = StatisticsUtils.getDayDataDir(baseDir, dailyCalendar);
 				clickLogFiles[inx] = new File(timeDir, CLICK_COUNT_FILENAME);
 				dailyCalendar.add(Calendar.DAY_OF_MONTH, -1);
+				if(inx > 0) {
+					//인덱스에서 멀어질 수록 낮은 가중치를 가지도록.
+					weightList[inx] = weightList[inx - 1] * decayFactor;
+				}
 			}
+			
 			
 			//nDays치의 일자별 click-row log들을 머징한다.
 			logger.debug("Process Dir = {}, nDays = {}", workingDir.getAbsolutePath(), nDays);
@@ -74,12 +85,12 @@ public class NDaysClickKeywordHitCalculator extends Calculator<ClickLog> {
 			KeyCountRunEntryParser clickTypeParser = new KeyCountRunEntryParser(new int[]{0, 1}, 3 );
 			
 			File file = new File(workingDir, CLICK_TARGET_FILENAME);
-			MergeKeyCountProcessHandler mergeProcessHandler = new MergeKeyCountProcessHandler(clickLogFiles, workingDir, CLICK_TARGET_FILENAME, encoding, clickTypeParser);
+			MergeKeyCountProcessHandler mergeProcessHandler = new MergeKeyCountProcessHandler(clickLogFiles, weightList, workingDir, CLICK_TARGET_FILENAME, encoding, clickTypeParser);
 			
 			if(targetFilePath != null && targetFilePath.length() > 0) {
 				logger.trace("targetFilePath:{}", targetFilePath);
 				
-				if(targetFilePath!=null && !"".equals(targetFilePath)) {
+				if (targetFilePath != null && !"".equals(targetFilePath)) {
 					
 					try {
 						logger.trace("click log copy {} -> {}", file.getAbsolutePath(), targetFilePath);
@@ -89,14 +100,7 @@ public class NDaysClickKeywordHitCalculator extends Calculator<ClickLog> {
 					};
 				}
 			}
-			//가중값배열.
-			float[] weightList = mergeProcessHandler.weightList();
-			for(int inx=0;inx<weightList.length;inx++) {
-				if(inx > 0) {
-					//인덱스에서 멀어질 수록 낮은 가중치를 가지도록.
-					weightList[inx] = weightList[inx - 1] * 0.9f;
-				}
-			}
+			
 			mergeProcessHandler.attachProcessTo(categoryProcess);
 		}
 		return categoryProcess;

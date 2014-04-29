@@ -34,8 +34,10 @@ $(document).ready(function(){
 	$("#runForm").on("submit", function(e){
 		var count = $(this).find("input[type=checkbox]:checked").length;
 		console.log(count);
-		if(count > 0) {
-			
+		if(count == 0) {
+			noty({text: "Please select types.", type: "error", layout:"topRight", timeout: 3000});
+		}else{
+			$(this).ajaxSubmit();
 		}
 		e.preventDefault();
 	});
@@ -115,7 +117,7 @@ function deselectAll() {
 											<tbody>
 											<tr>
 												<td>Search Progress</td>
-												<td class="checkbox-column"><input type="checkbox" checked="checked" name=""></td>
+												<td class="checkbox-column"><input type="checkbox" checked="checked" name="taskType" value="hour_sp"></td>
 												<td></td>
 												<td></td>
 												<td></td>
@@ -124,23 +126,23 @@ function deselectAll() {
 											<tr>
 												<td>Search Progress &amp; Keyword Rank</td>
 												<td></td>
-												<td class="checkbox-column"><input type="checkbox" checked="checked"></td>
-												<td class="checkbox-column"><input type="checkbox" checked="checked"></td>
-												<td class="checkbox-column"><input type="checkbox" checked="checked"></td>
-												<td class="checkbox-column"><input type="checkbox" checked="checked"></td>
+												<td class="checkbox-column"><input type="checkbox" checked="checked" name="taskType" value="day_sp"></td>
+												<td class="checkbox-column"><input type="checkbox" checked="checked" name="taskType" value="week_sp"></td>
+												<td class="checkbox-column"><input type="checkbox" checked="checked" name="taskType" value="month_sp"></td>
+												<td class="checkbox-column"><input type="checkbox" checked="checked" name="taskType" value="year_sp"></td>
 											</tr>
 											<tr>
 												<td>Search Type Rate</td>
 												<td></td>
-												<td class="checkbox-column"><input type="checkbox" checked="checked"></td>
-												<td class="checkbox-column"><input type="checkbox" checked="checked"></td>
-												<td class="checkbox-column"><input type="checkbox" checked="checked"></td>
-												<td class="checkbox-column"><input type="checkbox" checked="checked"></td>
+												<td class="checkbox-column"><input type="checkbox" checked="checked" name="taskType" value="day_type"></td>
+												<td class="checkbox-column"><input type="checkbox" checked="checked" name="taskType" value="week_type"></td>
+												<td class="checkbox-column"><input type="checkbox" checked="checked" name="taskType" value="month_type"></td>
+												<td class="checkbox-column"><input type="checkbox" checked="checked" name="taskType" value="year_type"></td>
 											</tr>
 											<tr>
 												<td>Relate Keyword</td>
 												<td></td>
-												<td class="checkbox-column"><input type="checkbox" checked="checked"></td>
+												<td class="checkbox-column"><input type="checkbox" checked="checked" name="taskType" value="day_relate"></td>
 												<td></td>
 												<td></td>
 												<td></td>
@@ -148,15 +150,15 @@ function deselectAll() {
 											<tr>
 												<td>Click-through Rate</td>
 												<td></td>
-												<td class="checkbox-column"><input type="checkbox" checked="checked"></td>
+												<td class="checkbox-column"><input type="checkbox" checked="checked" name="taskType" value="day_ctr"></td>
 												<td></td>
-												<td class="checkbox-column"><input type="checkbox" checked="checked"></td>
+												<td class="checkbox-column"><input type="checkbox" checked="checked" name="taskType" value="month_ctr"></td>
 												<td></td>
 											</tr>
 											<tr>
 												<td>Click-through Rate File</td>
 												<td></td>
-												<td class="checkbox-column"><input type="checkbox" checked="checked"></td>
+												<td class="checkbox-column"><input type="checkbox" checked="checked" name="taskType" value="day_ctr_file"></td>
 												<td></td>
 												<td></td>
 												<td></td>
@@ -167,7 +169,6 @@ function deselectAll() {
 										
 									</div>
 									<div class="form-inline">
-										<!-- <input type="hidden" name="taskType" value="searchStatictics" /> -->
 										<input class="form-control fcol1-2 " size="16" type="text" name="date" autocomplete="off" value="<%=date %>" >
 										<input type="submit" class="btn btn-primary" value="Run">
 									</div>

@@ -419,7 +419,7 @@ public class StatisticsService extends AbstractService {
 		statisticsSettings.setRealtimePopularKeywordSetting(realtimePopularKeywordSetting);
 		
 		//CTR
-		CTRSetting ctrSetting = new CTRSetting(0, "");
+		CTRSetting ctrSetting = new CTRSetting(0, "", 5, 0.9f);
 		statisticsSettings.setCtrSetting(ctrSetting);
 		
 		//Site Properties

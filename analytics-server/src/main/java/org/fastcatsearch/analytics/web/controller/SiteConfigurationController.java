@@ -70,14 +70,11 @@ public class SiteConfigurationController extends AbstractController {
 			}
 			timeId1 = StatisticsUtils.getTimeId(calendar1, Calendar.DAY_OF_MONTH);
 			timeId2 = StatisticsUtils.getTimeId(calendar2, Calendar.DAY_OF_MONTH);
-			if ("searchStatictics".equals(taskType)) {
-				Job job = new DailySearchLogAnalyticsTaskRunJob(siteId, timeId1, timeId2);
-				JobService.getInstance().offer(job);
-			} else if ("relateKeyword".equals(taskType)) {
-				// action = new RelateSearchLogAnalyticsTaskRunAction();
-			} else if ("realtimeKeyword".equals(taskType)) {
-				// action = new RealtimeSearchLogAnalyticsTaskRunAction();
+			for(String type : taskType) {
+				logger.debug(">>> {}", type);
 			}
+			Job job = new DailySearchLogAnalyticsTaskRunJob(siteId, timeId1, timeId2, taskType);
+			JobService.getInstance().offer(job);
 
 		} else {
 			calendar1 = StatisticsUtils.getCalendar();
@@ -269,7 +266,9 @@ public class SiteConfigurationController extends AbstractController {
 			@RequestParam Integer categoryStoreCount,
 			@RequestParam Integer relateKeywordMinimumHit,
 			@RequestParam Integer dumpFileDaySize,
-			@RequestParam String targetFilePath
+			@RequestParam String targetFilePath,
+			@RequestParam Integer minimumClickCount,
+			@RequestParam Float fileDailyDecayFactor
 			) throws Exception {
 		
 		ModelAndView mav = new ModelAndView();
@@ -297,7 +296,7 @@ public class SiteConfigurationController extends AbstractController {
 			
 			logger.trace("targetFilePath:{}", targetFilePath);
 			
-			CTRSetting ctrSetting = new CTRSetting(dumpFileDaySize, targetFilePath);
+			CTRSetting ctrSetting = new CTRSetting(dumpFileDaySize, targetFilePath, minimumClickCount, fileDailyDecayFactor);
 			statisticsSetting.setCtrSetting(ctrSetting);
 			getStatisticsService().writeConfig();
 		}

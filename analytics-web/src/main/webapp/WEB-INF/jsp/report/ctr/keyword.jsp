@@ -160,7 +160,7 @@ $(document).ready(function(){
 										%>
 										<tr>
 											<td><%=i+1 %></td>
-											<td><a href="#"><%=vo.getClickId() %></a></td>
+											<td><%=vo.getClickId() %></td>
 											<%
 											for(String[] clickType : clickTypeList) {
 												if(clickType[0].equals(vo.getClickType())){

@@ -232,6 +232,18 @@ $(document).ready(function() {
 									<p class="help-block">File Path for Click-log Statistics Result</p>
 									</div>
 								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">Minimum Click Count:</label>
+									<div class="col-md-10"><input type="text" name="minimumClickCount" class="form-control digits required fcol1-1" value="<%=ctrSetting.getMinimumClickCount() %>">
+									<p class="help-block">If keyword click count is smaller than this, it's ignored.</p>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">File Daily Decay-factor:</label>
+									<div class="col-md-10"><input type="text" name="fileDailyDecayFactor" class="form-control number required fcol1-1" value="<%=ctrSetting.getFileDailyDecayFactor()%>">
+									<p class="help-block">Daily click count decay factor for file.</p>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>

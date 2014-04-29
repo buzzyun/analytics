@@ -285,12 +285,16 @@ public class StatisticsSettings {
 	public static class CTRSetting {
 		private Integer dumpFileDaySize;
 		private String targetFilePath;
-
+		private Integer minimumClickCount;
+		private Float fileDailyDecayFactor;
+		
 		public CTRSetting() { }
 		
-		public CTRSetting(Integer dumpFileDaySize, String targetFilePath) {
+		public CTRSetting(Integer dumpFileDaySize, String targetFilePath, Integer minimumClickCount, Float fileDailyDecayFactor) {
 			this.dumpFileDaySize = dumpFileDaySize;
 			this.targetFilePath = targetFilePath;
+			this.minimumClickCount = minimumClickCount;
+			this.fileDailyDecayFactor = fileDailyDecayFactor;
 		}
 		
 		@XmlElement
@@ -313,6 +317,24 @@ public class StatisticsSettings {
 		public void setTargetFilePath(String targetFilePath) {
 			this.targetFilePath = targetFilePath;
 		}
+		@XmlElement
+		public Integer getMinimumClickCount() {
+			return minimumClickCount == null ? 0 : minimumClickCount;
+		}
+
+		public void setMinimumClickCount(Integer minimumClickCount) {
+			this.minimumClickCount = minimumClickCount;
+		}
+		@XmlElement
+		public Float getFileDailyDecayFactor() {
+			return fileDailyDecayFactor == null ? 0f : fileDailyDecayFactor;
+		}
+
+		public void setFileDailyDecayFactor(Float fileDailyDecayFactor) {
+			this.fileDailyDecayFactor = fileDailyDecayFactor;
+		}
+		
+		
 	}
 	
 	

@@ -2,7 +2,6 @@ package org.fastcatsearch.analytics.analysis.handler;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.fastcatsearch.analytics.analysis.EntryParser;
 import org.fastcatsearch.analytics.analysis.util.AggregationResultFileWriter;
@@ -11,28 +10,25 @@ import org.fastcatsearch.analytics.analysis.util.WeightedSortedRunFileMerger;
 
 public class MergeKeyCountProcessHandler extends ProcessHandler {
 
-	File resultDir;
-	String outFileName;
-	int fileLimitCount;
-	String encoding;
-	EntryParser<KeyCountRunEntry> entryParser;
-	File[] inFileList;
-	float[] weightList;
+	private File resultDir;
+	private String outFileName;
+	private String encoding;
+	private EntryParser<KeyCountRunEntry> entryParser;
+	private File[] inFileList;
+	private float[] weightList;
 	
 	public MergeKeyCountProcessHandler(File[] inFileList, File resultDir, String outFileName, String encoding, EntryParser<KeyCountRunEntry> entryParser) {
+		this(inFileList, null, resultDir, outFileName, encoding, entryParser);
+	}
+	public MergeKeyCountProcessHandler(File[] inFileList, float[] weightList, File resultDir, String outFileName, String encoding, EntryParser<KeyCountRunEntry> entryParser) {
 		this.resultDir = resultDir;
 		this.outFileName = outFileName;
 		this.encoding = encoding;
 		this.entryParser = entryParser;
 		this.inFileList = inFileList;
-		weightList = new float[inFileList.length];
-		Arrays.fill(weightList, 1.0f);
+		this.weightList = weightList;
 	}
 	
-	public float[] weightList() {
-		return weightList;
-	}
-
 	@Override
 	public Object process(Object parameter) {
 		//logger.debug("start process.. ");

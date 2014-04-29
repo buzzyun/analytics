@@ -11,11 +11,14 @@ import org.fastcatsearch.analytics.analysis.EntryParser;
 import org.fastcatsearch.analytics.analysis.KeyCountLogAggregator;
 import org.fastcatsearch.analytics.analysis.NullLogHandler;
 import org.fastcatsearch.analytics.analysis.StatisticsProperties;
+import org.fastcatsearch.analytics.analysis.StatisticsService;
 import org.fastcatsearch.analytics.analysis.StatisticsUtils;
+import org.fastcatsearch.analytics.analysis.config.StatisticsSettings;
 import org.fastcatsearch.analytics.analysis.handler.MergeClickTypeCountProcessHandler;
 import org.fastcatsearch.analytics.analysis.log.ClickLog;
 import org.fastcatsearch.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatsearch.analytics.analysis.util.KeyCountRunEntry;
+import org.fastcatsearch.analytics.service.ServiceManager;
 
 import static org.fastcatsearch.analytics.analysis.calculator.KeywordHitAndRankConstants.*;
 
@@ -32,7 +35,8 @@ public class DailyClickKeywordHitCalculator extends Calculator<ClickLog> {
 	@Override
 	protected CategoryProcess<ClickLog> newCategoryProcess(String categoryId){
 		
-		int minimumHitCount = 0;
+		StatisticsSettings statisticsSettings = ServiceManager.getInstance().getService(StatisticsService.class).getStatisticsSetting(siteId);
+		int minimumClickCount = statisticsSettings.getCtrSetting().getMinimumClickCount();
 		
 		CategoryProcess<ClickLog> categoryProcess = new CategoryProcess<ClickLog>(categoryId);
 		
@@ -61,7 +65,7 @@ public class DailyClickKeywordHitCalculator extends Calculator<ClickLog> {
 			 * 키워드별 type별 클릭대상별 클릭수.
 			 * */
 			EntryParser<KeyCountRunEntry> clickTypeParser = new KeyCountRunEntryParser(new int[]{0, 1, 2}, 3 );
-			AbstractLogAggregator<ClickLog> clickTypeLogAggregator = new KeyCountLogAggregator<ClickLog>(workingDir, CLICK_COUNT_FILENAME, runKeySize, encoding, minimumHitCount, clickTypeParser);
+			AbstractLogAggregator<ClickLog> clickTypeLogAggregator = new KeyCountLogAggregator<ClickLog>(workingDir, CLICK_COUNT_FILENAME, runKeySize, encoding, minimumClickCount, clickTypeParser);
 			new MergeClickTypeCountProcessHandler(
 					clickLogFiles, encoding, clickTypeLogAggregator,
 					MergeClickTypeCountProcessHandler.RUN_CASE_CLICK_KEYWORD_TARGET).attachProcessTo(categoryProcess);

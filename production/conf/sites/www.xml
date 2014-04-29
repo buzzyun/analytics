@@ -6,6 +6,8 @@
     <ctr>
         <dumpFileDaySize>90</dumpFileDaySize>
         <targetFilePath></targetFilePath>
+        <minimumClickCount>5</minimumClickCount>
+        <fileDailyDecayFactor>0.9</fileDailyDecayFactor>
     </ctr>
     <popular-keyword>
         <minimumHitCount>2</minimumHitCount>

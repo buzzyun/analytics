@@ -2,11 +2,14 @@ package org.fastcatsearch.analytics.http.action.service.keyword;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Calendar;
 
+import org.fastcatsearch.analytics.analysis.StatisticsProperties;
 import org.fastcatsearch.analytics.analysis.StatisticsUtils;
 import org.fastcatsearch.analytics.analysis.calculator.DumpPopularKeywordHitCalculator;
 import org.fastcatsearch.analytics.http.ActionMapping;
@@ -49,7 +52,7 @@ public class GetServicePopularKeywordDumpAction extends ServiceAction {
 			calculator.init();
 			calculator.calculate();
 			
-			reader = new BufferedReader(new FileReader(targetFile));
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(targetFile), StatisticsProperties.encoding));
 			
 			responseWriter.key("siteId").value(siteId);
 			responseWriter.key("categoryId").value(categoryId);

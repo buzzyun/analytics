@@ -407,7 +407,7 @@ public class StatisticsService extends AbstractService {
 		statisticsSettings.setCategoryList(categoryList);
 		
 		//인기키워드
-		PopularKeywordSetting popularKeywordSetting = new PopularKeywordSetting(10, 2, 10000, 100);
+		PopularKeywordSetting popularKeywordSetting = new PopularKeywordSetting(10, 1, 10000, 100);
 		statisticsSettings.setPopularKeywordSetting(popularKeywordSetting);
 		
 		//연관키워드
@@ -415,11 +415,11 @@ public class StatisticsService extends AbstractService {
 		statisticsSettings.setRelateKeywordSetting(relateKeywordSetting);
 		
 		//실시간키워드
-		RealTimePopularKeywordSetting realtimePopularKeywordSetting = new RealTimePopularKeywordSetting(6,10,1);
+		RealTimePopularKeywordSetting realtimePopularKeywordSetting = new RealTimePopularKeywordSetting(6, 10, 300, 1);
 		statisticsSettings.setRealtimePopularKeywordSetting(realtimePopularKeywordSetting);
 		
 		//CTR
-		CTRSetting ctrSetting = new CTRSetting();
+		CTRSetting ctrSetting = new CTRSetting(0, "");
 		statisticsSettings.setCtrSetting(ctrSetting);
 		
 		//Site Properties

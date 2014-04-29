@@ -12,10 +12,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Random;
 
 public class LogGenerator {
@@ -75,16 +73,11 @@ public class LogGenerator {
 		}
 		
 		File home = new File(homePath, "statistics");
-		home = new File(home, "search");
 		System.out.println("generating...");
 		new LogGenerator().generate(home, siteId, file, minQty, maxQty, fromDate, toDate, categoryList, types, typeValues, minClick, maxClick, clickIdList, clickTypeList);
 	}
 	
-	
-	private Map<String, File> fileMap;
-	
 	public LogGenerator() {
-		fileMap = new HashMap<String, File>();
 	}
 	
 	private void generate(File home, String siteId, File keywordFile, int minQty, int maxQty, Calendar fromDate, Calendar toDate, String[] categoryList, String[] types, List<String>[] typeValues, int minClick, int maxClick, String[] clickIdList, String[] clickTypeList) {
@@ -230,7 +223,7 @@ public class LogGenerator {
 							
 //							r.setSeed(System.currentTimeMillis());
 							clickType = clickTypeList[ r.nextInt(clickTypeList.length) ];
-							insertClickLog(clickLogWriter, timeId, rawData[3], productId, clickType, rawData);
+							insertClickLog(clickLogWriter, timeId, rawData[3], productId, clickType);
 						}
 //						System.out.println(">> "+count +" " + new Date(calendar.getTimeInMillis()));
 						count++;
@@ -316,18 +309,17 @@ public class LogGenerator {
 		return getLogFile(siteId, "click_raw.log", baseDir, calendar);
 	}
 	private File getLogFile(String siteId, String fileName, File baseDir, Calendar calendar){
-		File dateDir  = new File(baseDir, "date");
+		File dateDir  = new File(new File(baseDir, siteId), "date");
 		
 		int year = calendar.get(Calendar.YEAR);
 		int month = calendar.get(Calendar.MONTH) + 1;
 		int date = calendar.get(Calendar.DAY_OF_MONTH);
 		
-		dateDir = new File(dateDir, "Y"+(year<10?"0"+year:year));
-		dateDir = new File(dateDir, "M"+(month<10?"0"+month:month));
-		dateDir = new File(dateDir, "D"+(date<10?"0"+date:date));
+		dateDir = new File(dateDir, "Y" + (year < 10 ? "0" + year : year));
+		dateDir = new File(dateDir, "M" + (month < 10 ? "0" + month : month));
+		dateDir = new File(dateDir, "D" + (date < 10 ? "0" + date : date));
 		
 		File dataDir = new File(dateDir, "data");
-		dataDir = new File(dataDir, siteId);
 		
 		if(!dataDir.exists()) {
 			dataDir.mkdirs();
@@ -335,7 +327,7 @@ public class LogGenerator {
 		
 		return new File(dataDir, fileName);
 	}
-	private void insertClickLog(BufferedWriter writer, String timeId, String keyword, String productId, String clickType, String[] rawData) {
+	private void insertClickLog(BufferedWriter writer, String timeId, String keyword, String productId, String clickType) {
 		try {	
 			writer.append(timeId).append("\t") //시간
 			.append(keyword).append("\t") //키워드

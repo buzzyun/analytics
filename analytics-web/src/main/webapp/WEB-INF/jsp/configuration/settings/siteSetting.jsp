@@ -87,21 +87,33 @@ $(document).ready(function() {
 				<form class="form-horizontal" role="form" id="setting-form">
 				<div class="widget">
 					<div class="widget-header">
-						<h4>Common Settings</h4>
+						<h4>Common Properties</h4>
 					</div>
 					<div class="widget-content">
 						<div class="row">
 							<div class="col-md-12 form-horizontal">
 								<div class="form-group">
 									<label class="col-md-2 control-label">Banwords:</label>
-									<div class="col-md-10"><textarea class="form-control" name="banwords" placeholder="" style="width:100%"><%=siteProperties != null ? siteProperties.getBanwords() : "" %></textarea>
+									<div class="col-md-10"><textarea class="form-control" name="banwords" placeholder="" style="width:100%"><%=siteProperties.getBanwords() %></textarea>
 									<p class="help-block">One by one each line</p>
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-md-2 control-label">Max Keyword Length:</label>
-									<div class="col-md-10"><input class="form-control fcol2 digits required" name="maxKeywordLength" value="<%=siteProperties != null ? siteProperties.getMaxKeywordLength() : 0 %>"/>
+									<div class="col-md-10"><input class="form-control fcol2 digits required" name="maxKeywordLength" value="<%=siteProperties.getMaxKeywordLength() %>"/>
 									<p class="help-block">If keyword length is larger than this, it's ignored.</p>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">Daily Schedule Time:</label>
+									<div class="col-md-10"><input class="form-control fcol2 digits required" name="dailyScheduleTime" value="<%=siteProperties.getDailyScheduleTime() %>"/>
+									<p class="help-block">At this time, run daily schedule.</p>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">Schedule Delay in seconds:</label>
+									<div class="col-md-10"><input class="form-control fcol2 digits required" name="scheduleDelayInSeconds" value="<%=siteProperties.getScheduleDelayInSeconds() %>"/>
+									<p class="help-block">When running a scheduled task, wait for this time.</p>
 									</div>
 								</div>
 							</div>
@@ -130,9 +142,15 @@ $(document).ready(function() {
 									
 								</div>
 								<div class="form-group">
-									<label class="col-md-2 control-label">TopN Store Size:</label>
+									<label class="col-md-2 control-label">View Size:</label>
 									<div class="col-md-10"><input type="text" name="realTimeKeywordTopSize" class="form-control digits required fcol1-1" value="<%=realTimeKeywords.getTopCount()%>">
-									<p class="help-block">How many top keywords to store.</p>
+									<p class="help-block">How many keywords to show.</p>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">Period in seconds:</label>
+									<div class="col-md-10"><input type="text" name="realTimeKeywordPeriod" class="form-control digits required fcol1-1" value="<%=realTimeKeywords.getPeriodInSeconds()%>">
+									<p class="help-block">Keyword making period in seconds.</p>
 									</div>
 								</div>
 							</div>
@@ -154,9 +172,21 @@ $(document).ready(function() {
 									</div>
 								</div>
 								<div class="form-group">
-									<label class="col-md-2 control-label">TopN Store Size:</label>
+									<label class="col-md-2 control-label">View Size:</label>
 									<div class="col-md-10"><input type="text" name="popularKeywordTopSize" class="form-control digits required fcol1-1" value="<%=popularKeywords.getTopCount()%>">
-									<p class="help-block">How many top keywords to store.</p>
+									<p class="help-block">How many keywords to show.</p>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">Root Store Size:</label>
+									<div class="col-md-10"><input type="text" name="rootStoreCount" class="form-control digits required fcol1-1" value="<%=popularKeywords.getRootStoreCount()%>">
+									<p class="help-block">How many root keywords to store in database.</p>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">Category Store Size:</label>
+									<div class="col-md-10"><input type="text" name="categoryStoreCount" class="form-control digits required fcol1-1" value="<%=popularKeywords.getCategoryStoreCount()%>">
+									<p class="help-block">How many category keywords to store in database.</p>
 									</div>
 								</div>
 							</div>

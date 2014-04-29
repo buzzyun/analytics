@@ -2,12 +2,15 @@ package org.fastcatsearch.analytics.http.action.service.keyword;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import org.fastcatsearch.analytics.analysis.StatisticsProperties;
 import org.fastcatsearch.analytics.analysis.StatisticsService;
 import org.fastcatsearch.analytics.analysis.StatisticsUtils;
 import org.fastcatsearch.analytics.analysis.vo.RankKeyword;
@@ -74,7 +77,7 @@ public class GetServicePopularKeywordAction extends ServiceAction {
 				BufferedReader reader = null;
 				
 				try {
-					reader = new BufferedReader(new FileReader(file));
+					reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StatisticsProperties.encoding));
 					list = new ArrayList<RankKeyword>();
 					int rank = 1;
 					for (String rline = null; (ln == 0 || rank <= (sn + ln))
@@ -89,9 +92,11 @@ public class GetServicePopularKeywordAction extends ServiceAction {
 						}
 					}
 				} finally {
-					if(reader!=null) try {
-						reader.close();
-					} catch (IOException ignore) { }
+					if (reader != null) {
+						try {
+							reader.close();
+						} catch (IOException ignore) { }
+					}
 				}
 			}
 			

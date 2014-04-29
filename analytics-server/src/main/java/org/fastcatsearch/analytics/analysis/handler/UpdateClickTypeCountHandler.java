@@ -2,8 +2,9 @@ package org.fastcatsearch.analytics.analysis.handler;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import org.fastcatsearch.analytics.db.AnalyticsDBService;
 import org.fastcatsearch.analytics.db.MapperSession;
@@ -38,7 +39,7 @@ public class UpdateClickTypeCountHandler extends ProcessHandler {
 		try {
 			
 			if(file.exists()) {
-				br = new BufferedReader(new FileReader(file));
+				br = new BufferedReader(new InputStreamReader(new FileInputStream(file), encoding));
 				ClickHitMapper mapper = mapperSession.getMapper();
 				
 				for(String rline = null; (rline = br.readLine())!=null;) {

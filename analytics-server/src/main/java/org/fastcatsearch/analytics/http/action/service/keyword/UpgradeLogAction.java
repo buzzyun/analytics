@@ -3,14 +3,17 @@ package org.fastcatsearch.analytics.http.action.service.keyword;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Writer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.fastcatsearch.analytics.analysis.StatisticsProperties;
 import org.fastcatsearch.analytics.http.ActionMapping;
 import org.fastcatsearch.analytics.http.action.ActionRequest;
 import org.fastcatsearch.analytics.http.action.ActionResponse;
@@ -26,6 +29,7 @@ public class UpgradeLogAction extends ServiceAction {
 	@Override
 	public void doAction(ActionRequest request, ActionResponse response) throws Exception {
 		
+		//FIXME "search"는 siteId로 바뀌어야한다.
 		File file = environment.filePaths().getStatisticsRoot().file("search", "date" );
 		
 		final Pattern ptn = Pattern.compile("^[0-9]{2}[:][0-9]{2}	");
@@ -60,7 +64,7 @@ public class UpgradeLogAction extends ServiceAction {
 													BufferedReader reader = null;
 													BufferedWriter writer = null;
 													try {
-														reader = new BufferedReader(new FileReader(rawlog));
+														reader = new BufferedReader(new InputStreamReader(new FileInputStream(rawlog), StatisticsProperties.encoding));
 														writer = new BufferedWriter(new FileWriter(rawlogNew));
 														for(String rline="";(rline=reader.readLine())!=null;) {
 															Matcher m = ptn.matcher(rline);
@@ -81,7 +85,7 @@ public class UpgradeLogAction extends ServiceAction {
 														rawlog.delete();
 														rawlogNew.renameTo(rawlog);
 
-														reader = new BufferedReader(new FileReader(typelog));
+														reader = new BufferedReader(new InputStreamReader(new FileInputStream(typelog), StatisticsProperties.encoding));
 														writer = new BufferedWriter(new FileWriter(typelogNew));
 														for(String rline="";(rline=reader.readLine())!=null;) {
 															Matcher m = ptn.matcher(rline);

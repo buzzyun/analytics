@@ -11,6 +11,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.fastcatsearch.analytics.analysis.StatisticsUtils;
+import org.fastcatsearch.analytics.analysis.config.SiteListSetting.SiteSetting;
 import org.fastcatsearch.analytics.analysis.config.StatisticsSettings;
 import org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CTRSetting;
 import org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CategorySetting;
@@ -154,10 +155,19 @@ public class SiteConfigurationController extends AbstractController {
 		int defaultRootStoreCount = 10000;
 		int defaultCategoryStoreCount = 100;
 		
-		if(popularKeywordSetting==null) { popularKeywordSetting = new PopularKeywordSetting(defaultTopCount, defaultMinimumHitCount, defaultRootStoreCount, defaultCategoryStoreCount); }
-		if(relateKeywordSetting==null) { relateKeywordSetting = new RelateKeywordSetting(defaultMinimumHitCount); }
-		if(realTimePopularKeywordSetting==null) { realTimePopularKeywordSetting = new RealTimePopularKeywordSetting(defaultRealtimeRecentCount, defaultTopCount, defaultMinimumHitCount); }
-		
+		if(siteProperties == null) {
+			siteProperties = new SiteProperties("", 15, 5, 0);
+		}
+		if (popularKeywordSetting == null) {
+			popularKeywordSetting = new PopularKeywordSetting(defaultTopCount, defaultMinimumHitCount, defaultRootStoreCount, defaultCategoryStoreCount);
+		}
+		if (relateKeywordSetting == null) {
+			relateKeywordSetting = new RelateKeywordSetting(defaultMinimumHitCount);
+		}
+		if (realTimePopularKeywordSetting == null) {
+			realTimePopularKeywordSetting = new RealTimePopularKeywordSetting(defaultRealtimeRecentCount, defaultTopCount, 300, defaultMinimumHitCount);
+		}
+
 		mav.addObject("siteProperties", siteProperties);
 		mav.addObject("realTimePopularKeywordSetting",realTimePopularKeywordSetting);
 		mav.addObject("popularKeywordSetting",popularKeywordSetting);
@@ -247,9 +257,12 @@ public class SiteConfigurationController extends AbstractController {
 			@RequestParam String mode,
 			@RequestParam String banwords,
 			@RequestParam Integer maxKeywordLength,
+			@RequestParam Integer scheduleDelayInSeconds,
+			@RequestParam Integer dailyScheduleTime,
 			@RequestParam Integer realTimeKeywordMinimumHit,
 			@RequestParam Integer realTimeKeywordRecentLog,
 			@RequestParam Integer realTimeKeywordTopSize,
+			@RequestParam Integer realTimeKeywordPeriod,
 			@RequestParam Integer popularKeywordMinimumHit,
 			@RequestParam Integer popularKeywordTopSize,
 			@RequestParam Integer rootStoreCount,
@@ -270,15 +283,13 @@ public class SiteConfigurationController extends AbstractController {
 		if("update".equals(mode)) {
 			
 			RealTimePopularKeywordSetting realtimePopularKeywordSetting = new RealTimePopularKeywordSetting(
-					realTimeKeywordRecentLog, realTimeKeywordTopSize,
+					realTimeKeywordRecentLog, realTimeKeywordTopSize, realTimeKeywordPeriod, 
 					realTimeKeywordMinimumHit);
 			PopularKeywordSetting popularKeywordSetting = new PopularKeywordSetting(
 					popularKeywordTopSize, popularKeywordMinimumHit, rootStoreCount, categoryStoreCount);
 			RelateKeywordSetting relateKeywordSetting = new RelateKeywordSetting(
 					relateKeywordMinimumHit);
-			SiteProperties siteProperties = new SiteProperties();
-			siteProperties.setBanwords(banwords);
-			siteProperties.setMaxKeywordLength(maxKeywordLength);
+			SiteProperties siteProperties = new SiteProperties(banwords, maxKeywordLength, scheduleDelayInSeconds, dailyScheduleTime);
 			statisticsSetting.setSiteProperties(siteProperties);
 			statisticsSetting.setRealtimePopularKeywordSetting(realtimePopularKeywordSetting);
 			statisticsSetting.setPopularKeywordSetting(popularKeywordSetting);
@@ -286,9 +297,7 @@ public class SiteConfigurationController extends AbstractController {
 			
 			logger.trace("targetFilePath:{}", targetFilePath);
 			
-			CTRSetting ctrSetting = new CTRSetting();
-			ctrSetting.setDumpFileDaySize(dumpFileDaySize);
-			ctrSetting.setTargetFilePath(targetFilePath);
+			CTRSetting ctrSetting = new CTRSetting(dumpFileDaySize, targetFilePath);
 			statisticsSetting.setCtrSetting(ctrSetting);
 			getStatisticsService().writeConfig();
 		}

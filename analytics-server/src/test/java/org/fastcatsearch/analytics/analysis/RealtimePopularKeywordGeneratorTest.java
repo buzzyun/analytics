@@ -9,7 +9,7 @@ import org.fastcatsearch.analytics.analysis.config.StatisticsSettings.RelateKeyw
 public class RealtimePopularKeywordGeneratorTest {
 
 	public StatisticsSettings getStatisticsSettings(String banwords, int rtPopMinHit, int popMinHit, int relMinHit){
-		RealTimePopularKeywordSetting realTimePopularKeywordConfig = new RealTimePopularKeywordSetting(10,10,10);
+		RealTimePopularKeywordSetting realTimePopularKeywordConfig = new RealTimePopularKeywordSetting(10, 10, 300, 10);
 		PopularKeywordSetting popularKeywordConfig = new PopularKeywordSetting(10, 10, 10000, 100);
 		RelateKeywordSetting relateKeywordConfig = new RelateKeywordSetting(10);
 		realTimePopularKeywordConfig.setMinimumHitCount(rtPopMinHit);

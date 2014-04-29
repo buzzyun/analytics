@@ -2,13 +2,10 @@ package org.fastcatsearch.analytics.analysis.handler;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.fastcatsearch.analytics.analysis.AbstractLogAggregator;
 import org.fastcatsearch.analytics.analysis.log.ClickLog;
 import org.fastcatsearch.analytics.analysis.log.ClickLogReader;
-import org.fastcatsearch.analytics.util.Counter;
 
 public class MergeClickTypeCountProcessHandler extends ProcessHandler {
 	
@@ -16,10 +13,8 @@ public class MergeClickTypeCountProcessHandler extends ProcessHandler {
 	public static final int RUN_CASE_CLICK_KEYWORD = 2;
 	public static final int RUN_CASE_CLICK_KEYWORD_TARGET = 3;
 	
-	int fileLimitCount;
 	String encoding;
 	File[] inFileList;
-	Map<String, Counter> counterMap;
 	AbstractLogAggregator<ClickLog> aggregator;
 	int runCase;
 
@@ -28,7 +23,6 @@ public class MergeClickTypeCountProcessHandler extends ProcessHandler {
 		this.encoding = encoding;
 		this.aggregator = aggregator;
 		this.inFileList = inFileList;
-		this.counterMap = new HashMap<String, Counter>();
 		this.runCase = runCase;
 	}
 
@@ -64,11 +58,16 @@ public class MergeClickTypeCountProcessHandler extends ProcessHandler {
 				aggregator.handleLog(log2);
 			}
 			
-			aggregator.done();
-			
 		} catch (IOException e) {
 			logger.error("", e);
 		} finally {
+			if(aggregator != null) {
+				try {
+					aggregator.done();
+				} catch (IOException e) {
+					logger.error("", e);
+				}
+			}
 		}
 		
 		return null;

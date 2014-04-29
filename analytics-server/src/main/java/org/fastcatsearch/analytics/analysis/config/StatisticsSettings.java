@@ -96,6 +96,16 @@ public class StatisticsSettings {
 		private int scheduleDelayInSeconds;
 		private int dailyScheduleTime;
 		
+		public SiteProperties() {
+		}
+		
+		public SiteProperties(String banwords, int maxKeywordLength, int scheduleDelayInSeconds, int dailyScheduleTime){
+			this.banwords = banwords;
+			this.maxKeywordLength = maxKeywordLength;
+			this.scheduleDelayInSeconds = scheduleDelayInSeconds;
+			this.dailyScheduleTime = dailyScheduleTime;
+		}
+		
 		@XmlElement
 		public String getBanwords() {
 			return banwords;
@@ -192,10 +202,11 @@ public class StatisticsSettings {
 		private Integer periodInSeconds;
 		
 		public RealTimePopularKeywordSetting() { }
-		public RealTimePopularKeywordSetting(Integer recentCount, Integer topCount, Integer minimumHitCount) { 
+		public RealTimePopularKeywordSetting(Integer recentCount, Integer topCount, Integer periodInSeconds, Integer minimumHitCount) { 
 			super(minimumHitCount);
 			this.topCount = topCount;
 			this.recentCount = recentCount;
+			this.periodInSeconds = periodInSeconds;
 		}
 		
 		@XmlElement
@@ -264,7 +275,10 @@ public class StatisticsSettings {
 	@XmlType 
 	public static class RelateKeywordSetting extends KeywordSetting {
 		public RelateKeywordSetting() { }
-		public RelateKeywordSetting(Integer i) { super(i); } 
+
+		public RelateKeywordSetting(Integer minimumHitCount) {
+			super(minimumHitCount);
+		}
 	}
 	
 	@XmlType 
@@ -273,7 +287,12 @@ public class StatisticsSettings {
 		private String targetFilePath;
 
 		public CTRSetting() { }
-
+		
+		public CTRSetting(Integer dumpFileDaySize, String targetFilePath) {
+			this.dumpFileDaySize = dumpFileDaySize;
+			this.targetFilePath = targetFilePath;
+		}
+		
 		@XmlElement
 		public Integer getDumpFileDaySize() {
 			return dumpFileDaySize == null ? 0 : dumpFileDaySize;

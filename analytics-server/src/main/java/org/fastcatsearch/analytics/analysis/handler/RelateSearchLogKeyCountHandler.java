@@ -28,7 +28,7 @@ public class RelateSearchLogKeyCountHandler extends CategoryLogHandler<RelateSea
 
 	@Override
 	public void handleLog(RelateSearchLog logData) throws IOException {
-		// logger.debug("handleLog[{}] > {}", categoryId, logData);
+		 logger.trace("handleLog[{}] > {}", categoryId, logData);
 		String keyword = logData.keyword();
 		String previousKeyword = logData.previousKeyword();
 		if (keyword != null && keyword.length() > 0 && previousKeyword != null && previousKeyword.length() > 0) {

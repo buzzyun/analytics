@@ -72,7 +72,7 @@ public class UpdateRelateKeywordHandler extends ProcessHandler {
 							needToInsert = true;
 						}
 					}
-					logger.debug("##needToInsert {} : {} : {}", needToInsert, keyword, value);
+					logger.trace("##needToInsert {} : {} : {}", needToInsert, keyword, value);
 					if(needToInsert){
 						RelateKeywordVO vo = mapper.getEntry(siteId, keyword);
 						
@@ -82,11 +82,11 @@ public class UpdateRelateKeywordHandler extends ProcessHandler {
 							
 							mapper.putEntry(siteId, vo);
 							vmapper.putEntry(siteId, vo.getId(), value);
-							logger.debug("##Put relate {} / {} / {}", siteId, vo.getId(), value);
+							logger.trace("##Put relate {} / {} / {}", siteId, vo.getId(), value);
 						}else{
 							//업데이트..
 							vmapper.putEntry(siteId, vo.getId(), value);
-							logger.debug("##Update relate {} / {} / {}", siteId, vo.getId(), value);
+							logger.trace("##Update relate {} / {} / {}", siteId, vo.getId(), value);
 						}
 					
 					}

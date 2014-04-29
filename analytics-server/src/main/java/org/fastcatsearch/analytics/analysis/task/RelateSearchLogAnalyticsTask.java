@@ -29,7 +29,7 @@ public class RelateSearchLogAnalyticsTask extends AnalyticsTask<RelateSearchLog>
 	@Override
 	public void prepare(Calendar calendar) {
 		File dir = environment.filePaths().getStatisticsRoot().file(siteId, "date");
-		File baseDir = new File(StatisticsUtils.getDayDataDir(dir, calendar), siteId);
+		File baseDir = StatisticsUtils.getDayDataDir(dir, calendar);
 		
 		File logFile = new File(baseDir, RAW_LOG_FILENAME);
 		try {

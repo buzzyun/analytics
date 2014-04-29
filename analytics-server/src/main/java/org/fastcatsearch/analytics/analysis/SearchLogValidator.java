@@ -3,6 +3,7 @@ package org.fastcatsearch.analytics.analysis;
 import java.util.Set;
 
 import org.fastcatsearch.analytics.analysis.log.SearchLog;
+import org.fastcatsearch.analytics.util.CharacterUtils;
 
 public class SearchLogValidator implements LogValidator<SearchLog> {
 	
@@ -16,19 +17,21 @@ public class SearchLogValidator implements LogValidator<SearchLog> {
 
 	@Override
 	public boolean isValid(SearchLog logData) {
-		if(logData.keyword().length() > maxKeywordLength){
+		if(logData.keyword() == null) {
 			return false;
 		}
 		
-		if (banWords != null && banWords.size() > 0) {
-			for (String banWord : banWords) {
-				
-				if (banWord != null && !"".equals(banWord)
-						&& logData.keyword().contains(banWord)) {
-					// 금지어의 경우 로그에 기록하지 않는다.
-					return false;
-				}
-			}
+		if(maxKeywordLength != 0 && logData.keyword().length() > maxKeywordLength){
+			return false;
+		}
+		
+		if(!CharacterUtils.isValidCharacter(logData.keyword())){
+			return false;
+		}
+		
+		if (banWords != null) {
+			// 금지어의 경우 로그에 기록하지 않는다.
+			return !banWords.contains(logData.keyword());
 		}
 		return true;
 	}

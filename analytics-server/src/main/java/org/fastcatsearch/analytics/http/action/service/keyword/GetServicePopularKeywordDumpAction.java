@@ -42,7 +42,7 @@ public class GetServicePopularKeywordDumpAction extends ServiceAction {
 			
 			tmpFile = File.createTempFile(this.getClass().getName(), ".tmp1");
 			targetFile = File.createTempFile(this.getClass().getName(), ".tmp2");
-			File baseDir = environment.filePaths().getStatisticsRoot().file("search", "date");
+			File baseDir = environment.filePaths().getStatisticsRoot().file(siteId, "date");
 			DumpPopularKeywordHitCalculator calculator = 
 				new DumpPopularKeywordHitCalculator(baseDir, fromDate, toDate, tmpFile, targetFile, siteId, Arrays.asList(new String[]{ categoryId }));
 					

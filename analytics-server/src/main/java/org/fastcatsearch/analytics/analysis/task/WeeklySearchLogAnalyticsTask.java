@@ -25,15 +25,14 @@ public class WeeklySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 	@Override
 	protected void prepare(Calendar calendar) {
 		// baseDir : statistics/search/date/Y####/W##/data/{siteId} 경로
-		File baseDir = environment.filePaths().getStatisticsRoot().file("search", "date");
+		File baseDir = environment.filePaths().getStatisticsRoot().file(siteId, "date");
 		
 		//주의 최초로 되돌린다.
 		Calendar prevCalendar = StatisticsUtils.getLastDayOfWeek(calendar);
 		prevCalendar.add(Calendar.DAY_OF_MONTH, -7);
-		int topCount = 10;
 		
 		// calc를 카테고리별로 모두 만든다.
-		Calculator<SearchLog> popularKeywordCalculator = new WeeklyKeywordHitAndRankCalculator("Weekly popular keyword calculator", calendar, prevCalendar, baseDir, siteId, categoryIdList, topCount);
+		Calculator<SearchLog> popularKeywordCalculator = new WeeklyKeywordHitAndRankCalculator("Weekly popular keyword calculator", calendar, prevCalendar, baseDir, siteId, categoryIdList);
 		addCalculator(popularKeywordCalculator);
 	}
 }

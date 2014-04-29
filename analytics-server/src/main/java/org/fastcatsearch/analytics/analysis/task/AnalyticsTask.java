@@ -2,7 +2,6 @@ package org.fastcatsearch.analytics.analysis.task;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
 import org.fastcatsearch.analytics.analysis.StatisticsUtils;

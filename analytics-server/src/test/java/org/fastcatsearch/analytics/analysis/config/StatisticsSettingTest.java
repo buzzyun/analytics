@@ -42,7 +42,7 @@ public class StatisticsSettingTest {
 		settings.getSiteProperties().setBanwords("무료,배송,쿠폰,할인");
 		RealTimePopularKeywordSetting realtimePopularKeyword = new RealTimePopularKeywordSetting(10,10,10);
 		settings.setRealtimePopularKeywordSetting(realtimePopularKeyword);
-		PopularKeywordSetting popularKeyword = new PopularKeywordSetting(10,10);
+		PopularKeywordSetting popularKeyword = new PopularKeywordSetting(10, 10, 10000, 100);
 		settings.setPopularKeywordSetting(popularKeyword);
 		RelateKeywordSetting relateKeyword = new RelateKeywordSetting(10);
 		settings.setRelateKeywordSetting(relateKeyword);

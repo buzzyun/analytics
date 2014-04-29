@@ -46,7 +46,7 @@ public class SiteConfigurationController extends AbstractController {
 	}
 
 	@RequestMapping("/management/run")
-	public ModelAndView run(@PathVariable String siteId, @RequestParam(required = false) String taskType, @RequestParam(required = false) String date) throws Exception {
+	public ModelAndView run(@PathVariable String siteId, @RequestParam(required = false, value="taskType") String[] taskType, @RequestParam(required = false) String date) throws Exception {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("configuration/management/run");
 
@@ -151,8 +151,10 @@ public class SiteConfigurationController extends AbstractController {
 		int defaultMinimumHitCount = 2;
 		int defaultTopCount = 10;
 		int defaultRealtimeRecentCount = 6;
+		int defaultRootStoreCount = 10000;
+		int defaultCategoryStoreCount = 100;
 		
-		if(popularKeywordSetting==null) { popularKeywordSetting = new PopularKeywordSetting(defaultTopCount, defaultMinimumHitCount); }
+		if(popularKeywordSetting==null) { popularKeywordSetting = new PopularKeywordSetting(defaultTopCount, defaultMinimumHitCount, defaultRootStoreCount, defaultCategoryStoreCount); }
 		if(relateKeywordSetting==null) { relateKeywordSetting = new RelateKeywordSetting(defaultMinimumHitCount); }
 		if(realTimePopularKeywordSetting==null) { realTimePopularKeywordSetting = new RealTimePopularKeywordSetting(defaultRealtimeRecentCount, defaultTopCount, defaultMinimumHitCount); }
 		
@@ -250,6 +252,8 @@ public class SiteConfigurationController extends AbstractController {
 			@RequestParam Integer realTimeKeywordTopSize,
 			@RequestParam Integer popularKeywordMinimumHit,
 			@RequestParam Integer popularKeywordTopSize,
+			@RequestParam Integer rootStoreCount,
+			@RequestParam Integer categoryStoreCount,
 			@RequestParam Integer relateKeywordMinimumHit,
 			@RequestParam Integer dumpFileDaySize,
 			@RequestParam String targetFilePath
@@ -269,7 +273,7 @@ public class SiteConfigurationController extends AbstractController {
 					realTimeKeywordRecentLog, realTimeKeywordTopSize,
 					realTimeKeywordMinimumHit);
 			PopularKeywordSetting popularKeywordSetting = new PopularKeywordSetting(
-					popularKeywordTopSize, popularKeywordMinimumHit);
+					popularKeywordTopSize, popularKeywordMinimumHit, rootStoreCount, categoryStoreCount);
 			RelateKeywordSetting relateKeywordSetting = new RelateKeywordSetting(
 					relateKeywordMinimumHit);
 			SiteProperties siteProperties = new SiteProperties();

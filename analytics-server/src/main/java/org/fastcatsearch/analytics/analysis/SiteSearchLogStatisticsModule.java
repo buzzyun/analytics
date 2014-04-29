@@ -1,5 +1,10 @@
 package org.fastcatsearch.analytics.analysis;
 
+import static org.fastcatsearch.analytics.analysis.calculator.KeywordHitAndRankConstants.CLICK_RAW_FILENAME;
+import static org.fastcatsearch.analytics.analysis.calculator.KeywordHitAndRankConstants.POPULAR_FILENAME;
+import static org.fastcatsearch.analytics.analysis.calculator.KeywordHitAndRankConstants.RAW_LOG_FILENAME;
+import static org.fastcatsearch.analytics.analysis.calculator.KeywordHitAndRankConstants.TYPE_RAW_FILENAME;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
@@ -11,10 +16,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.fastcatsearch.analytics.analysis.schedule.EveryDaySchedule;
-import org.fastcatsearch.analytics.analysis.schedule.EveryMonthSchedule;
-import org.fastcatsearch.analytics.analysis.schedule.EveryWeekSchedule;
-import org.fastcatsearch.analytics.analysis.schedule.EveryYearSchedule;
-import org.fastcatsearch.analytics.analysis.schedule.FixedSchedule;
 import org.fastcatsearch.analytics.analysis.schedule.Schedule;
 import org.fastcatsearch.analytics.analysis.schedule.ScheduledTaskRunner;
 import org.fastcatsearch.analytics.analysis.task.DailyClickLogAnalyticsTask;
@@ -37,8 +38,6 @@ import org.fastcatsearch.analytics.env.Environment;
 import org.fastcatsearch.analytics.env.Settings;
 import org.fastcatsearch.analytics.module.AbstractModule;
 import org.fastcatsearch.analytics.module.ModuleException;
-
-import static org.fastcatsearch.analytics.analysis.calculator.KeywordHitAndRankConstants.*;
 
 public class SiteSearchLogStatisticsModule extends AbstractModule {
 	File fileHome;
@@ -193,7 +192,7 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		
 		/* 3. N-Days */
 		Schedule clickLogNDaysSchedule = new EveryDaySchedule(0, delayInSeconds);
-		NDaysClickLogAnalyticsTask nDaysClickLogAnalyticsTask = new NDaysClickLogAnalyticsTask(siteId, categoryIdList, true, clickLogNDaysSchedule, 11);
+		NDaysClickLogAnalyticsTask nDaysClickLogAnalyticsTask = new NDaysClickLogAnalyticsTask(siteId, categoryIdList, clickLogNDaysSchedule, 11);
 		dailyTaskRunner.addTask(nDaysClickLogAnalyticsTask);
 
 		dailyTaskRunner.start();

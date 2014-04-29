@@ -31,7 +31,6 @@ public class PostSearchLogAction extends ServiceAction {
 		ResponseWriter responseWriter = getDefaultResponseWriter(response.getWriter());
 		responseWriter.object();
 
-		String type = request.getParameter("type");
 		String siteId = request.getParameter("siteId");
 		
 		StatisticsService service = ServiceManager.getInstance().getService(StatisticsService.class);
@@ -43,7 +42,7 @@ public class PostSearchLogAction extends ServiceAction {
 			siteId = cateConfig.getId();
 		}
 		
-		if(type == null || type.trim().length() == 0 || siteId == null || siteId.trim().length() == 0 ){
+		if(siteId == null || siteId.trim().length() == 0 ){
 			return;
 		}
 
@@ -85,7 +84,7 @@ public class PostSearchLogAction extends ServiceAction {
 			if(serviceId == null || serviceId.length() == 0){
 				serviceId = "-";
 			}
-			service.addLog(type, siteId, categoryId, keyword, prevKeyword, resultCount, reponseTime, serviceId);
+			service.addLog(siteId, categoryId, keyword, prevKeyword, resultCount, reponseTime, serviceId);
 			
 			SiteAttribute siteAttribute = ServiceManager.getInstance().getService(StatisticsService.class).getStatisticsSetting(siteId).getSiteAttribute();
 			List<TypeSetting> typeList = siteAttribute.getTypeList();
@@ -101,7 +100,7 @@ public class PostSearchLogAction extends ServiceAction {
 			types[0] = categoryId;
 			types[1] = keyword;
 
-			service.addTypeLog(type, siteId, types);
+			service.addTypeLog(siteId, types);
 			
 		} catch (Exception e) {
 			errorMessage = e.getMessage();

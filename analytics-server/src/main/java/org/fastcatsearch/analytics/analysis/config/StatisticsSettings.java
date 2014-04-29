@@ -165,13 +165,25 @@ public class StatisticsSettings {
 	}
 	
 	@XmlType 
-	public static class RealTimePopularKeywordSetting extends PopularKeywordSetting {
+	public static class RealTimePopularKeywordSetting extends KeywordSetting {
+		private Integer topCount;
 		private Integer recentCount;
+		
 		public RealTimePopularKeywordSetting() { }
 		public RealTimePopularKeywordSetting(Integer recentCount, Integer topCount, Integer minimumHitCount) { 
-			super(topCount, minimumHitCount);
+			super(minimumHitCount);
+			this.topCount = topCount;
 			this.recentCount = recentCount;
 		}
+		
+		@XmlElement
+		public Integer getTopCount() {
+			return topCount;
+		}
+		public void setTopCount(Integer topCount) {
+			this.topCount = topCount;
+		}
+		
 		@XmlElement(name="recentLogUsingCount")
 		public Integer getRecentCount() {
 			return recentCount;
@@ -185,18 +197,39 @@ public class StatisticsSettings {
 	@XmlType 
 	public static class PopularKeywordSetting extends KeywordSetting {
 		private Integer topCount;
+		private Integer rootStoreCount;
+		private Integer categoryStoreCount;
+		
 		public PopularKeywordSetting() { }
-		public PopularKeywordSetting(Integer topCount, Integer minimumHitCount) {
+		public PopularKeywordSetting(Integer topCount, Integer minimumHitCount, Integer rootStoreCount, Integer categoryStoreCount) {
 			super(minimumHitCount);
 			this.topCount = topCount;
+			this.rootStoreCount = rootStoreCount;
+			this.categoryStoreCount = categoryStoreCount;
 		}
-		@XmlElement(name="topCount")
+		@XmlElement
 		public Integer getTopCount() {
 			return topCount;
 		}
 		public void setTopCount(Integer topCount) {
 			this.topCount = topCount;
 		}
+		@XmlElement
+		public Integer getRootStoreCount() {
+			return rootStoreCount;
+		}
+		public void setRootStoreCount(Integer rootStoreCount) {
+			this.rootStoreCount = rootStoreCount;
+		}
+		@XmlElement
+		public Integer getCategoryStoreCount() {
+			return categoryStoreCount;
+		}
+		public void setCategoryStoreCount(Integer categoryStoreCount) {
+			this.categoryStoreCount = categoryStoreCount;
+		}
+		
+		
 	}
 	
 	@XmlType 

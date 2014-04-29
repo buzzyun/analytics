@@ -13,13 +13,10 @@ import org.fastcatsearch.analytics.analysis.handler.UpdateHourlySearchHitHandler
 import org.fastcatsearch.analytics.analysis.log.SearchLog;
 import org.fastcatsearch.analytics.service.ServiceManager;
 
-public class HourlyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
+public class HourlyKeywordHitCalculator extends Calculator<SearchLog> {
 	
-	private Set<String> banWords;
-	
-	public HourlyKeywordHitAndRankCalculator(String name, Calendar calendar, File baseDir, String siteId, List<String> categoryIdList, Set<String> banWords) {
+	public HourlyKeywordHitCalculator(String name, Calendar calendar, File baseDir, String siteId, List<String> categoryIdList) {
 		super(name, calendar, baseDir, siteId, categoryIdList);
-		this.banWords = banWords;
 	}
 	
 	@Override
@@ -27,6 +24,7 @@ public class HourlyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		
 		StatisticsSettings statisticsSettings = ServiceManager.getInstance().getService(StatisticsService.class).getStatisticsSetting(siteId);
 		int maxKeywordLength = statisticsSettings.getSiteProperties().getMaxKeywordLength();
+		Set<String> banWords = statisticsSettings.getSiteProperties().getBanwordSet();
 		
 		CategoryProcess<SearchLog> categoryProcess = new CategoryProcess<SearchLog>(categoryId);
 		SearchLogValidator logValidator = new SearchLogValidator(banWords, maxKeywordLength);

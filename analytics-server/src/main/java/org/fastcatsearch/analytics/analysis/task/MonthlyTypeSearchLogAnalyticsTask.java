@@ -28,10 +28,7 @@ public class MonthlyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchL
 	@Override
 	protected void prepare(Calendar calendar) {
 		// baseDir : statistics/search/date/Y####/W##/data/{siteId} 경로
-		File baseDir = environment.filePaths().getStatisticsRoot().file("search", "date");
-		
-		SiteAttribute siteAttribute = ServiceManager.getInstance().getService(StatisticsService.class).getStatisticsSetting(siteId).getSiteAttribute();
-		List<TypeSetting> typeList = siteAttribute.getTypeList();
+		File baseDir = environment.filePaths().getStatisticsRoot().file(siteId, "date");
 		
 		//월의 최초로 되돌린다.
 		calendar.add(Calendar.MONTH, 1);
@@ -40,7 +37,7 @@ public class MonthlyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchL
 		prevCalendar.add(Calendar.MONTH, -1);
 
 		// calc를 카테고리별로 모두 만든다.
-		Calculator<TypeSearchLog> yearlyTypeHitCalculator = new MonthlyTypeHitCalculator("Monthly type hit calculator", calendar, prevCalendar, baseDir, siteId, categoryIdList, typeList);
+		Calculator<TypeSearchLog> yearlyTypeHitCalculator = new MonthlyTypeHitCalculator("Monthly type hit calculator", calendar, prevCalendar, baseDir, siteId, categoryIdList);
 		addCalculator(yearlyTypeHitCalculator);
 	}
 }

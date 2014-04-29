@@ -52,7 +52,7 @@ public class StatisticsService extends AbstractService {
 
 	public StatisticsService(Environment environment, Settings settings, ServiceManager serviceManager) {
 		super(environment, settings, serviceManager);
-		statisticsHome = environment.filePaths().getStatisticsRoot().file("search");
+		statisticsHome = environment.filePaths().getStatisticsRoot().file();
 		if (!statisticsHome.exists()) {
 			statisticsHome.mkdir();
 		}
@@ -91,7 +91,11 @@ public class StatisticsService extends AbstractService {
 				for(CategorySetting c : categoryList) {
 					categoryIdList.add(c.getId());
 				}
-				SiteSearchLogStatisticsModule module = new SiteSearchLogStatisticsModule(this, statisticsHome, siteId, categoryIdList, environment, settings);
+				File siteFileHome = new File(statisticsHome, siteId);
+				if(!siteFileHome.exists()){
+					siteFileHome.mkdir();
+				}
+				SiteSearchLogStatisticsModule module = new SiteSearchLogStatisticsModule(this, siteFileHome, siteId, categoryIdList, environment, settings);
 				siteStatisticsModuleMap.put(siteId, module);
 				statisticsSettingMap.put(siteId, statisticsSettings);
 			}
@@ -273,7 +277,7 @@ public class StatisticsService extends AbstractService {
 		return true;
 	}
 
-	public void addLog(String type, String siteId, String... entries) {
+	public void addLog(String siteId, String... entries) {
 		// 현재 type은 사용되지 않음.
 		SiteSearchLogStatisticsModule module = siteStatisticsModuleMap.get(siteId);
 		if (module != null) {
@@ -281,7 +285,7 @@ public class StatisticsService extends AbstractService {
 		}
 	}
 	
-	public void addTypeLog(String type, String siteId, String... entries) {
+	public void addTypeLog(String siteId, String... entries) {
 		// 현재 type은 사용되지 않음.
 		SiteSearchLogStatisticsModule module = siteStatisticsModuleMap.get(siteId);
 		if (module != null) {
@@ -403,7 +407,7 @@ public class StatisticsService extends AbstractService {
 		statisticsSettings.setCategoryList(categoryList);
 		
 		//인기키워드
-		PopularKeywordSetting popularKeywordSetting = new PopularKeywordSetting(10,2);
+		PopularKeywordSetting popularKeywordSetting = new PopularKeywordSetting(10, 2, 10000, 100);
 		statisticsSettings.setPopularKeywordSetting(popularKeywordSetting);
 		
 		//연관키워드

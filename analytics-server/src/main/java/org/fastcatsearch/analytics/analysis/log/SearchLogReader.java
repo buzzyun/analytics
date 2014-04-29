@@ -11,11 +11,11 @@ public class SearchLogReader extends FileListLogReader<SearchLog> {
 
 	@Override
 	protected SearchLog makeLog(String[] el) {
-		//logger.debug("log>>> {}, {}", el.length, el);
 		String[] el2 = null;
 		//FIXME:임시코드. 로그호환성을 맞추기 위해 제작한 임시코드.
 		if(el.length < 7) { 
 			el2 = new String[7];
+			logger.error(">>>>>>>>>>>>>>>>> Fixme!!");
 			System.arraycopy(el, 0, el2, 0, el.length); 
 		} else {
 			el2 = el;

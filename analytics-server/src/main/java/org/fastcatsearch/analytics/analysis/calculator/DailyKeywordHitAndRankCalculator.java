@@ -17,6 +17,7 @@ import org.fastcatsearch.analytics.analysis.StatisticsService;
 import org.fastcatsearch.analytics.analysis.StatisticsUtils;
 import org.fastcatsearch.analytics.analysis.config.StatisticsSettings;
 import org.fastcatsearch.analytics.analysis.config.StatisticsSettings.ServiceSetting;
+import org.fastcatsearch.analytics.analysis.config.StatisticsSettings.SiteAttribute;
 import org.fastcatsearch.analytics.analysis.handler.KeyCountLogSortHandler;
 import org.fastcatsearch.analytics.analysis.handler.KeywordRankDiffHandler;
 import org.fastcatsearch.analytics.analysis.handler.PopularKeywordResultHandler;
@@ -35,18 +36,10 @@ import static org.fastcatsearch.analytics.analysis.calculator.KeywordHitAndRankC
 public class DailyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 	
 	private File prevDir;
-	private Set<String> banWords;
-	private int minimumHitCount;
-	private int topCount;
-	private List<ServiceSetting> serviceTypeList;
 	
-	public DailyKeywordHitAndRankCalculator(String name, Calendar calendar, File baseDir, File prevDir, String siteId, List<String> categoryIdList, Set<String> banWords, List<ServiceSetting> serviceTypeList, int minimumHitCount, int topCount) {
+	public DailyKeywordHitAndRankCalculator(String name, Calendar calendar, File baseDir, File prevDir, String siteId, List<String> categoryIdList) {
 		super(name, calendar, baseDir, siteId, categoryIdList);
 		this.prevDir = prevDir;
-		this.banWords = banWords;
-		this.minimumHitCount = minimumHitCount;
-		this.topCount = topCount;
-		this.serviceTypeList = serviceTypeList;
 	}
 	
 	@Override
@@ -73,12 +66,16 @@ public class DailyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		int maxKeywordLength = statisticsSettings.getSiteProperties().getMaxKeywordLength();
 		int runKeySize = StatisticsProperties.runKeySize;
 
-		logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
+		Set<String> banWords = statisticsSettings.getSiteProperties().getBanwordSet();
+		int minimumHitCount = statisticsSettings.getPopularKeywordSetting().getMinimumHitCount();
+		SiteAttribute siteAttribute = statisticsSettings.getSiteAttribute();
+		List<ServiceSetting> serviceTypeList = siteAttribute.getServiceList();
+		
+		logger.debug("Process Dir = {}", workingDir.getAbsolutePath());
 		KeyCountRunEntryParser entryParser = new KeyCountRunEntryParser();
 		CategoryProcess<SearchLog> categoryProcess = new CategoryProcess<SearchLog>(categoryId);
 		SearchLogValidator logValidator = new SearchLogValidator(banWords, maxKeywordLength);
 		
-logger.debug("--------------------------------------------------------------------------------");
 		LogAggregatorContainer<SearchLog> aggregator = new LogAggregatorContainer<SearchLog>();
 		aggregator.addAggregator(new KeyCountLogAggregator<SearchLog>(workingDir, KEY_COUNT_FILENAME, runKeySize, encoding, minimumHitCount, entryParser));
 		aggregator.addAggregator(new KeyCountEmptyLogAggregator<SearchLog>(workingDir, KEY_COUNT_EMPTY_FILENAME, runKeySize, encoding, minimumHitCount, entryParser));
@@ -108,11 +105,13 @@ logger.debug("------------------------------------------------------------------
 		File compareEmptyRankLogFile = new File(prevWorkingDir, KEY_COUNT_EMPTY_RANK_FILENAME);
 		File popularEmptyKeywordLogFile = new File(workingDir, POPULAR_EMPTY_FILENAME);
 		
+		statisticsSettings.getPopularKeywordSetting().getRootStoreCount();
+		int topCount = 0;
 		//카테고리가 _root이면 10000개, 나머지는 100개씩.
 		if(categoryId.equals("_root")){
-			topCount = 10000;
+			topCount = statisticsSettings.getPopularKeywordSetting().getRootStoreCount();
 		}else{
-			topCount = 100;
+			topCount = statisticsSettings.getPopularKeywordSetting().getCategoryStoreCount();
 		}
 		
 		//키워드별 count 를 바로 저장한다.

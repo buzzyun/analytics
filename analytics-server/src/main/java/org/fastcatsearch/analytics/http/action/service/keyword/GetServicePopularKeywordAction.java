@@ -32,7 +32,6 @@ public class GetServicePopularKeywordAction extends ServiceAction {
 		ResponseWriter responseWriter = getDefaultResponseWriter(response.getWriter());
 		responseWriter.object();
 
-		//String type = request.getParameter("type");
 		String siteId = request.getParameter("siteId");
 		String categoryId = request.getParameter("categoryId");
 		String timeType = request.getParameter("timeType");
@@ -67,11 +66,11 @@ public class GetServicePopularKeywordAction extends ServiceAction {
 				//파일기반에서 덤프 하도록 한다.
 				//ln 이 0 인 경우 모조리 덤프 한다.
 				
-				File baseDir = environment.filePaths().getStatisticsRoot().file("search", "date");
+				File baseDir = environment.filePaths().getStatisticsRoot().file(siteId, "date");
 				
 				Calendar dailyCalendar = (Calendar) calendar.clone();
 				File timeDir = StatisticsUtils.getDayDataDir(baseDir, dailyCalendar);
-				File file = new File(new File(new File(timeDir, siteId), categoryId),POPULAR_FILENAME);
+				File file = new File(new File(new File(timeDir, siteId), categoryId), POPULAR_FILENAME);
 				BufferedReader reader = null;
 				
 				try {

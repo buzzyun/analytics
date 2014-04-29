@@ -8,10 +8,13 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.fastcatsearch.analytics.analysis.NullLogHandler;
 import org.fastcatsearch.analytics.analysis.StatisticsProperties;
+import org.fastcatsearch.analytics.analysis.StatisticsService;
 import org.fastcatsearch.analytics.analysis.StatisticsUtils;
+import org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CTRSetting;
 import org.fastcatsearch.analytics.analysis.handler.MergeKeyCountProcessHandler;
 import org.fastcatsearch.analytics.analysis.log.ClickLog;
 import org.fastcatsearch.analytics.analysis.log.KeyCountRunEntryParser;
+import org.fastcatsearch.analytics.service.ServiceManager;
 
 import static org.fastcatsearch.analytics.analysis.calculator.KeywordHitAndRankConstants.*;
 
@@ -21,13 +24,8 @@ import static org.fastcatsearch.analytics.analysis.calculator.KeywordHitAndRankC
  * */
 public class NDaysClickKeywordHitCalculator extends Calculator<ClickLog> {
 	
-	private int nDays;
-	private String targetFilePath;
-	
-	public NDaysClickKeywordHitCalculator(String name, Calendar calendar, File baseDir, String siteId, List<String> categoryIdList, int nDays, String targetFilePath) {
+	public NDaysClickKeywordHitCalculator(String name, Calendar calendar, File baseDir, String siteId, List<String> categoryIdList) {
 		super(name, calendar, baseDir, siteId, categoryIdList);
-		this.nDays = nDays;
-		this.targetFilePath = targetFilePath;
 	}
 	
 	@Override
@@ -35,13 +33,22 @@ public class NDaysClickKeywordHitCalculator extends Calculator<ClickLog> {
 		
 		CategoryProcess<ClickLog> categoryProcess = new CategoryProcess<ClickLog>(categoryId);
 		
+		CTRSetting ctrSetting = ServiceManager.getInstance().getService(StatisticsService.class).getStatisticsSetting(siteId).getCtrSetting();
+		Integer nDays = ctrSetting.getDumpFileDaySize();
+		String targetFilePath = ctrSetting.getTargetFilePath();
+		logger.trace("targetFilePath:{}", targetFilePath);
+		
+		if(nDays == null || nDays <= 0){
+			return categoryProcess;
+		}
+		
 		new NullLogHandler<ClickLog>(categoryId).attachLogHandlerTo(categoryProcess);
 			
 		if(categoryId.equals("_root")) {
 		
 			String encoding = StatisticsProperties.encoding;
 			
-			File workingDir = new File(StatisticsUtils.getDayDataDir(baseDir, calendar), siteId);
+			File workingDir = StatisticsUtils.getDayDataDir(baseDir, calendar);
 			
 			if(!workingDir.exists()) {
 				try {
@@ -69,18 +76,19 @@ public class NDaysClickKeywordHitCalculator extends Calculator<ClickLog> {
 			File file = new File(workingDir, CLICK_TARGET_FILENAME);
 			MergeKeyCountProcessHandler mergeProcessHandler = new MergeKeyCountProcessHandler(clickLogFiles, workingDir, CLICK_TARGET_FILENAME, encoding, clickTypeParser);
 			
-			logger.trace("targetFilePath:{}", targetFilePath);
-			
-			if(targetFilePath!=null && !"".equals(targetFilePath)) {
+			if(targetFilePath != null && targetFilePath.length() > 0) {
+				logger.trace("targetFilePath:{}", targetFilePath);
 				
-				try {
-					logger.trace("click log copy {} -> {}", file.getAbsolutePath(), targetFilePath);
-					FileUtils.copyFile(file, new File(targetFilePath));
-				} catch (IOException e) {
-					logger.error("", e);
-				};
+				if(targetFilePath!=null && !"".equals(targetFilePath)) {
+					
+					try {
+						logger.trace("click log copy {} -> {}", file.getAbsolutePath(), targetFilePath);
+						FileUtils.copyFile(file, new File(targetFilePath));
+					} catch (IOException e) {
+						logger.error("", e);
+					};
+				}
 			}
-			
 			//가중값배열.
 			float[] weightList = mergeProcessHandler.weightList();
 			for(int inx=0;inx<weightList.length;inx++) {

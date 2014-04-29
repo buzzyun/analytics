@@ -1,6 +1,5 @@
 package org.fastcatsearch.analytics.analysis.log;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -10,33 +9,31 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class DatabaseLogReader<LogType extends LogData, MapperType extends AnalyticsMapper, DataType> implements SourceLogReader<LogType> {
-	
+
 	protected static final Logger logger = LoggerFactory.getLogger(DatabaseLogReader.class);
-	
-	MapperSession<MapperType> mapperSession;
-	
-	private File[] files;
-	
-	List<DataType> list = null;
-	
-	int currentInx;
-	
+
+	private MapperSession<MapperType> mapperSession;
+
+	private List<DataType> list;
+
+	private int currentInx;
+
 	public DatabaseLogReader(MapperSession<MapperType> mapperSession) throws IOException {
 		this.mapperSession = mapperSession;
 	}
-	
+
 	@Override
 	public LogType readLog() {
 		try {
-			
-			if(list == null) {
+
+			if (list == null) {
 				list = prepareLog(mapperSession.getMapper());
 			}
-			
-			for (; currentInx < list.size();) {
-				
+
+			while (currentInx < list.size()) {
+
 				DataType data = list.get(currentInx++);
-				
+
 				return makeLog(data);
 			}
 		} catch (Exception e) {
@@ -44,20 +41,22 @@ public abstract class DatabaseLogReader<LogType extends LogData, MapperType exte
 		}
 		return null;
 	}
-	
+
 	protected abstract List<DataType> prepareLog(MapperType mapper);
-	
+
 	protected abstract LogType makeLog(DataType data);
 
 	@Override
-	public void close() { 
-		if(mapperSession!=null) try {
-			mapperSession.closeSession();
-		} catch (Exception ignore) { }
+	public void close() {
+		if (mapperSession != null)
+			try {
+				mapperSession.closeSession();
+			} catch (Exception ignore) {
+			}
 	}
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + " / " + files;
+		return getClass().getSimpleName();
 	}
 }

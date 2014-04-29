@@ -24,7 +24,7 @@ public class YearlySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 	@Override
 	protected void prepare(Calendar calendar) {
 		// baseDir : statistics/search/date/Y####/data/{siteId} 경로
-		File baseDir = environment.filePaths().getStatisticsRoot().file("search", "date");
+		File baseDir = environment.filePaths().getStatisticsRoot().file(siteId, "date");
 		
 		//해당년도의 마지막 일자로 되돌린다.
 		calendar.set(Calendar.MONTH, 0);
@@ -33,10 +33,9 @@ public class YearlySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 		calendar.add(Calendar.YEAR, 1);
 		Calendar prevCalendar = (Calendar) calendar.clone();
 		prevCalendar.add(Calendar.YEAR, -1);
-		int topCount = 10;
 		
 		// calc를 카테고리별로 모두 만든다.
-		Calculator<SearchLog> popularKeywordCalculator = new YearlyKeywordHitAndRankCalculator("Yearly popular keyword calculator", calendar, prevCalendar, baseDir, siteId, categoryIdList, topCount);
+		Calculator<SearchLog> popularKeywordCalculator = new YearlyKeywordHitAndRankCalculator("Yearly popular keyword calculator", calendar, prevCalendar, baseDir, siteId, categoryIdList);
 		addCalculator(popularKeywordCalculator);
 	}
 }

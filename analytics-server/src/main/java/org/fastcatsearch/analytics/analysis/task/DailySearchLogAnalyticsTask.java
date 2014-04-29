@@ -39,20 +39,13 @@ public class DailySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 
 	@Override
 	protected void prepare(Calendar calendar) {
-		StatisticsSettings statisticsSettings = ServiceManager.getInstance().getService(StatisticsService.class).getStatisticsSetting(siteId);
-		Set<String> banWords = statisticsSettings.getSiteProperties().getBanwordSet();
-		SiteAttribute siteAttribute = statisticsSettings.getSiteAttribute();
-		List<ServiceSetting> serviceTypeList = siteAttribute.getServiceList();
-		
 		// baseDir : statistics/search/date/Y####/M##/D##/data/{siteId} 경로
-		File dir = environment.filePaths().getStatisticsRoot().file("search", "date");
+		File dir = environment.filePaths().getStatisticsRoot().file(siteId, "date");
 		
 		Calendar prevCalendar = (Calendar) calendar.clone();
 		prevCalendar.add(Calendar.DAY_OF_MONTH, -1);
-		File baseDir = new File(StatisticsUtils.getDayDataDir(dir, calendar), siteId);
-		File prevDir = new File(StatisticsUtils.getDayDataDir(dir, prevCalendar), siteId);
-		int minimumHitCount = 1;
-		int topCount = 10;
+		File baseDir = StatisticsUtils.getDayDataDir(dir, calendar);
+		File prevDir = StatisticsUtils.getDayDataDir(dir, prevCalendar);
 
 		File logFile = new File(baseDir, RAW_LOG_FILENAME);
 		try {
@@ -62,7 +55,7 @@ public class DailySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 		}
 
 		// calc를 카테고리별로 모두 만든다.
-		Calculator<SearchLog> popularKeywordCalculator = new DailyKeywordHitAndRankCalculator("Daily popular keyword calculator", calendar, baseDir, prevDir, siteId, categoryIdList, banWords, serviceTypeList, minimumHitCount, topCount);
+		Calculator<SearchLog> popularKeywordCalculator = new DailyKeywordHitAndRankCalculator("Daily popular keyword calculator", calendar, baseDir, prevDir, siteId, categoryIdList);
 		addCalculator(popularKeywordCalculator);
 		
 	}

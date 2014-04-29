@@ -8,7 +8,9 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.fastcatsearch.analytics.analysis.NullLogHandler;
 import org.fastcatsearch.analytics.analysis.StatisticsProperties;
+import org.fastcatsearch.analytics.analysis.StatisticsService;
 import org.fastcatsearch.analytics.analysis.StatisticsUtils;
+import org.fastcatsearch.analytics.analysis.config.StatisticsSettings;
 import org.fastcatsearch.analytics.analysis.handler.KeyCountLogSortHandler;
 import org.fastcatsearch.analytics.analysis.handler.KeyCountProcessHandler;
 import org.fastcatsearch.analytics.analysis.handler.KeywordRankDiffHandler;
@@ -21,18 +23,17 @@ import org.fastcatsearch.analytics.analysis.handler.UpdatePopularKeywordHandler;
 import org.fastcatsearch.analytics.analysis.handler.UpdateSearchHitHandler;
 import org.fastcatsearch.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatsearch.analytics.analysis.log.SearchLog;
+import org.fastcatsearch.analytics.service.ServiceManager;
 
 import static org.fastcatsearch.analytics.analysis.calculator.KeywordHitAndRankConstants.*;
 
 public class WeeklyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 
 	private Calendar prevCalendar;
-	private int topCount;
 	
-	public WeeklyKeywordHitAndRankCalculator(String name, Calendar calendar, Calendar prevCalendar, File baseDir, String siteId, List<String> categoryIdList, int topCount) {
+	public WeeklyKeywordHitAndRankCalculator(String name, Calendar calendar, Calendar prevCalendar, File baseDir, String siteId, List<String> categoryIdList) {
 		super(name, calendar, baseDir, siteId, categoryIdList);
 		this.prevCalendar = prevCalendar;
-		this.topCount = topCount;
 	}
 	
 	@Override
@@ -77,7 +78,7 @@ public class WeeklyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		CategoryProcess<SearchLog> categoryProcess = new CategoryProcess<SearchLog>(categoryId);
 		KeyCountRunEntryParser entryParser = new KeyCountRunEntryParser();
 		
-		logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
+		logger.debug("Process Dir = {}", workingDir.getAbsolutePath());
 		
 		new NullLogHandler<SearchLog>(categoryId).attachLogHandlerTo(categoryProcess);
 		
@@ -107,11 +108,14 @@ public class WeeklyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		File compareEmptyRankLogFile = new File(prevWorkingDir, KEY_COUNT_EMPTY_RANK_FILENAME);
 		File popularEmptyKeywordLogFile = new File(workingDir, POPULAR_EMPTY_FILENAME);
 		
+		StatisticsSettings statisticsSettings = ServiceManager.getInstance().getService(StatisticsService.class).getStatisticsSetting(siteId);
+		statisticsSettings.getPopularKeywordSetting().getRootStoreCount();
+		int topCount = 0;
 		//카테고리가 _root이면 10000개, 나머지는 100개씩.
 		if(categoryId.equals("_root")){
-			topCount = 10000;
+			topCount = statisticsSettings.getPopularKeywordSetting().getRootStoreCount();
 		}else{
-			topCount = 100;
+			topCount = statisticsSettings.getPopularKeywordSetting().getCategoryStoreCount();
 		}
 		
 		//키워드별 count 를 바로 저장한다.

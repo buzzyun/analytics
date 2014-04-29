@@ -29,8 +29,6 @@ import static org.fastcatsearch.analytics.analysis.calculator.KeywordHitAndRankC
  * */
 public class MonthlyClickKeywordHitCalculator extends Calculator<ClickLog> {
 	
-	private int topCount;
-	
 	public MonthlyClickKeywordHitCalculator(String name, Calendar calendar, File baseDir, String siteId, List<String> categoryIdList) {
 		super(name, calendar, baseDir, siteId, categoryIdList);
 	}
@@ -48,7 +46,7 @@ public class MonthlyClickKeywordHitCalculator extends Calculator<ClickLog> {
 		
 			String encoding = StatisticsProperties.encoding;
 			
-			File workingDir = new File(StatisticsUtils.getDayDataDir(baseDir, calendar), siteId);
+			File workingDir = StatisticsUtils.getDayDataDir(baseDir, calendar);
 			
 			if(!workingDir.exists()) {
 				try {
@@ -67,13 +65,13 @@ public class MonthlyClickKeywordHitCalculator extends Calculator<ClickLog> {
 			Calendar dailyCalendar = (Calendar) calendar.clone();
 			for (int inx = 0; inx < diff; inx++) {
 				File timeDir = StatisticsUtils.getDayDataDir(baseDir, dailyCalendar);
-				clickLogFiles[inx] = new File(new File(timeDir, siteId), CLICK_RAW_FILENAME);
+				clickLogFiles[inx] = new File(timeDir, CLICK_RAW_FILENAME);
 				dailyCalendar.add(Calendar.DAY_OF_MONTH, -1);
 			}
 			
 			//1달치의 일자별 click-row log들을 머징한다.
 			
-			logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
+			logger.debug("Process Dir = {}", workingDir.getAbsolutePath());
 			File file = new File(workingDir, RUN_CLICK_TYPE_FILENAME);
 			
 			/*

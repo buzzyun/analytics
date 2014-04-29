@@ -13,7 +13,7 @@ import org.fastcatsearch.analytics.analysis.StatisticsProperties;
 import org.fastcatsearch.analytics.analysis.StatisticsService;
 import org.fastcatsearch.analytics.analysis.StatisticsUtils;
 import org.fastcatsearch.analytics.analysis.calculator.Calculator;
-import org.fastcatsearch.analytics.analysis.calculator.HourlyKeywordHitAndRankCalculator;
+import org.fastcatsearch.analytics.analysis.calculator.HourlyKeywordHitCalculator;
 import org.fastcatsearch.analytics.analysis.config.StatisticsSettings;
 import org.fastcatsearch.analytics.analysis.log.SearchLog;
 import org.fastcatsearch.analytics.analysis.log.SearchLogReader;
@@ -38,13 +38,10 @@ public class HourlySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 	@Override
 	protected void prepare(Calendar calendar) {
 		// baseDir : statistics/search/date/Y####/M##/D##/data/{siteId} 경로
-		File dir = environment.filePaths().getStatisticsRoot().file("search", "date");
+		File dir = environment.filePaths().getStatisticsRoot().file(siteId, "date");
 		
-		File baseDir = new File(StatisticsUtils.getDayDataDir(dir, calendar), siteId);
+		File baseDir = StatisticsUtils.getDayDataDir(dir, calendar);
 		
-		StatisticsSettings statisticsSettings = ServiceManager.getInstance().getService(StatisticsService.class).getStatisticsSetting(siteId);
-		Set<String> banWords = statisticsSettings.getSiteProperties().getBanwordSet();
-
 		//당일치 로그만 이용한다.
 		File logFile = new File(baseDir, RAW_LOG_FILENAME);
 		try {
@@ -55,7 +52,7 @@ public class HourlySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 		}
 
 		// calc를 카테고리별로 모두 만든다.
-		Calculator<SearchLog> popularKeywordCalculator = new HourlyKeywordHitAndRankCalculator("Hourly popular keyword calculator", calendar, baseDir, siteId, categoryIdList, banWords);
+		Calculator<SearchLog> popularKeywordCalculator = new HourlyKeywordHitCalculator("Hourly popular keyword calculator", calendar, baseDir, siteId, categoryIdList);
 		addCalculator(popularKeywordCalculator);
 		
 	}

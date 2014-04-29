@@ -37,15 +37,11 @@ public class DailyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchLog
 	@Override
 	protected void prepare(Calendar calendar) {
 		// baseDir : statistics/search/date/Y####/M##/D##/data/{siteId} 경로
-		File dir = environment.filePaths().getStatisticsRoot().file("search", "date");
+		File dir = environment.filePaths().getStatisticsRoot().file(siteId, "date");
 		
-		SiteAttribute siteAttribute = ServiceManager.getInstance().getService(StatisticsService.class).getStatisticsSetting(siteId).getSiteAttribute();
-		List<TypeSetting> typeList = siteAttribute.getTypeList();
-		
-		logger.debug("@@@@typeList > {} {}", "", typeList);
 		Calendar prevCalendar = (Calendar) calendar.clone();
 		prevCalendar.add(Calendar.DAY_OF_MONTH, -1);
-		File baseDir = new File(StatisticsUtils.getDayDataDir(dir, calendar), siteId);
+		File baseDir = StatisticsUtils.getDayDataDir(dir, calendar);
 
 		File logFile = new File(baseDir, TYPE_RAW_FILENAME);
 		try {
@@ -57,7 +53,7 @@ public class DailyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchLog
 		}
 
 		// calc를 카테고리별로 모두 만든다.
-		Calculator<TypeSearchLog> dailyTypeHitCalculator = new DailyTypeHitCalculator("Daily type hit calculator", calendar, baseDir, siteId, categoryIdList, typeList);
+		Calculator<TypeSearchLog> dailyTypeHitCalculator = new DailyTypeHitCalculator("Daily type hit calculator", calendar, baseDir, siteId, categoryIdList);
 		addCalculator(dailyTypeHitCalculator);
 		
 	}

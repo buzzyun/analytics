@@ -9,7 +9,9 @@ import org.apache.commons.io.FileUtils;
 import org.fastcatsearch.analytics.analysis.EntryParser;
 import org.fastcatsearch.analytics.analysis.NullLogHandler;
 import org.fastcatsearch.analytics.analysis.StatisticsProperties;
+import org.fastcatsearch.analytics.analysis.StatisticsService;
 import org.fastcatsearch.analytics.analysis.StatisticsUtils;
+import org.fastcatsearch.analytics.analysis.config.StatisticsSettings;
 import org.fastcatsearch.analytics.analysis.handler.KeyCountLogSortHandler;
 import org.fastcatsearch.analytics.analysis.handler.KeyCountProcessHandler;
 import org.fastcatsearch.analytics.analysis.handler.KeywordRankDiffHandler;
@@ -24,18 +26,17 @@ import org.fastcatsearch.analytics.analysis.handler.UpdateServiceTypeHitHandler;
 import org.fastcatsearch.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatsearch.analytics.analysis.log.SearchLog;
 import org.fastcatsearch.analytics.analysis.util.KeyCountRunEntry;
+import org.fastcatsearch.analytics.service.ServiceManager;
 
 import static org.fastcatsearch.analytics.analysis.calculator.KeywordHitAndRankConstants.*;
 
 public class MonthlyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 	
 	private Calendar prevCalendar;
-	private int topCount;
 	
-	public MonthlyKeywordHitAndRankCalculator(String name, Calendar calendar, Calendar prevCalendar, File baseDir, String siteId, List<String> categoryIdList, int topCount) {
+	public MonthlyKeywordHitAndRankCalculator(String name, Calendar calendar, Calendar prevCalendar, File baseDir, String siteId, List<String> categoryIdList) {
 		super(name, calendar, baseDir, siteId, categoryIdList);
 		this.prevCalendar = prevCalendar;
-		this.topCount = topCount;
 	}
 	
 	@Override
@@ -67,11 +68,11 @@ public class MonthlyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		File[] keyEmptyFiles = new File[diff];
 		File[] serviceCountFiles = new File[diff];
 		Calendar dailyCalendar = (Calendar) calendar.clone();
-		for(int inx=0;inx < diff; inx++) {
+		for (int inx = 0; inx < diff; inx++) {
 			File timeDir = StatisticsUtils.getDayDataDir(baseDir, dailyCalendar);
-			keyCountFiles[inx] = new File(new File(new File( timeDir, siteId), categoryId), KEY_COUNT_FILENAME);
-			keyEmptyFiles[inx] = new File(new File(new File( timeDir, siteId), categoryId), KEY_COUNT_EMPTY_FILENAME);
-			serviceCountFiles[inx] = new File(new File(new File( timeDir, siteId), categoryId), SERVICE_COUNT_FILENAME);
+			keyCountFiles[inx] = new File(new File(timeDir, categoryId), KEY_COUNT_FILENAME);
+			keyEmptyFiles[inx] = new File(new File(timeDir, categoryId), KEY_COUNT_EMPTY_FILENAME);
+			serviceCountFiles[inx] = new File(new File(timeDir, categoryId), SERVICE_COUNT_FILENAME);
 			dailyCalendar.add(Calendar.DAY_OF_MONTH, -1);
 		}
 		
@@ -82,7 +83,7 @@ public class MonthlyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		CategoryProcess<SearchLog> categoryProcess = new CategoryProcess<SearchLog>(categoryId);
 		EntryParser<KeyCountRunEntry> entryParser = new KeyCountRunEntryParser();
 		
-		logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
+		logger.debug("Process Dir = {}", workingDir.getAbsolutePath());
 		
 		new NullLogHandler<SearchLog>(categoryId).attachLogHandlerTo(categoryProcess);
 		
@@ -122,11 +123,14 @@ public class MonthlyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		File compareEmptyRankLogFile = new File(prevWorkingDir, KEY_COUNT_EMPTY_RANK_FILENAME);
 		File popularEmptyKeywordLogFile = new File(workingDir, POPULAR_EMPTY_FILENAME);
 		
+		StatisticsSettings statisticsSettings = ServiceManager.getInstance().getService(StatisticsService.class).getStatisticsSetting(siteId);
+		statisticsSettings.getPopularKeywordSetting().getRootStoreCount();
+		int topCount = 0;
 		//카테고리가 _root이면 10000개, 나머지는 100개씩.
 		if(categoryId.equals("_root")){
-			topCount = 10000;
+			topCount = statisticsSettings.getPopularKeywordSetting().getRootStoreCount();
 		}else{
-			topCount = 100;
+			topCount = statisticsSettings.getPopularKeywordSetting().getCategoryStoreCount();
 		}
 		
 		//키워드별 count 를 바로 저장한다.

@@ -24,17 +24,16 @@ public class MonthlySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 	@Override
 	protected void prepare(Calendar calendar) {
 		// baseDir : statistics/search/date/Y####/M##/data/{siteId} 경로
-		File baseDir = environment.filePaths().getStatisticsRoot().file("search", "date");
+		File baseDir = environment.filePaths().getStatisticsRoot().file(siteId, "date");
 		
 		//월의 최초로 되돌린다.
 		calendar.add(Calendar.MONTH, 1);
 		calendar.add(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) * -1);
 		Calendar prevCalendar = (Calendar) calendar.clone();
 		prevCalendar.add(Calendar.MONTH, -1);
-		int topCount = 10;
 		
 		// calc를 카테고리별로 모두 만든다.
-		Calculator<SearchLog> popularKeywordCalculator = new MonthlyKeywordHitAndRankCalculator("Weekly popular keyword calculator", calendar, prevCalendar, baseDir, siteId, categoryIdList, topCount);
+		Calculator<SearchLog> popularKeywordCalculator = new MonthlyKeywordHitAndRankCalculator("Weekly popular keyword calculator", calendar, prevCalendar, baseDir, siteId, categoryIdList);
 		addCalculator(popularKeywordCalculator);
 	}
 }

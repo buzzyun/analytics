@@ -25,8 +25,6 @@ import static org.fastcatsearch.analytics.analysis.calculator.KeywordHitAndRankC
  * */
 public class DailyClickKeywordHitCalculator extends Calculator<ClickLog> {
 	
-	private int topCount;
-	
 	public DailyClickKeywordHitCalculator(String name, Calendar calendar, File baseDir, String siteId, List<String> categoryIdList) {
 		super(name, calendar, baseDir, siteId, categoryIdList);
 	}
@@ -43,7 +41,7 @@ public class DailyClickKeywordHitCalculator extends Calculator<ClickLog> {
 			
 		if(categoryId.equals("_root")) {
 			String encoding = StatisticsProperties.encoding;
-			File workingDir = new File(StatisticsUtils.getDayDataDir(baseDir, calendar), siteId);
+			File workingDir = StatisticsUtils.getDayDataDir(baseDir, calendar);
 			
 			if(!workingDir.exists()) {
 				try {
@@ -55,11 +53,9 @@ public class DailyClickKeywordHitCalculator extends Calculator<ClickLog> {
 			
 			//
 			//현재날자 클릭로그 
-			File[] clickLogFiles = new File[] { new File(
-				new File(StatisticsUtils.getDayDataDir(baseDir,
-					calendar), siteId), CLICK_RAW_FILENAME) };
+			File[] clickLogFiles = new File[] { new File(StatisticsUtils.getDayDataDir(baseDir, calendar), CLICK_RAW_FILENAME) };
 			
-			logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
+			logger.debug("Process Dir = {}", workingDir.getAbsolutePath());
 			
 			/*
 			 * 키워드별 type별 클릭대상별 클릭수.

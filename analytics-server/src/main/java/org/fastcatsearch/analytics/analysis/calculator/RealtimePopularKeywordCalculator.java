@@ -12,6 +12,8 @@ import java.util.Set;
 
 import org.fastcatsearch.analytics.analysis.SearchLogValidator;
 import org.fastcatsearch.analytics.analysis.StatisticsProperties;
+import org.fastcatsearch.analytics.analysis.StatisticsService;
+import org.fastcatsearch.analytics.analysis.config.StatisticsSettings;
 import org.fastcatsearch.analytics.analysis.handler.CheckFileEmptyHandler;
 import org.fastcatsearch.analytics.analysis.handler.KeyCountLogSortHandler;
 import org.fastcatsearch.analytics.analysis.handler.KeywordRankDiffHandler;
@@ -23,6 +25,7 @@ import org.fastcatsearch.analytics.analysis.handler.RealtimeSearchLogKeyCountHan
 import org.fastcatsearch.analytics.analysis.handler.UpdateRealtimePopularKeywordHandler;
 import org.fastcatsearch.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatsearch.analytics.analysis.log.SearchLog;
+import org.fastcatsearch.analytics.service.ServiceManager;
 
 /**
  * 실시간 인기검색어 계산기.
@@ -30,20 +33,8 @@ import org.fastcatsearch.analytics.analysis.log.SearchLog;
  * */
 public class RealtimePopularKeywordCalculator extends Calculator<SearchLog> {
 	
-	private Set<String> banWords;
-	private int minimumHitCount;
-	private int topCount;
-	private int maxKeywordLength;
-	private int realtimeSearchLogLimit;
-	 
-	public RealtimePopularKeywordCalculator(String name, Calendar calendar, File baseDir, String siteId, List<String> categoryIdList, Set<String> banWords, int minimumHitCount, int topCount
-			, int maxKeywordLength, int realtimeSearchLogLimit) {
+	public RealtimePopularKeywordCalculator(String name, Calendar calendar, File baseDir, String siteId, List<String> categoryIdList) {
 		super(name, calendar, baseDir, siteId, categoryIdList);
-		this.banWords = banWords;
-		this.minimumHitCount = minimumHitCount;
-		this.topCount = topCount;
-		this.maxKeywordLength = maxKeywordLength;
-		this.realtimeSearchLogLimit = realtimeSearchLogLimit;
 	}
 	
 	@Override
@@ -52,10 +43,15 @@ public class RealtimePopularKeywordCalculator extends Calculator<SearchLog> {
 		File workingDir = new File(baseDir, categoryId);
 		int runKeySize = StatisticsProperties.runKeySize;
 
+		StatisticsSettings statisticsSettings = ServiceManager.getInstance().getService(StatisticsService.class).getStatisticsSetting(siteId);
+		Set<String> banWords = statisticsSettings.getSiteProperties().getBanwordSet();
+		int maxKeywordLength = statisticsSettings.getSiteProperties().getMaxKeywordLength();
+		int realtimeSearchLogLimit = statisticsSettings.getRealtimePopularKeywordSetting().getRecentCount();
+		int minimumHitCount = statisticsSettings.getRealtimePopularKeywordSetting().getMinimumHitCount();
+		int topCount = statisticsSettings.getRealtimePopularKeywordSetting().getTopCount();
+		
 		File storeDir = new File(workingDir, "store");
 		String tmpLogFilename = "0.log";
-//		int maxKeywordLength = StatisticsUtils.maxKeywordLength;
-//		int realtimeSearchLogLimit = StatisticsUtils.realtimeSearchLogLimit;
 		
 		logger.debug("Process Dir = {}, topCount = {}", workingDir.getAbsolutePath(), topCount);
 		KeyCountRunEntryParser entryParser = new KeyCountRunEntryParser();

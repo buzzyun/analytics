@@ -9,6 +9,8 @@
     <popular-keyword>
         <minimumHitCount>2</minimumHitCount>
         <topCount>10</topCount>
+        <rootStoreCount>10000</rootStoreCount>
+        <categoryStoreCount>100</categoryStoreCount>
     </popular-keyword>
     <realtime-popular-keyword>
         <minimumHitCount>1</minimumHitCount>

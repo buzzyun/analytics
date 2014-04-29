@@ -29,7 +29,30 @@ $(document).ready(function(){
 		}, timeViewType:"D"
 	};
 	$("input[name=date]").pickmeup(pickmeupOptions);
+	
+	
+	$("#runForm").on("submit", function(e){
+		var count = $(this).find("input[type=checkbox]:checked").length;
+		console.log(count);
+		if(count > 0) {
+			
+		}
+		e.preventDefault();
+	});
 });
+
+function selectAll() {
+	$.each($("#select_table input[type=checkbox]"), function(i, obj){
+		$(obj).attr("checked", true);
+		console.log($(obj), $(obj).attr("checked"));
+	});
+}
+function deselectAll() {
+	$.each($("#select_table input[type=checkbox]"), function(i, obj){
+		$(obj).removeAttr("checked");
+		console.log($(obj), $(obj).attr("checked"));
+	});
+}
 </script>
 </head>
 <body>
@@ -71,49 +94,89 @@ $(document).ready(function(){
 					<!-- .row-bg -->
 					
 						
-				<div class="col-md-12">
-					<div class="widget">
-						<div class="widget-header">
-							<h4>Search Statistics</h4>
-						</div>
-						<div class="widget-content no-padding">
-							<form class="form-inline" method="post" >
-								<input type="hidden" name="taskType" value="searchStatictics" />
-								<input class="form-control fcol1-2 " size="16" type="text" name="date" autocomplete="off" value="<%=date %>" >
-								<input type="submit" class="btn btn-primary" value="Run">
-							</form>
+					<div class="col-md-12">
+						<div class="widget">
+							<div class="widget-content">
+								<form method="post" id="runForm">
+									<div>
+										<table class="table table-hover table-checkable table-bordered table-vertical-align-middle">
+											<thead>
+											<tr>
+												<th rowspan="2">Operation</th><th class="checkbox-column" colspan="5"><input type="checkbox" checked="checked"> Check All</th>
+											</tr>
+											<tr>
+												<th class="fcol1-2">Hour</th>
+												<th class="fcol1-2">Day</th>
+												<th class="fcol1-2">Week</th>
+												<th class="fcol1-2">Month</th>
+												<th class="fcol1-2">Year</th>
+											</tr>
+											</thead>
+											<tbody>
+											<tr>
+												<td>Search Progress</td>
+												<td class="checkbox-column"><input type="checkbox" checked="checked" name=""></td>
+												<td></td>
+												<td></td>
+												<td></td>
+												<td></td>
+											</tr>
+											<tr>
+												<td>Search Progress &amp; Keyword Rank</td>
+												<td></td>
+												<td class="checkbox-column"><input type="checkbox" checked="checked"></td>
+												<td class="checkbox-column"><input type="checkbox" checked="checked"></td>
+												<td class="checkbox-column"><input type="checkbox" checked="checked"></td>
+												<td class="checkbox-column"><input type="checkbox" checked="checked"></td>
+											</tr>
+											<tr>
+												<td>Search Type Rate</td>
+												<td></td>
+												<td class="checkbox-column"><input type="checkbox" checked="checked"></td>
+												<td class="checkbox-column"><input type="checkbox" checked="checked"></td>
+												<td class="checkbox-column"><input type="checkbox" checked="checked"></td>
+												<td class="checkbox-column"><input type="checkbox" checked="checked"></td>
+											</tr>
+											<tr>
+												<td>Relate Keyword</td>
+												<td></td>
+												<td class="checkbox-column"><input type="checkbox" checked="checked"></td>
+												<td></td>
+												<td></td>
+												<td></td>
+											</tr>
+											<tr>
+												<td>Click-through Rate</td>
+												<td></td>
+												<td class="checkbox-column"><input type="checkbox" checked="checked"></td>
+												<td></td>
+												<td class="checkbox-column"><input type="checkbox" checked="checked"></td>
+												<td></td>
+											</tr>
+											<tr>
+												<td>Click-through Rate File</td>
+												<td></td>
+												<td class="checkbox-column"><input type="checkbox" checked="checked"></td>
+												<td></td>
+												<td></td>
+												<td></td>
+											</tr>
+											</tbody>
+										</table>
+										
+										
+									</div>
+									<div class="form-inline">
+										<!-- <input type="hidden" name="taskType" value="searchStatictics" /> -->
+										<input class="form-control fcol1-2 " size="16" type="text" name="date" autocomplete="off" value="<%=date %>" >
+										<input type="submit" class="btn btn-primary" value="Run">
+									</div>
+								</form>
+							</div>
 						</div>
 					</div>
-				</div>
 				
-				<%-- <div class="col-md-12">
-					<div class="widget">
-						<div class="widget-header">
-							<h4>Relate Keyword</h4>
-						</div>
-						<div class="widget-content no-padding">
-							<form class="form-inline" method="post" >
-								<input type="hidden" name="taskType" value="relateKeyword" />
-								<input class="form-control fcol1-2 " size="16" type="text" name="date" autocomplete="off" value="<%=date %>" >
-								<input type="submit" class="btn btn-primary" value="Run">
-							</form>
-						</div>
-					</div>
-				</div>
-				
-				<div class="col-md-12">
-					<div class="widget">
-						<div class="widget-header">
-							<h4>Realtime Popular Keyword</h4>
-						</div>
-						<div class="widget-content no-padding">
-							<form class="form-inline" method="post" >
-								<input type="hidden" name="taskType" value="realtimeKeyword" />
-								<input type="submit" class="btn btn-primary" value="Run">
-							</form>
-						</div>
-					</div>
-				</div> --%>
+				</div> 
 			</div>
 		</div>
 	</div>

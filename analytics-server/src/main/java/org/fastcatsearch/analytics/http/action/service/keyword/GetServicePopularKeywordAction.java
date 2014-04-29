@@ -36,9 +36,8 @@ public class GetServicePopularKeywordAction extends ServiceAction {
 		String categoryId = request.getParameter("categoryId");
 		String timeType = request.getParameter("timeType");
 		String timeId = request.getParameter("timeId");
-		//String date = request.getParameter("date");
-		int sn = request.getIntParameter("sn",1);
-		int ln = request.getIntParameter("ln",0);
+		int sn = request.getIntParameter("sn", 1);
+		int ln = request.getIntParameter("ln", 0);
 		int interval = request.getIntParameter("interval", 1);
 		String errorMessage = null;
 
@@ -67,6 +66,7 @@ public class GetServicePopularKeywordAction extends ServiceAction {
 				//ln 이 0 인 경우 모조리 덤프 한다.
 				
 				File baseDir = environment.filePaths().getStatisticsRoot().file(siteId, "date");
+				calendar = StatisticsUtils.parseTimeId(timeId);
 				
 				Calendar dailyCalendar = (Calendar) calendar.clone();
 				File timeDir = StatisticsUtils.getDayDataDir(baseDir, dailyCalendar);
@@ -82,7 +82,7 @@ public class GetServicePopularKeywordAction extends ServiceAction {
 						String [] data = rline.split("\t");
 						if(rank >= sn)  {
 							RankKeyword vo = new RankKeyword(data[0].trim(), rank, Integer.parseInt(data[3].trim()));
-							vo.setRankDiffType(RankDiffType.valueOf(data[1]));
+							vo.setRankDiffType(RankDiffType.valueOf(data[1].trim()));
 							vo.setRankDiff(Integer.parseInt(data[2].trim()));
 							vo.setCountDiff(Integer.parseInt(data[4].trim()));
 							list.add(vo);

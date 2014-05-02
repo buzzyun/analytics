@@ -26,7 +26,7 @@ public class RealtimeSearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 	private RollingRawLogger realtimeRawLogger;
 
 	public RealtimeSearchLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority, RollingRawLogger realtimeRawLogger) {
-		super(siteId, categoryIdList, schedule, priority);
+		super("REALTIME_SP", "RealtimeSearchLogAnalyticsTask", siteId, categoryIdList, schedule, priority);
 		this.realtimeRawLogger = realtimeRawLogger;
 	}
 

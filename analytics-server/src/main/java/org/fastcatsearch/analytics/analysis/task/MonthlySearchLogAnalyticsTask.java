@@ -18,7 +18,7 @@ public class MonthlySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 	private static final long serialVersionUID = 4212969890908932929L;
 
 	public MonthlySearchLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
-		super(siteId, categoryIdList, schedule, priority);
+		super("MONTHLY_SP", "MonthlySearchLogAnalyticsTask", siteId, categoryIdList, schedule, priority);
 	}
 
 	@Override

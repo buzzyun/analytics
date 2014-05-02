@@ -8,27 +8,27 @@
 	<update id="createTable">
 		create table TaskResult (
 			siteId varchar(30),
-			targetTime timestamp,
+			targetTime varchar(8),
 			taskId varchar(30),
 			startTime timestamp,
 			endTime timestamp,
 			duration varchar(30),
-			scheduled varchar(2),
+			scheduled varchar(10),
 			resultStatus varchar(30),
 			taskName varchar(200),
-			explain varchar(3000),
+			detail varchar(3000),
 			primary key (siteId, targetTime, taskId)
 		) ${option}
 	</update>
 	
 	<update id="createIndex" >
-		create unique index site_time_TaskResult_index on TaskResult(siteId, targetTime)
+		create index site_time_TaskResult_index on TaskResult(siteId, targetTime)
 	</update>
 	
 	
 	<select id="validateTable" parameterType="map" resultType="map">
 		select siteId, targetTime, startTime, endTime, duration, scheduled, resultStatus
-		, taskId, taskName, explain
+		, taskId, taskName, detail
 		from TaskResult 
 		limit 1
 	</select>
@@ -49,22 +49,22 @@
 		where siteId = #{siteId} and targetTime = #{targetTime} and taskId = #{taskId}
 	</select>
 	
-	<insert id="putEntry" parameterType="map">
+	<insert id="putEntry" parameterType="org.fastcatsearch.analytics.db.vo.TaskResultVO">
 		insert into TaskResult ( 
 		siteId, targetTime, startTime, endTime, duration, scheduled, resultStatus
-		, taskId, taskName, explain
+		, taskId, taskName, detail
 		)
 		values (
 		#{siteId}, #{targetTime}, #{startTime}, #{endTime}, #{duration}, #{scheduled}, #{resultStatus}
-		, #{taskId}, #{taskName}, #{explain}
+		, #{taskId}, #{taskName}, #{detail}
 		)
 	</insert>
 	
-	<update id="updateEntry" parameterType="map">
+	<update id="updateEntry" parameterType="org.fastcatsearch.analytics.db.vo.TaskResultVO">
 		update TaskResult 
 		set startTime=#{startTime}, endTime=#{endTime}, duration=#{duration}
-		, scheduled=#{scheduled}, resultStatus=#{resultStatus}, explain=#{explain}
-		where  siteId = #{siteId} and targetTime = #{targetTime} and taskId = #{taskId}
+		, scheduled=#{scheduled}, resultStatus=#{resultStatus}, detail=#{detail}
+		where siteId = #{siteId} and targetTime = #{targetTime} and taskId = #{taskId}
 	</update>
 	
 	<update id="deleteEntry" parameterType="map">

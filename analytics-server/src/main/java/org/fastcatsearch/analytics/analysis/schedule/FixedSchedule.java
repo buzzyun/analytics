@@ -6,7 +6,11 @@ public class FixedSchedule extends Schedule {
 	private int periodInSeconds;
 
 	public FixedSchedule(Calendar startTime, int periodInSeconds, int delayInSeconds) {
-		super(startTime.getTimeInMillis(), delayInSeconds);
+		this(startTime, periodInSeconds, delayInSeconds, true);
+	}
+			
+	public FixedSchedule(Calendar startTime, int periodInSeconds, int delayInSeconds, boolean isScheduled) {
+		super(startTime.getTimeInMillis(), delayInSeconds, isScheduled);
 		this.periodInSeconds = periodInSeconds;
 	}
 

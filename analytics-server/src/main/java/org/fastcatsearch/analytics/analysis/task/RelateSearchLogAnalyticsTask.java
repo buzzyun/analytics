@@ -23,7 +23,7 @@ public class RelateSearchLogAnalyticsTask extends AnalyticsTask<RelateSearchLog>
 	private static final long serialVersionUID = 4212969890908932929L;
 
 	public RelateSearchLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
-		super(siteId, categoryIdList, schedule, priority);
+		super("DAILY_RELATE", "RelateSearchLogAnalyticsTask", siteId, categoryIdList, schedule, priority);
 	}
 
 	@Override

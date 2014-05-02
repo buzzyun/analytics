@@ -9,7 +9,10 @@ public class EveryWeekSchedule extends Schedule {
 	 * dayOfWeek는 요일. Calendar#DAY_OF_WEEK 참조. int timeOfDay 는 0~24 이다. 24는 자정이면서 다음날 0시도 된다.
 	 * */
 	public EveryWeekSchedule(int dayOfWeek, int timeOfDay, int delayInSeconds) {
-		super(0, delayInSeconds);
+		this(dayOfWeek, timeOfDay, delayInSeconds, true);
+	}
+	public EveryWeekSchedule(int dayOfWeek, int timeOfDay, int delayInSeconds, boolean isScheduled) {
+		super(0, delayInSeconds, isScheduled);
 		this.dayOfWeek = dayOfWeek;
 		this.timeOfDay = timeOfDay;
 	}

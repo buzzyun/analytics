@@ -18,7 +18,7 @@ public class YearlyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchLo
 	private static final long serialVersionUID = -1324147495414071499L;
 	
 	public YearlyTypeSearchLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
-		super(siteId, categoryIdList, schedule, priority);
+		super("YEARLY_TYPE", "YearlyTypeSearchLogAnalyticsTask", siteId, categoryIdList, schedule, priority);
 	}
 
 	@Override

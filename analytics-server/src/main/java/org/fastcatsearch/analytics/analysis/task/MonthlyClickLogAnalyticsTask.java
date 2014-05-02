@@ -18,7 +18,7 @@ public class MonthlyClickLogAnalyticsTask extends AnalyticsTask<ClickLog> {
 	private static final long serialVersionUID = 4212969890908932929L;
 
 	public MonthlyClickLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
-		super(siteId, categoryIdList, schedule, priority);
+		super("MONTHLY_CLICK", "MonthlyClickLogAnalyticsTask", siteId, categoryIdList, schedule, priority);
 	}
 
 	@Override

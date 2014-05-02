@@ -20,7 +20,7 @@ public class WeeklyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchLo
 
 	
 	public WeeklyTypeSearchLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
-		super(siteId, categoryIdList, schedule, priority);
+		super("WEEKLY_TYPE", "WeeklyTypeSearchLogAnalyticsTask", siteId, categoryIdList, schedule, priority);
 	}
 
 	@Override

@@ -60,7 +60,7 @@ public class ScheduledTasksTest {
 		private static final long serialVersionUID = 5431881216955668282L;
 		
 		public TestAnalyticsTask(String name, String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
-			super(name, siteId, categoryIdList, schedule, priority);
+			super("TEST", name, siteId, categoryIdList, schedule, priority);
 		}
 
 		@Override

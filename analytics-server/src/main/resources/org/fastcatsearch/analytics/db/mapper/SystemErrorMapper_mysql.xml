@@ -46,7 +46,7 @@
 		select count(*) from SystemError
 	</select>
 	
-	<insert id="putEntry" parameterType="map" useGeneratedKeys="true" keyProperty="entry.id">
+	<insert id="putEntry" parameterType="org.fastcatsearch.analytics.db.vo.SystemErrorVO" useGeneratedKeys="true" keyProperty="id">
 		insert into SystemError 
 		(time, errorMessage)
 		values

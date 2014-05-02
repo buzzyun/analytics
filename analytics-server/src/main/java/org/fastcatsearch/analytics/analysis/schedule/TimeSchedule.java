@@ -1,9 +1,13 @@
 package org.fastcatsearch.analytics.analysis.schedule;
 
 public class TimeSchedule extends Schedule {
-
+	
 	public TimeSchedule(long scheduledTime, int delayInSeconds) {
-		super(scheduledTime, delayInSeconds);
+		this(scheduledTime, delayInSeconds, true);
+	}
+	
+	public TimeSchedule(long scheduledTime, int delayInSeconds, boolean isScheduled) {
+		super(scheduledTime, delayInSeconds, isScheduled);
 	}
 
 	@Override

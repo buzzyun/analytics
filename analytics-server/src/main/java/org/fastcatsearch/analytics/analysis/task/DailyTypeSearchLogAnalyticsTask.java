@@ -1,5 +1,7 @@
 package org.fastcatsearch.analytics.analysis.task;
 
+import static org.fastcatsearch.analytics.analysis.calculator.KeywordHitAndRankConstants.TYPE_RAW_FILENAME;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
@@ -7,18 +9,12 @@ import java.util.List;
 
 import org.fastcatsearch.analytics.analysis.DailyRawLogger;
 import org.fastcatsearch.analytics.analysis.StatisticsProperties;
-import org.fastcatsearch.analytics.analysis.StatisticsService;
 import org.fastcatsearch.analytics.analysis.StatisticsUtils;
 import org.fastcatsearch.analytics.analysis.calculator.Calculator;
 import org.fastcatsearch.analytics.analysis.calculator.DailyTypeHitCalculator;
-import org.fastcatsearch.analytics.analysis.config.StatisticsSettings.SiteAttribute;
-import org.fastcatsearch.analytics.analysis.config.StatisticsSettings.TypeSetting;
 import org.fastcatsearch.analytics.analysis.log.TypeSearchLog;
 import org.fastcatsearch.analytics.analysis.log.TypeSearchLogReader;
 import org.fastcatsearch.analytics.analysis.schedule.Schedule;
-import org.fastcatsearch.analytics.service.ServiceManager;
-
-import static org.fastcatsearch.analytics.analysis.calculator.KeywordHitAndRankConstants.*;
 /**
  * 일별 검색로그 계산. 검색 type별 hit수. 
  * 
@@ -30,7 +26,7 @@ public class DailyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchLog
 	DailyRawLogger dailyTypeRawLogger;
 	
 	public DailyTypeSearchLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority, DailyRawLogger dailyTypeRawLogger) {
-		super(siteId, categoryIdList, schedule, priority);
+		super("DAILY_TYPE", "DailyTypeSearchLogAnalyticsTask", siteId, categoryIdList, schedule, priority);
 		this.dailyTypeRawLogger = dailyTypeRawLogger;
 	}
 

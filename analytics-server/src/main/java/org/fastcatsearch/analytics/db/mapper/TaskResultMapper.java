@@ -15,11 +15,9 @@ public interface TaskResultMapper extends SystemMapper {
 	public TaskResultVO getEntry(@Param("siteId") String siteId,
 			@Param("targetTime") String targetTime, @Param("taskId") String taskId) throws Exception;
 	
-	public int putEntry(@Param("siteId") String siteId,
-			@Param("taskResultVO") TaskResultVO taskResultVO) throws Exception;
+	public int putEntry(TaskResultVO entry) throws Exception;
 	
-	public int updateEntry(@Param("siteId") String siteId,
-			@Param("taskResultVO") TaskResultVO taskResultVO) throws Exception;
+	public int updateEntry(TaskResultVO entry) throws Exception;
 	
 	public int deleteEntry(@Param("siteId") String siteId,
 			@Param("targetTime") String targetTime) throws Exception;

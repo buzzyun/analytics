@@ -10,7 +10,10 @@ public class EveryYearSchedule extends Schedule {
 	 * int timeOfDay 는 0~24 이다. 24는 자정이면서 다음날 0시도 된다.
 	 * */
 	public EveryYearSchedule(int monthOfYear, int dayOfMonth, int timeOfDay, int delayInSeconds) {
-		super(0, delayInSeconds);
+		this(monthOfYear, dayOfMonth, timeOfDay, delayInSeconds, true);
+	}
+	public EveryYearSchedule(int monthOfYear, int dayOfMonth, int timeOfDay, int delayInSeconds, boolean isScheduled) {
+		super(0, delayInSeconds, isScheduled);
 		this.monthOfYear = monthOfYear;
 		this.dayOfMonth = dayOfMonth;
 		this.timeOfDay = timeOfDay;

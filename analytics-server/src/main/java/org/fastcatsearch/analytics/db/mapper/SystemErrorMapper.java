@@ -11,6 +11,6 @@ public interface SystemErrorMapper extends SystemMapper {
 	
 	public List<SystemErrorVO> getEntryList(@Param("start") int start, @Param("end") int end) throws Exception;
 	
-	public int putEntry(@Param("SystemErrorVO") SystemErrorVO entry) throws Exception;
+	public int putEntry(SystemErrorVO entry) throws Exception;
 	
 }

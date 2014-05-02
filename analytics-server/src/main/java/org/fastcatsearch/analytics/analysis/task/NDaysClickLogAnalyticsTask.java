@@ -18,7 +18,7 @@ public class NDaysClickLogAnalyticsTask extends AnalyticsTask<ClickLog> {
 	private static final long serialVersionUID = 4212969890908932929L;
 	
 	public NDaysClickLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
-		super(siteId, categoryIdList, schedule, priority);
+		super("CTR_CLICK_FILE", "NDaysClickLogAnalyticsTask", siteId, categoryIdList, schedule, priority);
 	}
 
 	@Override

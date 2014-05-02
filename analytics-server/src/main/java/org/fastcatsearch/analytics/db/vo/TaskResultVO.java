@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 
 public class TaskResultVO {
 	private String siteId;
-	private Timestamp targetTime; //통계대상이 되는 날짜.
+	private String targetTime; //통계대상이 되는 날짜.
 	private Timestamp startTime; //실제 task를 시작한 날짜와 시간.
 	private Timestamp endTime;
 	private String duration;
@@ -12,18 +12,34 @@ public class TaskResultVO {
 	private String resultStatus; //결과. success인지, fail인지.
 	private String taskId; 		//task id. 약자. DAILY_SP 등.
 	private String taskName;	// task 명. Daily Search Progress Task 등.
-	private String explain;
+	private String detail;
 	
+	public TaskResultVO() { }
+	
+	public TaskResultVO(String siteId, String targetTime, Timestamp startTime, Timestamp endTime, String duration, String scheduled, String resultStatus, String taskId,
+			String taskName, String detail) {
+		this.siteId = siteId;
+		this.targetTime = targetTime;
+		this.startTime = startTime;
+		this.endTime = endTime;
+		this.duration = duration;
+		this.scheduled = scheduled;
+		this.resultStatus = resultStatus;
+		this.taskId = taskId;
+		this.taskName = taskName;
+		this.detail = detail;
+	}
+
 	public String getSiteId() {
 		return siteId;
 	}
 	public void setSiteId(String siteId) {
 		this.siteId = siteId;
 	}
-	public Timestamp getTargetTime() {
+	public String getTargetTime() {
 		return targetTime;
 	}
-	public void setTargetTime(Timestamp targetTime) {
+	public void setTargetTime(String targetTime) {
 		this.targetTime = targetTime;
 	}
 	public Timestamp getStartTime() {
@@ -44,6 +60,12 @@ public class TaskResultVO {
 	public void setDuration(String duration) {
 		this.duration = duration;
 	}
+	public String getScheduled() {
+		return scheduled;
+	}
+	public void setScheduled(String scheduled) {
+		this.scheduled = scheduled;
+	}
 	public String getResultStatus() {
 		return resultStatus;
 	}
@@ -62,11 +84,11 @@ public class TaskResultVO {
 	public void setTaskName(String taskName) {
 		this.taskName = taskName;
 	}
-	public String getExplain() {
-		return explain;
+	public String getDetail() {
+		return detail;
 	}
-	public void setExplain(String explain) {
-		this.explain = explain;
+	public void setDetail(String detail) {
+		this.detail = detail;
 	}
 	
 }

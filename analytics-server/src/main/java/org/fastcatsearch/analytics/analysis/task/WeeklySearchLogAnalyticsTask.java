@@ -19,7 +19,7 @@ public class WeeklySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 	private static final long serialVersionUID = 4212969890908932929L;
 	
 	public WeeklySearchLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
-		super(siteId, categoryIdList, schedule, priority);
+		super("WEEKLY_SP", "WeeklySearchLogAnalyticsTask", siteId, categoryIdList, schedule, priority);
 	}
 
 	@Override

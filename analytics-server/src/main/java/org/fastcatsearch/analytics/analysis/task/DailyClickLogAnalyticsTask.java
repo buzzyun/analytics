@@ -18,7 +18,7 @@ public class DailyClickLogAnalyticsTask extends AnalyticsTask<ClickLog> {
 	private static final long serialVersionUID = 4212969890908932929L;
 
 	public DailyClickLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
-		super(siteId, categoryIdList, schedule, priority);
+		super("DAILY_CLICK", "DailyClickLogAnalyticsTask", siteId, categoryIdList, schedule, priority);
 	}
 
 	@Override

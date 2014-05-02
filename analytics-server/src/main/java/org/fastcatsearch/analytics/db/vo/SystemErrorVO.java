@@ -7,6 +7,14 @@ public class SystemErrorVO {
 	private Timestamp time;
 	private String errorMessage;
 	
+	public SystemErrorVO() {
+	}
+	
+	public SystemErrorVO(Timestamp time, String errorMessage) {
+		this.time = time;
+		this.errorMessage = errorMessage;
+	}
+	
 	public int getId() {
 		return id;
 	}

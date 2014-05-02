@@ -10,7 +10,10 @@ public class EveryMinuteSchedule extends Schedule {
 	 * int timeInDay 는 0~24 이다. 24는 자정이면서 다음날 0시도 된다.
 	 * */
 	public EveryMinuteSchedule(int delayInSeconds) {
-		super(0, delayInSeconds);
+		this(delayInSeconds, true);
+	}
+	public EveryMinuteSchedule(int delayInSeconds, boolean isScheduled) {
+		super(0, delayInSeconds, isScheduled);
 	}
 
 	@Override

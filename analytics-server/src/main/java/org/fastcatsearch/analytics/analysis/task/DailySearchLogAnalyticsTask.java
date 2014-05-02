@@ -54,8 +54,8 @@ public class DailySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 		}
 
 		// calc를 카테고리별로 모두 만든다.
-		Calculator<SearchLog> popularKeywordCalculator = new DailyKeywordHitAndRankCalculator("Daily popular keyword calculator", calendar, baseDir, prevDir, siteId, categoryIdList);
-		addCalculator(popularKeywordCalculator);
+		Calculator<SearchLog> keywordHitAndRankCalculator = new DailyKeywordHitAndRankCalculator("Daily popular keyword calculator", calendar, baseDir, prevDir, siteId, categoryIdList);
+		addCalculator(keywordHitAndRankCalculator);
 		
 	}
 	

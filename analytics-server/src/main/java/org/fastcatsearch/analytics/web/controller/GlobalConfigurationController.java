@@ -199,4 +199,21 @@ public class GlobalConfigurationController extends AbstractController {
 		modelAndView.addObject("content", writer.toString());
 		return modelAndView;
 	}
+	
+	
+	@RequestMapping("/taskResult")
+	public ModelAndView taskResult(HttpSession session, @RequestParam(required=false) String date ) throws Exception {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("/settings/taskResult");
+		return modelAndView;
+		
+	}
+	
+	@RequestMapping("/systemError")
+	public ModelAndView taskResult(HttpSession session, @RequestParam(required=false) Integer pageNo ) throws Exception {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("/settings/systemError");
+		return modelAndView;
+		
+	}
 }

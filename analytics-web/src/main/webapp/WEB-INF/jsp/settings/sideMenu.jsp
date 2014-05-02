@@ -33,6 +33,20 @@
 			<li class="<%=lcatCurrent ? "current" :"" %>">
 				<a href="<c:url value="/settings/sites.html"/>"><i class="icon-list"></i> Sites Settings</a>
 			</li>
+			
+			<%
+				lcatCurrent = "taskResult".equals(mcat);
+			%>
+			<li class="<%=lcatCurrent ? "current" :"" %>">
+				<a href="<c:url value="/settings/taskResult.html"/>"><i class="icon-list"></i> Task Results</a>
+			</li>
+			
+			<%
+				lcatCurrent = "systemError".equals(mcat);
+			%>
+			<li class="<%=lcatCurrent ? "current" :"" %>">
+				<a href="<c:url value="/settings/systemError.html"/>"><i class="icon-list"></i> System Error</a>
+			</li>
 		</ul>
 
 	</div>

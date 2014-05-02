@@ -1,5 +1,7 @@
 package org.fastcatsearch.analytics.analysis.task;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -57,6 +59,9 @@ public abstract class AnalyticsTask<LogType extends LogData> extends Job impleme
 
 	@Override
 	public JobResult doRun() {
+		
+		boolean isSuccess = false;
+		String errorMessage = null;
 		try {
 			
 			calculatorList.clear();
@@ -91,15 +96,25 @@ public abstract class AnalyticsTask<LogType extends LogData> extends Job impleme
 			for (Calculator<LogType> c : calculatorList) {
 				c.calculate();
 			}
-
+			isSuccess = true;
 			logger.info("### {}-{} Done!", getClass().getSimpleName(), name);
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			logger.info("### {}-{} Error!", getClass().getSimpleName(), name);
 			logger.error("", e);
-			return new JobResult(false);
+			StringWriter stringWriter = new StringWriter();
+			PrintWriter writer = new PrintWriter(stringWriter);
+			e.printStackTrace(writer);
+			errorMessage = stringWriter.toString();
+		} finally {
+			//Update task result
+			//TODO
+			
+			
+			
+			
+			
 		}
-
-		return new JobResult(true);
+		return new JobResult(isSuccess);
 	}
 
 	@Override

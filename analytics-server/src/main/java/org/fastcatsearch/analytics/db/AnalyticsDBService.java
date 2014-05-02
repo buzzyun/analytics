@@ -30,6 +30,9 @@ import org.fastcatsearch.analytics.db.mapper.SearchKeywordHitMapper;
 import org.fastcatsearch.analytics.db.mapper.SearchKeywordRankMapper;
 import org.fastcatsearch.analytics.db.mapper.SearchPathHitMapper;
 import org.fastcatsearch.analytics.db.mapper.SearchTypeHitMapper;
+import org.fastcatsearch.analytics.db.mapper.SystemErrorMapper;
+import org.fastcatsearch.analytics.db.mapper.SystemMapper;
+import org.fastcatsearch.analytics.db.mapper.TaskResultMapper;
 import org.fastcatsearch.analytics.db.mapper.UserAccountMapper;
 import org.fastcatsearch.analytics.db.vo.UserAccountVO;
 import org.fastcatsearch.analytics.env.Environment;
@@ -38,9 +41,6 @@ import org.fastcatsearch.analytics.exception.AnalyticsException;
 import org.fastcatsearch.analytics.service.ServiceManager;
 
 public class AnalyticsDBService extends AbstractDBService {
-
-	String[] rankList;
-	String[] typeList;
 
 	private static Class<?>[] mapperList = new Class<?>[] { 
 		SearchKeywordHitMapper.class
@@ -55,6 +55,8 @@ public class AnalyticsDBService extends AbstractDBService {
 		, ClickKeywordHitMapper.class
 		, ClickKeywordTargetHitMapper.class
 		, SearchPathHitMapper.class
+		, TaskResultMapper.class
+		, SystemErrorMapper.class
 	};
 
 	public AnalyticsDBService(Environment environment, Settings settings, ServiceManager serviceManager) {
@@ -63,9 +65,6 @@ public class AnalyticsDBService extends AbstractDBService {
 
 	@Override
 	protected boolean doStart() throws AnalyticsException {
-		rankList = settings.getStringArray("rankList", ",");
-		typeList = settings.getStringArray("typeList", ",");
-
 		Properties driverProperties = null;
 		Map<String, Object> globalParam = null;
 		init(settings, mapperList, driverProperties, globalParam);
@@ -93,19 +92,21 @@ public class AnalyticsDBService extends AbstractDBService {
 	
 	public void addNewSiteMappers(String siteId) {
 		for (Class<?> mapperDAO : mapperList) {
-			Class<? extends AnalyticsMapper> clazz = (Class<? extends AnalyticsMapper>) mapperDAO;
-			MapperSession<? extends AnalyticsMapper> mapperSession = (MapperSession<? extends AnalyticsMapper>) getMapperSession(clazz);
-			try {
-				addNewSiteMapper(siteId, mapperSession, clazz);
-			} finally {
-				mapperSession.closeSession();
+			if(mapperDAO.isAssignableFrom(AnalyticsMapper.class)){
+				Class<? extends AnalyticsMapper> clazz = (Class<? extends AnalyticsMapper>) mapperDAO;
+				MapperSession<? extends AnalyticsMapper> mapperSession = (MapperSession<? extends AnalyticsMapper>) getMapperSession(clazz);
+				try {
+					addNewSiteMapper(siteId, mapperSession, clazz);
+				} finally {
+					mapperSession.closeSession();
+				}
 			}
 		}
 	}
 	
 	public void dropSiteMapper(String siteId) {
 		for (Class<?> mapperDAO : mapperList) {
-			if(!mapperDAO.equals(UserAccountMapper.class)) {
+			if(mapperDAO.isAssignableFrom(AnalyticsMapper.class)){
 				Class<? extends AnalyticsMapper> clazz = (Class<? extends AnalyticsMapper>) mapperDAO;
 				MapperSession<? extends AnalyticsMapper> mapperSession = (MapperSession<? extends AnalyticsMapper>) getMapperSession(clazz);
 				try {
@@ -119,7 +120,7 @@ public class AnalyticsDBService extends AbstractDBService {
 		}
 	}
 	
-	public void dropSiteMapper(String siteId, MapperSession<? extends AnalyticsMapper> mapperSession, Class<? extends AnalyticsMapper> clazz) {
+	private void dropSiteMapper(String siteId, MapperSession<? extends AnalyticsMapper> mapperSession, Class<? extends AnalyticsMapper> clazz) {
 		AnalyticsMapper managedMapper = mapperSession.getMapper();
 		try {
 			logger.debug("drop {}, {}", siteId, clazz.getSimpleName());
@@ -129,7 +130,7 @@ public class AnalyticsDBService extends AbstractDBService {
 		}
 	}
 	
-	public void addNewSiteMapper(String siteId, MapperSession<? extends AnalyticsMapper> mapperSession, Class<? extends AnalyticsMapper> clazz) {
+	private void addNewSiteMapper(String siteId, MapperSession<? extends AnalyticsMapper> mapperSession, Class<? extends AnalyticsMapper> clazz) {
 		AnalyticsMapper managedMapper = mapperSession.getMapper();
 		try {
 			try{
@@ -162,6 +163,39 @@ public class AnalyticsDBService extends AbstractDBService {
 			}
 		}
 	}
+	private void addNewMapper(MapperSession<? extends SystemMapper> mapperSession, Class<? extends SystemMapper> clazz) {
+		SystemMapper managedMapper = mapperSession.getMapper();
+		try {
+			try{
+				//mysql에서 이상하게 최초쿼리는 에러나서..
+				logger.debug("valiadte1 {}, {}", clazz.getSimpleName());
+				managedMapper.validateTable();
+			}catch(Exception ignore){
+			}
+			
+			
+			logger.debug("valiadte {}, {}", clazz.getSimpleName());
+			managedMapper.validateTable();
+		} catch (Exception e) {
+//					logger.error("valid error", e);
+			try {
+				logger.debug("drop {}, {}", clazz.getSimpleName());
+				managedMapper.dropTable();
+				mapperSession.commit();
+			} catch (Exception ignore) {
+			}
+			try {
+				logger.debug("create table {}, {}", clazz.getSimpleName());
+				managedMapper.createTable(settings.getString("option", ""));
+				mapperSession.commit();
+				logger.debug("create index {}, {}", clazz.getSimpleName());
+				managedMapper.createIndex();
+				mapperSession.commit();
+			} catch (Exception e2) {
+				logger.error("", e2);
+			}
+		}
+	}
 
 	@Override
 	protected void initMapper(Class<?>[] mapperList) throws AnalyticsException {
@@ -170,8 +204,9 @@ public class AnalyticsDBService extends AbstractDBService {
 		List<SiteSetting> siteCategoryConfig = config.getSiteList();
 
 		for (Class<?> mapperDAO : mapperList) {
-			Class<? extends AnalyticsMapper> clazz = (Class<? extends AnalyticsMapper>) mapperDAO;
-			if(!clazz.equals(UserAccountMapper.class)) {
+			if(mapperDAO.isAssignableFrom(AnalyticsMapper.class)){
+				
+				Class<? extends AnalyticsMapper> clazz = (Class<? extends AnalyticsMapper>) mapperDAO;
 				logger.debug("class : {}", clazz.getSimpleName());
 				MapperSession<? extends AnalyticsMapper> mapperSession = (MapperSession<? extends AnalyticsMapper>) getMapperSession(clazz);
 				try {
@@ -184,13 +219,23 @@ public class AnalyticsDBService extends AbstractDBService {
 						mapperSession.closeSession();
 					}
 				}
+			}else if(mapperDAO.isAssignableFrom(SystemMapper.class)){
+				Class<? extends SystemMapper> clazz = (Class<? extends SystemMapper>) mapperDAO;
+				MapperSession<? extends SystemMapper> mapperSession = (MapperSession<? extends SystemMapper>) getMapperSession(clazz);
+				try {
+					this.addNewMapper(mapperSession, clazz);
+				} finally {
+					if (mapperSession != null) {
+						mapperSession.closeSession();
+					}
+				}
+				
 			}
 		}
 		
+		//초기 사용자 추가. 
 		try {
 			MapperSession<UserAccountMapper> mapperSession = getMapperSession(UserAccountMapper.class);
-			this.addNewSiteMapper("", mapperSession, UserAccountMapper.class);
-			
 			UserAccountMapper userAccountMapper = mapperSession.getMapper();
 			
 			if(userAccountMapper.getCount() == 0) {

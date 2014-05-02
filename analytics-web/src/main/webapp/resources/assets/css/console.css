@@ -160,3 +160,9 @@ td.analysis-tools-detail div {line-height: 200%;}
 }
 
 .underline {text-decoration:underline;}
+
+.calendar-title {font-size: 20px; !important; font-weight: bold; }
+
+.pull-center {text-align: center;}
+
+a.a-no-decoration  { text-decoration: none; color: #333 }

@@ -5,7 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.fastcatsearch.analytics.db.vo.UserAccountVO;
 
-public interface UserAccountMapper extends AnalyticsMapper {
+public interface UserAccountMapper extends SystemMapper {
 	
 	public UserAccountVO getEntry(@Param("id") int id) throws Exception;
 	

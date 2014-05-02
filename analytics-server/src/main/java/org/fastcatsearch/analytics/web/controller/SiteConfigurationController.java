@@ -11,7 +11,6 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.fastcatsearch.analytics.analysis.StatisticsUtils;
-import org.fastcatsearch.analytics.analysis.config.SiteListSetting.SiteSetting;
 import org.fastcatsearch.analytics.analysis.config.StatisticsSettings;
 import org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CTRSetting;
 import org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CategorySetting;
@@ -47,7 +46,7 @@ public class SiteConfigurationController extends AbstractController {
 	}
 
 	@RequestMapping("/management/run")
-	public ModelAndView run(@RequestParam(required = false) String date) throws Exception {
+	public ModelAndView run(@PathVariable String siteId, @RequestParam(required = false) String date) throws Exception {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("configuration/management/run");
 
@@ -66,10 +65,9 @@ public class SiteConfigurationController extends AbstractController {
 	}
 	
 	@RequestMapping("/management/doRun")
-	public String doRun(@PathVariable String siteId, @RequestParam(required = false, value="taskType") String[] taskType, @RequestParam(required = false) String date) throws Exception {
+	public ModelAndView doRun(@PathVariable String siteId, @RequestParam(required = false, value="taskType") String[] taskType, @RequestParam(required = false) String date) throws Exception {
 		ModelAndView mav = new ModelAndView();
-		mav.setViewName("configuration/management/run");
-
+		mav.setViewName("text");
 		Calendar calendar1 = null;
 		Calendar calendar2 = null;
 
@@ -96,7 +94,7 @@ public class SiteConfigurationController extends AbstractController {
 			JobService.getInstance().offer(job);
 		}
 
-		return "";
+		return mav;
 	}
 
 	@RequestMapping("/management/advanceRun")

@@ -99,7 +99,7 @@ function deselectAll() {
 					<div class="col-md-12">
 						<div class="widget">
 							<div class="widget-content">
-								<form method="post" id="runForm">
+								<form method="post" id="runForm" action="doRun.html">
 									<div>
 										<table class="table table-hover table-checkable table-bordered table-vertical-align-middle">
 											<thead>

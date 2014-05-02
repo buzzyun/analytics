@@ -47,7 +47,26 @@ public class SiteConfigurationController extends AbstractController {
 	}
 
 	@RequestMapping("/management/run")
-	public ModelAndView run(@PathVariable String siteId, @RequestParam(required = false, value="taskType") String[] taskType, @RequestParam(required = false) String date) throws Exception {
+	public ModelAndView run(@RequestParam(required = false) String date) throws Exception {
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("configuration/management/run");
+
+		Calendar calendar1 = null;
+
+		if (date != null && !"".equals(date)) {
+			String[] dateArr = date.split(" - ");
+			calendar1 = StatisticsUtils.parseDatetimeString(dateArr[0], true);
+		} else {
+			calendar1 = StatisticsUtils.getCalendar();
+			calendar1.add(Calendar.DATE, -1);
+		}
+
+		mav.addObject("date", StatisticsUtils.toDatetimeString(calendar1));
+		return mav;
+	}
+	
+	@RequestMapping("/management/doRun")
+	public String doRun(@PathVariable String siteId, @RequestParam(required = false, value="taskType") String[] taskType, @RequestParam(required = false) String date) throws Exception {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("configuration/management/run");
 
@@ -75,14 +94,9 @@ public class SiteConfigurationController extends AbstractController {
 			}
 			Job job = new DailySearchLogAnalyticsTaskRunJob(siteId, timeId1, timeId2, taskType);
 			JobService.getInstance().offer(job);
-
-		} else {
-			calendar1 = StatisticsUtils.getCalendar();
-			calendar1.add(Calendar.DATE, -1);
 		}
 
-		mav.addObject("date", StatisticsUtils.toDatetimeString(calendar1));
-		return mav;
+		return "";
 	}
 
 	@RequestMapping("/management/advanceRun")

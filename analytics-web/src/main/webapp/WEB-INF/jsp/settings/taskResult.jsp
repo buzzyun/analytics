@@ -56,10 +56,22 @@ org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CategorySetting
 								<option>localhost.com</option>
 							</select>
 						</div>
+						<div class="col-md-12 bottom-space">
+							<div class="input-group fcol2">
+								<span class="input-group-btn">
+									<button class="btn btn-default" type="button">&laquo;</button>
+								</span>
+								<input type="text" class="form-control" value="2014.04">
+								<span class="input-group-btn">
+									<button class="btn btn-default" type="button">&raquo;</button>
+								</span>
+							</div>
+						</div>
+									
 						<div class="col-md-12">
 							<div class="widget box">
 								<div class="widget-header pull-center">
-									 <a href="#">&laquo; Prev</a>&nbsp;&nbsp; <span class="calendar-title">2014.04</span> &nbsp;&nbsp;<a href="#">Next &raquo;</a>
+									<h4>2014.04</h4>
 								</div>
 								<div class="widget-content no-padding">
 									<table class="table table-bordered table-header table-highlight-head">
@@ -75,7 +87,7 @@ org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CategorySetting
 										</tr>
 									</thead>
 									<tbody>
-									<tr>
+									<tr class="active">
 										<th>03.31</th>
 										<th>04.01</th>
 										<th>04.02</th>
@@ -171,7 +183,7 @@ org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CategorySetting
 											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
 										</td>
 									</tr>
-									<tr>
+									<tr class="active">
 										<th>03.31</th>
 										<th>04.01</th>
 										<th>04.02</th>
@@ -266,7 +278,7 @@ org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CategorySetting
 											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
 										</td>
 									</tr>
-									<tr>
+									<tr class="active">
 										<th>03.31</th>
 										<th>04.01</th>
 										<th>04.02</th>
@@ -361,7 +373,7 @@ org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CategorySetting
 											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
 										</td>
 									</tr>
-									<tr>
+									<tr class="active">
 										<th>03.31</th>
 										<th>04.01</th>
 										<th>04.02</th>

@@ -26,7 +26,7 @@ $(document).ready(function() {
 			$($(this).find("td")[0]).html(newIndex + 1);
 			$(this).find("input, select, textarea").each(function() {
 				var name = $(this).attr("name");
-				var match = /^([a-zA-Z0-9_-]+)[0-9]+/.exec(name);
+				var match = /^([a-zA-Z0-9_-]*[^0-9]+)([0-9]+)/.exec(name);
 				var key = match?match[1]:"";
 				$(this).attr("name", key + newIndex);
 			});

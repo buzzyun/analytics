@@ -33,7 +33,7 @@ $(document).ready(function() {
 					$(this).attr("name", name);
 					$(this).attr("value", newIndex);
 				} else {
-					var match = /^([a-zA-Z0-9_-]+)[0-9]+/.exec(name);
+					var match = /^([a-zA-Z0-9_-]*[^0-9]+)([0-9]+)/.exec(name);
 					var key = match?match[1]:"";
 					$(this).attr("name", key + newIndex);
 				}

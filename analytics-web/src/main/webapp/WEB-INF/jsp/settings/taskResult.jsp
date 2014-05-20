@@ -90,7 +90,7 @@ $(document).ready(function() {
 				String nextMonth = monthFormat.format(localCalendar.getTime());
 				//다음달 첫날일자 (달력 한계값 구할때 사용)
 				Calendar nextCalendar = (Calendar)localCalendar.clone();
-				nextCalendar.set(Calendar.DATE, 1);
+				nextCalendar.set(Calendar.DATE, -1);
 				//원래 날자로 복원. (당월 첫째주 시작일)
 				localCalendar.add(Calendar.MONTH, -1);
 				localCalendar.add(Calendar.DATE, -7);
@@ -144,7 +144,7 @@ $(document).ready(function() {
 									</thead>
 									<tbody>
 									<% 
-									for ( int dateInx=0; localCalendar.getTimeInMillis() < nextCalendar.getTimeInMillis() ; ) {
+									for ( int dateInx=0; localCalendar.getTimeInMillis() <= nextCalendar.getTimeInMillis() ; ) {
 									%>
 										<tr class="active">
 										<%

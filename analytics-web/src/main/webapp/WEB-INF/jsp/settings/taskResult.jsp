@@ -138,8 +138,8 @@ $(document).ready(function() {
 											<th>Wed</th>
 											<th>Thu</th>
 											<th>Fri</th>
-											<th>SAT</th>
-											<th>SUN</th>
+											<th class="text-primary">SAT</th>
+											<th class="text-danger">SUN</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -149,6 +149,12 @@ $(document).ready(function() {
 										<tr class="active">
 										<%
 										for ( int headerInx=0; headerInx < 7; headerInx++ ) {
+											String classStr = "";
+											if(headerInx == 5) {
+												 classStr = "class=\"text-primary\"";
+											}else if(headerInx == 6) {
+												 classStr = "class=\"text-danger\"";
+											}
 										%>
 											<%
 											localCalendar.add(localCalendar.DATE, 1);
@@ -171,8 +177,8 @@ $(document).ready(function() {
 													}
 												}
 												%>
-												<td <%=isSuccess?"":"class=\"danger\"" %>>
-												<a data-toggle="modal" data-target="#taskResultModal_<%=dateInx%>" class="a-no-decoration">
+												<td <%=isSuccess?"":"class=\"danger\"" %> style="height:50px;">
+												<a data-toggle="modal" data-target="#taskResultModal_<%=dateInx%>" class="a-no-decoration" style="cursor: pointer;">
 												<%
 												for (int taskInx=0;taskResult!=null && taskInx < taskResult.size(); taskInx++) {
 												%>
@@ -254,11 +260,11 @@ $(document).ready(function() {
 														String endTime = timeFormat.format(task.getEndTime());
 														%>
 														<tr <%=isSuccess?"":"class=\"danger\"" %>>
-															<td><%=taskInx+1 %></td>
-															<td><%=startTime %></td>
-															<td><%=endTime %></td>
-															<td><%=task.getDuration() %></td>
-															<td>
+															<td class="fcol1"><%=taskInx+1 %></td>
+															<td class="fcol1-1"><%=startTime %></td>
+															<td class="fcol1-1"><%=endTime %></td>
+															<td class="fcol1-1"><%=task.getDuration() %></td>
+															<td class="fcol2-1">
 															<%if(isSuccess) { %>
 															<span class="text-success glyphicon glyphicon-ok-sign"></span> 
 															<% } else { %>
@@ -266,8 +272,8 @@ $(document).ready(function() {
 															<% } %>
 															<%=task.getTaskName() %>
 															</td>
-															<td>
-															<%=task.getDetail() %>
+															<td style="word-break:break-all">
+															<%=task.getDetail().replaceAll("\n", "<br>") %>
 															</td>
 														</tr>
 													<%

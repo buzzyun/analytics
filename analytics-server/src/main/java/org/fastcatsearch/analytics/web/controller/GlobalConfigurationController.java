@@ -2,7 +2,10 @@ package org.fastcatsearch.analytics.web.controller;
 
 import java.io.StringWriter;
 import java.io.Writer;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
@@ -200,11 +203,26 @@ public class GlobalConfigurationController extends AbstractController {
 		return modelAndView;
 	}
 	
-	
 	@RequestMapping("/taskResult")
 	public ModelAndView taskResult(HttpSession session, @RequestParam(required=false) String date ) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("/settings/taskResult");
+		
+		final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM");
+		//년, 월 입력.
+		Calendar calendar = Calendar.getInstance();
+		
+		if(date != null && !"".equals(date)) {
+			try {
+				calendar.setTime(dateFormat.parse(date));
+			} catch (ParseException ignore) {
+				
+			}
+		}
+		calendar.set(Calendar.DATE, 1);
+		calendar.add(Calendar.DATE, - calendar.get(Calendar.DAY_OF_WEEK) + 1);
+		//1일이 해당하는 주의 시작일자를 구한다. 
+		modelAndView.addObject("calendar", calendar);
 		return modelAndView;
 		
 	}

@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ page import="
 java.util.*,
+java.text.SimpleDateFormat,
 org.fastcatsearch.analytics.db.vo.*,
 org.fastcatsearch.analytics.analysis.config.SiteListSetting.SiteSetting,
 org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CategorySetting
@@ -9,6 +10,9 @@ org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CategorySetting
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <%
+SimpleDateFormat monthFormat = new SimpleDateFormat("yyyy.MM");
+SimpleDateFormat dateFormat = new SimpleDateFormat("MM.dd");
+Calendar calendar = (Calendar) request.getAttribute("calendar");
 %>
 <c:set var="ROOT_PATH" value="../.." scope="request"/>
 <c:import url="../inc/common.jsp" />
@@ -48,6 +52,20 @@ org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CategorySetting
 				<!--=== Page Content ===-->
 				
 				
+				<%
+				Calendar localCalendar = (Calendar)calendar.clone();
+				localCalendar.add(Calendar.DATE, 7);
+				int month = localCalendar.get(Calendar.MONTH);
+				String monthStr = monthFormat.format(localCalendar.getTime());
+				
+				localCalendar.add(Calendar.MONTH, -1);
+				String prevMonth = monthFormat.format(localCalendar.getTime());
+				localCalendar.add(Calendar.MONTH, 2);
+				String nextMonth = monthFormat.format(localCalendar.getTime());
+				localCalendar.add(Calendar.MONTH, -1);
+				
+				localCalendar.add(Calendar.DATE, -7);
+				%>
 				
 				<div class="tab-content">
 					<div class="tab-pane active">
@@ -61,7 +79,7 @@ org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CategorySetting
 								<span class="input-group-btn">
 									<button class="btn btn-default" type="button">&laquo;</button>
 								</span>
-								<input type="text" class="form-control" value="2014.04">
+								<input type="text" class="form-control" value="<%=monthStr%>">
 								<span class="input-group-btn">
 									<button class="btn btn-default" type="button">&raquo;</button>
 								</span>
@@ -71,7 +89,7 @@ org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CategorySetting
 						<div class="col-md-12">
 							<div class="widget box">
 								<div class="widget-header pull-center">
-									<h4>2014.04</h4>
+									<h4><%=monthStr%></h4>
 								</div>
 								<div class="widget-content no-padding">
 									<table class="table table-bordered table-header table-highlight-head">
@@ -87,387 +105,59 @@ org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CategorySetting
 										</tr>
 									</thead>
 									<tbody>
-									<tr class="active">
-										<th>03.31</th>
-										<th>04.01</th>
-										<th>04.02</th>
-										<th>04.03</th>
-										<th>04.04</th>
-										<th>04.05</th>
-										<th>04.06</th>
-									</tr>
-									<tr>
-										<td class="danger"><a href="#" class="a-no-decoration">
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-										</a>
-										</td>
-										<td>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-										</td>
-										<td>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-										</td>
-										<td>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-										</td>
-										<td>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-										</td>
-										<td>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-										</td>
-										<td>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-										</td>
-									</tr>
-									<tr class="active">
-										<th>03.31</th>
-										<th>04.01</th>
-										<th>04.02</th>
-										<th>04.03</th>
-										<th>04.04</th>
-										<th>04.05</th>
-										<th>04.06</th>
-									</tr>
-									<tr>
-										<td>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-										</td>
-										<td>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-										</td>
-										<td>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-										</td>
-										<td>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-										</td>
-										<td>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-										</td>
-										<td>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-										</td>
-										<td>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-										</td>
-									</tr>
-									<tr class="active">
-										<th>03.31</th>
-										<th>04.01</th>
-										<th>04.02</th>
-										<th>04.03</th>
-										<th>04.04</th>
-										<th>04.05</th>
-										<th>04.06</th>
-									</tr>
-									<tr>
-										<td>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-										</td>
-										<td>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-										</td>
-										<td>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-										</td>
-										<td>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-										</td>
-										<td>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-										</td>
-										<td>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-										</td>
-										<td>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-										</td>
-									</tr>
-									<tr class="active">
-										<th>03.31</th>
-										<th>04.01</th>
-										<th>04.02</th>
-										<th>04.03</th>
-										<th>04.04</th>
-										<th>04.05</th>
-										<th>04.06</th>
-									</tr>
-									<tr>
-										<td>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-										</td>
-										<td>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-										</td>
-										<td>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-										</td>
-										<td>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-										</td>
-										<td>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-										</td>
-										<td>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-										</td>
-										<td>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-										</td>
-									</tr>
+									<% 
+									for ( int weekInx=0; localCalendar.get(Calendar.MONTH) <= month; weekInx++) {
+									%>
+										<tr class="active">
+										<%
+										for ( int dateInx=0; dateInx < 7; dateInx++ ) {
+										%>
+											<%
+											localCalendar.add(Calendar.DATE, 1);
+											%>
+											<th><%=dateFormat.format(localCalendar.getTime()) %></th>
+										<%
+										}
+										%>
+										</tr>
+										<tr>
+											<%
+											for ( int dateInx=0; dateInx < 7; dateInx++ ) {
+											%>
+											<td class="danger"><a href="#" class="a-no-decoration">
+												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
+												<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
+												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
+												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
+												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
+												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
+												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
+												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
+												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
+												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
+											</a>
+											</td>
+											<%
+											}
+											%>
+											<!--
+											<td>
+												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
+												<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
+												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
+												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
+												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
+												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
+												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
+												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
+												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
+												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
+											</td>
+											-->
+										</tr>
+									<%
+									}
+									%>
 									</tbody>
 									</table>
 								</div>

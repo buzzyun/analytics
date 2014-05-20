@@ -172,7 +172,7 @@ $(document).ready(function() {
 												}
 												%>
 												<td <%=isSuccess?"":"class=\"danger\"" %> style="min-height:100px;height:auto;">
-												<a data-toggle="modal" data-target="#taskResultModal_<%=dateInx%>" class="a-no-decoration">
+												<a data-toggle="modal" data-target="#taskResultModal_<%=dateInx%>" class="a-no-decoration" style="cursor: pointer;">
 												<%
 												for (int taskInx=0;taskResult!=null && taskInx < taskResult.size(); taskInx++) {
 												%>
@@ -267,7 +267,7 @@ $(document).ready(function() {
 															<%=task.getTaskName() %>
 															</td>
 															<td>
-															<%=task.getDetail() %>
+															<%=task.getDetail().replaceAll("\n", "<br>") %>
 															</td>
 														</tr>
 													<%

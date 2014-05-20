@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
@@ -24,7 +25,9 @@ import org.fastcatsearch.analytics.analysis.config.SiteListSetting.SiteSetting;
 import org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CategorySetting;
 import org.fastcatsearch.analytics.db.AnalyticsDBService;
 import org.fastcatsearch.analytics.db.MapperSession;
+import org.fastcatsearch.analytics.db.mapper.SystemErrorMapper;
 import org.fastcatsearch.analytics.db.mapper.TaskResultMapper;
+import org.fastcatsearch.analytics.db.vo.SystemErrorVO;
 import org.fastcatsearch.analytics.db.vo.TaskResultVO;
 import org.fastcatsearch.analytics.env.Settings;
 import org.fastcatsearch.analytics.service.ServiceManager;
@@ -227,7 +230,7 @@ public class GlobalConfigurationController extends AbstractController {
 		final SimpleDateFormat targetFormat = new SimpleDateFormat("yyyyMMdd");
 		
 		//년, 월 입력.
-		Calendar calendar = Calendar.getInstance();
+		Calendar calendar = Calendar.getInstance(Locale.GERMAN);
 		
 		if (date != null && !"".equals(date)) {
 			try {
@@ -241,6 +244,7 @@ public class GlobalConfigurationController extends AbstractController {
 		nextCalendar.add(Calendar.MONTH, 1);
 
 		calendar = StatisticsUtils.getFirstDayOfWeek(calendar);
+		calendar.add(Calendar.DATE, -1);
 		
 		Calendar dataCalendar = (Calendar)calendar.clone();
 		
@@ -275,8 +279,27 @@ public class GlobalConfigurationController extends AbstractController {
 	
 	@RequestMapping("/systemError")
 	public ModelAndView taskResult(HttpSession session, @RequestParam(required=false) Integer pageNo ) throws Exception {
+		int pageSize = 4;
+		
+		if(pageNo == null || pageNo < 1) {
+			pageNo = 1;
+		}
+		
+		int start=(pageNo - 1) * pageSize;
+		int end=pageSize;
+		
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("/settings/systemError");
+		AnalyticsDBService service = ServiceManager.getInstance().getService(AnalyticsDBService.class);
+		MapperSession<SystemErrorMapper> mapperSession = service.getMapperSession(SystemErrorMapper.class);
+		SystemErrorMapper mapper = mapperSession.getMapper();
+		int totalSize = mapper.getCount();
+		List<SystemErrorVO> systemErrorList = mapper.getEntryList(start, end);
+		
+		modelAndView.addObject("pageNo", pageNo);
+		modelAndView.addObject("pageSize", pageSize);
+		modelAndView.addObject("totalSize", totalSize);
+		modelAndView.addObject("systemErrorList", systemErrorList);
 		return modelAndView;
 		
 	}

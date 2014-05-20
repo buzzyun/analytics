@@ -153,7 +153,7 @@ $(document).ready(function() {
 											<%
 											localCalendar.add(localCalendar.DATE, 1);
 											%>
-											<th><%=dateFormat.format(localCalendar.getTime()) %></th>
+											<th <%=localCalendar.get(Calendar.MONTH)==month?"":"class=\"gray\"" %>><%=dateFormat.format(localCalendar.getTime()) %></th>
 										<%
 										}
 										%>
@@ -171,7 +171,7 @@ $(document).ready(function() {
 													}
 												}
 												%>
-												<td <%=isSuccess?"":"class=\"danger\"" %> style="min-height:100px;height:auto;">
+												<td <%=isSuccess?"":"class=\"danger\"" %>>
 												<a data-toggle="modal" data-target="#taskResultModal_<%=dateInx%>" class="a-no-decoration">
 												<%
 												for (int taskInx=0;taskResult!=null && taskInx < taskResult.size(); taskInx++) {

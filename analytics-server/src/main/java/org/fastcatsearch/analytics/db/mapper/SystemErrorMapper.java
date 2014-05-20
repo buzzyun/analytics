@@ -13,4 +13,5 @@ public interface SystemErrorMapper extends SystemMapper {
 	
 	public int putEntry(SystemErrorVO entry) throws Exception;
 	
+	public int getCount();
 }

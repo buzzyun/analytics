@@ -21,6 +21,10 @@
 .clearfix:after {
   clear: both;
 }
+.gray {
+	color:#cccccc;
+}
+
 /* # General styles
 ================================================== */
 * {

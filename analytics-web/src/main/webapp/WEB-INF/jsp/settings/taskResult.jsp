@@ -14,7 +14,6 @@ SimpleDateFormat monthFormat = new SimpleDateFormat("yyyy.MM");
 SimpleDateFormat dateFormat = new SimpleDateFormat("MM.dd");
 SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 SimpleDateFormat ymdFormat = new SimpleDateFormat("yyyy.MM.dd");
-Calendar thisCalendar = (Calendar) request.getAttribute("thisCalendar");
 Calendar calendar = (Calendar) request.getAttribute("calendar");
 List<List<TaskResultVO>> monthlyTaskResult = (List) request.getAttribute("taskResult");
 List<SiteSetting> siteList = (List)request.getAttribute("siteList");
@@ -164,13 +163,12 @@ $(document).ready(function() {
 											<%
 											localCalendar.add(localCalendar.DATE, 1);
 											
-											if(localCalendar.get(Calendar.MONTH) != thisCalendar.get(Calendar.MONTH)){
+											if(localCalendar.get(Calendar.MONTH) != month){
 												classStr += " text-muted"; 
 											}
 											
-											
 											%>
-											<th class="<%=classStr %>"><%=dateFormat.format(localCalendar.getTime()) %></th>
+											<th class="<%=classStr%>"><%=dateFormat.format(localCalendar.getTime()) %></th>
 										<%
 										}
 										%>
@@ -192,7 +190,7 @@ $(document).ready(function() {
 												if(!isSuccess) {
 													classStr = "danger";
 												}
-												if(bodyCalendar.get(Calendar.MONTH) != thisCalendar.get(Calendar.MONTH)){
+												if(bodyCalendar.get(Calendar.MONTH) != month){
 													classStr += " text-muted"; 
 												}
 												

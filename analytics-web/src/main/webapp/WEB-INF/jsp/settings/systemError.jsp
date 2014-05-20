@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ page import="
 java.util.*,
+java.text.SimpleDateFormat,
 org.fastcatsearch.analytics.db.vo.*,
 org.fastcatsearch.analytics.analysis.config.SiteListSetting.SiteSetting,
 org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CategorySetting
@@ -9,7 +10,11 @@ org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CategorySetting
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
 
-
+List<SystemErrorVO> systemErrorList = (List)request.getAttribute("systemErrorList");
+SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+Integer totalSize = (Integer)request.getAttribute("totalSize");
+Integer pageSize = (Integer)request.getAttribute("pageSize");
+Integer pageNo = (Integer)request.getAttribute("pageNo");
 %>
 <c:set var="ROOT_PATH" value="../.." scope="request"/>
 <c:import url="../inc/common.jsp" />
@@ -19,6 +24,11 @@ org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CategorySetting
 
 <script type="text/javascript">
 
+function goPage(form,pageNo) {
+	var form = $("div#content form");
+	form[0].pageNo.value=pageNo;
+	form.submit();
+}
 </script>
 </head>
 <body>
@@ -31,6 +41,9 @@ org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CategorySetting
 			
 		<div id="content">
 			<div class="container">
+				<form>
+					<input type="hidden" name="pageNo" value="${pageNo }"/>
+				</form>
 				<!-- Breadcrumbs line -->
 				<div class="crumbs">
 					<ul id="breadcrumbs" class="breadcrumb">
@@ -60,76 +73,33 @@ org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CategorySetting
 								</thead>
 								<tbody>
 									<%
-									int i = 1;
+									for(int inx=0;inx < systemErrorList.size(); inx++) {
 									%>
-									<tr>
-										<td><%=i++ %></td>
-										<td>2014.04.02 12:30:00</td>
-										<td>[2014-05-02 11:25:53,525 INFO] (CatServer.java:190) CatServer started!
-[2014-05-02 11:26:14,911 DEBUG] (MainInterceptor.java:50) REDIRECT >> GET, target = http://localhost:8081/analytics/settings/sites.html</td>
-									</tr>
-									<tr>
-										<td><%=i++ %></td>
-										<td>2014.04.02 12:30:00</td>
-										<td>[2014-05-02 11:25:53,525 INFO] (CatServer.java:190) CatServer started!
-[2014-05-02 11:26:14,911 DEBUG] (MainInterceptor.java:50) REDIRECT >> GET, target = http://localhost:8081/analytics/settings/sites.html</td>
-									</tr>
-									<tr>
-										<td><%=i++ %></td>
-										<td>2014.04.02 12:30:00</td>
-										<td>[2014-05-02 11:25:53,525 INFO] (CatServer.java:190) CatServer started!
-[2014-05-02 11:26:14,911 DEBUG] (MainInterceptor.java:50) REDIRECT >> GET, target = http://localhost:8081/analytics/settings/sites.html</td>
-									</tr>
-									<tr>
-										<td><%=i++ %></td>
-										<td>2014.04.02 12:30:00</td>
-										<td>[2014-05-02 11:25:53,525 INFO] (CatServer.java:190) CatServer started!
-[2014-05-02 11:26:14,911 DEBUG] (MainInterceptor.java:50) REDIRECT >> GET, target = http://localhost:8081/analytics/settings/sites.html</td>
-									</tr>
-									<tr>
-										<td><%=i++ %></td>
-										<td>2014.04.02 12:30:00</td>
-										<td>[2014-05-02 11:25:53,525 INFO] (CatServer.java:190) CatServer started!
-[2014-05-02 11:26:14,911 DEBUG] (MainInterceptor.java:50) REDIRECT >> GET, target = http://localhost:8081/analytics/settings/sites.html</td>
-									</tr>
-									<tr>
-										<td><%=i++ %></td>
-										<td>2014.04.02 12:30:00</td>
-										<td>[2014-05-02 11:25:53,525 INFO] (CatServer.java:190) CatServer started!
-[2014-05-02 11:26:14,911 DEBUG] (MainInterceptor.java:50) REDIRECT >> GET, target = http://localhost:8081/analytics/settings/sites.html</td>
-									</tr>
-									<tr>
-										<td><%=i++ %></td>
-										<td>2014.04.02 12:30:00</td>
-										<td>[2014-05-02 11:25:53,525 INFO] (CatServer.java:190) CatServer started!
-[2014-05-02 11:26:14,911 DEBUG] (MainInterceptor.java:50) REDIRECT >> GET, target = http://localhost:8081/analytics/settings/sites.html</td>
-									</tr>
-									<tr>
-										<td><%=i++ %></td>
-										<td>2014.04.02 12:30:00</td>
-										<td>[2014-05-02 11:25:53,525 INFO] (CatServer.java:190) CatServer started!
-[2014-05-02 11:26:14,911 DEBUG] (MainInterceptor.java:50) REDIRECT >> GET, target = http://localhost:8081/analytics/settings/sites.html</td>
-									</tr>
-									<tr>
-										<td><%=i++ %></td>
-										<td>2014.04.02 12:30:00</td>
-										<td>[2014-05-02 11:25:53,525 INFO] (CatServer.java:190) CatServer started!
-[2014-05-02 11:26:14,911 DEBUG] (MainInterceptor.java:50) REDIRECT >> GET, target = http://localhost:8081/analytics/settings/sites.html</td>
-									</tr>
-									<tr>
-										<td><%=i++ %></td>
-										<td>2014.04.02 12:30:00</td>
-										<td>[2014-05-02 11:25:53,525 INFO] (CatServer.java:190) CatServer started!
-[2014-05-02 11:26:14,911 DEBUG] (MainInterceptor.java:50) REDIRECT >> GET, target = http://localhost:8081/analytics/settings/sites.html</td>
-									</tr>
+										<%
+										SystemErrorVO vo = systemErrorList.get(inx);
+										%>
+										<tr>
+											<td><%=totalSize - (pageSize * (pageNo - 1)) - inx %></td>
+											<td><%=dateFormat.format(vo.getTime()) %></td>
+											<td><%=vo.getErrorMessage()%></td>
+										</tr>
+									<%
+									}
+									%>
 								</tbody>
 							
 							</table>
 						</div>
 						
 					</div>
-					[ page navigation ]
-					
+					<jsp:include page="../inc/pagenation.jsp" >
+						<jsp:param name="pageNo" value="${pageNo }"/>
+						<jsp:param name="totalSize" value="${totalSize}" />
+						<jsp:param name="pageSize" value="${pageSize }" />
+						<jsp:param name="width" value="5" />
+						<jsp:param name="callback" value="goPage" />
+						<jsp:param name="requestURI" value="" />
+					 </jsp:include>
 				</div>
 				<!-- /Page Content -->
 			</div>

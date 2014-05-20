@@ -236,8 +236,11 @@ public class GlobalConfigurationController extends AbstractController {
 				
 			}
 		}
+		
+		Calendar thisCalendar = (Calendar) calendar.clone();
+		
 		calendar.set(Calendar.DATE, 1);
-		Calendar nextCalendar = (Calendar)calendar.clone();
+		Calendar nextCalendar = (Calendar) calendar.clone();
 		nextCalendar.add(Calendar.MONTH, 1);
 
 		calendar = StatisticsUtils.getFirstDayOfWeek(calendar);
@@ -266,6 +269,7 @@ public class GlobalConfigurationController extends AbstractController {
 		}
 		
 		modelAndView.addObject("siteList", siteList);
+		modelAndView.addObject("thisCalendar", thisCalendar);
 		modelAndView.addObject("calendar", calendar);
 		modelAndView.addObject("taskResult", monthlyTaskResult);
 		return modelAndView;

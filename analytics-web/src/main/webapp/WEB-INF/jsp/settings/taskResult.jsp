@@ -14,6 +14,7 @@ SimpleDateFormat monthFormat = new SimpleDateFormat("yyyy.MM");
 SimpleDateFormat dateFormat = new SimpleDateFormat("MM.dd");
 SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 SimpleDateFormat ymdFormat = new SimpleDateFormat("yyyy.MM.dd");
+Calendar thisCalendar = (Calendar) request.getAttribute("thisCalendar");
 Calendar calendar = (Calendar) request.getAttribute("calendar");
 List<List<TaskResultVO>> monthlyTaskResult = (List) request.getAttribute("taskResult");
 List<SiteSetting> siteList = (List)request.getAttribute("siteList");
@@ -148,18 +149,28 @@ $(document).ready(function() {
 									%>
 										<tr class="active">
 										<%
+										
+										Calendar bodyCalendar = (Calendar) localCalendar.clone();
 										for ( int headerInx=0; headerInx < 7; headerInx++ ) {
 											String classStr = "";
 											if(headerInx == 5) {
-												 classStr = "class=\"text-primary\"";
+												 classStr = "text-primary";
 											}else if(headerInx == 6) {
-												 classStr = "class=\"text-danger\"";
+												 classStr = "text-danger";
 											}
+											
+											
 										%>
 											<%
 											localCalendar.add(localCalendar.DATE, 1);
+											
+											if(localCalendar.get(Calendar.MONTH) != thisCalendar.get(Calendar.MONTH)){
+												classStr += " text-muted"; 
+											}
+											
+											
 											%>
-											<th <%=classStr %>><%=dateFormat.format(localCalendar.getTime()) %></th>
+											<th class="<%=classStr %>"><%=dateFormat.format(localCalendar.getTime()) %></th>
 										<%
 										}
 										%>
@@ -167,6 +178,7 @@ $(document).ready(function() {
 										<tr>
 											<%
 											for ( int weekInx=0; weekInx < 7; weekInx++, dateInx++ ) {
+												bodyCalendar.add(bodyCalendar.DATE, 1);
 											%>
 												<%
 												List<TaskResultVO> taskResult = monthlyTaskResult.get(dateInx);
@@ -176,8 +188,17 @@ $(document).ready(function() {
 														isSuccess = false;
 													}
 												}
+												String classStr = "";
+												if(!isSuccess) {
+													classStr = "danger";
+												}
+												if(bodyCalendar.get(Calendar.MONTH) != thisCalendar.get(Calendar.MONTH)){
+													classStr += " text-muted"; 
+												}
+												
+												
 												%>
-												<td <%=isSuccess?"":"class=\"danger\"" %> style="height:50px;">
+												<td class="<%=classStr %>" style="height:50px;">
 												<a data-toggle="modal" data-target="#taskResultModal_<%=dateInx%>" class="a-no-decoration" style="cursor: pointer;">
 												<%
 												for (int taskInx=0;taskResult!=null && taskInx < taskResult.size(); taskInx++) {

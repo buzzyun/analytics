@@ -171,7 +171,7 @@ $(document).ready(function() {
 													}
 												}
 												%>
-												<td <%=isSuccess?"":"class=\"danger\"" %> style="min-height:100px;height:auto;">
+												<td <%=isSuccess?"":"class=\"danger\"" %> style="height:50px;">
 												<a data-toggle="modal" data-target="#taskResultModal_<%=dateInx%>" class="a-no-decoration" style="cursor: pointer;">
 												<%
 												for (int taskInx=0;taskResult!=null && taskInx < taskResult.size(); taskInx++) {

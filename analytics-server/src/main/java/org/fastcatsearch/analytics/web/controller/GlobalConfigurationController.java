@@ -269,7 +269,6 @@ public class GlobalConfigurationController extends AbstractController {
 			}
 		}
 		
-		modelAndView.addObject("siteId", siteId);
 		modelAndView.addObject("siteList", siteList);
 		modelAndView.addObject("calendar", calendar);
 		modelAndView.addObject("taskResult", monthlyTaskResult);

@@ -17,10 +17,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.fastcatsearch.analytics.analysis.StatisticsService;
+import org.fastcatsearch.analytics.analysis.StatisticsUtils;
 import org.fastcatsearch.analytics.analysis.config.SiteListSetting;
 import org.fastcatsearch.analytics.analysis.config.StatisticsSettings;
 import org.fastcatsearch.analytics.analysis.config.SiteListSetting.SiteSetting;
 import org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CategorySetting;
+import org.fastcatsearch.analytics.db.AnalyticsDBService;
+import org.fastcatsearch.analytics.db.MapperSession;
+import org.fastcatsearch.analytics.db.mapper.TaskResultMapper;
+import org.fastcatsearch.analytics.db.vo.TaskResultVO;
 import org.fastcatsearch.analytics.env.Settings;
 import org.fastcatsearch.analytics.service.ServiceManager;
 import org.fastcatsearch.analytics.util.ResponseWriter;
@@ -204,25 +209,66 @@ public class GlobalConfigurationController extends AbstractController {
 	}
 	
 	@RequestMapping("/taskResult")
-	public ModelAndView taskResult(HttpSession session, @RequestParam(required=false) String date ) throws Exception {
+	public ModelAndView taskResult(HttpSession session, 
+			@RequestParam(required=false) String siteId, @RequestParam(required=false) String date ) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("/settings/taskResult");
 		
-		final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM");
+		StatisticsService statisticsService = ServiceManager.getInstance().getService(StatisticsService.class);
+		SiteListSetting siteCategoryListConfig = statisticsService.getSiteListSetting();
+		List<SiteSetting> siteList = siteCategoryListConfig.getSiteList();
+		
+		if(siteId == null && siteList.size() > 0) {
+			siteId = siteList.get(0).getId();
+		}
+		
+		
+		final SimpleDateFormat monthFormat = new SimpleDateFormat("yyyy.MM");
+		final SimpleDateFormat targetFormat = new SimpleDateFormat("yyyyMMdd");
+		
 		//년, 월 입력.
 		Calendar calendar = Calendar.getInstance();
 		
-		if(date != null && !"".equals(date)) {
+		if (date != null && !"".equals(date)) {
 			try {
-				calendar.setTime(dateFormat.parse(date));
+				calendar.setTime(monthFormat.parse(date));
 			} catch (ParseException ignore) {
 				
 			}
 		}
 		calendar.set(Calendar.DATE, 1);
-		calendar.add(Calendar.DATE, - calendar.get(Calendar.DAY_OF_WEEK) + 1);
-		//1일이 해당하는 주의 시작일자를 구한다. 
+		Calendar nextCalendar = (Calendar)calendar.clone();
+		nextCalendar.add(Calendar.MONTH, 1);
+
+		calendar = StatisticsUtils.getFirstDayOfWeek(calendar);
+		
+		Calendar dataCalendar = (Calendar)calendar.clone();
+		
+		AnalyticsDBService service = ServiceManager.getInstance().getService(AnalyticsDBService.class);
+		MapperSession<TaskResultMapper> mapperSession = service.getMapperSession(TaskResultMapper.class);
+		TaskResultMapper mapper = mapperSession.getMapper();
+		List<List<TaskResultVO>> monthlyTaskResult = new ArrayList<List<TaskResultVO>>();
+		
+		for (; dataCalendar.getTimeInMillis() < nextCalendar.getTimeInMillis();) {
+			for (int weekInx = 0; weekInx < 7; weekInx++) {
+				List<TaskResultVO> taskResult = null;
+				dataCalendar.add(Calendar.DATE, 1);
+				try {
+					taskResult = mapper.getEntryList(siteId, targetFormat.format(dataCalendar.getTime()));
+				} catch (Exception e) { 
+					logger.error("",e);
+				}
+				if(taskResult==null) {
+					taskResult = new ArrayList<TaskResultVO>();
+				}
+				monthlyTaskResult.add(taskResult);
+			}
+		}
+		
+		modelAndView.addObject("siteId", siteId);
+		modelAndView.addObject("siteList", siteList);
 		modelAndView.addObject("calendar", calendar);
+		modelAndView.addObject("taskResult", monthlyTaskResult);
 		return modelAndView;
 		
 	}

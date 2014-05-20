@@ -12,7 +12,12 @@ org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CategorySetting
 <%
 SimpleDateFormat monthFormat = new SimpleDateFormat("yyyy.MM");
 SimpleDateFormat dateFormat = new SimpleDateFormat("MM.dd");
+SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+SimpleDateFormat ymdFormat = new SimpleDateFormat("yyyy.MM.dd");
 Calendar calendar = (Calendar) request.getAttribute("calendar");
+List<List<TaskResultVO>> monthlyTaskResult = (List) request.getAttribute("taskResult");
+List<SiteSetting> siteList = (List)request.getAttribute("siteList");
+String siteId = (String)request.getAttribute("siteId");
 %>
 <c:set var="ROOT_PATH" value="../.." scope="request"/>
 <c:import url="../inc/common.jsp" />
@@ -21,7 +26,27 @@ Calendar calendar = (Calendar) request.getAttribute("calendar");
 <c:import url="../inc/header.jsp" />
 
 <script type="text/javascript">
-
+$(document).ready(function() {
+	var form = $("div.tab-content div.tab-pane form");
+	
+	var selectbox = form.find("div select#select_site");
+	
+	selectbox.change(function() {
+		form[0].siteId.value = this.value;
+		form.submit();
+	});
+	
+	
+	var btns = form.find("div.input-group span.input-group-btn button");
+	
+	btns.click(function() {
+		var index = $.inArray(this, btns);
+		var date = $(btns[index]).attr("value");
+		
+		form[0].date.value = date;
+		form.submit();
+	});
+});
 </script>
 </head>
 <body>
@@ -55,37 +80,45 @@ Calendar calendar = (Calendar) request.getAttribute("calendar");
 				<%
 				Calendar localCalendar = (Calendar)calendar.clone();
 				localCalendar.add(Calendar.DATE, 7);
+				//달의 첫주는 이전달과 섞여있기 때문에 차주의 달을 택한다.
 				int month = localCalendar.get(Calendar.MONTH);
+				//현재달과 이전달, 다음달의 출력문자를 생성.
 				String monthStr = monthFormat.format(localCalendar.getTime());
-				
 				localCalendar.add(Calendar.MONTH, -1);
 				String prevMonth = monthFormat.format(localCalendar.getTime());
 				localCalendar.add(Calendar.MONTH, 2);
 				String nextMonth = monthFormat.format(localCalendar.getTime());
+				//다음달 첫날일자 (달력 한계값 구할때 사용)
+				Calendar nextCalendar = (Calendar)localCalendar.clone();
+				nextCalendar.set(Calendar.DATE, 1);
+				//원래 날자로 복원. (당월 첫째주 시작일)
 				localCalendar.add(Calendar.MONTH, -1);
-				
 				localCalendar.add(Calendar.DATE, -7);
 				%>
 				
 				<div class="tab-content">
 					<div class="tab-pane active">
+						<form>
 						<div class="col-md-12 bottom-space">
 							<select id="select_site" name="siteId" class="select_flat fcol2">
-								<option>localhost.com</option>
+								<% for (int inx=0;inx < siteList.size(); inx++) { %>
+								<% SiteSetting site = siteList.get(inx); %>
+								<option value="<%=site.getId()%>" <%=siteId.equals(site.getId())?"selected":"" %>><%=site.getName() %></option>
+								<% } %>
 							</select>
 						</div>
 						<div class="col-md-12 bottom-space">
 							<div class="input-group fcol2">
 								<span class="input-group-btn">
-									<button class="btn btn-default" type="button">&laquo;</button>
+									<button class="btn btn-default" type="button" value="<%=prevMonth%>">&laquo;</button>
 								</span>
-								<input type="text" class="form-control" value="<%=monthStr%>">
+								<input type="text" class="form-control" name="date" value="<%=monthStr%>">
 								<span class="input-group-btn">
-									<button class="btn btn-default" type="button">&raquo;</button>
+									<button class="btn btn-default" type="button" value="<%=nextMonth%>">&raquo;</button>
 								</span>
 							</div>
 						</div>
-									
+						</form>
 						<div class="col-md-12">
 							<div class="widget box">
 								<div class="widget-header pull-center">
@@ -93,6 +126,11 @@ Calendar calendar = (Calendar) request.getAttribute("calendar");
 								</div>
 								<div class="widget-content no-padding">
 									<table class="table table-bordered table-header table-highlight-head">
+									<colgroup>
+										<% for ( int inx=0;inx < 7;inx++) { %>
+										<col style="width:<%=100/7 %>%"></col>
+										<% } %>
+									</colgroup>
 									<thead>
 										<tr>
 											<th>Mon</th>
@@ -106,14 +144,14 @@ Calendar calendar = (Calendar) request.getAttribute("calendar");
 									</thead>
 									<tbody>
 									<% 
-									for ( int weekInx=0; localCalendar.get(Calendar.MONTH) <= month; weekInx++) {
+									for ( int dateInx=0; localCalendar.getTimeInMillis() < nextCalendar.getTimeInMillis() ; ) {
 									%>
 										<tr class="active">
 										<%
-										for ( int dateInx=0; dateInx < 7; dateInx++ ) {
+										for ( int headerInx=0; headerInx < 7; headerInx++ ) {
 										%>
 											<%
-											localCalendar.add(Calendar.DATE, 1);
+											localCalendar.add(localCalendar.DATE, 1);
 											%>
 											<th><%=dateFormat.format(localCalendar.getTime()) %></th>
 										<%
@@ -122,38 +160,38 @@ Calendar calendar = (Calendar) request.getAttribute("calendar");
 										</tr>
 										<tr>
 											<%
-											for ( int dateInx=0; dateInx < 7; dateInx++ ) {
+											for ( int weekInx=0; weekInx < 7; weekInx++, dateInx++ ) {
 											%>
-											<td class="danger"><a href="#" class="a-no-decoration">
-												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-												<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											</a>
-											</td>
+												<%
+												List<TaskResultVO> taskResult = monthlyTaskResult.get(dateInx);
+												boolean isSuccess = true;
+												for (int taskInx=0;taskResult!=null && taskInx < taskResult.size(); taskInx++) {
+													if(!"SUCCESS".equals(taskResult.get(taskInx).getResultStatus())) {
+														isSuccess = false;
+													}
+												}
+												%>
+												<td <%=isSuccess?"":"class=\"danger\"" %> style="min-height:100px;height:auto;">
+												<a data-toggle="modal" data-target="#taskResultModal_<%=dateInx%>" class="a-no-decoration">
+												<%
+												for (int taskInx=0;taskResult!=null && taskInx < taskResult.size(); taskInx++) {
+												%>
+													<%TaskResultVO task = taskResult.get(taskInx); %>
+													<%if ("SUCCESS".equals(task.getResultStatus())) { %>
+														<span class="text-success glyphicon glyphicon-ok-sign"></span>
+														<%=task.getTaskId() %><br/>
+													<% } else { %>
+														<span class="text-success glyphicon glyphicon-remove-sign"></span>
+														<%=task.getTaskId() %><br/>
+													<% } %>
+												<%
+												}
+												%>
+												</a> 
+												</td>
 											<%
 											}
 											%>
-											<!--
-											<td>
-												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-												<span class="text-danger glyphicon glyphicon-remove-sign"></span> DAILY_SP<br>
-												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-												<span class="text-success glyphicon glyphicon-ok-sign"></span> DAILY_SP<br>
-											</td>
-											-->
 										</tr>
 									<%
 									}
@@ -167,101 +205,93 @@ Calendar calendar = (Calendar) request.getAttribute("calendar");
 					</div>
 				</div>
 				
-				
-				<div class="tab-content">
-					<div class="tab-pane active">
-						<div class="col-md-12">
-							<div class="widget box">
-								<div class="widget-header">
-								<h4>2014.03.31 - Task Result Detail</h4>
+				<%
+				for(int dateInx=0;dateInx<monthlyTaskResult.size();dateInx++) {
+				%>
+					<%
+					List<TaskResultVO>taskResult = monthlyTaskResult.get(dateInx);
+					String targetTime = "";
+					if(taskResult.size() > 0) {
+						targetTime = ymdFormat.format(taskResult.get(0).getStartTime());
+					}
+					%>
+					<div class="modal" id="taskResultModal_<%=dateInx %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+						<div class="modal-dialog" style="width:80%">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+									<h4 class="modal-title">Task Result Detail</h4>
 								</div>
-								<div class="widget-content no-padding">
-									<table class="table table-bordered">
-									<thead>
-										<tr>
-											<th>#</th>
-											<th>Start</th>
-											<th>End</th>
-											<th>Duration</th>
-											<th>Task</th>
-											<th class="fcol2">Explain</th>
-										</tr>
-									</thead>
-									<tbody>
-									<tr>
-										<td>1</td>
-										<td>00:20:00</td>
-										<td>00:20:50</td>
-										<td>50s</td>
-										<td><span class="text-success glyphicon glyphicon-ok-sign"></span> Daily Search Progress Task</td>
-										<td></td>
-									</tr>
-									<tr class="danger">
-										<td>2</td>
-										<td>00:20:00</td>
-										<td>00:20:50</td>
-										<td>50s</td>
-										<td><span class="text-danger glyphicon glyphicon-remove-sign"></span> Weekly Search Progress Task</td>
-										<td>(Calculator.java:74) Process Drop. cause=Drop process due to file is empty. file=/Users/swsong/TEST_HOME/danawa1022/analytics-1.14.2/statistics/www/rt/data/cate3/key-count.log
-[2014-05-02 10:35:04,979 DEBUG] (AbstractLogAggregator.java:89) ##aggregate count 0
-[2014-05-02 10:35:04,980 DEBUG] (Calculator.java:65) #### calculate category RealtimePopularKeywordCalculator > www:cate4:CategoryProcess</td>
-									</tr>
-									<tr>
-										<td>3</td>
-										<td>00:20:00</td>
-										<td>00:20:50</td>
-										<td>50s</td>
-										<td><span class="text-success glyphicon glyphicon-ok-sign"></span> Weekly Search Progress Task</td>
-										<td></td>
-									</tr>
-									<tr>
-										<td>4</td>
-										<td>00:20:00</td>
-										<td>00:20:50</td>
-										<td>50s</td>
-										<td><span class="text-success glyphicon glyphicon-ok-sign"></span> Weekly Search Progress Task</td>
-										<td></td>
-									</tr>
-									<tr>
-										<td>5</td>
-										<td>00:20:00</td>
-										<td>00:20:50</td>
-										<td>50s</td>
-										<td><span class="text-success glyphicon glyphicon-ok-sign"></span> Weekly Search Progress Task</td>
-										<td></td>
-									</tr>
-									<tr>
-										<td>6</td>
-										<td>00:20:00</td>
-										<td>00:20:50</td>
-										<td>50s</td>
-										<td><span class="text-success glyphicon glyphicon-ok-sign"></span> Weekly Search Progress Task</td>
-										<td></td>
-									</tr>
-									<tr>
-										<td>7</td>
-										<td>00:20:00</td>
-										<td>00:20:50</td>
-										<td>50s</td>
-										<td><span class="text-success glyphicon glyphicon-ok-sign"></span> Weekly Search Progress Task</td>
-										<td></td>
-									</tr>
-									<tr>
-										<td>8</td>
-										<td>00:20:00</td>
-										<td>00:20:50</td>
-										<td>50s</td>
-										<td><span class="text-success glyphicon glyphicon-ok-sign"></span> Weekly Search Progress Task</td>
-										<td></td>
-									</tr>
-									</tbody>
-									</table>
+								<br/>
+								<div class="tab-content">
+									<div class="tab-pane active">
+										<div class="col-md-12">
+											<div class="widget box">
+												<div class="widget-header">
+												<h4><%=targetTime %> - Task Result Detail</h4>
+												</div>
+												<div class="widget-content no-padding">
+													<table class="table table-bordered">
+													<thead>
+														<tr>
+															<th>#</th>
+															<th>Start</th>
+															<th>End</th>
+															<th>Duration</th>
+															<th>Task</th>
+															<th class="fcol2">Explain</th>
+														</tr>
+													</thead>
+													<tbody>
+													<% 
+													for ( int taskInx=0;taskInx < taskResult.size(); taskInx++) {
+													%>
+														<%
+														TaskResultVO task = taskResult.get(taskInx);
+														boolean isSuccess = "SUCCESS".equals(task.getResultStatus());
+														
+														String startTime = timeFormat.format(task.getStartTime());
+														String endTime = timeFormat.format(task.getEndTime());
+														%>
+														<tr <%=isSuccess?"":"class=\"danger\"" %>>
+															<td><%=taskInx+1 %></td>
+															<td><%=startTime %></td>
+															<td><%=endTime %></td>
+															<td><%=task.getDuration() %></td>
+															<td>
+															<%if(isSuccess) { %>
+															<span class="text-success glyphicon glyphicon-ok-sign"></span> 
+															<% } else { %>
+															<span class="text-danger glyphicon glyphicon-remove-sign"></span> 
+															<% } %>
+															<%=task.getTaskName() %>
+															</td>
+															<td>
+															<%=task.getDetail() %>
+															</td>
+														</tr>
+													<%
+													}
+													%>
+													</tbody>
+													</table>
+												</div>
+											</div>
+											
+										</div>
+									</div>
 								</div>
+								
+								<div class="modal-footer">
+									<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+								</div>
+								
 							</div>
-							
 						</div>
 					</div>
-				</div>
+				<%
+				}
+				%>
 			</div>
 			<!-- /.container -->
 		</div>

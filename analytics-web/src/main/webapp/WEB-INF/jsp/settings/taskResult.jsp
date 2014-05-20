@@ -254,11 +254,11 @@ $(document).ready(function() {
 														String endTime = timeFormat.format(task.getEndTime());
 														%>
 														<tr <%=isSuccess?"":"class=\"danger\"" %>>
-															<td><%=taskInx+1 %></td>
-															<td><%=startTime %></td>
-															<td><%=endTime %></td>
-															<td><%=task.getDuration() %></td>
-															<td>
+															<td class="fcol1"><%=taskInx+1 %></td>
+															<td class="fcol1-1"><%=startTime %></td>
+															<td class="fcol1-1"><%=endTime %></td>
+															<td class="fcol1-1"><%=task.getDuration() %></td>
+															<td class="fcol2-1">
 															<%if(isSuccess) { %>
 															<span class="text-success glyphicon glyphicon-ok-sign"></span> 
 															<% } else { %>
@@ -266,7 +266,7 @@ $(document).ready(function() {
 															<% } %>
 															<%=task.getTaskName() %>
 															</td>
-															<td>
+															<td style="word-break:break-all">
 															<%=task.getDetail().replaceAll("\n", "<br>") %>
 															</td>
 														</tr>

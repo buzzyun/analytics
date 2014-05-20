@@ -17,7 +17,7 @@ SimpleDateFormat ymdFormat = new SimpleDateFormat("yyyy.MM.dd");
 Calendar calendar = (Calendar) request.getAttribute("calendar");
 List<List<TaskResultVO>> monthlyTaskResult = (List) request.getAttribute("taskResult");
 List<SiteSetting> siteList = (List)request.getAttribute("siteList");
-String siteId = (String)request.getAttribute("siteId");
+String siteId = request.getParameter("siteId");
 %>
 <c:set var="ROOT_PATH" value="../.." scope="request"/>
 <c:import url="../inc/common.jsp" />
@@ -103,7 +103,7 @@ $(document).ready(function() {
 							<select id="select_site" name="siteId" class="select_flat fcol2">
 								<% for (int inx=0;inx < siteList.size(); inx++) { %>
 								<% SiteSetting site = siteList.get(inx); %>
-								<option value="<%=site.getId()%>" <%=siteId.equals(site.getId())?"selected":"" %>><%=site.getName() %></option>
+								<option value="<%=site.getId()%>" <%=site.getId().equals(siteId) ? "selected":"" %>><%=site.getName() %></option>
 								<% } %>
 							</select>
 						</div>
@@ -138,8 +138,8 @@ $(document).ready(function() {
 											<th>Wed</th>
 											<th>Thu</th>
 											<th>Fri</th>
-											<th>SAT</th>
-											<th>SUN</th>
+											<th class="text-primary">SAT</th>
+											<th class="text-danger">SUN</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -149,11 +149,17 @@ $(document).ready(function() {
 										<tr class="active">
 										<%
 										for ( int headerInx=0; headerInx < 7; headerInx++ ) {
+											String classStr = "";
+											if(headerInx == 5) {
+												 classStr = "class=\"text-primary\"";
+											}else if(headerInx == 6) {
+												 classStr = "class=\"text-danger\"";
+											}
 										%>
 											<%
 											localCalendar.add(localCalendar.DATE, 1);
 											%>
-											<th><%=dateFormat.format(localCalendar.getTime()) %></th>
+											<th <%=classStr %>><%=dateFormat.format(localCalendar.getTime()) %></th>
 										<%
 										}
 										%>

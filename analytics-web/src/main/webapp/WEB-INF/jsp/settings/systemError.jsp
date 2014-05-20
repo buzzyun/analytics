@@ -66,8 +66,8 @@ function goPage(form,pageNo) {
 							<table class="table table-bordered table-highlight-head">
 								<thead>
 									<tr>
-										<th>#</th>
-										<th>Time</th>
+										<th class="fcol1">#</th>
+										<th class="fcol2">Time</th>
 										<th>Error</th>
 									</tr>
 								</thead>

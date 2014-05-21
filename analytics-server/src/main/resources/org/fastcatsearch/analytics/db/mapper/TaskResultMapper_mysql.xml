@@ -41,6 +41,7 @@
 		select *
 		from TaskResult 
 		where siteId = #{siteId} and targetTime = #{targetTime}
+		order by startTime asc
 	</select>
 	
 	<select id="getEntry" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.TaskResultVO">

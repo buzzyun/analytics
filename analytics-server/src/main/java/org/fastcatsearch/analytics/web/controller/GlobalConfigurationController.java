@@ -279,14 +279,14 @@ public class GlobalConfigurationController extends AbstractController {
 	
 	@RequestMapping("/systemError")
 	public ModelAndView taskResult(HttpSession session, @RequestParam(required=false) Integer pageNo ) throws Exception {
-		int pageSize = 4;
+		int pageSize = 5;
 		
 		if(pageNo == null || pageNo < 1) {
 			pageNo = 1;
 		}
 		
 		int start=(pageNo - 1) * pageSize;
-		int end=pageSize;
+		int len = pageSize;
 		
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("/settings/systemError");
@@ -294,7 +294,7 @@ public class GlobalConfigurationController extends AbstractController {
 		MapperSession<SystemErrorMapper> mapperSession = service.getMapperSession(SystemErrorMapper.class);
 		SystemErrorMapper mapper = mapperSession.getMapper();
 		int totalSize = mapper.getCount();
-		List<SystemErrorVO> systemErrorList = mapper.getEntryList(start, end);
+		List<SystemErrorVO> systemErrorList = mapper.getEntryList(start, len);
 		
 		modelAndView.addObject("pageNo", pageNo);
 		modelAndView.addObject("pageSize", pageSize);

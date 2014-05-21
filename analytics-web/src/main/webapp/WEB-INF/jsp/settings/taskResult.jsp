@@ -184,6 +184,7 @@ $(document).ready(function() {
 												for (int taskInx=0;taskResult!=null && taskInx < taskResult.size(); taskInx++) {
 													if(!"SUCCESS".equals(taskResult.get(taskInx).getResultStatus())) {
 														isSuccess = false;
+														break;
 													}
 												}
 												String classStr = "";
@@ -206,7 +207,7 @@ $(document).ready(function() {
 														<span class="text-success glyphicon glyphicon-ok-sign"></span>
 														<%=task.getTaskId() %><br/>
 													<% } else { %>
-														<span class="text-success glyphicon glyphicon-remove-sign"></span>
+														<span class="text-danger glyphicon glyphicon-remove-sign"></span>
 														<%=task.getTaskId() %><br/>
 													<% } %>
 												<%

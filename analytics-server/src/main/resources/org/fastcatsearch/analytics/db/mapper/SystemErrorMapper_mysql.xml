@@ -28,9 +28,10 @@
 	</update>
 	
 	<select id="getEntryList" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.SystemErrorVO">
-		<if test="start &gt;= 0 and end &gt;= 0">
-			select * from SystemError limit #{start}, #{end}
-			
+		<if test="start &gt;= 0 and len &gt;= 0">
+			select * from SystemError 
+			order by time desc
+			limit #{start}, #{len}
 		</if>
 	</select>
 

@@ -9,7 +9,7 @@ import org.fastcatsearch.analytics.db.vo.SystemErrorVO;
  * */
 public interface SystemErrorMapper extends SystemMapper {
 	
-	public List<SystemErrorVO> getEntryList(@Param("start") int start, @Param("end") int end) throws Exception;
+	public List<SystemErrorVO> getEntryList(@Param("start") int start, @Param("len") int len) throws Exception;
 	
 	public int putEntry(SystemErrorVO entry) throws Exception;
 	

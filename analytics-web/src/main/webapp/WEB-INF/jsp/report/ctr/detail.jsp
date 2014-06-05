@@ -37,7 +37,7 @@ $(document).ready(function(){
 });
 
 function goDetail(keyword){
-	submitForm("keyword.html", {"keyword" : keyword}, "post");
+	submitForm("keyword.html", {"timeText": "${timeText}", "keyword" : keyword}, "post");
 }
 
 </script>

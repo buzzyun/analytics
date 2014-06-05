@@ -48,7 +48,9 @@
 		and rankDiff >= #{rankDiffOver}
 		</if>
 		order by rank asc
+		<if test="start >= 0 and length > 0">
 		limit #{start}, #{length}
+		</if>
 	</select>
 	
 	<select id="getCount" parameterType="map" resultType="int">

@@ -336,6 +336,12 @@ $(document).ready(function() {
 			options.mode="range";
 		};
 	});
+										
+	$("div.container div.widget-header a.btn-sm span.icon-download").parent().click(function() {
+		var keyword = encodeURI("<%=keyword%>");
+		var timeText = encodeURI("<%=timeText%>");
+		location.href="hit/download.html?categoryId=${categoryId}&timeText="+timeText+"&timeViewType=<%=timeViewType%>&keyword="+keyword;
+	});
 	
 });
 </script>
@@ -402,6 +408,9 @@ $(document).ready(function() {
 							<div class="widget-header">
 								<h4>
 									<i class="icon-calendar"></i> Period : <%=timeText %>
+									<a class="btn btn-default btn-sm">
+										<span class="icon icon-download"></span> Download
+									</a>											
 								</h4>
 							</div>
 						</div>

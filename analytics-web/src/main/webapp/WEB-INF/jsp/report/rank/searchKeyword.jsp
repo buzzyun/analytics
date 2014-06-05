@@ -71,6 +71,14 @@ $(document).ready(function(){
 		
 		
 	});
+	
+	$("div.tab-content div.tab-pane a.btn-sm span.icon-download").parent().click(function() {
+		var form = $("#pagenationForm")[0];
+		var action = form.action;
+		form.action="searchKeyword/download.html";
+		form.submit();
+		form.action = action;
+	});
 });
 </script>
 
@@ -144,6 +152,9 @@ $(document).ready(function(){
 									<div class="widget-header">
 										<h4>
 											<i class="icon-calendar"></i> Period : <%=timeText %>
+											<a class="btn btn-default btn-sm">
+												<span class="icon icon-download"></span> Download
+											</a>											
 										</h4>
 									</div>
 

@@ -310,8 +310,15 @@ public class CTRController extends AbstractController {
 				
 				Map<String, String> typeCountMap = new HashMap<String, String>();
 				for(String[] clickType : clickTypeList){
-					int keywordClickTypeCount = clickKeywordHitMapper.getKeywordTypeClickCount(siteId, timeId, keyword, clickType[0]);
-					typeCountMap.put(clickType[0], String.format("%,d", keywordClickTypeCount));
+					try {
+						logger.debug("clickKeywordHitMapper:{}", clickKeywordHitMapper);
+						logger.debug("siteId:{} / timeId:{} / keyword:{} / clickType:{}", siteId, timeId, keyword, clickType);
+						int keywordClickTypeCount = clickKeywordHitMapper.getKeywordTypeClickCount(siteId, timeId, keyword, clickType[0]);
+						typeCountMap.put(clickType[0], String.format("%,d", keywordClickTypeCount));
+					} catch (NullPointerException e) {
+						logger.error("error:{}",e.getMessage());
+						typeCountMap.put(clickType[0], String.format("%,d", 0));
+					}
 				}
 				typeCountMapList.add(typeCountMap);
 			}

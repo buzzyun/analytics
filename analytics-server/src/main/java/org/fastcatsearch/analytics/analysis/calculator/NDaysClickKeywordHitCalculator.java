@@ -94,7 +94,9 @@ public class NDaysClickKeywordHitCalculator extends Calculator<ClickLog> {
 					
 					try {
 						logger.trace("click log copy {} -> {}", file.getAbsolutePath(), targetFilePath);
-						FileUtils.copyFile(file, new File(targetFilePath));
+						if(file.exists()) {
+							FileUtils.copyFile(file, new File(targetFilePath));
+						}
 					} catch (IOException e) {
 						logger.error("", e);
 					};

@@ -116,10 +116,12 @@ public class StatisticsSettings {
 		}
 
 		public Set<String> getBanwordSet() {
-			String[] list = banwords.split("\t");
 			Set<String> set = new HashSet<String>();
-			for(String w : list) {
-				set.add(w);
+			if(banwords != null) {
+				String[] list = banwords.split("\t");
+				for(String w : list) {
+					set.add(w);
+				}
 			}
 			return set;
 		}

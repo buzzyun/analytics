@@ -144,10 +144,7 @@ public class KeywordDictionaryCompileApplyJob extends Job {
 			}
 		} finally {
 			if(mapperSession != null) {
-				try {
-					mapperSession.closeSession();
-				} catch (IOException e) {
-				}
+				mapperSession.closeSession();
 			}
 		}
 	}

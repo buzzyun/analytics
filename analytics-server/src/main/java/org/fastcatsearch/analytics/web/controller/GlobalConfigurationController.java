@@ -1,5 +1,9 @@
 package org.fastcatsearch.analytics.web.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.text.ParseException;
@@ -21,8 +25,8 @@ import javax.servlet.http.HttpSession;
 import org.fastcatsearch.analytics.analysis.StatisticsService;
 import org.fastcatsearch.analytics.analysis.StatisticsUtils;
 import org.fastcatsearch.analytics.analysis.config.SiteListSetting;
-import org.fastcatsearch.analytics.analysis.config.StatisticsSettings;
 import org.fastcatsearch.analytics.analysis.config.SiteListSetting.SiteSetting;
+import org.fastcatsearch.analytics.analysis.config.StatisticsSettings;
 import org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CategorySetting;
 import org.fastcatsearch.analytics.db.AnalyticsDBService;
 import org.fastcatsearch.analytics.db.MapperSession;
@@ -32,6 +36,7 @@ import org.fastcatsearch.analytics.db.vo.SystemErrorVO;
 import org.fastcatsearch.analytics.db.vo.TaskResultVO;
 import org.fastcatsearch.analytics.env.Settings;
 import org.fastcatsearch.analytics.service.ServiceManager;
+import org.fastcatsearch.analytics.util.Formatter;
 import org.fastcatsearch.analytics.util.ResponseWriter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -319,16 +324,59 @@ public class GlobalConfigurationController extends AbstractController {
 	
 	@RequestMapping("/rawLogFileData")
 	public void rawLogFileData(HttpServletResponse response, 
-			@RequestParam(required=false) String siteId, @RequestParam(required=false) String date ) throws Exception {
+			@RequestParam String siteId, @RequestParam String date, @RequestParam String timeViewType, @RequestParam String fileName) throws Exception {
 		
 		Writer writer = null;
+		SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy.MM.dd");
+		Calendar calendar = Calendar.getInstance(Locale.GERMAN);
+		if (date != null && !"".equals(date)) {
+			try {
+				calendar.setTime(timeFormat.parse(date));
+			} catch (ParseException ignore) {
+			}
+		}
 		
-		try{ 
+		
+		File statisticsHome = environment.filePaths().getStatisticsRoot().file();
+		File dateKeywordBaseDir = new File(new File(statisticsHome, siteId), "date");
+		File dataDir = null;
+		if("W".equalsIgnoreCase(timeViewType)) {
+			dataDir = StatisticsUtils.getWeekDataDir(dateKeywordBaseDir, calendar);
+		} else if("M".equalsIgnoreCase(timeViewType)) {
+			dataDir = StatisticsUtils.getMonthDataDir(dateKeywordBaseDir, calendar);
+		} else if("Y".equalsIgnoreCase(timeViewType)) {
+			dataDir = StatisticsUtils.getYearDataDir(dateKeywordBaseDir, calendar);
+		} else {
+			dataDir = StatisticsUtils.getDayDataDir(dateKeywordBaseDir, calendar);
+		}
+		
+		try {
+			
+			File logFile = new File(dataDir, fileName);
+			
+			response.setCharacterEncoding("utf-8");
+			response.setContentType("text/plain");
+			char[] buf = new char[1024];
 			writer = response.getWriter();
-		}finally {
+			Reader reader = new InputStreamReader(new FileInputStream(logFile), "utf-8");
+			try{
+				while(true){
+					int n = reader.read(buf);
+					if(n > 0) {
+						writer.write(buf, 0, n);
+					}else if(n < 0) {
+						//끝.
+						break;
+					}
+				}
+			}finally{
+				reader.close();
+			}
+		} finally {
 			writer.close();
 		}
 	}
+	
 	@RequestMapping("/rawLogFile")
 	public ModelAndView rawLogFile(HttpSession session, 
 			@RequestParam(required=false) String siteId, @RequestParam(required=false) String date ) throws Exception {
@@ -343,9 +391,10 @@ public class GlobalConfigurationController extends AbstractController {
 			siteId = siteList.get(0).getId();
 		}
 		
+		File statisticsHome = environment.filePaths().getStatisticsRoot().file();
+		File dateKeywordBaseDir = new File(new File(statisticsHome, siteId), "date");
 		
 		final SimpleDateFormat monthFormat = new SimpleDateFormat("yyyy.MM");
-		final SimpleDateFormat targetFormat = new SimpleDateFormat("yyyyMMdd");
 		
 		//년, 월 입력.
 		Calendar calendar = Calendar.getInstance(Locale.GERMAN);
@@ -367,27 +416,33 @@ public class GlobalConfigurationController extends AbstractController {
 		
 		Calendar dataCalendar = (Calendar)calendar.clone();
 		
-		AnalyticsDBService service = ServiceManager.getInstance().getService(AnalyticsDBService.class);
-		List<List<TaskResultVO>> monthlyTaskResult = new ArrayList<List<TaskResultVO>>();
+		List<List<String[]>> dailyFileInfoList = new ArrayList<List<String[]>>();
 		
+		String[] fileList = new String[]{ "raw.log", "type_raw.log", "click_raw.log" };
 		for (; dataCalendar.getTimeInMillis() < nextCalendar.getTimeInMillis();) {
 			for (int weekInx = 0; weekInx < 7; weekInx++) {
-				List<TaskResultVO> taskResult = null;
+				List<String[]> fileInfoList = new ArrayList<String[]>();
 				dataCalendar.add(Calendar.DATE, 1);
-				try {
-				} catch (Exception e) { 
-					logger.error("",e);
+				
+				File dataDir = StatisticsUtils.getDayDataDir(dateKeywordBaseDir, dataCalendar);
+				
+				for(String fileName : fileList) {
+					File logFile = new File(dataDir, fileName);
+					String fileSize = "-";
+					if(logFile.exists()) {
+						fileSize = Formatter.getFormatSize(logFile.length());
+					}
+					
+					fileInfoList.add(new String[] { fileName, fileSize});
 				}
-				if(taskResult==null) {
-					taskResult = new ArrayList<TaskResultVO>();
-				}
-//				monthlyTaskResult.add(taskResult);
+				
+				dailyFileInfoList.add(fileInfoList);
 			}
 		}
 		
 		modelAndView.addObject("siteList", siteList);
 		modelAndView.addObject("calendar", calendar);
-		modelAndView.addObject("taskResult", monthlyTaskResult);
+		modelAndView.addObject("dailyFileInfoList", dailyFileInfoList);
 		return modelAndView;
 		
 	}

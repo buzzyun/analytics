@@ -11,7 +11,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.fastcatsearch</groupId>
 	<artifactId>analytics</artifactId>
-	<version>1.14.5</version>
+	<version>1.14.6</version>
 	<name>analytics</name>
 	<description>analytics package</description>
 	<url>http://fastcatgroup.org</url>

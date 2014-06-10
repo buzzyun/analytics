@@ -15,6 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.fastcatsearch.analytics.analysis.StatisticsService;
@@ -251,28 +252,34 @@ public class GlobalConfigurationController extends AbstractController {
 		
 		AnalyticsDBService service = ServiceManager.getInstance().getService(AnalyticsDBService.class);
 		MapperSession<TaskResultMapper> mapperSession = service.getMapperSession(TaskResultMapper.class);
-		TaskResultMapper mapper = mapperSession.getMapper();
-		List<List<TaskResultVO>> monthlyTaskResult = new ArrayList<List<TaskResultVO>>();
-		
-		for (; dataCalendar.getTimeInMillis() < nextCalendar.getTimeInMillis();) {
-			for (int weekInx = 0; weekInx < 7; weekInx++) {
-				List<TaskResultVO> taskResult = null;
-				dataCalendar.add(Calendar.DATE, 1);
-				try {
-					taskResult = mapper.getEntryList(siteId, targetFormat.format(dataCalendar.getTime()));
-				} catch (Exception e) { 
-					logger.error("",e);
+		try{
+			TaskResultMapper mapper = mapperSession.getMapper();
+			List<List<TaskResultVO>> monthlyTaskResult = new ArrayList<List<TaskResultVO>>();
+			
+			for (; dataCalendar.getTimeInMillis() < nextCalendar.getTimeInMillis();) {
+				for (int weekInx = 0; weekInx < 7; weekInx++) {
+					List<TaskResultVO> taskResult = null;
+					dataCalendar.add(Calendar.DATE, 1);
+					try {
+						taskResult = mapper.getEntryList(siteId, targetFormat.format(dataCalendar.getTime()));
+					} catch (Exception e) { 
+						logger.error("",e);
+					}
+					if(taskResult==null) {
+						taskResult = new ArrayList<TaskResultVO>();
+					}
+					monthlyTaskResult.add(taskResult);
 				}
-				if(taskResult==null) {
-					taskResult = new ArrayList<TaskResultVO>();
-				}
-				monthlyTaskResult.add(taskResult);
+			}
+			
+			modelAndView.addObject("siteList", siteList);
+			modelAndView.addObject("calendar", calendar);
+			modelAndView.addObject("taskResult", monthlyTaskResult);
+		} finally {
+			if (mapperSession != null) {
+				mapperSession.closeSession();
 			}
 		}
-		
-		modelAndView.addObject("siteList", siteList);
-		modelAndView.addObject("calendar", calendar);
-		modelAndView.addObject("taskResult", monthlyTaskResult);
 		return modelAndView;
 		
 	}
@@ -292,14 +299,95 @@ public class GlobalConfigurationController extends AbstractController {
 		modelAndView.setViewName("/settings/systemError");
 		AnalyticsDBService service = ServiceManager.getInstance().getService(AnalyticsDBService.class);
 		MapperSession<SystemErrorMapper> mapperSession = service.getMapperSession(SystemErrorMapper.class);
-		SystemErrorMapper mapper = mapperSession.getMapper();
-		int totalSize = mapper.getCount();
-		List<SystemErrorVO> systemErrorList = mapper.getEntryList(start, len);
+		try{
+			SystemErrorMapper mapper = mapperSession.getMapper();
+			int totalSize = mapper.getCount();
+			List<SystemErrorVO> systemErrorList = mapper.getEntryList(start, len);
+			
+			modelAndView.addObject("pageNo", pageNo);
+			modelAndView.addObject("pageSize", pageSize);
+			modelAndView.addObject("totalSize", totalSize);
+			modelAndView.addObject("systemErrorList", systemErrorList);
+		} finally {
+			if (mapperSession != null) {
+				mapperSession.closeSession();
+			}
+		}
+		return modelAndView;
 		
-		modelAndView.addObject("pageNo", pageNo);
-		modelAndView.addObject("pageSize", pageSize);
-		modelAndView.addObject("totalSize", totalSize);
-		modelAndView.addObject("systemErrorList", systemErrorList);
+	}
+	
+	@RequestMapping("/rawLogFileData")
+	public void rawLogFileData(HttpServletResponse response, 
+			@RequestParam(required=false) String siteId, @RequestParam(required=false) String date ) throws Exception {
+		
+		Writer writer = null;
+		
+		try{ 
+			writer = response.getWriter();
+		}finally {
+			writer.close();
+		}
+	}
+	@RequestMapping("/rawLogFile")
+	public ModelAndView rawLogFile(HttpSession session, 
+			@RequestParam(required=false) String siteId, @RequestParam(required=false) String date ) throws Exception {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("/settings/rawLogFile");
+		
+		StatisticsService statisticsService = ServiceManager.getInstance().getService(StatisticsService.class);
+		SiteListSetting siteCategoryListConfig = statisticsService.getSiteListSetting();
+		List<SiteSetting> siteList = siteCategoryListConfig.getSiteList();
+		
+		if(siteId == null && siteList.size() > 0) {
+			siteId = siteList.get(0).getId();
+		}
+		
+		
+		final SimpleDateFormat monthFormat = new SimpleDateFormat("yyyy.MM");
+		final SimpleDateFormat targetFormat = new SimpleDateFormat("yyyyMMdd");
+		
+		//년, 월 입력.
+		Calendar calendar = Calendar.getInstance(Locale.GERMAN);
+		
+		if (date != null && !"".equals(date)) {
+			try {
+				calendar.setTime(monthFormat.parse(date));
+			} catch (ParseException ignore) {
+				
+			}
+		}
+		
+		calendar.set(Calendar.DATE, 1);
+		Calendar nextCalendar = (Calendar) calendar.clone();
+		nextCalendar.add(Calendar.MONTH, 1);
+
+		calendar = StatisticsUtils.getFirstDayOfWeek(calendar);
+		calendar.add(Calendar.DATE, -1);
+		
+		Calendar dataCalendar = (Calendar)calendar.clone();
+		
+		AnalyticsDBService service = ServiceManager.getInstance().getService(AnalyticsDBService.class);
+		List<List<TaskResultVO>> monthlyTaskResult = new ArrayList<List<TaskResultVO>>();
+		
+		for (; dataCalendar.getTimeInMillis() < nextCalendar.getTimeInMillis();) {
+			for (int weekInx = 0; weekInx < 7; weekInx++) {
+				List<TaskResultVO> taskResult = null;
+				dataCalendar.add(Calendar.DATE, 1);
+				try {
+				} catch (Exception e) { 
+					logger.error("",e);
+				}
+				if(taskResult==null) {
+					taskResult = new ArrayList<TaskResultVO>();
+				}
+//				monthlyTaskResult.add(taskResult);
+			}
+		}
+		
+		modelAndView.addObject("siteList", siteList);
+		modelAndView.addObject("calendar", calendar);
+		modelAndView.addObject("taskResult", monthlyTaskResult);
 		return modelAndView;
 		
 	}

@@ -1,5 +1,7 @@
 package org.fastcatsearch.analytics.web.controller;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpSession;
 
 import org.fastcatsearch.analytics.db.AnalyticsDBService;
@@ -48,25 +50,30 @@ public class MainController extends AbstractController {
 
 		AnalyticsDBService analyticsDBService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
 		MapperSession<UserAccountMapper> mapperSession = analyticsDBService.getMapperSession(UserAccountMapper.class);
-		UserAccountMapper mapper = mapperSession.getMapper();
-		UserAccountVO account = mapper.getEntryByUserId(userId);
-		if (account != null && account.isEqualsEncryptedPassword(password)) {
-			// 로그인이 올바를 경우 메인 화면으로 이동한다.
-			ModelAndView mav = new ModelAndView();
-			if (redirect != null && redirect.length() > 0) {
-				mav.setViewName("redirect:" + redirect);
-			} else {
-				// 로그인되었다면 바로 start.html로 간다.
-				mav.setViewName("redirect:main/start.html");
+		try{
+			UserAccountMapper mapper = mapperSession.getMapper();
+			UserAccountVO account = mapper.getEntryByUserId(userId);
+			if (account != null && account.isEqualsEncryptedPassword(password)) {
+				// 로그인이 올바를 경우 메인 화면으로 이동한다.
+				ModelAndView mav = new ModelAndView();
+				if (redirect != null && redirect.length() > 0) {
+					mav.setViewName("redirect:" + redirect);
+				} else {
+					// 로그인되었다면 바로 start.html로 간다.
+					mav.setViewName("redirect:main/start.html");
+				}
+	
+				// session에 로그인 정보를 담는다.
+				session.setAttribute(USER_ID, userId);
+				session.setAttribute(USER_NAME, account.name);
+	
+				return mav;
 			}
-
-			// session에 로그인 정보를 담는다.
-			session.setAttribute(USER_ID, userId);
-			session.setAttribute(USER_NAME, account.name);
-
-			return mav;
+		}finally {
+			if(mapperSession != null) {
+				mapperSession.closeSession();
+			}
 		}
-
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("login");
 		return mav;

@@ -15,6 +15,7 @@ import org.fastcatsearch.analytics.analysis.StatisticsUtils;
 import org.fastcatsearch.analytics.analysis.config.SiteListSetting;
 import org.fastcatsearch.analytics.analysis.config.SiteListSetting.SiteSetting;
 import org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CategorySetting;
+import org.fastcatsearch.analytics.db.MapperSession;
 import org.fastcatsearch.analytics.db.mapper.SearchKeywordRankMapper;
 import org.fastcatsearch.analytics.db.vo.RankKeywordVO;
 import org.fastcatsearch.analytics.exception.AnalyticsException;
@@ -106,37 +107,47 @@ public class KeywordDictionaryCompileApplyJob extends Job {
 
 	private void compilePopularKeyword(KeywordService keywordService, List<CategorySetting> categoryList, KeywordDictionaryType type, int interval, String time) throws Exception {
 
-		SearchKeywordRankMapper mapper = keywordService.getMapperSession(SearchKeywordRankMapper.class).getMapper();
-
-		for (CategorySetting category : categoryList) {
-
-			List<RankKeywordVO> keywordList = null;//mapper.getEntryList("", category.getId(), time, 0, 10);
-
-			PopularKeywordDictionary dictionary = new PopularKeywordDictionary(keywordList);
-
-			File writeFile = keywordService.getFile(category.getId(), type, interval);
-
-			File parentDir = writeFile.getParentFile();
-
-			if (!parentDir.exists()) {
-				FileUtils.forceMkdir(parentDir);
+		MapperSession<SearchKeywordRankMapper> mapperSession = keywordService.getMapperSession(SearchKeywordRankMapper.class);
+		try{
+			SearchKeywordRankMapper mapper = mapperSession.getMapper();
+	
+			for (CategorySetting category : categoryList) {
+	
+				List<RankKeywordVO> keywordList = null;//mapper.getEntryList("", category.getId(), time, 0, 10);
+	
+				PopularKeywordDictionary dictionary = new PopularKeywordDictionary(keywordList);
+	
+				File writeFile = keywordService.getFile(category.getId(), type, interval);
+	
+				File parentDir = writeFile.getParentFile();
+	
+				if (!parentDir.exists()) {
+					FileUtils.forceMkdir(parentDir);
+				}
+	
+				OutputStream ostream = null;
+	
+				try {
+	
+					ostream = new FileOutputStream(writeFile);
+	
+					dictionary.writeTo(ostream);
+	
+				} finally {
+	
+					if (ostream != null)
+						try {
+							ostream.close();
+						} catch (IOException e) {
+						}
+				}
 			}
-
-			OutputStream ostream = null;
-
-			try {
-
-				ostream = new FileOutputStream(writeFile);
-
-				dictionary.writeTo(ostream);
-
-			} finally {
-
-				if (ostream != null)
-					try {
-						ostream.close();
-					} catch (IOException e) {
-					}
+		} finally {
+			if(mapperSession != null) {
+				try {
+					mapperSession.closeSession();
+				} catch (IOException e) {
+				}
 			}
 		}
 	}

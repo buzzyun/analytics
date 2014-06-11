@@ -1,5 +1,9 @@
 package org.fastcatsearch.analytics.analysis.handler;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
+
 import org.fastcatsearch.analytics.analysis.calculator.Calculator.CategoryProcess;
 import org.fastcatsearch.analytics.analysis.log.SearchLog;
 import org.slf4j.Logger;
@@ -12,12 +16,25 @@ public abstract class ProcessHandler {
 	protected static Logger logger = LoggerFactory.getLogger(ProcessHandler.class);
 
 	protected ProcessHandler[] nextList;
+	private PrintWriter explainLogWriter;
 	
 	/**
 	 * 전달된 parameter 로 통계수행.
 	 * @param parameter2 
 	 */
 	public abstract Object process(Object parameter) throws Exception;
+	
+	public void setExplainLogWriter(PrintWriter explainLogWriter){
+		this.explainLogWriter = explainLogWriter;
+	}
+	protected void explainLog(Object... str) {
+		if(explainLogWriter != null) {
+			for(Object e : str) {
+				explainLogWriter.print(e);
+			}
+			explainLogWriter.println();
+		}
+	}
 	
 	public void next(ProcessHandler... next){
 		if(nextList == null){

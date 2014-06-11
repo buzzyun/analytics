@@ -292,7 +292,7 @@ $(document).ready(function() {
 															<% } %>
 															<%=task.getTaskName() %>
 															</td>
-															<td style="word-break:break-all">
+															<td style="word-break:break-all; width:500px">
 															<%=task.getDetail().replaceAll("\n", "<br>") %>
 															</td>
 														</tr>

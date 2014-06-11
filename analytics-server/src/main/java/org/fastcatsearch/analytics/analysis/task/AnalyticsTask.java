@@ -40,6 +40,9 @@ public abstract class AnalyticsTask<LogType extends LogData> extends Job impleme
 	protected SourceLogReader<LogType> logReader;
 	private int executeCount;
 	
+	private StringWriter explainStringWriter;
+	private PrintWriter explainLogWriter;
+	
 	public AnalyticsTask(String taskId, String taskName, String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
 		this.id = taskId;
 		this.name = taskName;
@@ -48,12 +51,15 @@ public abstract class AnalyticsTask<LogType extends LogData> extends Job impleme
 		this.schedule = schedule;
 		this.priority = priority;
 		this.calculatorList = new ArrayList<Calculator<LogType>>();
+		
+		explainStringWriter = new StringWriter();
+		explainLogWriter = new PrintWriter(explainStringWriter);
 	}
 
 	protected abstract void prepare(Calendar calendar);
 	
 	protected void addCalculator(Calculator<LogType> calculator){
-		calculator.init();
+		calculator.init(explainLogWriter);
 		calculatorList.add(calculator);
 	}
 	
@@ -77,6 +83,7 @@ public abstract class AnalyticsTask<LogType extends LogData> extends Job impleme
 		long startTime = System.currentTimeMillis();
 		long baseTime = schedule.baseTime();
 		String targetTime = Formatter.formatYYYYMMDD(new Date(baseTime));
+		
 		try {
 			
 			calculatorList.clear();
@@ -92,7 +99,7 @@ public abstract class AnalyticsTask<LogType extends LogData> extends Job impleme
 			if (logReader != null) {
 				try {
 					LogType logData = null;
-					int n = 0;
+//					int n = 0;
 					while ((logData = logReader.readLog()) != null) {
 //						logger.debug("logReader.readLog() {} : {}", n++, logData);
 //						logger.debug("Task calculatorList {}", calculatorList);
@@ -116,10 +123,12 @@ public abstract class AnalyticsTask<LogType extends LogData> extends Job impleme
 		} catch (Throwable e) {
 			logger.info("### {}-{} Error!", taskId(), taskName());
 			logger.error("", e);
+			
 			StringWriter stringWriter = new StringWriter();
 			PrintWriter writer = new PrintWriter(stringWriter);
 			e.printStackTrace(writer);
 			errorMessage = stringWriter.toString();
+			explainLogWriter.println(errorMessage);
 		} finally {
 			long endTime = System.currentTimeMillis();
 			int duration = (int) (endTime - startTime);
@@ -130,9 +139,10 @@ public abstract class AnalyticsTask<LogType extends LogData> extends Job impleme
 			MapperSession<TaskResultMapper> mapperSession = analyticsDBService.getMapperSession(TaskResultMapper.class);
 			
 			try{ 
+				String explainString = explainStringWriter.toString();
 				TaskResultVO taskResultVO = new TaskResultVO(siteId, targetTime, new Timestamp(startTime), new Timestamp(endTime)
 				, durationString, schedule.isScheduled() ? "SCHEDULE" : "MANUAL" , isSuccess ? "SUCCESS" : "FAIL", taskId(), taskName()
-				, errorMessage != null ? errorMessage : "");
+				, explainString);
 				
 				TaskResultMapper mapper = mapperSession.getMapper();
 				TaskResultVO vo = mapper.getEntry(siteId, targetTime, taskId());

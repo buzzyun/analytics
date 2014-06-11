@@ -38,6 +38,7 @@ public class UpdateEmptyKeywordHandler extends ProcessHandler {
 					mapper.updateClean(siteId, categoryId, timeId);
 				}
 				logger.debug("result size : {}", keywordList.size());
+				int i = 0;
 				for (int inx = 0; inx < keywordList.size(); inx++) {
 					RankKeyword rankKeyword  = keywordList.get(inx);
 					RankKeywordVO vo = new RankKeywordVO(categoryId, timeId, rankKeyword.getKeyword(), rankKeyword.getCount(), rankKeyword.getRank(),
@@ -45,10 +46,12 @@ public class UpdateEmptyKeywordHandler extends ProcessHandler {
 					logger.trace("put {} rankKeyword daily {}-{}-{}", inx, categoryId,timeId, vo.getRank());
 					try {
 						mapper.putEntry(siteId, vo);
+						i++;
 					} catch (Exception e) {
 						logger.error("", e);
 					}
 				}
+				explainLog("[PopularKeyword Empty] db update count=", i);
 			} finally {
 				if (mapperSession != null) {
 					mapperSession.closeSession();

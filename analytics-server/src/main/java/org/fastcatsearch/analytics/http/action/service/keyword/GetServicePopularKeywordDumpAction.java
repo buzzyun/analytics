@@ -49,7 +49,7 @@ public class GetServicePopularKeywordDumpAction extends ServiceAction {
 			DumpPopularKeywordHitCalculator calculator = 
 				new DumpPopularKeywordHitCalculator(baseDir, fromDate, toDate, tmpFile, targetFile, siteId, Arrays.asList(new String[]{ categoryId }));
 					
-			calculator.init();
+			calculator.init(null);
 			calculator.calculate();
 			
 			reader = new BufferedReader(new InputStreamReader(new FileInputStream(targetFile), StatisticsProperties.encoding));

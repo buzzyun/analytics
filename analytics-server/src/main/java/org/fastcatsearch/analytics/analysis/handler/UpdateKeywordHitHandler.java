@@ -58,6 +58,8 @@ public class UpdateKeywordHitHandler extends ProcessHandler {
 					mapper.putEntry(siteId, categoryId, timeId, entry.getKey(), entry.getCount());
 					i++;
 				}
+				
+				explainLog("[UpdateKeywordHit] stored count=", i);
 			} finally {
 				if (targetReader != null) {
 					targetReader.close();

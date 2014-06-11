@@ -35,8 +35,10 @@ public class UpdateSearchHitHandler extends ProcessHandler {
 			SearchHitVO vo = mapper.getEntry(siteId, categoryId, timeId);
 			if(vo != null){
 				mapper.updateEntry(siteId, categoryId, timeId, searchLogResult.getSearchCount(), searchLogResult.getAverageResponseTime(), searchLogResult.getMaxResponseTime());
+				explainLog("[UpdateSearchHit/", categoryId, "]", " count=", searchLogResult.getSearchCount());
 			} else {
 				mapper.putEntry(siteId, categoryId, timeId, searchLogResult.getSearchCount(), searchLogResult.getAverageResponseTime(), searchLogResult.getMaxResponseTime());
+				explainLog("[InsertSearchHit/", categoryId, "]", " count=", searchLogResult.getSearchCount());
 			}
 			
 		} finally {

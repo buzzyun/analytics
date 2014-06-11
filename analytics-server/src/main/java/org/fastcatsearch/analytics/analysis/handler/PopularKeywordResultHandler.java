@@ -25,6 +25,7 @@ public class PopularKeywordResultHandler extends ProcessHandler {
 		List<RankKeyword> result = (List<RankKeyword>) parameter;
 		logger.trace("##Popular Keyword > {}", result);
 		try {
+			int i = 0;
 			for (RankKeyword k : result) {
 				writer.append(k.getKeyword());
 				writer.append("\t");
@@ -36,7 +37,10 @@ public class PopularKeywordResultHandler extends ProcessHandler {
 				writer.append("\t");
 				writer.append(Integer.toString(k.getCountDiff()));
 				writer.append("\n");
+				i++;
 			}
+			
+//			explainLog("[PopularKeyword] result count=", i);
 		} finally {
 			if (writer != null) {
 				writer.close();

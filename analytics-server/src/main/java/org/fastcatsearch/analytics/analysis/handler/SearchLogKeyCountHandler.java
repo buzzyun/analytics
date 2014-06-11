@@ -16,7 +16,8 @@ public class SearchLogKeyCountHandler extends CategoryLogHandler<SearchLog> {
 	private AbstractLogAggregator<SearchLog> aggregator;
 	LogValidator<SearchLog> logValidator;
 	int count;
-	int searchCount;
+	//통계에서는 검색결과수의 합산은 무의미하다. 
+//	int searchCount;
 	int maxResponseTime;
 	long sumResponseTime;
 	
@@ -40,7 +41,7 @@ public class SearchLogKeyCountHandler extends CategoryLogHandler<SearchLog> {
 					aggregator.handleLog(logData);
 				}
 				count+= logData.getCount();
-				searchCount += logData.getResultCount();
+//				searchCount += logData.getResultCount();
 				sumResponseTime += logData.getResponseTime();
 				if(logData.getResponseTime() > maxResponseTime){
 					maxResponseTime = logData.getResponseTime();
@@ -51,7 +52,7 @@ public class SearchLogKeyCountHandler extends CategoryLogHandler<SearchLog> {
 					aggregator.handleLog(logData);
 				}
 				count+=logData.getCount();
-				searchCount += logData.getResultCount();
+//				searchCount += logData.getResultCount();
 				sumResponseTime += logData.getResponseTime();
 				if(logData.getResponseTime() > maxResponseTime){
 					maxResponseTime = logData.getResponseTime();
@@ -63,6 +64,8 @@ public class SearchLogKeyCountHandler extends CategoryLogHandler<SearchLog> {
 	@Override
 	public Object done() throws IOException {
 		aggregator.done();
-		return new SearchLogResult(count, searchCount, count > 0 ? (int) (sumResponseTime / count) : 0, maxResponseTime);
+		int averageResponseTime = count > 0 ? (int) (sumResponseTime / count) : 0;
+		explainLog("[SearchLogKeyCountHandler/",categoryId, "] count=", count, ", averageResponseTime=", averageResponseTime, ", maxResponseTime=", maxResponseTime); 
+		return new SearchLogResult(count, 0, averageResponseTime, maxResponseTime);
 	}
 }

@@ -2,6 +2,8 @@ package org.fastcatsearch.analytics.analysis.calculator;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.EmptyStackException;
@@ -31,6 +33,8 @@ public abstract class Calculator<LogType extends LogData> {
 	private List<CategoryProcess<LogType>> categoryProcessList;
 	private Stack<ProcessHandlerParameter> nextStack;
 
+	private PrintWriter explainLogWriter;
+	
 	public Calculator(String name, Calendar calendar, File baseDir, String siteId, List<String> categoryIdList) {
 		this.name = name;
 		this.calendar = calendar;
@@ -40,10 +44,12 @@ public abstract class Calculator<LogType extends LogData> {
 		this.nextStack = new Stack<ProcessHandlerParameter>();
 	}
 
-	public void init(){
+	public void init(PrintWriter explainLogWriter){
+		this.explainLogWriter = explainLogWriter;
 		this.categoryProcessList = new ArrayList<CategoryProcess<LogType>>();
 		for (String categoryId : categoryIdList) {
 			CategoryProcess<LogType> process = newCategoryProcess(categoryId);
+			process.logHandler().setExplainLogWriter(explainLogWriter);
 			categoryProcessList.add(process);
 		}
 	}
@@ -69,7 +75,9 @@ public abstract class Calculator<LogType extends LogData> {
 					//logger.debug("############### calculate process {} > {}:{}:{}", getClass().getSimpleName(), siteId, process.categoryId(), next.getClass().getSimpleName());
 					
 					try{
+						next.setExplainLogWriter(explainLogWriter);
 						parameter = next.process(parameter);
+						logger.debug("Process >>> {}", next.getClass().getSimpleName());
 					}catch(ProcessDropException e){
 						logger.info("Process Drop. cause={}", e.getMessage());
 						break;

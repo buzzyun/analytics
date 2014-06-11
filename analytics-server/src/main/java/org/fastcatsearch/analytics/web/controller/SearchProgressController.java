@@ -16,6 +16,7 @@ import org.fastcatsearch.analytics.db.MapperSession;
 import org.fastcatsearch.analytics.db.mapper.SearchHitMapper;
 import org.fastcatsearch.analytics.db.mapper.SearchKeywordHitMapper;
 import org.fastcatsearch.analytics.db.vo.SearchHitVO;
+import org.fastcatsearch.analytics.env.Settings;
 import org.fastcatsearch.analytics.service.ServiceManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -247,8 +248,13 @@ public class SearchProgressController extends AbstractController {
 		MapperSession<SearchKeywordHitMapper> keywordHitMapperSession = null;
 		PrintWriter writer = null;
 		
+		Settings settings = environment.settingManager().getSystemSettings();
+		String charEncoding = settings.getString("download.characterEncoding", "utf-8");
+		String fileExt = settings.getString("download.fileExt", "txt");
+		String delimiter = settings.getString("download.delimiter", "\t");
+		
 		response.setContentType("text/plain");
-		response.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding(charEncoding);
 		if (forView != null && forView.booleanValue()) {
 			// 다운로드 하지 않고 웹페이지에서 보여준다.
 		} else {
@@ -262,7 +268,7 @@ public class SearchProgressController extends AbstractController {
 			
 			response.setHeader("Content-disposition", "attachment; filename=\""
 					+ siteId + "_" + categoryId + "_hit_" + timeIdStr + "_"
-					+ encodedKeyword + ".txt\"");
+					+ encodedKeyword + "."+fileExt+"\"");
 		}
 		
 		try {
@@ -336,9 +342,9 @@ public class SearchProgressController extends AbstractController {
 					logger.trace("vo time:{}={} / {}", vo.getTimeId(), timeStr, parsedTime.getTime());
 					vo.setTimeId(timeStr);
 					
-					writer.append(String.valueOf(vo.getTimeId())).append("\t");
-					writer.append(String.valueOf(vo.getHit())).append("\t");
-					writer.append(String.valueOf(vo.getMaxTime())).append("\t");
+					writer.append(String.valueOf(vo.getTimeId())).append(delimiter);
+					writer.append(String.valueOf(vo.getHit())).append(delimiter);
+					writer.append(String.valueOf(vo.getMaxTime())).append(delimiter);
 					writer.append(String.valueOf(vo.getAvgTime()));
 					writer.append("\n");
 					

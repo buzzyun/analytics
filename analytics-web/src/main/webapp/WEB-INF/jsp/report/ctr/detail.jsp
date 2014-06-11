@@ -34,6 +34,14 @@ $(document).ready(function(){
 	};
 	$("#timeText").pickmeup(pickmenup_options);
 	
+	$("div.widget div.widget-header a.btn-sm span.icon-download").parent().click(function() {
+		var form = $("form.form-inline")[0];
+		var action = form.action;
+		form.action="detail/download.html";
+		form.submit();
+		form.action = action;
+	});
+	
 });
 
 function goDetail(keyword){
@@ -93,6 +101,9 @@ function goDetail(keyword){
 							<div class="widget-header">
 								<h4>
 									<i class="icon-calendar"></i> Period : <%=timeText.substring(0, 7) %>
+									<a class="btn btn-default btn-sm">
+										<span class="icon icon-download"></span> Download
+									</a>											
 								</h4>
 							</div>
 						</div>

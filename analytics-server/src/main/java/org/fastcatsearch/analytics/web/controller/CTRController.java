@@ -1,10 +1,13 @@
 package org.fastcatsearch.analytics.web.controller;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.fastcatsearch.analytics.analysis.StatisticsUtils;
 import org.fastcatsearch.analytics.analysis.config.StatisticsSettings.ClickTypeSetting;
@@ -22,6 +25,7 @@ import org.fastcatsearch.analytics.db.vo.ClickKeywordHitVO;
 import org.fastcatsearch.analytics.db.vo.ClickKeywordTargetHitVO;
 import org.fastcatsearch.analytics.db.vo.SearchHitVO;
 import org.fastcatsearch.analytics.db.vo.SearchPathHitVO;
+import org.fastcatsearch.analytics.env.Settings;
 import org.fastcatsearch.analytics.service.ServiceManager;
 import org.fastcatsearch.analytics.util.ListableCounter;
 import org.springframework.stereotype.Controller;
@@ -344,6 +348,129 @@ public class CTRController extends AbstractController {
 		logger.debug(">>clickTypeList {} ", clickTypeList);
 		return mav;
 		
+	}
+	
+	@RequestMapping("/detail/download")
+	public void downloadKeyword(HttpServletResponse response, @PathVariable String siteId, @RequestParam(required=false) String timeText) {
+
+		SiteAttribute siteAttribute = this.getStatisticsService().getStatisticsSetting(siteId).getSiteAttribute();
+		List<ClickTypeSetting> clickTypeSettingList = siteAttribute.getClickTypeList();
+		List<String[]> clickTypeList = new ArrayList<String[]>();
+		for(ClickTypeSetting clickType : clickTypeSettingList) {
+			clickTypeList.add(new String[] { clickType.getId(), clickType.getName() });
+		}
+		
+		Calendar calendar = null;
+		if(timeText != null) {
+			calendar = StatisticsUtils.parseDatetimeString(timeText, true);
+		} else {
+			calendar = Calendar.getInstance();
+			timeText = StatisticsUtils.toDatetimeString(calendar);
+		}
+		
+		int timeTypeCode = Calendar.MONTH;
+		String timeId = StatisticsUtils.getTimeId(calendar, timeTypeCode);
+		logger.debug("New time id >> {}", timeId);
+		
+		
+		AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
+		MapperSession<ClickHitMapper> clickHitMapperSession = dbService.getMapperSession(ClickHitMapper.class);
+		MapperSession<ClickKeywordHitMapper> clickKeywordHitMapperSession = dbService.getMapperSession(ClickKeywordHitMapper.class);
+		PrintWriter writer = null;
+		
+		//
+		//search PV 리스트를 가져온다.
+		//
+		int searchPv = 0;
+		MapperSession<SearchHitMapper> searchHitMapperSession = dbService.getMapperSession(SearchHitMapper.class);
+		try {
+			SearchHitMapper searchHitMapper = searchHitMapperSession.getMapper();
+			SearchHitVO vo = searchHitMapper.getEntry(siteId, "_root", timeId);
+			if (vo != null) {
+				searchPv = vo.getHit();
+			}
+		} catch (Exception e) {
+			logger.error("", e);
+		} finally {
+			if (searchHitMapperSession != null) {
+				searchHitMapperSession.closeSession();
+			}
+		}
+		
+		List<ClickKeywordHitVO> keywordList = null;
+		List<String> keywordSearchPvList = new ArrayList<String>();
+		List<String> kewordCtrList = new ArrayList<String>();
+		List<Map<String, String>> typeCountMapList = new ArrayList<Map<String, String>>();
+		MapperSession<SearchKeywordHitMapper> searchKeywordHitMapperSession = dbService.getMapperSession(SearchKeywordHitMapper.class);
+		try {
+			Settings settings = environment.settingManager().getSystemSettings();
+			String charEncoding = settings.getString("download.characterEncoding", "utf-8");
+			String fileExt = settings.getString("download.fileExt", "txt");
+			String delimiter = settings.getString("download.delimiter", "\t");
+			String timeIdStr = StatisticsUtils.getTimeId(calendar, Calendar.MONTH);
+			response.setContentType("text/plain");
+			response.setCharacterEncoding(charEncoding);
+			response.setHeader("Content-disposition", "attachment; filename=\"" + 
+				siteId + "_" + "_ctr_" + timeIdStr + "."+fileExt+"\"");
+			writer = response.getWriter();
+			
+			SearchKeywordHitMapper searchKeywordHitMapper = searchKeywordHitMapperSession.getMapper();
+			ClickKeywordHitMapper clickKeywordHitMapper = clickKeywordHitMapperSession.getMapper();
+			/*
+			 * 상위 20000개의 키워드 리스트를 얻어온다.
+			 * */
+			keywordList = clickKeywordHitMapper.getKeywordEntryList(siteId, timeId, 20000);
+			for(ClickKeywordHitVO vo : keywordList) {
+				String keyword = vo.getKeyword();
+				int keywordClickCount = vo.getCount();
+				SearchHitVO searchHitVO = searchKeywordHitMapper.getEntry(siteId, "_root", timeId, keyword);
+				int keywordSearchPv = 0;
+				float keywordCtRate = 0.0f;
+				if (searchHitVO != null) {
+					keywordSearchPv = searchHitVO.getHit();
+				}
+				if(keywordSearchPv > 0){
+					keywordCtRate = ((float) keywordClickCount / (float) keywordSearchPv) * 100.0f;
+				}
+				keywordSearchPvList.add(String.format("%,d", keywordSearchPv));
+				kewordCtrList.add(String.format("%.1f", keywordCtRate)+"%");
+				
+				String keywordStr = keyword.replaceAll(delimiter, "\\"+delimiter);
+				writer.append(keywordStr).append(delimiter);
+				writer.append(String.valueOf(keywordSearchPv)).append(delimiter);
+				writer.append(String.valueOf(keywordClickCount)).append(delimiter);
+				writer.append(String.valueOf(keywordCtRate));
+				
+				Map<String, String> typeCountMap = new HashMap<String, String>();
+				for(String[] clickType : clickTypeList){
+					try {
+						logger.debug("clickKeywordHitMapper:{}", clickKeywordHitMapper);
+						logger.debug("siteId:{} / timeId:{} / keyword:{} / clickType:{}", siteId, timeId, keyword, clickType);
+						int keywordClickTypeCount = clickKeywordHitMapper.getKeywordTypeClickCount(siteId, timeId, keyword, clickType[0]);
+						typeCountMap.put(clickType[0], String.format("%,d", keywordClickTypeCount));
+						writer.append(delimiter).append(String.valueOf(keywordClickTypeCount));
+					} catch (NullPointerException e) {
+						logger.error("error:{}",e.getMessage());
+						typeCountMap.put(clickType[0], String.format("%,d", 0));
+						writer.append(delimiter).append(String.valueOf(0));
+					}
+				}
+				typeCountMapList.add(typeCountMap);
+				writer.append("\n");
+			}
+		} catch (Exception e) {
+			logger.error("", e);
+		} finally {
+			if (writer != null) {
+				writer.close();
+			}
+			if (searchKeywordHitMapperSession != null) {
+				searchKeywordHitMapperSession.closeSession();
+			}
+			if (clickKeywordHitMapperSession != null) {
+				clickKeywordHitMapperSession.closeSession();
+			}
+		}
 	}
 	
 	@RequestMapping("/keyword")

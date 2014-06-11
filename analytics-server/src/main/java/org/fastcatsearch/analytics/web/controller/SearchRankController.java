@@ -15,6 +15,7 @@ import org.fastcatsearch.analytics.db.mapper.SearchKeywordEmptyMapper;
 import org.fastcatsearch.analytics.db.mapper.SearchKeywordRankMapper;
 import org.fastcatsearch.analytics.db.vo.RankKeywordVO;
 import org.fastcatsearch.analytics.db.vo.RankKeywordVO.RankDiffType;
+import org.fastcatsearch.analytics.env.Settings;
 import org.fastcatsearch.analytics.service.ServiceManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -194,8 +195,13 @@ public class SearchRankController extends AbstractController {
 		PrintWriter writer = null;
 		
 		try {
+			
+			Settings settings = environment.settingManager().getSystemSettings();
+			String charEncoding = settings.getString("download.characterEncoding", "utf-8");
+			String fileExt = settings.getString("download.fileExt", "txt");
+			String delimiter = settings.getString("download.delimiter", "\t");
 			response.setContentType("text/plain");
-			response.setCharacterEncoding("utf-8");
+			response.setCharacterEncoding(charEncoding);
 			if (forView != null && forView.booleanValue()) {
 				// 다운로드 하지 않고 웹페이지에서 보여준다.
 			} else {
@@ -208,7 +214,7 @@ public class SearchRankController extends AbstractController {
 					
 				}
 				response.setHeader("Content-disposition", "attachment; filename=\"" + 
-					siteId + "_" + categoryId + "_rank_" + timeIdStr + ".txt\"");
+					siteId + "_" + categoryId + "_rank_" + timeIdStr + "."+fileExt+"\"");
 			}
 			writer = response.getWriter();
 			
@@ -226,9 +232,10 @@ public class SearchRankController extends AbstractController {
 			
 			for (int i = 0; i < list.size(); i++) {
 				RankKeywordVO entry = list.get(i);
-				writer.append(String.valueOf(entry.getKeyword())).append("\t");
-				writer.append(String.valueOf(entry.getCount())).append("\t");
-				writer.append(String.valueOf(entry.getRankDiffType())).append("\t");
+				String keywordStr = entry.getKeyword().replaceAll(delimiter, "\\"+delimiter);
+				writer.append(keywordStr).append(delimiter);
+				writer.append(String.valueOf(entry.getCount())).append(delimiter);
+				writer.append(String.valueOf(entry.getRankDiffType())).append(delimiter);
 				writer.append(String.valueOf(entry.getCountDiff()));
 				writer.append("\n");
 			}

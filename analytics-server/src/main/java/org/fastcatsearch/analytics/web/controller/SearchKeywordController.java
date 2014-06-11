@@ -22,6 +22,7 @@ import org.fastcatsearch.analytics.db.MapperSession;
 import org.fastcatsearch.analytics.db.mapper.RelateKeywordMapper;
 import org.fastcatsearch.analytics.db.mapper.RelateKeywordValueMapper;
 import org.fastcatsearch.analytics.db.vo.RelateKeywordVO;
+import org.fastcatsearch.analytics.env.Settings;
 import org.fastcatsearch.analytics.service.ServiceManager;
 import org.json.JSONStringer;
 import org.json.JSONWriter;
@@ -336,13 +337,18 @@ public class SearchKeywordController extends AbstractController {
 			@RequestParam(required = false) Boolean forView) throws Exception {
 
 		int PAGE_SIZE = 100;
+		
+		Settings settings = environment.settingManager().getSystemSettings();
+		String charEncoding = settings.getString("download.characterEncoding", "utf-8");
+		String fileExt = settings.getString("download.fileExt", "txt");
+		String delimiter = settings.getString("download.delimiter", "\t");
 
 		response.setContentType("text/plain");
-		response.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding(charEncoding);
 		if (forView != null && forView.booleanValue()) {
 			// 다운로드 하지 않고 웹페이지에서 보여준다.
 		} else {
-			response.setHeader("Content-disposition", "attachment; filename=\"" + siteId+"_relate" + ".txt\"");
+			response.setHeader("Content-disposition", "attachment; filename=\"" + siteId+"_relate" + "."+fileExt+"\"");
 		}
 		PrintWriter writer = null;
 		
@@ -373,7 +379,8 @@ public class SearchKeywordController extends AbstractController {
 				for (int i = 0; i < entryList.size(); i++) {
 					RelateKeywordVO entry = entryList.get(i);
 					
-					writer.append(String.valueOf(entry.getKeyword())).append("\t");
+					String keywordStr = entry.getKeyword().replaceAll(delimiter, "\\"+delimiter);
+					writer.append(keywordStr).append(delimiter);
 					writer.append(String.valueOf(entry.getValue()));
 					
 					writer.append("\n");

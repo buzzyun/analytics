@@ -230,6 +230,14 @@ public class ReportMainController extends AbstractController {
 				typeSession.closeSession();
 			} catch (Exception ignore) { 
 			}
+			if(pathSession != null) try {
+				pathSession.closeSession();
+			} catch (Exception ignore) { 
+			}
+			if(clickSession != null) try {
+				clickSession.closeSession();
+			} catch (Exception ignore) { 
+			}
 		}
 			
 			

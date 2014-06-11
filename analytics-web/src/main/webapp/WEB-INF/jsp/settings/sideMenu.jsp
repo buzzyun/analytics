@@ -31,7 +31,7 @@
 				lcatCurrent = "settings".equals(mcat);
 			%>
 			<li class="<%=lcatCurrent ? "current" :"" %>">
-				<a href="<c:url value="/settings/sites.html"/>"><i class="icon-list"></i> Sites Settings</a>
+				<a href="<c:url value="/settings/sites.html"/>"><i class="icon-cog"></i> Sites Settings</a>
 			</li>
 			
 			<%
@@ -46,6 +46,13 @@
 			%>
 			<li class="<%=lcatCurrent ? "current" :"" %>">
 				<a href="<c:url value="/settings/systemError.html"/>"><i class="icon-list"></i> System Error</a>
+			</li>
+			
+			<%
+				lcatCurrent = "rawLogFile".equals(mcat);
+			%>
+			<li class="<%=lcatCurrent ? "current" :"" %>">
+				<a href="<c:url value="/settings/rawLogFile.html"/>"><i class="icon-list"></i> Raw Log File</a>
 			</li>
 		</ul>
 

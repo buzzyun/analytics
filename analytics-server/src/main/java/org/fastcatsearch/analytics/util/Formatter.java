@@ -105,25 +105,25 @@ public class Formatter {
 	}
 	
 	public static String getFormatSize(long s){
-		 
-		if(s > 1024){
-			float a = (float) (s / 1024);
+		
+		if(s > 1000){
+			float a = (float) (s / 1000f);
 			
-			if(a > 1024){
-				float b = a / 1024;
+			if(a > 1000){
+				float b = a / 1000f;
 				
-				if(b > 1024){
-					float c = b / 1024;
-					return String.format("%.1f GB", c);
+				if(b > 1000){
+					float c = b / 1000f;
+					return String.format("%.1fG", c);
 				}else{
-					return String.format("%.1f MB", b);
+					return String.format("%.1fM", b);
 				}
 				
 			}else{
-				return String.format("%.1f KB", a);
+				return String.format("%.1fK", a);
 			}
 		}else{
-			return s +" B";
+			return s +"B";
 		}
 	}
 	

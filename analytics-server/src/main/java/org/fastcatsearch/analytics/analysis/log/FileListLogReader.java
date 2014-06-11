@@ -101,7 +101,7 @@ public abstract class FileListLogReader<LogType extends LogData> implements Sour
 		} catch (IOException e) {
 			if (logger.isDebugEnabled()) {
 				File file = null;
-				if (currentInx <= files.length) {
+				if (currentInx > 0 && currentInx <= files.length) {
 					file = files[currentInx - 1];
 				}
 				logger.error("file : {}", file, e);

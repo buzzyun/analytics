@@ -29,6 +29,7 @@ public class MergeClickTypeCountProcessHandler extends ProcessHandler {
 	@Override
 	public Object process(Object parameter) {
 		//logger.debug("start process.. ");
+		ClickLogReader logReader = null;
 		try {
 
 			if (inFileList == null || inFileList.length == 0) {
@@ -38,7 +39,7 @@ public class MergeClickTypeCountProcessHandler extends ProcessHandler {
 
 			//logger.debug("reading files : {} {}", "", inFileList);
 			
-			ClickLogReader logReader = new ClickLogReader(inFileList, encoding);
+			logReader = new ClickLogReader(inFileList, encoding);
 			
 			for (ClickLog log = null; (log = logReader.readLog()) != null;) {
 				ClickLog log2 = log;
@@ -61,6 +62,11 @@ public class MergeClickTypeCountProcessHandler extends ProcessHandler {
 		} catch (IOException e) {
 			logger.error("", e);
 		} finally {
+			
+			if(logReader!=null) try {
+				logReader.close();
+			} catch (Exception e) { }
+			
 			if(aggregator != null) {
 				try {
 					aggregator.done();

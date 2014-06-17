@@ -358,8 +358,9 @@ public class GlobalConfigurationController extends AbstractController {
 			response.setContentType("text/plain");
 			char[] buf = new char[1024];
 			writer = response.getWriter();
-			Reader reader = new InputStreamReader(new FileInputStream(logFile), "utf-8");
+			Reader reader = null;
 			try{
+				reader = new InputStreamReader(new FileInputStream(logFile), "utf-8");
 				while(true){
 					int n = reader.read(buf);
 					if(n > 0) {
@@ -370,7 +371,9 @@ public class GlobalConfigurationController extends AbstractController {
 					}
 				}
 			}finally{
-				reader.close();
+				if(reader!=null) try {
+					reader.close();
+				} catch (Exception ignore) { }
 			}
 		} finally {
 			writer.close();

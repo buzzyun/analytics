@@ -34,8 +34,9 @@ public class KeywordLogRankDiffer {
 		List<RankKeyword> result = new ArrayList<RankKeyword>();
 		try {
 			// 1. target 파일에서 top N개를 뽑아낸다.
-			FileRunEntryReader<KeyCountRunEntry> targetReader = new FileRunEntryReader<KeyCountRunEntry>(targetFile, encoding, entryParser);
+			FileRunEntryReader<KeyCountRunEntry> targetReader = null;
 			try {
+				targetReader = new FileRunEntryReader<KeyCountRunEntry>(targetFile, encoding, entryParser);
 				int rank = 1; // 1부터 시작한다.
 				while (targetReader.next()) {
 					if (rank > topCount) {
@@ -56,8 +57,9 @@ public class KeywordLogRankDiffer {
 
 			// 2. compareFile를 순차로 읽으면서 해당 키워드가 있는지 확인한다.
 			if (compareFile.exists()) {
-				FileRunEntryReader<KeyCountRunEntry> compareReader = new FileRunEntryReader<KeyCountRunEntry>(compareFile, encoding, entryParser);
+				FileRunEntryReader<KeyCountRunEntry> compareReader = null;
 				try {
+					compareReader = new FileRunEntryReader<KeyCountRunEntry>(compareFile, encoding, entryParser);
 					int foundCount = 0;
 					int prevRank = 1; // 이전 인기검색어의 순위. 1부터 시작한다.
 

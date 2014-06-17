@@ -30,13 +30,22 @@ public abstract class FileListLogReader<LogType extends LogData> implements Sour
 				logger.trace("read file {} [{}/{}]", files[inx], inx, files.length);
 				if (files[inx].exists()) {
 					// parseFileInfo();
-					return new BufferedReader(new InputStreamReader(new FileInputStream(files[inx]), encoding));
+					BufferedReader bufferedReader = null;
+					try {
+						bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(files[inx]), encoding));
+					} catch (Exception ex) {
+						if (bufferedReader != null) try {
+							bufferedReader.close();
+							bufferedReader = null;
+						} catch (Exception ignore) { }
+					}
+					return bufferedReader;
 				}
 				logger.error("file not found {}", files[inx]);
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			logger.error("file open error {}", files[inx], e);
-			throw e;
+			throw new IOException(e);
 		} finally {
 		}
 		return null;

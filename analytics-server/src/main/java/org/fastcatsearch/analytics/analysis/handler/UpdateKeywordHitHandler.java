@@ -44,8 +44,9 @@ public class UpdateKeywordHitHandler extends ProcessHandler {
 			}
 			
 			// 1. target 파일에서 top N개를 뽑아낸다.
-			FileRunEntryReader<KeyCountRunEntry> targetReader = new FileRunEntryReader<KeyCountRunEntry>(rankLogFile, encoding, entryParser);
+			FileRunEntryReader<KeyCountRunEntry> targetReader = null;
 			try {
+				targetReader = new FileRunEntryReader<KeyCountRunEntry>(rankLogFile, encoding, entryParser);
 				int i = 0;
 				while (targetReader.next()) {
 					if (i > topCount) {

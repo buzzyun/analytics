@@ -43,12 +43,13 @@ public class LogSorter<EntryType extends RunEntry> {
 		if (!workDir.exists()) {
 			workDir.mkdir();
 		}
-		
+		List<RunEntryReader<EntryType>> entryReaderList = null;
 		try{
 			List<EntryType> list = new ArrayList<EntryType>(runKeySize);
 			int flushCount = 0;
-			FileRunEntryReader<EntryType> entryReader = new FileRunEntryReader<EntryType>(is, encoding, entryParser);
+			FileRunEntryReader<EntryType> entryReader = null;
 			try {
+				entryReader = new FileRunEntryReader<EntryType>(is, encoding, entryParser);
 				while (entryReader.next()) {
 					EntryType entry = entryReader.entry();
 					// logger.debug(">>> {}", entry);
@@ -61,8 +62,7 @@ public class LogSorter<EntryType extends RunEntry> {
 						}
 					}
 				}
-	
-			} catch (IOException e) {
+			} finally {
 				entryReader.close();
 			}
 	
@@ -77,13 +77,15 @@ public class LogSorter<EntryType extends RunEntry> {
 			for (int i = 0; i < flushCount; i++) {
 				runFileList[i] = getRunFile(workDir, i);
 			}
-			List<RunEntryReader<EntryType>> entryReaderList = getReaderList(runFileList, entryParser);
+			 entryReaderList = getReaderList(runFileList, entryParser);
 	
 			if (entryReaderList.size() > 0) {
-				RunEntryMergeReader<EntryType> mergeReader = new RunEntryMergeReader<EntryType>(entryReaderList, comparator);
+				RunEntryMergeReader<EntryType> mergeReader = null;
 	
 				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, encoding));
 				try {
+					
+					mergeReader = new RunEntryMergeReader<EntryType>(entryReaderList, comparator);
 					EntryType entry = null;
 	
 					while ((entry = mergeReader.read()) != null) {
@@ -92,15 +94,26 @@ public class LogSorter<EntryType extends RunEntry> {
 					}
 	
 				} finally {
-					for (RunEntryReader<EntryType> r : entryReaderList) {
-						r.close();
+					
+					if(mergeReader!=null) {
+						try {
+							mergeReader.close();
+						} catch (Exception e) { }
 					}
-	
+					
 					writer.close();
 					
 				}
 			}
 		}finally{
+			if (entryReaderList != null) {
+				for(RunEntryReader<EntryType> reader : entryReaderList) {
+					try {
+						reader.close();
+					} catch (Exception ignore) { }
+				}
+			}
+			
 			FileUtils.deleteQuietly(workDir);			
 		}
 	}

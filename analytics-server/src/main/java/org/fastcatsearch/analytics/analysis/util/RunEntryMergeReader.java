@@ -166,4 +166,14 @@ public class RunEntryMergeReader<E extends RunEntry> {
 		// reader gets EOS, returns null
 		return entry.compareTo(entry2);
 	}
+
+	public void close() {
+		if (readerList != null) {
+			for (RunEntryReader<E> reader : readerList) {
+				try {
+					reader.close();
+				} catch (Exception e) { }
+			}
+		}
+	}
 }

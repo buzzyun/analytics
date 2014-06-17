@@ -31,8 +31,9 @@ public class SortedRunFileMerger implements RunMerger {
 
 	@Override
 	public void merge() throws IOException {
+		List<RunEntryReader<KeyCountRunEntry>> entryReaderList = null;
 		try{
-			List<RunEntryReader<KeyCountRunEntry>> entryReaderList = getReaderList(runFileList);
+			entryReaderList = getReaderList(runFileList);
 			if (entryReaderList.size() > 0) {
 				RunEntryMergeReader<KeyCountRunEntry> reader = new RunEntryMergeReader<KeyCountRunEntry>(entryReaderList);
 	
@@ -44,9 +45,9 @@ public class SortedRunFileMerger implements RunMerger {
 					}
 	
 				} finally {
-					for (RunEntryReader<KeyCountRunEntry> r : entryReaderList) {
-						r.close();
-					}
+					if(reader!=null) try {
+						reader.close();
+					} catch (Exception ignore) { }
 					
 					logger.debug("Wrote merge file {}", writer);
 				}
@@ -54,9 +55,16 @@ public class SortedRunFileMerger implements RunMerger {
 				logger.debug("no file to merge");
 			}
 		} finally {
+			if(entryReaderList!=null) {
+				for(RunEntryReader<KeyCountRunEntry> reader : entryReaderList) {
+					try {
+						reader.close();
+					} catch (Exception ignore) { }
+				}
+			}
+			
 			writer.close();
 		}
-
 	}
 
 	protected List<RunEntryReader<KeyCountRunEntry>> getReaderList(File[] fileList) throws IOException {

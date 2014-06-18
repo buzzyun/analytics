@@ -176,6 +176,8 @@ public abstract class AnalyticsTask<LogType extends LogData> extends Job impleme
 				}
 			}
 			
+			done();
+			
 		}
 		return new JobResult(isSuccess);
 	}
@@ -218,5 +220,10 @@ public abstract class AnalyticsTask<LogType extends LogData> extends Job impleme
 	public String toString() {
 		return getClass().getSimpleName() + "[" + name + "] priority[" + priority + "] siteId[" + siteId + "] executeCount[" + executeCount + "] schedule["+schedule+"]";
 	}
-
+	
+	public void done() {
+		if(explainStringWriter!=null) try {
+			explainStringWriter.close();
+		} catch (Exception ignore) { }
+	}
 }

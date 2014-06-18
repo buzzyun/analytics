@@ -6,4 +6,6 @@ public interface RunMerger {
 	
 	public void merge() throws IOException;
 	
+	public void close();
+	
 }

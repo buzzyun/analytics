@@ -98,10 +98,12 @@ public class LogSorter<EntryType extends RunEntry> {
 					if(mergeReader!=null) {
 						try {
 							mergeReader.close();
-						} catch (Exception e) { }
+						} catch (Exception ignore) { }
 					}
-					
-					writer.close();
+
+					try {
+						writer.close();
+					} catch (Exception ignore) { }
 					
 				}
 			}

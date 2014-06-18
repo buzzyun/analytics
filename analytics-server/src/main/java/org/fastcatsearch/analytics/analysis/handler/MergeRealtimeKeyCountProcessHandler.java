@@ -38,6 +38,8 @@ public class MergeRealtimeKeyCountProcessHandler extends ProcessHandler {
 		}
 		
 		File keyCountFile = new File(resultDir, outFileName);
+		AggregationResultFileWriter writer = null;
+		WeightedSortedRunFileMerger merger = null;
 		try {
 
 			if (inFileList == null || inFileList.length == 0) {
@@ -49,12 +51,18 @@ public class MergeRealtimeKeyCountProcessHandler extends ProcessHandler {
 				resultDir.mkdirs();
 			}
 			
-			AggregationResultFileWriter writer = new AggregationResultFileWriter(keyCountFile, encoding);
-			WeightedSortedRunFileMerger merger = new WeightedSortedRunFileMerger(inFileList, weightList, encoding, writer, entryParser);
+			writer = new AggregationResultFileWriter(keyCountFile, encoding);
+			merger = new WeightedSortedRunFileMerger(inFileList, weightList, encoding, writer, entryParser);
 			merger.merge();
 		} catch (IOException e) {
 			logger.error("", e);
 		} finally {
+			if(merger!=null) {
+				merger.close();
+			}
+			if(writer!=null) try {
+				writer.close();
+			} catch (Exception ignore) { }
 		}
 
 		return null;

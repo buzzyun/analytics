@@ -182,11 +182,22 @@ public class NettyHttpChannel implements HttpChannel {
 
 	private String getErrorHtml(HttpResponseStatus status, Throwable throwable) {
 		String stackTrace = null;
+		StringWriter sw = null;
+		PrintWriter s = null;
 		if (throwable != null) {
-			StringWriter sw = new StringWriter();
-			PrintWriter s = new PrintWriter(sw);
-			throwable.printStackTrace(s);
-			stackTrace = sw.toString();
+			try {
+				sw = new StringWriter();
+				s = new PrintWriter(sw);
+				throwable.printStackTrace(s);
+				stackTrace = sw.toString();
+			} finally {
+				if(s!=null) try {
+					s.close();
+				} catch (Exception ignore) { }
+				if(sw!=null) try {
+					sw.close();
+				} catch (Exception ignore) { }
+			}
 		}
 		return "<html>\n" + "<head>\n" + "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>\n" + "<title>Error " + status.toString() + "</title>\n"
 				+ "</head>\n" + "<body>\n" + "<h2>HTTP ERROR: " + status.getCode() + "</h2>\n" + "<p>Problem accessing [" + request.getMethod() + "]" + request.getUri()

@@ -135,14 +135,18 @@ public class ConfWriter {
 
 	public static Properties getConfig(String path) {
 		Properties props = new Properties();
+		FileInputStream fis = null;
 		try {
-			FileInputStream fis = new FileInputStream(path);
+			fis = new FileInputStream(path);
 			props.load(fis);
-			fis.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			if (fis != null) try {
+				fis.close();
+			} catch (Exception ignore) { }
 		}
 		return props;
 	}

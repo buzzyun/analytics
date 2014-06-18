@@ -501,8 +501,9 @@ public class SearchKeywordController extends AbstractController {
 			}
 		}
 
+		Writer writer = null;
 		try {
-			Writer writer = response.getWriter();
+			writer = response.getWriter();
 			JSONWriter jsonWriter = new JSONWriter(writer);
 			jsonWriter.object().key("success").value(isSuccess).key("count").value(totalCount);
 
@@ -510,9 +511,12 @@ public class SearchKeywordController extends AbstractController {
 				jsonWriter.key("errorMessage").value(errorMessage);
 			}
 			jsonWriter.endObject();
-			writer.close();
 		} catch (Exception e) {
 			logger.error("", e);
+		} finally {
+			if(writer!=null) try {
+				writer.close();
+			} catch (Exception ignore) { }
 		}
 
 	}

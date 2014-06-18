@@ -335,60 +335,71 @@ public class SiteConfigurationController extends AbstractController {
 		List<ServiceSetting> serviceList = new ArrayList<ServiceSetting>();
 		List<ClickTypeSetting> clickTypeList = new ArrayList<ClickTypeSetting>();
 		
-		Writer writer = new StringWriter();
-		ResponseWriter responseWriter = getDefaultResponseWriter(writer);
-		if("update".equals(mode)) {
-			
-			int count = Integer.parseInt(request.getParameter("count"));
-			
-			//type 속성 업데이트
-			for (int inx = 0; inx < count; inx++) {
-				String typeIdGet = request.getParameter("typeId"+inx);
-				String typeNameGet = getString(request.getParameter("typeName"+inx),"");
-				Boolean isPrime = getBoolean(request.getParameter("typePrime"+inx),false);
-				if(typeIdGet!=null) {
-					logger.trace("typeId:{}/typeName:{}/isPrime:{}", typeIdGet, typeNameGet, isPrime);
-					typeList.add(new TypeSetting(typeIdGet,typeNameGet,isPrime));
-				} else {
-					break;
+		Writer writer = null;
+		try {
+			writer = new StringWriter();
+			ResponseWriter responseWriter = getDefaultResponseWriter(writer);
+			if("update".equals(mode)) {
+				
+				int count = Integer.parseInt(request.getParameter("count"));
+				
+				//type 속성 업데이트
+				for (int inx = 0; inx < count; inx++) {
+					String typeIdGet = request.getParameter("typeId"+inx);
+					String typeNameGet = getString(request.getParameter("typeName"+inx),"");
+					Boolean isPrime = getBoolean(request.getParameter("typePrime"+inx),false);
+					if(typeIdGet!=null) {
+						logger.trace("typeId:{}/typeName:{}/isPrime:{}", typeIdGet, typeNameGet, isPrime);
+						typeList.add(new TypeSetting(typeIdGet,typeNameGet,isPrime));
+					} else {
+						break;
+					}
 				}
+				
+				//service 속성 업데이트
+				for (int inx = 0; inx < count; inx++) {
+					String serviceIdGet = request.getParameter("serviceId"+inx);
+					String serviceNameGet = getString(request.getParameter("serviceName"+inx),"");
+					Boolean isPrime = (inx == getInt(request.getParameter("servicePrimeIndex"), -1));
+					if(serviceIdGet!=null) {
+						logger.trace("serviceId:{}/serviceName:{}/isPrime:{}", serviceIdGet, serviceNameGet, isPrime);
+						serviceList.add(new ServiceSetting(serviceIdGet,serviceNameGet,isPrime));
+					} else {
+						break;
+					}
+				}
+				
+				//click-type 속성 업데이트
+				for (int inx = 0; inx < count; inx++) {
+					String clickTypeIdGet = request.getParameter("clickTypeId"+inx);
+					String clickTypeNameGet = getString(request.getParameter("clickTypeName"+inx),"");
+					if(clickTypeIdGet!=null) {
+						logger.trace("clickTypeId:{}/clickTypeName:{}", clickTypeIdGet, clickTypeNameGet);
+						clickTypeList.add(new ClickTypeSetting(clickTypeIdGet,clickTypeNameGet));
+					} else {
+						break;
+					}
+				}
+				
+				siteAttribute.setTypeList(typeList);
+				siteAttribute.setServiceList(serviceList);
+				siteAttribute.setClickTypeList(clickTypeList);
+				
+				getStatisticsService().writeConfig();
 			}
 			
-			//service 속성 업데이트
-			for (int inx = 0; inx < count; inx++) {
-				String serviceIdGet = request.getParameter("serviceId"+inx);
-				String serviceNameGet = getString(request.getParameter("serviceName"+inx),"");
-				Boolean isPrime = (inx == getInt(request.getParameter("servicePrimeIndex"), -1));
-				if(serviceIdGet!=null) {
-					logger.trace("serviceId:{}/serviceName:{}/isPrime:{}", serviceIdGet, serviceNameGet, isPrime);
-					serviceList.add(new ServiceSetting(serviceIdGet,serviceNameGet,isPrime));
-				} else {
-					break;
-				}
-			}
+			responseWriter.object().key("success").value("true").key("status").value(1).endObject();
+			responseWriter.done();
 			
-			//click-type 속성 업데이트
-			for (int inx = 0; inx < count; inx++) {
-				String clickTypeIdGet = request.getParameter("clickTypeId"+inx);
-				String clickTypeNameGet = getString(request.getParameter("clickTypeName"+inx),"");
-				if(clickTypeIdGet!=null) {
-					logger.trace("clickTypeId:{}/clickTypeName:{}", clickTypeIdGet, clickTypeNameGet);
-					clickTypeList.add(new ClickTypeSetting(clickTypeIdGet,clickTypeNameGet));
-				} else {
-					break;
-				}
-			}
+			mav.addObject("content", writer.toString());
 			
-			siteAttribute.setTypeList(typeList);
-			siteAttribute.setServiceList(serviceList);
-			siteAttribute.setClickTypeList(clickTypeList);
+		} finally {
 			
-			getStatisticsService().writeConfig();
+			if(writer != null) try {
+				writer.close();
+			} catch (Exception ignore) { }
+			
 		}
-		
-		responseWriter.object().key("success").value("true").key("status").value(1).endObject();
-		
-		mav.addObject("content", writer.toString());
 		return mav;
 	}
 }

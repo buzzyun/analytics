@@ -72,8 +72,9 @@ public abstract class AbstractLogAggregator<LogType extends LogData> {
 			sortedMap.putAll(aggregateMap);
 		}
 		aggregateMap.clear();
-		AggregationResultWriter logWriter = newRunWriter(outputEncoding, flushCount++);
+		AggregationResultWriter logWriter = null;
 		try {
+			logWriter = newRunWriter(outputEncoding, flushCount++);
 			for (Map.Entry<String, Counter> entry : sortedMap.entrySet()) {
 				logWriter.write(entry.getKey(), entry.getValue().value());
 			}
@@ -96,7 +97,11 @@ public abstract class AbstractLogAggregator<LogType extends LogData> {
 		if(flushCount > 0) {
 			RunMerger merger = newFinalMerger(outputEncoding, flushCount);
 			if (merger != null) {
-				merger.merge();
+				try {
+					merger.merge();
+				} finally {
+					merger.close();
+				}
 			}
 		}
 

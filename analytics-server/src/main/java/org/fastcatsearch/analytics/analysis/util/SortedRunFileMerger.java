@@ -63,7 +63,7 @@ public class SortedRunFileMerger implements RunMerger {
 				}
 			}
 			
-			writer.close();
+			close();
 		}
 	}
 
@@ -80,4 +80,10 @@ public class SortedRunFileMerger implements RunMerger {
 		return list;
 	}
 
+	@Override
+	public void close() {
+		if(writer!=null) try {
+			writer.close();
+		} catch (Exception ignore) { }
+	}
 }

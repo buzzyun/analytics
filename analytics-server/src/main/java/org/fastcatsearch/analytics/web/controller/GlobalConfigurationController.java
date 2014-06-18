@@ -184,36 +184,43 @@ public class GlobalConfigurationController extends AbstractController {
 		
 		logger.trace("mode : {} / siteId : {} / categoryList : {}", mode, currentSiteId, categoryList);
 		
-		Writer writer = new StringWriter();
-		ResponseWriter responseWriter = getDefaultResponseWriter(writer);
-		
-		if("updateSite".equals(mode)) {
-			String siteIdNew = request.getParameter("siteIdNew");
-			//currentSiteConfig.setId(siteIdNew);
-			currentSiteConfig.setName(siteName);
-			//statisticsService.removeSite(siteId);
-			//statisticsService.addSite(siteIdNew, currentSiteConfig);
-			statisticsService.writeConfig();
-		} else if("addSite".equals(mode)) {
-			boolean found = false;
-			for(int inx=0;inx < siteList.size(); inx++) {
-				if(siteList.get(inx).getId().equals(siteId)) {
-					found = true;
-					break;
+		Writer writer = null;
+		try {
+			writer = new StringWriter();
+			ResponseWriter responseWriter = getDefaultResponseWriter(writer);
+			
+			if("updateSite".equals(mode)) {
+				String siteIdNew = request.getParameter("siteIdNew");
+				//currentSiteConfig.setId(siteIdNew);
+				currentSiteConfig.setName(siteName);
+				//statisticsService.removeSite(siteId);
+				//statisticsService.addSite(siteIdNew, currentSiteConfig);
+				statisticsService.writeConfig();
+			} else if("addSite".equals(mode)) {
+				boolean found = false;
+				for(int inx=0;inx < siteList.size(); inx++) {
+					if(siteList.get(inx).getId().equals(siteId)) {
+						found = true;
+						break;
+					}
 				}
-			}
-			if(!found) {
-				statisticsService.addSite(siteId, statisticsService.newDefaultSite(siteId, siteName));
+				if(!found) {
+					statisticsService.addSite(siteId, statisticsService.newDefaultSite(siteId, siteName));
+					statisticsService.writeConfig();
+				}
+			} else if("removeSite".equals(mode)) {
+				statisticsService.removeSite(siteId);
+				statisticsService.deleteConfig(siteId);
 				statisticsService.writeConfig();
 			}
-		} else if("removeSite".equals(mode)) {
-			statisticsService.removeSite(siteId);
-			statisticsService.deleteConfig(siteId);
-			statisticsService.writeConfig();
+			responseWriter.object().key("success").value("true").key("status").value(1).endObject();
+			
+			modelAndView.addObject("content", writer.toString());
+		} finally {
+			if(writer!=null) try {
+				writer.close();
+			} catch (Exception ignore) { }
 		}
-		responseWriter.object().key("success").value("true").key("status").value(1).endObject();
-		
-		modelAndView.addObject("content", writer.toString());
 		return modelAndView;
 	}
 	

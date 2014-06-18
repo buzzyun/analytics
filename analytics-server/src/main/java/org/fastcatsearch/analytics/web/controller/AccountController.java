@@ -50,13 +50,13 @@ public class AccountController extends AbstractController {
 	public ModelAndView getUser(@RequestParam("id") int id ) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("text");
-		Writer writer = new StringWriter();
-		ResponseWriter responseWriter = getDefaultResponseWriter(writer);
-		
-		AnalyticsDBService analyticsDBService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
+		Writer writer = null;
 		MapperSession<UserAccountMapper> mapperSession = null;
 		
 		try {
+			writer = new StringWriter();
+			ResponseWriter responseWriter = getDefaultResponseWriter(writer);
+			AnalyticsDBService analyticsDBService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
 				
 			mapperSession = analyticsDBService.getMapperSession(UserAccountMapper.class);
 			UserAccountMapper mapper = mapperSession.getMapper();
@@ -71,13 +71,17 @@ public class AccountController extends AbstractController {
 			.endObject();
 			
 			responseWriter.done();
+			modelAndView.addObject("content",writer.toString());
 		} finally {
 			if(mapperSession!=null) {
 				try { mapperSession.closeSession(); } catch (Exception e) { }
 			}
+			
+			if(writer!=null) try {
+				writer.close();
+			} catch (Exception ignore) { }
 		}
 		
-		modelAndView.addObject("content",writer.toString());
 		
 		return modelAndView;
 	}

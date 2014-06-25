@@ -252,13 +252,13 @@ public class SearchProgressController extends AbstractController {
 		String charEncoding = settings.getString("download.characterEncoding", "utf-8");
 		String fileExt = settings.getString("download.fileExt", "txt");
 		String delimiter = settings.getString("download.delimiter", "\t");
+		String timeIdStr = startTimeId+"-"+endTimeId;
 		
 		response.setContentType("text/plain");
 		response.setCharacterEncoding(charEncoding);
 		if (forView != null && forView.booleanValue()) {
 			// 다운로드 하지 않고 웹페이지에서 보여준다.
 		} else {
-			String timeIdStr = startTimeId+"-"+endTimeId;
 			
 			if("W".equals(timeViewType)) {
 				timeIdStr = 
@@ -335,13 +335,28 @@ public class SearchProgressController extends AbstractController {
 						logger.trace("startTime:{} / endTime:{}",sdf.format(startTime.getTime()), sdf.format(endTime.getTime()));
 					}
 				}
+				
+				//print top
+				writer.append("Click-through Detail").append("\n")
+					.append("Date : ").append(timeIdStr).append("\n")
+					.append("Category : ").append(categoryId).append("\n")
+					.append("\n");
+				
+				//print header
+				writer.append("no").append(delimiter)
+					.append("date").append(delimiter)
+					.append("count").append(delimiter)
+					.append("max time").append(delimiter)
+					.append("average time").append("\n");
+				
+				
 				for(int inx=0;inx<list.size();inx++) {
 					SearchHitVO vo = list.get(inx);
 					Calendar parsedTime = StatisticsUtils.parseTimeId(vo.getTimeId());
 					String timeStr = StatisticsUtils.toDatetimeString(parsedTime, timeTypeCode);
 					logger.trace("vo time:{}={} / {}", vo.getTimeId(), timeStr, parsedTime.getTime());
 					vo.setTimeId(timeStr);
-					
+					writer.append(String.valueOf(inx+1)).append(delimiter);
 					writer.append(String.valueOf(vo.getTimeId())).append(delimiter);
 					writer.append(String.valueOf(vo.getHit())).append(delimiter);
 					writer.append(String.valueOf(vo.getMaxTime())).append(delimiter);

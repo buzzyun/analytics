@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.fastcatsearch.analytics.analysis.StatisticsUtils;
 import org.fastcatsearch.analytics.analysis.config.StatisticsSettings.ClickTypeSetting;
 import org.fastcatsearch.analytics.analysis.config.StatisticsSettings.ServiceSetting;
@@ -402,12 +403,12 @@ public class CTRController extends AbstractController {
 		List<String> kewordCtrList = new ArrayList<String>();
 		List<Map<String, String>> typeCountMapList = new ArrayList<Map<String, String>>();
 		MapperSession<SearchKeywordHitMapper> searchKeywordHitMapperSession = dbService.getMapperSession(SearchKeywordHitMapper.class);
+		String timeIdStr = StatisticsUtils.getTimeId(calendar, Calendar.MONTH);
 		try {
 			Settings settings = environment.settingManager().getSystemSettings();
 			String charEncoding = settings.getString("download.characterEncoding", "utf-8");
 			String fileExt = settings.getString("download.fileExt", "txt");
 			String delimiter = settings.getString("download.delimiter", "\t");
-			String timeIdStr = StatisticsUtils.getTimeId(calendar, Calendar.MONTH);
 			response.setContentType("text/plain");
 			response.setCharacterEncoding(charEncoding);
 			response.setHeader("Content-disposition", "attachment; filename=\"" + 
@@ -419,8 +420,25 @@ public class CTRController extends AbstractController {
 			/*
 			 * 상위 20000개의 키워드 리스트를 얻어온다.
 			 * */
+			
+			//print top
+			writer.append("Click-through Detail").append("\n")
+				.append("Date : ").append(timeIdStr).append("\n")
+				.append("\n");
+			
+			//print header
+			writer.append("no").append(delimiter)
+				.append("keyword").append(delimiter)
+				.append("search count").append(delimiter)
+				.append("click-through count");
+			for(String[] clickType : clickTypeList){
+				writer .append(delimiter).append(clickType[1]);
+			}
+			writer.append("\n");
+			
 			keywordList = clickKeywordHitMapper.getKeywordEntryList(siteId, timeId, 20000);
-			for(ClickKeywordHitVO vo : keywordList) {
+			for(int inx = 0; inx < keywordList.size(); inx++) {
+				ClickKeywordHitVO vo = keywordList.get(inx);
 				String keyword = vo.getKeyword();
 				int keywordClickCount = vo.getCount();
 				SearchHitVO searchHitVO = searchKeywordHitMapper.getEntry(siteId, "_root", timeId, keyword);
@@ -435,7 +453,10 @@ public class CTRController extends AbstractController {
 				keywordSearchPvList.add(String.format("%,d", keywordSearchPv));
 				kewordCtrList.add(String.format("%.1f", keywordCtRate)+"%");
 				
-				String keywordStr = keyword.replaceAll(delimiter, "\\"+delimiter);
+				String keywordStr = StringEscapeUtils.escapeCsv(keyword);
+				keywordStr = keywordStr.replaceAll(delimiter, "\\"+delimiter);
+				
+				writer.append(String.valueOf(inx+1)).append(delimiter);
 				writer.append(keywordStr).append(delimiter);
 				writer.append(String.valueOf(keywordSearchPv)).append(delimiter);
 				writer.append(String.valueOf(keywordClickCount)).append(delimiter);

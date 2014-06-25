@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.fastcatsearch.analytics.analysis.StatisticsUtils;
 import org.fastcatsearch.analytics.analysis.config.SiteListSetting.SiteSetting;
 import org.fastcatsearch.analytics.analysis.vo.RankKeyword;
@@ -200,12 +201,12 @@ public class SearchRankController extends AbstractController {
 			String charEncoding = settings.getString("download.characterEncoding", "utf-8");
 			String fileExt = settings.getString("download.fileExt", "txt");
 			String delimiter = settings.getString("download.delimiter", "\t");
+			String timeIdStr = timeId;
 			response.setContentType("text/plain");
 			response.setCharacterEncoding(charEncoding);
 			if (forView != null && forView.booleanValue()) {
 				// 다운로드 하지 않고 웹페이지에서 보여준다.
 			} else {
-				String timeIdStr = timeId;
 				if("W".equalsIgnoreCase(timeViewType)) {
 					Calendar c1 = StatisticsUtils.getFirstDayOfWeek(calendar);
 					Calendar c2 = StatisticsUtils.getLastDayOfWeek(calendar);
@@ -230,12 +231,33 @@ public class SearchRankController extends AbstractController {
 				list = mapper.getEntryList(siteId, categoryId, timeId, rankDiffType, rankDiffOver, 0, 0);
 			}
 			
+			//print top
+			
+			writer.append("Search Keyword").append("\n")
+				.append("Date : ").append(timeIdStr).append("\n")
+				.append("Category : ").append(categoryId).append("\n")
+				.append("\n");
+			
+			
+			//print header
+			writer.append("rank").append(delimiter)
+				.append("keyword").append(delimiter)
+				.append("count").append(delimiter)
+				.append("type").append(delimiter)
+				.append("rank changes").append(delimiter)
+				.append("count changes").append(delimiter)
+				.append("\n");
+			
 			for (int i = 0; i < list.size(); i++) {
 				RankKeywordVO entry = list.get(i);
-				String keywordStr = entry.getKeyword().replaceAll(delimiter, "\\"+delimiter);
+				
+				String keywordStr = StringEscapeUtils.escapeCsv(entry.getKeyword());
+				keywordStr = keywordStr.replaceAll(delimiter, "\\"+delimiter);
+				writer.append(String.valueOf(i+1)).append(delimiter);
 				writer.append(keywordStr).append(delimiter);
 				writer.append(String.valueOf(entry.getCount())).append(delimiter);
 				writer.append(String.valueOf(entry.getRankDiffType())).append(delimiter);
+				writer.append(String.valueOf(entry.getRankDiff())).append(delimiter);
 				writer.append(String.valueOf(entry.getCountDiff()));
 				writer.append("\n");
 			}

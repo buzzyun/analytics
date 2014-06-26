@@ -243,7 +243,7 @@ public class SearchRankController extends AbstractController {
 			writer.append("rank").append(delimiter)
 				.append("keyword").append(delimiter)
 				.append("count").append(delimiter)
-				.append("type").append(delimiter)
+				//.append("type").append(delimiter)
 				.append("rank changes").append(delimiter)
 				.append("count changes").append(delimiter)
 				.append("\n");
@@ -256,8 +256,17 @@ public class SearchRankController extends AbstractController {
 				writer.append(String.valueOf(i+1)).append(delimiter);
 				writer.append(keywordStr).append(delimiter);
 				writer.append(String.valueOf(entry.getCount())).append(delimiter);
-				writer.append(String.valueOf(entry.getRankDiffType())).append(delimiter);
-				writer.append(String.valueOf(entry.getRankDiff())).append(delimiter);
+				String rankDiffStr = "";
+				if ("UP".equals(entry.getRankDiffType())) {
+					rankDiffStr = "+" + String.valueOf(entry.getRankDiff());
+				} else if ("DN".equals(entry.getRankDiffType())) {
+					rankDiffStr = "-" + String.valueOf(entry.getRankDiff());
+				} else if ("EQ".equals(entry.getRankDiffType())) {
+					rankDiffStr = String.valueOf(entry.getRankDiff());
+				} else if ("NEW".equals(entry.getRankDiffType())) {
+					rankDiffStr = "NEW";
+				}
+				writer.append(rankDiffStr).append(delimiter);
 				writer.append(String.valueOf(entry.getCountDiff()));
 				writer.append("\n");
 			}

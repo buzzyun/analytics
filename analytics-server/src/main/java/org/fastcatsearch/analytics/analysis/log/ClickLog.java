@@ -8,6 +8,9 @@ public class ClickLog extends LogData {
 	protected String clickType;
 	
 	public ClickLog(String time, String keyword, String clickId, String clickType) {
+		if(keyword!=null) {
+			keyword = keyword.toUpperCase();
+		}
 		this.time = time;
 		this.keyword = keyword;
 		this.clickId = clickId;

@@ -6,6 +6,9 @@ public class KeyCountLog extends LogData {
 	private int count;
 	
 	public KeyCountLog(String keyword, String count) {
+		if(keyword!=null) {
+			keyword = keyword.toUpperCase();
+		}
 		this.keyword = keyword;
 		try {
 			if(count!=null && !"".equals(count)) {

@@ -23,6 +23,7 @@ import org.fastcatsearch.analytics.analysis.schedule.ScheduledTaskRunner;
 import org.fastcatsearch.analytics.analysis.task.DailyClickLogAnalyticsTask;
 import org.fastcatsearch.analytics.analysis.task.DailySearchLogAnalyticsTask;
 import org.fastcatsearch.analytics.analysis.task.DailyTypeSearchLogAnalyticsTask;
+import org.fastcatsearch.analytics.analysis.task.HourlySearchLogAnalyticsTask;
 import org.fastcatsearch.analytics.analysis.task.MonthlyClickLogAnalyticsTask;
 import org.fastcatsearch.analytics.analysis.task.MonthlySearchLogAnalyticsTask;
 import org.fastcatsearch.analytics.analysis.task.MonthlyTypeSearchLogAnalyticsTask;
@@ -105,48 +106,58 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		
 		int delayInSeconds = statisticsSettings.getSiteProperties().getScheduleDelayInSeconds();
 		int dailyScheduleTime = statisticsSettings.getSiteProperties().getDailyScheduleTime();
+		
+		int priority = 0;
+		
 		/*
 		 * 실시간 인기검색어.
 		 */
 		realtimeTaskRunner = new ScheduledTaskRunner("rt-search-log-task-runner", JobService.getInstance(), environment);
 		int periodInSeconds = statisticsSettings.getRealtimePopularKeywordSetting().getPeriodInSeconds();
 		Schedule realtimeSchedule = new FixedSchedule(cal, periodInSeconds, delayInSeconds);
-		RealtimeSearchLogAnalyticsTask realtimeTask = new RealtimeSearchLogAnalyticsTask(siteId, categoryIdList, realtimeSchedule, 0, realtimeRawLogger);
+		RealtimeSearchLogAnalyticsTask realtimeTask = new RealtimeSearchLogAnalyticsTask(siteId, categoryIdList, realtimeSchedule, priority++, realtimeRawLogger);
 		realtimeTaskRunner.addTask(realtimeTask);
 		realtimeTaskRunner.start();
-
 
 		/*
 		 * 연관검색어 
 		 * */
 		relateTaskRunner = new ScheduledTaskRunner("daily-search-log-task-runner", JobService.getInstance(), environment);
 		Schedule relateSchedule = new EveryDaySchedule(dailyScheduleTime, delayInSeconds); //매일 0시.
-		RelateSearchLogAnalyticsTask relateSearchLogAnalysisTask = new RelateSearchLogAnalyticsTask(siteId, categoryIdList, relateSchedule, 1);
+		RelateSearchLogAnalyticsTask relateSearchLogAnalysisTask = new RelateSearchLogAnalyticsTask(siteId, categoryIdList, relateSchedule, priority++);
 		relateTaskRunner.addTask(relateSearchLogAnalysisTask);
 		relateTaskRunner.start();
+		
 		
 		/*
 		 * 일별 통계 인기검색어. 일,주,월,년
 		 */
 		dailyTaskRunner = new ScheduledTaskRunner("daily-search-log-task-runner", JobService.getInstance(), environment);
+		
+		//시간대별
+		Schedule dailySchedule1 = new EveryDaySchedule(dailyScheduleTime, delayInSeconds);
+		HourlySearchLogAnalyticsTask hourlySearchLogAnalyticsTask = new HourlySearchLogAnalyticsTask(siteId, categoryIdList, dailySchedule1, priority++, dailyRawLogger);
+		dailyTaskRunner.addTask(hourlySearchLogAnalyticsTask);
+		
 		// 일
-		Schedule dailySchedule1 = new EveryDaySchedule(dailyScheduleTime, delayInSeconds); //매일 0시.
-		DailySearchLogAnalyticsTask dailySearchLogAnalysisTask = new DailySearchLogAnalyticsTask(siteId, categoryIdList, dailySchedule1, 1, dailyRawLogger);
+		Schedule dailySchedule2 = new EveryDaySchedule(dailyScheduleTime, delayInSeconds); //매일 0시.
+		DailySearchLogAnalyticsTask dailySearchLogAnalysisTask = new DailySearchLogAnalyticsTask(siteId, categoryIdList, dailySchedule2, priority++, dailyRawLogger);
 		dailyTaskRunner.addTask(dailySearchLogAnalysisTask);
 		
-		Schedule dailySchedule2 = new EveryDaySchedule(dailyScheduleTime, delayInSeconds);
-		DailyTypeSearchLogAnalyticsTask dailyTypeSearchLogAnalyticsTask = new DailyTypeSearchLogAnalyticsTask(siteId, categoryIdList, dailySchedule2, 2, dailyTypeRawLogger);
+		Schedule dailySchedule3 = new EveryDaySchedule(dailyScheduleTime, delayInSeconds);
+		DailyTypeSearchLogAnalyticsTask dailyTypeSearchLogAnalyticsTask = new DailyTypeSearchLogAnalyticsTask(siteId, categoryIdList, dailySchedule3, priority++, dailyTypeRawLogger);
 		dailyTaskRunner.addTask(dailyTypeSearchLogAnalyticsTask);
+		
 
 		/*
 		 * 주별 통계 
 		 */
 		Schedule weeklySchedule = new EveryDaySchedule(dailyScheduleTime, delayInSeconds);
-		WeeklySearchLogAnalyticsTask weeklySearchLogAnalysisTask = new WeeklySearchLogAnalyticsTask(siteId, categoryIdList, weeklySchedule, 3);
+		WeeklySearchLogAnalyticsTask weeklySearchLogAnalysisTask = new WeeklySearchLogAnalyticsTask(siteId, categoryIdList, weeklySchedule, priority++);
 		dailyTaskRunner.addTask(weeklySearchLogAnalysisTask);
 		
 		Schedule weeklySchedule2 = new EveryDaySchedule(dailyScheduleTime, delayInSeconds);
-		WeeklyTypeSearchLogAnalyticsTask weeklyTypeSearchLogAnalyticsTask = new WeeklyTypeSearchLogAnalyticsTask(siteId, categoryIdList, weeklySchedule2, 4);
+		WeeklyTypeSearchLogAnalyticsTask weeklyTypeSearchLogAnalyticsTask = new WeeklyTypeSearchLogAnalyticsTask(siteId, categoryIdList, weeklySchedule2, priority++);
 		dailyTaskRunner.addTask(weeklyTypeSearchLogAnalyticsTask);
 		
 		 
@@ -154,22 +165,22 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		 * 월별 통계 
 		 */
 		Schedule monthlySchedule = new EveryDaySchedule(dailyScheduleTime, delayInSeconds);
-		MonthlySearchLogAnalyticsTask monthlySearchLogAnalysisTask = new MonthlySearchLogAnalyticsTask(siteId, categoryIdList, monthlySchedule, 5);
+		MonthlySearchLogAnalyticsTask monthlySearchLogAnalysisTask = new MonthlySearchLogAnalyticsTask(siteId, categoryIdList, monthlySchedule, priority++);
 		dailyTaskRunner.addTask(monthlySearchLogAnalysisTask);
 		
 		Schedule monthlySchedule2 = new EveryDaySchedule(dailyScheduleTime, delayInSeconds);
-		MonthlyTypeSearchLogAnalyticsTask monthlyTypeSearchLogAnalyticsTask = new MonthlyTypeSearchLogAnalyticsTask(siteId, categoryIdList, monthlySchedule2, 6);
+		MonthlyTypeSearchLogAnalyticsTask monthlyTypeSearchLogAnalyticsTask = new MonthlyTypeSearchLogAnalyticsTask(siteId, categoryIdList, monthlySchedule2, priority++);
 		dailyTaskRunner.addTask(monthlyTypeSearchLogAnalyticsTask);
 		
 		/*
 		 * 년도별 통계 
 		 */
 		Schedule yearlySchedule = new EveryDaySchedule(dailyScheduleTime, delayInSeconds);
-		YearlySearchLogAnalyticsTask yearlySearchLogAnalysisTask = new YearlySearchLogAnalyticsTask(siteId, categoryIdList, yearlySchedule, 7);
+		YearlySearchLogAnalyticsTask yearlySearchLogAnalysisTask = new YearlySearchLogAnalyticsTask(siteId, categoryIdList, yearlySchedule, priority++);
 		dailyTaskRunner.addTask(yearlySearchLogAnalysisTask);
 				
 		Schedule yearlySchedule2 = new EveryDaySchedule(dailyScheduleTime, delayInSeconds);
-		YearlyTypeSearchLogAnalyticsTask yearlyTypeSearchLogAnalyticsTask = new YearlyTypeSearchLogAnalyticsTask(siteId, categoryIdList, yearlySchedule2, 8);
+		YearlyTypeSearchLogAnalyticsTask yearlyTypeSearchLogAnalyticsTask = new YearlyTypeSearchLogAnalyticsTask(siteId, categoryIdList, yearlySchedule2, priority++);
 		dailyTaskRunner.addTask(yearlyTypeSearchLogAnalyticsTask);
 		
 		/**
@@ -177,17 +188,17 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		 */
 		/* 1. Daily */
 		Schedule clickLogSchedule = new EveryDaySchedule(dailyScheduleTime, delayInSeconds);
-		DailyClickLogAnalyticsTask dailyClickLogAnalyticsTask = new DailyClickLogAnalyticsTask(siteId, categoryIdList, clickLogSchedule, 9);
+		DailyClickLogAnalyticsTask dailyClickLogAnalyticsTask = new DailyClickLogAnalyticsTask(siteId, categoryIdList, clickLogSchedule, priority++);
 		dailyTaskRunner.addTask(dailyClickLogAnalyticsTask);
 		
 		/* 2. Monthly */
 		Schedule clickLogMonthlySchedule = new EveryDaySchedule(dailyScheduleTime, delayInSeconds);
-		MonthlyClickLogAnalyticsTask monthlyClickLogAnalyticsTask = new MonthlyClickLogAnalyticsTask(siteId, categoryIdList, clickLogMonthlySchedule, 10);
+		MonthlyClickLogAnalyticsTask monthlyClickLogAnalyticsTask = new MonthlyClickLogAnalyticsTask(siteId, categoryIdList, clickLogMonthlySchedule, priority++);
 		dailyTaskRunner.addTask(monthlyClickLogAnalyticsTask);
 		
 		/* 3. N-Days */
 		Schedule clickLogNDaysSchedule = new EveryDaySchedule(dailyScheduleTime, delayInSeconds);
-		NDaysClickLogAnalyticsTask nDaysClickLogAnalyticsTask = new NDaysClickLogAnalyticsTask(siteId, categoryIdList, clickLogNDaysSchedule, 11);
+		NDaysClickLogAnalyticsTask nDaysClickLogAnalyticsTask = new NDaysClickLogAnalyticsTask(siteId, categoryIdList, clickLogNDaysSchedule, priority++);
 		dailyTaskRunner.addTask(nDaysClickLogAnalyticsTask);
 
 		dailyTaskRunner.start();

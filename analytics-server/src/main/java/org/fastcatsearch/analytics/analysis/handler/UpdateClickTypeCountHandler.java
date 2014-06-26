@@ -16,12 +16,14 @@ public class UpdateClickTypeCountHandler extends ProcessHandler {
 	String siteId;
 	String timeId;
 	File file;
+	File renameTo;
 	String encoding;
 	
-	public UpdateClickTypeCountHandler(String siteId, String timeId, File file, String encoding) {
+	public UpdateClickTypeCountHandler(String siteId, String timeId, File file, File renameTo, String encoding) {
 		this.siteId = siteId;
 		this.timeId = timeId;
 		this.file = file;
+		this.renameTo = renameTo;
 		this.encoding = encoding;
 	}
 
@@ -62,6 +64,10 @@ public class UpdateClickTypeCountHandler extends ProcessHandler {
 						mapper.putEntry(siteId, timeId, clickType, count);
 					}
 					
+				}
+				
+				if(renameTo!=null) {
+					file.renameTo(renameTo);
 				}
 			}
 		} finally {

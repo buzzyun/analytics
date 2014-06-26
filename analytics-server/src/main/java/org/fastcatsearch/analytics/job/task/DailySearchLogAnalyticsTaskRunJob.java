@@ -20,8 +20,10 @@ import org.fastcatsearch.analytics.analysis.task.MonthlySearchLogAnalyticsTask;
 import org.fastcatsearch.analytics.analysis.task.MonthlyTypeSearchLogAnalyticsTask;
 import org.fastcatsearch.analytics.analysis.task.NDaysClickLogAnalyticsTask;
 import org.fastcatsearch.analytics.analysis.task.RelateSearchLogAnalyticsTask;
+import org.fastcatsearch.analytics.analysis.task.WeeklyClickLogAnalyticsTask;
 import org.fastcatsearch.analytics.analysis.task.WeeklySearchLogAnalyticsTask;
 import org.fastcatsearch.analytics.analysis.task.WeeklyTypeSearchLogAnalyticsTask;
+import org.fastcatsearch.analytics.analysis.task.YearlyClickLogAnalyticsTask;
 import org.fastcatsearch.analytics.analysis.task.YearlySearchLogAnalyticsTask;
 import org.fastcatsearch.analytics.analysis.task.YearlyTypeSearchLogAnalyticsTask;
 import org.fastcatsearch.analytics.control.JobService;
@@ -95,10 +97,11 @@ public class DailySearchLogAnalyticsTaskRunJob extends Job {
 				
 				int taskSequence = 0;
 				
-				
 				for(String type : taskType) {
 					logger.debug("TaskType > {}", type);
 					
+logger.info("################################################################################");
+logger.info("TaskType:{}", type);
 					if(type.equals("hour_sp")){
 						/* 1. Hourly */
 						TimeSchedule schedule = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
@@ -106,59 +109,69 @@ public class DailySearchLogAnalyticsTaskRunJob extends Job {
 						taskRunner.addTask(task);
 					}else if(type.equals("day_sp")){
 						/* 2. Daily */
-						TimeSchedule schedule1 = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
-						DailySearchLogAnalyticsTask task1 = new DailySearchLogAnalyticsTask(siteId, categoryIdList, schedule1, taskSequence++, null);
-						taskRunner.addTask(task1);
+						TimeSchedule schedule = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
+						DailySearchLogAnalyticsTask task = new DailySearchLogAnalyticsTask(siteId, categoryIdList, schedule, taskSequence++, null);
+						taskRunner.addTask(task);
 					}else if(type.equals("week_sp")){
-						TimeSchedule schedule3 = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
-						WeeklySearchLogAnalyticsTask task3 = new WeeklySearchLogAnalyticsTask(siteId, categoryIdList, schedule3, taskSequence++);
-						taskRunner.addTask(task3);
+						TimeSchedule schedule = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
+						WeeklySearchLogAnalyticsTask task = new WeeklySearchLogAnalyticsTask(siteId, categoryIdList, schedule, taskSequence++);
+						taskRunner.addTask(task);
 					}else if(type.equals("month_sp")){
-						TimeSchedule schedule5 = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
-						MonthlySearchLogAnalyticsTask task5 = new MonthlySearchLogAnalyticsTask(siteId, categoryIdList, schedule5, taskSequence++);
-						taskRunner.addTask(task5);
+						TimeSchedule schedule = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
+						MonthlySearchLogAnalyticsTask task = new MonthlySearchLogAnalyticsTask(siteId, categoryIdList, schedule, taskSequence++);
+						taskRunner.addTask(task);
 					}else if(type.equals("year_sp")){
-						TimeSchedule schedule7 = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
-						YearlySearchLogAnalyticsTask task7 = new YearlySearchLogAnalyticsTask(siteId, categoryIdList, schedule7, taskSequence++);
-						taskRunner.addTask(task7);
+						TimeSchedule schedule = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
+						YearlySearchLogAnalyticsTask task = new YearlySearchLogAnalyticsTask(siteId, categoryIdList, schedule, taskSequence++);
+						taskRunner.addTask(task);
 					}else if(type.equals("day_type")){
-						TimeSchedule schedule2 = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
-						DailyTypeSearchLogAnalyticsTask task2 = new DailyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule2, taskSequence++, null);
-						taskRunner.addTask(task2);
+						TimeSchedule schedule = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
+						DailyTypeSearchLogAnalyticsTask task = new DailyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule, taskSequence++, null);
+						taskRunner.addTask(task);
 					}else if(type.equals("week_type")){
-						TimeSchedule schedule4 = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
-						WeeklyTypeSearchLogAnalyticsTask task4 = new WeeklyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule4, taskSequence++);
-						taskRunner.addTask(task4);
+						TimeSchedule schedule = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
+						WeeklyTypeSearchLogAnalyticsTask task = new WeeklyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule, taskSequence++);
+						taskRunner.addTask(task);
 					}else if(type.equals("month_type")){
-						TimeSchedule schedule6 = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
-						MonthlyTypeSearchLogAnalyticsTask task6 = new MonthlyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule6, taskSequence++);
-						taskRunner.addTask(task6);
+						TimeSchedule schedule = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
+						MonthlyTypeSearchLogAnalyticsTask task = new MonthlyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule, taskSequence++);
+						taskRunner.addTask(task);
 					}else if(type.equals("year_type")){
-						TimeSchedule schedule8 = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
-						YearlyTypeSearchLogAnalyticsTask task8 = new YearlyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule8, taskSequence++);
-						taskRunner.addTask(task8);
+						TimeSchedule schedule = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
+						YearlyTypeSearchLogAnalyticsTask task = new YearlyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule, taskSequence++);
+						taskRunner.addTask(task);
 					}else if(type.equals("day_relate")){
 						/********************
 						 ** 연관검색어
 						 ********************/
-						TimeSchedule schedule12 = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
-						RelateSearchLogAnalyticsTask task12 = new RelateSearchLogAnalyticsTask(siteId, categoryIdList, schedule12, taskSequence++);
-						taskRunner.addTask(task12);
+						TimeSchedule schedule = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
+						RelateSearchLogAnalyticsTask task = new RelateSearchLogAnalyticsTask(siteId, categoryIdList, schedule, taskSequence++);
+						taskRunner.addTask(task);
 					}else if(type.equals("day_ctr")){
 						/* 1. Daily */
-						TimeSchedule schedule9 = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
-						DailyClickLogAnalyticsTask task9 = new DailyClickLogAnalyticsTask(siteId, categoryIdList, schedule9, taskSequence++);
-						taskRunner.addTask(task9);
+						TimeSchedule schedule = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
+						DailyClickLogAnalyticsTask task = new DailyClickLogAnalyticsTask(siteId, categoryIdList, schedule, taskSequence++);
+						taskRunner.addTask(task);
+					}else if(type.equals("week_ctr")){
+						/* 2. Weekly */
+						TimeSchedule schedule = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
+						WeeklyClickLogAnalyticsTask task = new WeeklyClickLogAnalyticsTask(siteId, categoryIdList, schedule, taskSequence++);
+						taskRunner.addTask(task);
 					}else if(type.equals("month_ctr")){
-						/* 2. Monthly */
-						TimeSchedule schedule10 = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
-						MonthlyClickLogAnalyticsTask task10 = new MonthlyClickLogAnalyticsTask(siteId, categoryIdList, schedule10, taskSequence++);
-						taskRunner.addTask(task10);
+						/* 3. Monthly */
+						TimeSchedule schedule = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
+						MonthlyClickLogAnalyticsTask task = new MonthlyClickLogAnalyticsTask(siteId, categoryIdList, schedule, taskSequence++);
+						taskRunner.addTask(task);
+					}else if(type.equals("year_ctr")){
+						/* 4. Yearly */
+						TimeSchedule schedule = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
+						YearlyClickLogAnalyticsTask task = new YearlyClickLogAnalyticsTask(siteId, categoryIdList, schedule, taskSequence++);
+						taskRunner.addTask(task);
 					}else if(type.equals("day_ctr_file")){
-						/* 3. N-Days */
-						TimeSchedule schedule11 = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
-						NDaysClickLogAnalyticsTask task11 = new NDaysClickLogAnalyticsTask(siteId, categoryIdList, schedule11, taskSequence++);
-						taskRunner.addTask(task11);
+						/* 5. N-Days */
+						TimeSchedule schedule = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
+						NDaysClickLogAnalyticsTask task = new NDaysClickLogAnalyticsTask(siteId, categoryIdList, schedule, taskSequence++);
+						taskRunner.addTask(task);
 					}
 					
 				}

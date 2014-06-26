@@ -151,9 +151,9 @@ function deselectAll() {
 												<td>Click-through Rate</td>
 												<td></td>
 												<td class="checkbox-column"><input type="checkbox" checked="checked" name="taskType" value="day_ctr"></td>
-												<td></td>
+												<td class="checkbox-column"><input type="checkbox" checked="checked" name="taskType" value="week_ctr"></td>
 												<td class="checkbox-column"><input type="checkbox" checked="checked" name="taskType" value="month_ctr"></td>
-												<td></td>
+												<td class="checkbox-column"><input type="checkbox" checked="checked" name="taskType" value="year_ctr"></td>
 											</tr>
 											<tr>
 												<td>Click-through Rate File</td>

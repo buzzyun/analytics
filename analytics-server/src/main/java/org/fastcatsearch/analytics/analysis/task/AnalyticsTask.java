@@ -151,7 +151,7 @@ public abstract class AnalyticsTask<LogType extends LogData> extends Job impleme
 					mapper.updateEntry(taskResultVO);
 				} else {
 					//insert
-					mapper.putEntry(taskResultVO);
+//					mapper.putEntry(taskResultVO);
 				}
 			} catch (Exception e) {
 				logger.error("error while insert task result log.", e);

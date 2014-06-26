@@ -32,6 +32,7 @@ import org.json.JSONStringer;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -54,7 +55,9 @@ public class ReportMainController extends AbstractController {
 	
 	
 	@RequestMapping("/dashboard")
-	public ModelAndView dashboard(@PathVariable String siteId) {
+	public ModelAndView dashboard(@PathVariable String siteId
+			, @RequestParam(required=false) String timeText
+			, @RequestParam(required = false) String timeViewType) {
 		
 		AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
 		StatisticsSettings statisticsSetting = getStatisticsService().getStatisticsSetting(siteId);
@@ -83,23 +86,58 @@ public class ReportMainController extends AbstractController {
 			SearchPathHitMapper pathMapper = pathSession.getMapper();
 			ClickHitMapper clickMapper = clickSession.getMapper();
 			
+			int timeTypeCode = Calendar.WEEK_OF_YEAR;
+			
+			if("W".equalsIgnoreCase(timeViewType)) {
+				timeTypeCode = Calendar.WEEK_OF_YEAR;
+			} else if("M".equalsIgnoreCase(timeViewType)) {
+				timeTypeCode = Calendar.MONTH;
+			} else {
+				timeViewType = "W";
+			}
+			
+			
 			//일주일치와 그 전주의 일자별 데이터를 가져온다.
-			Calendar calendar = StatisticsUtils.getCalendar();
-			Calendar fromDate = StatisticsUtils.getFirstDayOfWeek(calendar);
-			Calendar toDate = StatisticsUtils.getLastDayOfWeek(calendar);
+			//Calendar calendar = StatisticsUtils.getCalendar();
+			Calendar calendar = null;
+			Calendar fromDate = null;
+			Calendar toDate = null;
+			
+			if(timeText!=null && !"".equals(timeText)) {
+				calendar = StatisticsUtils.parseDatetimeString(timeText.split(" - ")[0], true);
+			} else {
+				calendar = StatisticsUtils.getCalendar();
+			}
+			
+			if(timeTypeCode == Calendar.WEEK_OF_YEAR) {
+				fromDate = StatisticsUtils.getFirstDayOfWeek(calendar);
+				toDate = StatisticsUtils.getLastDayOfWeek(calendar);
+			} else if(timeTypeCode == Calendar.MONTH) {
+				fromDate = (Calendar) calendar.clone();
+				toDate = (Calendar) calendar.clone();
+				fromDate.set(Calendar.DATE, 1);
+				toDate.add(Calendar.MONTH, 1);
+				toDate.set(Calendar.DATE, 0);
+			}
 			
 			String fromTimeId = StatisticsUtils.getTimeId(fromDate, Calendar.DAY_OF_MONTH);
 			String toTimeId = StatisticsUtils.getTimeId(toDate, Calendar.DAY_OF_MONTH);
 			
-			String timeText = StatisticsUtils.toDatetimeString(fromDate)
+			timeText = StatisticsUtils.toDatetimeString(fromDate)
 					+ " - " + StatisticsUtils.toDatetimeString(toDate);
-			
+		
 			List<SearchHitVO> currentWeek = fillData(
 					hitMapper.getEntryListBetween(siteId, categoryId,
 							fromTimeId, toTimeId), fromDate, toDate);
+		
+			if(timeTypeCode == Calendar.WEEK_OF_YEAR) {
+				fromDate.add(Calendar.DAY_OF_MONTH, -7);
+				toDate.add(Calendar.DAY_OF_MONTH, -7);
+			} else if(timeTypeCode == Calendar.MONTH) {
+				fromDate.add(Calendar.MONTH, -1);
+				toDate.add(Calendar.MONTH, -1);
+			}
 			
-			fromDate.add(Calendar.DAY_OF_MONTH, -7);
-			toDate.add(Calendar.DAY_OF_MONTH, -7);
 			fromTimeId = StatisticsUtils.getTimeId(fromDate, Calendar.DAY_OF_MONTH);
 			toTimeId = StatisticsUtils.getTimeId(toDate, Calendar.DAY_OF_MONTH);
 			
@@ -157,9 +195,21 @@ public class ReportMainController extends AbstractController {
 			mav.addObject("typeHitListArray", typeHitListArray);
 			mav.addObject("timeText", timeText);
 			
-			fromDate = (Calendar) calendar.clone();
-			fromDate.add(Calendar.MONTH, - 6);
-			fromDate.set(Calendar.DAY_OF_MONTH, 1);
+			
+//			fromDate = (Calendar) calendar.clone();
+//			fromDate.add(Calendar.MONTH, - 6);
+//			fromDate.set(Calendar.DAY_OF_MONTH, 1);
+//			6개월차이가 아니라 실질적인 주비교, 월비교가 들어간다.
+			if(timeTypeCode == Calendar.WEEK_OF_YEAR) {
+				fromDate = StatisticsUtils.getFirstDayOfWeek(calendar);
+				toDate = StatisticsUtils.getLastDayOfWeek(calendar);
+			} else if(timeTypeCode == Calendar.MONTH) {
+				fromDate = (Calendar) calendar.clone();
+				toDate = (Calendar) calendar.clone();
+				fromDate.set(Calendar.DATE, 1);
+				toDate.add(Calendar.MONTH, 1);
+				toDate.set(Calendar.DATE, 0);
+			}
 			
 			toDate.add(Calendar.MONTH, 1);
 			
@@ -174,7 +224,7 @@ public class ReportMainController extends AbstractController {
 			int timeInx = 0;
 			for (;fromDate.getTimeInMillis() <= toDate.getTimeInMillis();timeInx++) {
 				timeId = StatisticsUtils.getTimeId(fromDate, Calendar.MONTH);
-				String label = StatisticsUtils.toDatetimeString(fromDate, Calendar.MONTH);
+				String label = StatisticsUtils.toDatetimeString(fromDate, timeTypeCode);
 				labelList.add(label);
 				
 				List<SearchPathHitVO> pvList = pathMapper.getEntryByTimeId(siteId, timeId);
@@ -201,7 +251,7 @@ public class ReportMainController extends AbstractController {
 				// 지정된 클릭타입 이외의 타입이 있는지 확인하기 위함.
 				//typeHitList.get("_etc").increment(timeInx, totalClick);
 				
-				fromDate.add(Calendar.MONTH, 1);
+				fromDate.add(timeTypeCode, 1);
 			}
 			
 			//모든 타입 내 배열 갯수를 맞춰 준다.
@@ -215,6 +265,7 @@ public class ReportMainController extends AbstractController {
 			mav.addObject("searchPvList", searchPvList);
 			mav.addObject("clickHitList", clickHitList);
 			mav.addObject("labelList", labelList);
+			mav.addObject("timeViewType", timeViewType);
 		} catch (Exception e) {
 			logger.error("", e);
 		} finally {
@@ -239,8 +290,6 @@ public class ReportMainController extends AbstractController {
 			} catch (Exception ignore) { 
 			}
 		}
-			
-			
 
 		mav.setViewName("report/dashboard");
 		return mav;

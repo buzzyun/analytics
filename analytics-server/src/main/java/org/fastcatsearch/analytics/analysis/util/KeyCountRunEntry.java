@@ -13,9 +13,9 @@ public class KeyCountRunEntry extends RunEntry {
 	
 	public KeyCountRunEntry(String rawLine, String key, int count) {
 		super(rawLine);
-		if(key!=null) {
-			key = key.toUpperCase();
-		}
+		//if(key!=null) {
+		//	key = key.toUpperCase();
+		//}
 		this.key = key;
 		this.count = count;
 	}

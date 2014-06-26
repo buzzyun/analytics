@@ -40,7 +40,9 @@ import org.springframework.web.servlet.ModelAndView;
 public class CTRController extends AbstractController {
 
 	@RequestMapping("/view")
-	public ModelAndView view(@PathVariable String siteId, @RequestParam(required=false) String timeText) {
+	public ModelAndView view(@PathVariable String siteId,
+		@RequestParam(required = false) String timeText,
+		@RequestParam(required = false) String timeViewType) {
 
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/ctr/view");
@@ -86,9 +88,22 @@ public class CTRController extends AbstractController {
 			timeText = timeFrom + " - " + timeTo;
 		}
 		
+		int timeTypeCode = Calendar.DATE;
+		
+		if("H".equalsIgnoreCase(timeViewType)) {
+			timeTypeCode = Calendar.HOUR_OF_DAY;
+		} else if("W".equalsIgnoreCase(timeViewType)) {
+			timeTypeCode = Calendar.WEEK_OF_YEAR;
+		} else if("M".equalsIgnoreCase(timeViewType)) {
+			timeTypeCode = Calendar.MONTH;
+		} else if("Y".equalsIgnoreCase(timeViewType)) {
+			timeTypeCode = Calendar.YEAR;
+		} else {
+			timeViewType = "D";
+		}
+		
 		Calendar startTime2 = (Calendar) startTime.clone();
 		
-		int timeTypeCode = Calendar.MONTH;
 		String startTimeId = StatisticsUtils.getTimeId(startTime, timeTypeCode);
 		String endTimeId = StatisticsUtils.getTimeId(endTime, timeTypeCode);
 		logger.debug("New time id >> {} ~ {}", startTimeId, endTimeId);
@@ -161,6 +176,7 @@ public class CTRController extends AbstractController {
 		mav.addObject("serviceList", serviceSettingList);
 		mav.addObject("searchPathCounter", pathCounter);
 		mav.addObject("searchPvList", searchPvList);
+		mav.addObject("timeViewType", timeViewType);
 		try {
 			ClickHitMapper clickMapper = clickMapperSession.getMapper();
 			for(ClickTypeSetting clickType : clickTypeSettingList){

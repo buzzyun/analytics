@@ -27,6 +27,7 @@ import org.fastcatsearch.analytics.analysis.handler.UpdateEmptyKeywordHandler;
 import org.fastcatsearch.analytics.analysis.handler.UpdateKeywordHitHandler;
 import org.fastcatsearch.analytics.analysis.handler.UpdatePopularKeywordHandler;
 import org.fastcatsearch.analytics.analysis.handler.UpdateSearchHitHandler;
+import org.fastcatsearch.analytics.analysis.handler.UpdateServiceTypeHitHandler;
 import org.fastcatsearch.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatsearch.analytics.analysis.log.SearchLog;
 import org.fastcatsearch.analytics.service.ServiceManager;
@@ -89,6 +90,11 @@ public class DailyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		
 		/* 0. 갯수를 db로 저장한다. */
 		ProcessHandler updateSearchHitHandler = new UpdateSearchHitHandler(siteId, categoryId, timeId).attachProcessTo(categoryProcess);
+		
+		//서비스타입 로그 기록
+		if("_root".equals(categoryId)) {
+			updateSearchHitHandler = new UpdateServiceTypeHitHandler(siteId, timeId, workingDir, SERVICE_COUNT_FILENAME, encoding).appendTo(updateSearchHitHandler);
+		}
 
 		/* 1. count로 정렬하여 key-count-rank.log로 저장. */
 		ProcessHandler logSort = new KeyCountLogSortHandler(workingDir, KEY_COUNT_FILENAME, KEY_COUNT_RANK_FILENAME, encoding, runKeySize, entryParser).appendTo(updateSearchHitHandler);

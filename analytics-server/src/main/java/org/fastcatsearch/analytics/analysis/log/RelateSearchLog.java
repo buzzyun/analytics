@@ -8,9 +8,9 @@ public class RelateSearchLog extends LogData {
 	protected String key;
 	
 	public RelateSearchLog(String categoryId, String keyword, String previousKeyword) {
-		if(keyword!=null) {
-			keyword = keyword.toUpperCase();
-		}
+		//if(keyword!=null) {
+		//	keyword = keyword.toUpperCase();
+		//}
 		this.categoryId = categoryId;
 		this.keyword = keyword;
 		this.previousKeyword = previousKeyword;

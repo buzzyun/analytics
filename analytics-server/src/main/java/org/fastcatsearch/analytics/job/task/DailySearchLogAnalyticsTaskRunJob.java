@@ -100,8 +100,6 @@ public class DailySearchLogAnalyticsTaskRunJob extends Job {
 				for(String type : taskType) {
 					logger.debug("TaskType > {}", type);
 					
-logger.info("################################################################################");
-logger.info("TaskType:{}", type);
 					if(type.equals("hour_sp")){
 						/* 1. Hourly */
 						TimeSchedule schedule = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);

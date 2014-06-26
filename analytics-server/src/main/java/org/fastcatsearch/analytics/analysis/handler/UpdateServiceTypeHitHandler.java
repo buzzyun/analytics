@@ -26,40 +26,43 @@ public class UpdateServiceTypeHitHandler extends ProcessHandler {
 
 	@Override
 	public Object process(Object parameter) throws Exception {
-
-		AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
 		
-		BufferedReader br = null;
-		MapperSession<SearchPathHitMapper> mapperSession = dbService.getMapperSession(SearchPathHitMapper.class);
-		
-		try {
-			SearchPathHitMapper mapper = mapperSession.getMapper();
-			// 기준시각.
-			
-			br = new BufferedReader(new InputStreamReader(new FileInputStream(sourceFile), encoding));
-			
-			for(String rline = null; (rline = br.readLine())!=null;) {
-				String[] data = rline.split("\t");
-				
-				String searchId = data[0];
-				int count = 0;
-				
-				try {
-					count = Integer.parseInt(data[1]);
-				} catch (NumberFormatException ignore) { }
-				
-				mapper.deleteEntry(siteId, searchId, timeId);
-				mapper.putEntry(siteId, searchId, timeId, count);
-			}
+		if(sourceFile!=null && sourceFile.exists()) {
 
-		} finally {
-			if (mapperSession != null) {
-				mapperSession.closeSession();
-			}
+			AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
 			
-			if(br!=null) try {
-				br.close();
-			} catch (IOException ignore) { }
+			BufferedReader br = null;
+			MapperSession<SearchPathHitMapper> mapperSession = dbService.getMapperSession(SearchPathHitMapper.class);
+			
+			try {
+				SearchPathHitMapper mapper = mapperSession.getMapper();
+				// 기준시각.
+				
+				br = new BufferedReader(new InputStreamReader(new FileInputStream(sourceFile), encoding));
+				
+				for(String rline = null; (rline = br.readLine())!=null;) {
+					String[] data = rline.split("\t");
+					
+					String searchId = data[0];
+					int count = 0;
+					
+					try {
+						count = Integer.parseInt(data[1]);
+					} catch (NumberFormatException ignore) { }
+					
+					mapper.deleteEntry(siteId, searchId, timeId);
+					mapper.putEntry(siteId, searchId, timeId, count);
+				}
+	
+			} finally {
+				if (mapperSession != null) {
+					mapperSession.closeSession();
+				}
+				
+				if(br!=null) try {
+					br.close();
+				} catch (IOException ignore) { }
+			}
 		}
 		return parameter;
 	}

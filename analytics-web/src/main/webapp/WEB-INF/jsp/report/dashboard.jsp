@@ -61,6 +61,19 @@ DecimalFormat format = new DecimalFormat("#,###");
 					[<%=inx%>, <%=vo.getHit() %>]
 				<% } %>
 			];
+			var ticksHit=[
+				<% int delta = currentWeek.size() / 10; %>
+				<% for(int inx=0;inx<currentWeek.size();inx++) { %>
+					<% 
+					SearchHitVO vo = currentWeek.get(inx);
+					if(inx > 0) { 
+					%>,<%
+					}
+					totalCurrentWeek += vo.getHit();
+					%>
+					[<%=inx%>, "<%=(delta==0 || inx%delta==0)?vo.getTimeId():"" %>"]
+				<% } %>
+			];
 			
 			var data = [ 
 			{
@@ -79,8 +92,7 @@ DecimalFormat format = new DecimalFormat("#,###");
 				.getFlotDefaults(),
 				{
 					xaxis : {
-						ticks : [ [0,"Mon"], [1,"Tue"], [2,"Wed"], 
-							[3,"Thu"], [4,"Fri"], [5,"Sat"], [6,"Sun"] ]
+						ticks : ticksHit
 					}, series : {
 						lines : {
 							fill : true,
@@ -105,12 +117,13 @@ DecimalFormat format = new DecimalFormat("#,###");
 		var ctr1 = [];
 		var ctr2 = [];
 		var ctr3 = [];
-		var ticks=[];
+		var ticksCtr=[];
 			
 		<%	
 		int totalPv = 0;
 		int totalClickHit = 0;
 		float totalClickRate = 0f;
+		delta = searchPvList.size() / 10;
 		for(int i=0;i<searchPvList.size(); i++){
 			Integer pv = searchPvList.get(i);
 			if(pv==null) { pv = 0; }
@@ -131,7 +144,7 @@ DecimalFormat format = new DecimalFormat("#,###");
 			ctr1[<%=i%>]=[<%=i%>,<%=pv%>];
 			ctr2[<%=i%>]=[<%=i%>,<%=clickHit%>];
 			ctr3[<%=i%>]=[<%=i%>,<%=clickThroughRate%>];
-			ticks[<%=i%>]=[<%=i%>,<%=labelList.get(i)%>];
+			ticksCtr[<%=i%>]=[<%=i%>,"<%=(i%delta==0)?labelList.get(i):"" %>"];
 			<%
 		}
 		if(totalPv > 0) {
@@ -173,7 +186,7 @@ DecimalFormat format = new DecimalFormat("#,###");
 					xaxis : {
 						min : 0,
 						tickSize : [ 1, "month" ],
-						ticks : ticks,
+						ticks : ticksCtr,
 						tickLength : 0
 					}, yaxes: [
 					  { min:"0" },{ min:"0", position: "right", tickFormatter: yFormatter }
@@ -245,207 +258,25 @@ DecimalFormat format = new DecimalFormat("#,###");
 			%>
 			var pickmeupOptions = {
 				calendars: 3,
-				mode: "range",
-				format: "Y.m.d",
+				mode: 'days',
+				format: 'Y.m.d',
 				first_day: 1,
-				position: "bottom",
-				hide_on_select	: true,
-				change : function(date) {
-					var options = $(this).data("pickmeup-options");
-					var timeViewType = options.timeViewType;
-					var dateStr1 = "";
-					var dateStr2 = "";
-					
-					if(timeViewType == "H") {
-						date = /([0-9]{4}[.][0-9]{2}[.][0-9]{2})/.exec(date)[0];
-						dateStr1 = dateStr2 = date;
-					} else {
-						dateStr1 = date[0];
-						dateStr2 = date[1];
-					}
-					var dateObj1 = options.parseDate(dateStr1);
-					var dateObj2 = options.parseDate(dateStr2);
-					
-					var prevDate = $(this).attr("prev-date");
-					
-					if(timeViewType == "H") {
-						console.log(dateStr1+":"+dateStr2);
-					} else if(timeViewType == "D") {
-						console.log(dateStr1+":"+dateStr2);
-						if(dateStr1 == dateStr2) {
-							if(prevDate) {
-								$(this).attr("prev-date",null);
-							} else {
-								$(this).attr("prev-date",dateStr1);
-							};
-						} else {
-							$(this).attr("prev-date",null);
-						};
-					} else if(timeViewType == "W") {
-						console.log(dateStr1+":"+dateStr2);
-						if(dateStr1 == dateStr2) {
-							dateObj1 = options.firstDayOfWeek(dateObj1);
-							dateObj2 = options.cloneDate(dateObj1);
-							dateObj2.setDate( dateObj2.getDate() + 6 );
-							dateStr1 = options.formatDate(dateObj1);
-							dateStr2 = options.formatDate(dateObj2);
-							if(prevDate) {
-								$(this).attr("prev-date",null);
-							} else {
-								$(this).attr("prev-date",dateStr1);
-							};
-						} else {
-							if(prevDate == dateStr1) {
-								dateObj2 = options.firstDayOfWeek(dateObj2);
-							} else if(prevDate == dateStr2) {
-								dateObj1 = options.firstDayOfWeek(dateObj1);
-								dateObj2 = options.parseDate(prevDate);
-							}
-							
-							dateObj2.setDate( dateObj2.getDate() + 6 );
-							dateStr1 = options.formatDate(dateObj1);
-							dateStr2 = options.formatDate(dateObj2);
-							$(this).attr("prev-date",null);
-						};
-					} else if(timeViewType == "M") {
-						console.log(dateStr1+":"+dateStr2);
-						if(dateStr1 == dateStr2) {
-							dateObj1 = options.firstDayOfMonth(dateObj1);
-							dateObj2 = options.lastDayOfMonth(dateObj1);
-							dateStr1 = options.formatDate(dateObj1);
-							dateStr2 = options.formatDate(dateObj2);
-							if(prevDate) {
-								$(this).attr("prev-date",null);
-							} else {
-								$(this).attr("prev-date",dateStr1);
-							};
-						} else {
-							if(prevDate == dateStr1) {
-								dateObj2 = options.firstDayOfMonth(dateObj2);
-							} else if(prevDate == dateStr2) {
-								dateObj1 = options.firstDayOfMonth(dateObj1);
-								dateObj2 = options.parseDate(prevDate);
-							}
-							
-							dateObj2 = options.lastDayOfMonth(dateObj2);
-							dateStr1 = options.formatDate(dateObj1);
-							dateStr2 = options.formatDate(dateObj2);
-							$(this).attr("prev-date",null);
-						};
-						
-					} else if(timeViewType == "Y") {
-						console.log(dateStr1+":"+dateStr2);
-						if(dateStr1 == dateStr2) {
-							dateObj1 = options.firstDayOfYear(dateObj1);
-							dateObj2 = options.lastDayOfYear(dateObj1);
-							dateStr1 = options.formatDate(dateObj1);
-							dateStr2 = options.formatDate(dateObj2);
-							if(prevDate) {
-								$(this).attr("prev-date",null);
-							} else {
-								$(this).attr("prev-date",dateStr1);
-							};
-						} else {
-							if(prevDate == dateStr1) {
-								dateObj2 = options.firstDayOfYear(dateObj2);
-							} else if(prevDate == dateStr2) {
-								dateObj1 = options.firstDayOfYear(dateObj1);
-								dateObj2 = options.parseDate(prevDate);
-							}
-							
-							dateObj2 = options.lastDayOfYear(dateObj2);
-							dateStr1 = options.formatDate(dateObj1);
-							dateStr2 = options.formatDate(dateObj2);
-							$(this).attr("prev-date",null);
-						};
-					}
-					
-					console.log("PICKUP : "+dateStr1+" ~ "+dateStr2+" / "+$(this).attr("prev-date"));
-					if(timeViewType != "H") {
-						$(this).val(dateStr1+" - "+dateStr2);
-						$(this).pickmeup("set_date",new Array(dateStr1,dateStr2));
-					} else {
-						$(this).val(dateStr1);
-						$(this).pickmeup("set_date",dateStr1);
-					};
-				}, cloneDate:function(date) {
-					return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-				}, firstDayOfWeek:function(date) {
-					var newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-					newDate.setDate( newDate.getDate() - ( ( newDate.getDay() + 6 ) % 7 ) );
-					return newDate;
-				}, firstDayOfMonth:function(date) {
-					return new Date(date.getFullYear(), date.getMonth(), 1);
-				}, lastDayOfMonth:function(date) {
-					return new Date(date.getFullYear(), date.getMonth() + 1, 0);
-				}, firstDayOfYear:function(date) {
-					return new Date(date.getFullYear(), 0, 1);
-				}, lastDayOfYear:function(date) {
-					return new Date(date.getFullYear(), 11, 31);
-				}, parseDate:function(dateStr) {
-					if(!$.isArray(dateStr)) {
-						src = dateStr.split("."); src = dateStr.split(".");
-						return new Date(src[0], src[1] - 1, src[2]);
-					};
-				}, formatDate:function(dateObj, failValue) {
-					if(dateObj==null) {
-						dateObj = failValue;
-					}
-					var year = dateObj.getFullYear();
-					var month = (dateObj.getMonth() + 1);
-					var date = dateObj.getDate();
-					if(month < 10) { month = "0"+month; }
-					if(date < 10) { date = "0"+date; }
-					return year+"."+month+"."+date;
-				}, timeViewType:"${timeViewType}"
+				position: 'bottom',
+				hide_on_select	: true 
 			};
 			$("#timeText").pickmeup(pickmeupOptions);
 			
 			$("#timeViewTypeList button").on("click", function(){
-				var timeElement = $("#timeText");
-				var options = timeElement.data("pickmeup-options");
-				
 				$(this).addClass("btn-primary");
 				$(this).removeClass("btn-default");
 				
 				$(this).siblings().addClass("btn-default");
 				$(this).siblings().removeClass("btn-primary");
 				
-				var timeViewType = $(this).text().charAt(0);
-				$(this).parents("div").find("input[name=timeViewType]").val(timeViewType);
-				options.timeViewType = timeViewType;
+				$("#timeViewTypeList input[name=timeViewType]").val($(this).text().charAt(0));
 				
-				var dates = timeElement.val().split(" - ");
-				dates[0] = options.parseDate(dates[0]);
-				if(timeViewType != "H") {
-					dates[1] = dates[1]?options.parseDate(dates[1]):dates[0];
-				}
-				
-				if(timeViewType == "H") {
-					timeElement.val(options.formatDate(dates[0]));
-					options.mode="single";
-				} else {
-					var fdate = null;
-					if(timeViewType == "D") {
-						fdate = dates[0];
-						tdate = dates[1];
-					} else if(timeViewType == "W") {
-						fdate = options.firstDayOfWeek(dates[0]);
-						tdate = options.firstDayOfWeek(dates[1]);
-						tdate.setDate(tdate.getDate() + 6);
-					} else if(timeViewType == "M") {
-						fdate = options.firstDayOfMonth(dates[0]);
-						tdate = options.lastDayOfMonth(dates[1]);
-					} else if(timeViewType == "Y") {
-						fdate = options.firstDayOfYear(dates[0]);
-						tdate = options.lastDayOfYear(dates[1]);
-					}
-					timeElement.val(options.formatDate(fdate)+" - "+options.formatDate(tdate));
-					options.mode="range";
-				};
+				//TODO 달력의 날짜를 확인하여, 주,월,년의 경우 시작/끝 날짜를 조정해준다.
 			});
-			
-			
 		});
 </script>
 
@@ -488,6 +319,7 @@ DecimalFormat format = new DecimalFormat("#,###");
 								<div id="timeViewTypeList" class="btn-group">
 									<button type="button" class="btn <%="W".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Weekly</button>
 									<button type="button" class="btn <%="M".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Monthly</button>
+									<button type="button" class="btn <%="Y".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Yearly</button>
 									<input type="hidden" name="timeViewType" value="<%=timeViewType %>">
 								</div>
 								<input type="submit" class="btn btn-primary" value="Submit">

@@ -92,6 +92,8 @@ public class ReportMainController extends AbstractController {
 				timeTypeCode = Calendar.WEEK_OF_YEAR;
 			} else if("M".equalsIgnoreCase(timeViewType)) {
 				timeTypeCode = Calendar.MONTH;
+			} else if("Y".equalsIgnoreCase(timeViewType)) {
+				timeTypeCode = Calendar.YEAR;
 			} else {
 				timeViewType = "W";
 			}
@@ -109,37 +111,52 @@ public class ReportMainController extends AbstractController {
 				calendar = StatisticsUtils.getCalendar();
 			}
 			
+			String fromTimeId = "";
+			String toTimeId = "";
 			if(timeTypeCode == Calendar.WEEK_OF_YEAR) {
 				fromDate = StatisticsUtils.getFirstDayOfWeek(calendar);
 				toDate = StatisticsUtils.getLastDayOfWeek(calendar);
+				fromTimeId = StatisticsUtils.getTimeId(fromDate, Calendar.DAY_OF_MONTH);
+				toTimeId = StatisticsUtils.getTimeId(toDate, Calendar.DAY_OF_MONTH);
 			} else if(timeTypeCode == Calendar.MONTH) {
 				fromDate = (Calendar) calendar.clone();
 				toDate = (Calendar) calendar.clone();
 				fromDate.set(Calendar.DATE, 1);
 				toDate.add(Calendar.MONTH, 1);
 				toDate.set(Calendar.DATE, 0);
+				fromTimeId = StatisticsUtils.getTimeId(fromDate, Calendar.DAY_OF_MONTH);
+				toTimeId = StatisticsUtils.getTimeId(toDate, Calendar.DAY_OF_MONTH);
+			} else if(timeTypeCode == Calendar.YEAR) {
+				fromDate = (Calendar) calendar.clone();
+				toDate = (Calendar) calendar.clone();
+				fromDate.set(Calendar.MONTH, 0);
+				fromDate.set(Calendar.DATE, 1);
+				toDate.set(Calendar.MONTH, 11);
+				toDate.set(Calendar.DATE, 31);
+				fromTimeId = StatisticsUtils.getTimeId(fromDate, Calendar.MONTH);
+				toTimeId = StatisticsUtils.getTimeId(toDate, Calendar.MONTH);
 			}
 			
-			String fromTimeId = StatisticsUtils.getTimeId(fromDate, Calendar.DAY_OF_MONTH);
-			String toTimeId = StatisticsUtils.getTimeId(toDate, Calendar.DAY_OF_MONTH);
-			
-			timeText = StatisticsUtils.toDatetimeString(fromDate)
-					+ " - " + StatisticsUtils.toDatetimeString(toDate);
+			timeText = StatisticsUtils.toDatetimeString(fromDate);
+					//+ " - " + StatisticsUtils.toDatetimeString(toDate);
 		
 			List<SearchHitVO> currentWeek = fillData(
 					hitMapper.getEntryListBetween(siteId, categoryId,
 							fromTimeId, toTimeId), fromDate, toDate);
-		
+			
 			if(timeTypeCode == Calendar.WEEK_OF_YEAR) {
 				fromDate.add(Calendar.DAY_OF_MONTH, -7);
 				toDate.add(Calendar.DAY_OF_MONTH, -7);
 			} else if(timeTypeCode == Calendar.MONTH) {
 				fromDate.add(Calendar.MONTH, -1);
 				toDate.add(Calendar.MONTH, -1);
+			} else if(timeTypeCode == Calendar.YEAR) {
+				fromDate.add(Calendar.YEAR, -1);
+				toDate.add(Calendar.YEAR, -1);
 			}
 			
-			fromTimeId = StatisticsUtils.getTimeId(fromDate, Calendar.DAY_OF_MONTH);
-			toTimeId = StatisticsUtils.getTimeId(toDate, Calendar.DAY_OF_MONTH);
+			fromTimeId = StatisticsUtils.getTimeId(fromDate, timeTypeCode);
+			toTimeId = StatisticsUtils.getTimeId(toDate, timeTypeCode);
 			
 			List<SearchHitVO> lastWeek = fillData(
 					hitMapper.getEntryListBetween(siteId, categoryId,
@@ -151,14 +168,14 @@ public class ReportMainController extends AbstractController {
 			//인기키워드
 			
 			Calendar lastDay = (Calendar) calendar.clone();
-			lastDay.add(Calendar.DAY_OF_MONTH, -1);
+			lastDay.add(timeTypeCode, -1);
 			
-			String timeId = StatisticsUtils.getTimeId(lastDay, Calendar.DAY_OF_MONTH);
+			String timeId = StatisticsUtils.getTimeId(calendar, timeTypeCode);
+			
 			List<RankKeywordVO> popularKeywordList = rankMapper.getEntryList(
 					siteId, categoryId, timeId, null, 0, 0, 10);
 			List<RankKeywordVO> hotKeywordList = rankMapper.getEntryList(
 					siteId, categoryId, timeId, RankDiffType.UP.name(), 30, 0, 10);
-			
 			List<RankKeywordVO> newKeywordList = rankMapper.getEntryList(
 					siteId, categoryId, timeId, RankDiffType.NEW.name(), 0, 0, 10);
 			
@@ -175,13 +192,6 @@ public class ReportMainController extends AbstractController {
 			}
 			logger.debug(">>>primeTypeList > {}", primeTypeList);
 			
-//			String[] typeRateListArray = environment.settingManager().getSystemSettings().getStringArray("dashboard.typeRateList", ",");
-//			List<String> typeRateList = null;
-//			if(typeRateListArray == null){
-//				typeRateList = new ArrayList<String>(0);
-//			}else{
-//				typeRateList = Arrays.asList(typeRateListArray);
-//			}
 			@SuppressWarnings("unchecked")
 			List<SearchTypeHitVO>[] typeHitListArray = new List[primeTypeList.size()];
 			
@@ -196,22 +206,30 @@ public class ReportMainController extends AbstractController {
 			mav.addObject("timeText", timeText);
 			
 			
-//			fromDate = (Calendar) calendar.clone();
-//			fromDate.add(Calendar.MONTH, - 6);
-//			fromDate.set(Calendar.DAY_OF_MONTH, 1);
-//			6개월차이가 아니라 실질적인 주비교, 월비교가 들어간다.
+			int dateUnit = Calendar.DAY_OF_MONTH;
+			//6개월차이가 아니라 실질적인 주비교, 월비교가 들어간다.
 			if(timeTypeCode == Calendar.WEEK_OF_YEAR) {
 				fromDate = StatisticsUtils.getFirstDayOfWeek(calendar);
 				toDate = StatisticsUtils.getLastDayOfWeek(calendar);
+				toDate.add(Calendar.WEEK_OF_YEAR, 1);
+				dateUnit = Calendar.DAY_OF_MONTH;
 			} else if(timeTypeCode == Calendar.MONTH) {
 				fromDate = (Calendar) calendar.clone();
 				toDate = (Calendar) calendar.clone();
 				fromDate.set(Calendar.DATE, 1);
 				toDate.add(Calendar.MONTH, 1);
 				toDate.set(Calendar.DATE, 0);
+				dateUnit = Calendar.DAY_OF_MONTH;
+			} else if(timeTypeCode == Calendar.YEAR) {
+				fromDate = (Calendar) calendar.clone();
+				toDate = (Calendar) calendar.clone();
+				fromDate.set(Calendar.MONTH, 0);
+				fromDate.set(Calendar.DATE, 1);
+				toDate.set(Calendar.MONTH, 11);
+				toDate.set(Calendar.DATE, 31);
+				dateUnit = Calendar.MONTH;
 			}
 			
-			toDate.add(Calendar.MONTH, 1);
 			
 			List<ClickTypeSetting> clickTypeList = statisticsSetting.getSiteAttribute().getClickTypeList();
 		
@@ -222,13 +240,12 @@ public class ReportMainController extends AbstractController {
 				clickHitList.put(clickType.getId(), new ListableCounter());
 			}
 			int timeInx = 0;
+			
 			for (;fromDate.getTimeInMillis() <= toDate.getTimeInMillis();timeInx++) {
-				timeId = StatisticsUtils.getTimeId(fromDate, Calendar.MONTH);
-				String label = StatisticsUtils.toDatetimeString(fromDate, timeTypeCode);
+				timeId = StatisticsUtils.getTimeId(fromDate, dateUnit);
+				String label = StatisticsUtils.toDatetimeString(fromDate, dateUnit);
 				labelList.add(label);
-				
 				List<SearchPathHitVO> pvList = pathMapper.getEntryByTimeId(siteId, timeId);
-				
 				if (pvList != null) {
 					int cnt = 0;
 					for(int svcInx=0;svcInx<pvList.size();svcInx++) {
@@ -248,10 +265,7 @@ public class ReportMainController extends AbstractController {
 					clickHitList.get(clickType.getId()).increment(timeInx, typeHit);
 					totalClick -= typeHit;
 				}
-				// 지정된 클릭타입 이외의 타입이 있는지 확인하기 위함.
-				//typeHitList.get("_etc").increment(timeInx, totalClick);
-				
-				fromDate.add(timeTypeCode, 1);
+				fromDate.add(dateUnit, 1);
 			}
 			
 			//모든 타입 내 배열 갯수를 맞춰 준다.

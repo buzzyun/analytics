@@ -13,9 +13,6 @@ public class KeyCountRunEntry extends RunEntry {
 	
 	public KeyCountRunEntry(String rawLine, String key, int count) {
 		super(rawLine);
-		//if(key!=null) {
-		//	key = key.toUpperCase();
-		//}
 		this.key = key;
 		this.count = count;
 	}
@@ -41,6 +38,9 @@ public class KeyCountRunEntry extends RunEntry {
 		if(e.key == null){
 			return -1;
 		}
+		if(key.equalsIgnoreCase(e.key)) {
+			return 0;
+		}
 		
 		return key.compareTo(e.key);
 	}
@@ -58,8 +58,9 @@ public class KeyCountRunEntry extends RunEntry {
 
 	@Override
 	public boolean equals(Object obj) {
-		
-		return key.equals(((KeyCountRunEntry)obj).key);
+		if(key!=null) {
+			return key.equalsIgnoreCase(((KeyCountRunEntry)obj).key);
+		}
+		return false;
 	}
-
 }

@@ -11,9 +11,6 @@ public class SearchLog extends LogData {
 	protected String serviceType;
 	
 	public SearchLog(String time, String categoryId, String keyword, String count, String resultCount, String responseTime, String serviceType) {
-		//if(keyword!=null) {
-		//	keyword = keyword.toUpperCase();
-		//}
 		this.time = time;
 		this.categoryId = categoryId;
 		this.keyword = keyword;

@@ -256,14 +256,14 @@ public class SearchRankController extends AbstractController {
 				writer.append(String.valueOf(i+1)).append(delimiter);
 				writer.append(keywordStr).append(delimiter);
 				writer.append(String.valueOf(entry.getCount())).append(delimiter);
-				String rankDiffStr = "";
-				if ("UP".equals(entry.getRankDiffType())) {
+				String rankDiffStr = String.valueOf(entry.getRankDiff());
+				if ("UP".equalsIgnoreCase(String.valueOf(entry.getRankDiffType()))) {
 					rankDiffStr = "+" + String.valueOf(entry.getRankDiff());
-				} else if ("DN".equals(entry.getRankDiffType())) {
+				} else if ("DN".equalsIgnoreCase(String.valueOf(entry.getRankDiffType()))) {
 					rankDiffStr = "-" + String.valueOf(entry.getRankDiff());
-				} else if ("EQ".equals(entry.getRankDiffType())) {
+				} else if ("EQ".equals(String.valueOf(entry.getRankDiffType()))) {
 					rankDiffStr = String.valueOf(entry.getRankDiff());
-				} else if ("NEW".equals(entry.getRankDiffType())) {
+				} else if ("NEW".equals(String.valueOf(entry.getRankDiffType()))) {
 					rankDiffStr = "NEW";
 				}
 				writer.append(rankDiffStr).append(delimiter);

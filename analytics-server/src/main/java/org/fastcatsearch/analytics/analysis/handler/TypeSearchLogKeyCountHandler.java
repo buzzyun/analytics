@@ -8,13 +8,14 @@ import java.util.Map;
 import org.fastcatsearch.analytics.analysis.config.StatisticsSettings.TypeSetting;
 import org.fastcatsearch.analytics.analysis.log.TypeSearchLog;
 import org.fastcatsearch.analytics.util.Counter;
+import org.fastcatsearch.ir.io.CharVector;
 
 /**
  * search log를 읽어들여 key-count를 계산한다.
  * */
 public class TypeSearchLogKeyCountHandler extends CategoryLogHandler<TypeSearchLog> {
 
-	Map<String, Counter>[] typeCounterList;
+	Map<CharVector, Counter>[] typeCounterList;
 	List<TypeSetting> typeList;
 
 	public TypeSearchLogKeyCountHandler(String categoryId, List<TypeSetting> typeList) {
@@ -23,7 +24,7 @@ public class TypeSearchLogKeyCountHandler extends CategoryLogHandler<TypeSearchL
 		this.typeList = typeList;
 		typeCounterList = new Map[typeList.size()];
 		for (int i = 0; i < typeList.size(); i++) {
-			typeCounterList[i] = new HashMap<String, Counter>();
+			typeCounterList[i] = new HashMap<CharVector, Counter>();
 		}
 	}
 
@@ -41,11 +42,13 @@ public class TypeSearchLogKeyCountHandler extends CategoryLogHandler<TypeSearchL
 					}
 					Counter counter = null;
 					
+					CharVector key = new CharVector(type, true);
+					
 					if(typeCounterList.length > i) {
-						counter = typeCounterList[i].get(type);
+						counter = typeCounterList[i].get(key);
 						if (counter == null) {
 							counter = new Counter(logData.getCount());
-							typeCounterList[i].put(type, counter);
+							typeCounterList[i].put(key, counter);
 						} else {
 							counter.increment(logData.getCount());
 						}
@@ -61,11 +64,13 @@ public class TypeSearchLogKeyCountHandler extends CategoryLogHandler<TypeSearchL
 					}
 					Counter counter = null;
 					
+					CharVector key = new CharVector(type, true);
+					
 					if(typeCounterList.length > i) {
-						counter = typeCounterList[i].get(type);
+						counter = typeCounterList[i].get(key);
 						if (counter == null) {
 							counter = new Counter(1);
-							typeCounterList[i].put(type, counter);
+							typeCounterList[i].put(key, counter);
 						} else {
 							counter.increment(logData.getCount());
 						}

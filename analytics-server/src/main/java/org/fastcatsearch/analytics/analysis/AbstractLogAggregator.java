@@ -10,6 +10,7 @@ import org.fastcatsearch.analytics.analysis.log.LogData;
 import org.fastcatsearch.analytics.analysis.util.AggregationResultWriter;
 import org.fastcatsearch.analytics.analysis.util.RunMerger;
 import org.fastcatsearch.analytics.util.Counter;
+import org.fastcatsearch.ir.io.CharVector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +27,7 @@ public abstract class AbstractLogAggregator<LogType extends LogData> {
 	protected static Logger logger = LoggerFactory.getLogger(AbstractLogAggregator.class);
 
 	private int runKeySize;
-	private Map<String, Counter> aggregateMap;
+	private Map<CharVector, Counter> aggregateMap;
 	private int flushCount;
 	private String outputEncoding;
 	protected Set<String> banWords;
@@ -35,7 +36,7 @@ public abstract class AbstractLogAggregator<LogType extends LogData> {
 	
 	public AbstractLogAggregator(int runKeySize, String outputEncoding, int minimumHitCount) {
 		this.runKeySize = runKeySize;
-		this.aggregateMap = new HashMap<String, Counter>(runKeySize);
+		this.aggregateMap = new HashMap<CharVector, Counter>(runKeySize);
 		this.outputEncoding = outputEncoding;
 		this.minimumHitCount = minimumHitCount;
 	}
@@ -51,12 +52,13 @@ public abstract class AbstractLogAggregator<LogType extends LogData> {
 	public void handleLog(LogType log) throws IOException {
 		logger.trace("{}: {}", getClass().getSimpleName(), log);
 		if (log != null && log.getKey() != null && log.getKey().length() > 0) {
-			Counter counter = aggregateMap.get(log.getKey());
-			logger.trace("##handle log {} > {}", log.getKey(), counter);
+			CharVector key = new CharVector(log.getKey(), true);
+			Counter counter = aggregateMap.get(key);
+			logger.trace("##handle log {} > {}", key, counter);
 			if (counter != null) {
 				counter.increment(log.getCount());
 			} else {
-				aggregateMap.put(log.getKey(), new Counter(1));
+				aggregateMap.put(key, new Counter(1));
 			}
 		}
 
@@ -67,7 +69,7 @@ public abstract class AbstractLogAggregator<LogType extends LogData> {
 	}
 	
 	protected void flushRun() throws IOException {
-		TreeMap<String, Counter> sortedMap = new TreeMap<String, Counter>();
+		TreeMap<CharVector, Counter> sortedMap = new TreeMap<CharVector, Counter>();
 		synchronized(this) {
 			sortedMap.putAll(aggregateMap);
 		}
@@ -75,8 +77,8 @@ public abstract class AbstractLogAggregator<LogType extends LogData> {
 		AggregationResultWriter logWriter = null;
 		try {
 			logWriter = newRunWriter(outputEncoding, flushCount++);
-			for (Map.Entry<String, Counter> entry : sortedMap.entrySet()) {
-				logWriter.write(entry.getKey(), entry.getValue().value());
+			for (Map.Entry<CharVector, Counter> entry : sortedMap.entrySet()) {
+				logWriter.write(entry.getKey().toString(), entry.getValue().value());
 			}
 		} finally {
 			if (logWriter != null) {

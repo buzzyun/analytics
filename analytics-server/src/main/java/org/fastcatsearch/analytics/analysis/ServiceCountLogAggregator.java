@@ -17,11 +17,12 @@ import org.fastcatsearch.analytics.analysis.log.SearchLog;
 import org.fastcatsearch.analytics.analysis.util.AggregationResultWriter;
 import org.fastcatsearch.analytics.analysis.util.RunMerger;
 import org.fastcatsearch.analytics.util.Counter;
+import org.fastcatsearch.ir.io.CharVector;
 
 public class ServiceCountLogAggregator<LogType extends SearchLog> extends AbstractLogAggregator<LogType> {
 	
 	//서비스 갯수가 한정적이기 때문에 파일베이스를 쓰지 않고 바로 메모리에서 처리한다.
-	private Map<String, Counter> serviceCounter;
+	private Map<CharVector, Counter> serviceCounter;
 	private File destFile;
 	private String encoding;
 	private List<ServiceSetting> serviceTypes;
@@ -31,21 +32,22 @@ public class ServiceCountLogAggregator<LogType extends SearchLog> extends Abstra
 		this.destFile = new File(targetDir, targetFilename);
 		this.encoding = encoding;
 		this.serviceTypes = serviceTypes;
-		serviceCounter = new HashMap<String, Counter>();
+		serviceCounter = new HashMap<CharVector, Counter>();
 		for(ServiceSetting serviceType : serviceTypes) {
-			serviceCounter.put(serviceType.getId(), new Counter(0));
+			serviceCounter.put(new CharVector(serviceType.getId(), true), new Counter(0));
 		}
-		serviceCounter.put("_etc", new Counter(0));
+		serviceCounter.put(new CharVector("_etc", true), new Counter(0));
 	}
 
 	@Override
 	public void handleLog(LogType log) throws IOException {
 		String serviceType = log.getServiceType();
 		Counter counter = null;
-		if(serviceCounter.containsKey(serviceType)) {
-			counter = serviceCounter.get(serviceType);
+		CharVector key = new CharVector(serviceType, true);
+		if(serviceCounter.containsKey(key)) {
+			counter = serviceCounter.get(key);
 		} else {
-			counter = serviceCounter.get("_etc");
+			counter = serviceCounter.get(new CharVector("_etc", true));
 		}
 		counter.increment(log.getCount());
 	}
@@ -56,15 +58,15 @@ public class ServiceCountLogAggregator<LogType extends SearchLog> extends Abstra
 		try {
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(destFile), encoding));
 			
-			List<String> serviceList = new ArrayList<String>();
+			List<CharVector> serviceList = new ArrayList<CharVector>();
 			for(ServiceSetting serviceSetting : serviceTypes) {
-				serviceList.add(serviceSetting.getId());
+				serviceList.add(new CharVector(serviceSetting.getId(), true));
 			}
-			serviceList.add("_etc");
+			serviceList.add(new CharVector("_etc", true));
 			
 			Collections.sort(serviceList);
 			
-			for(String serviceType : serviceList) {
+			for(CharVector serviceType : serviceList) {
 				writer.append(serviceType).append("\t")
 					.append(String.valueOf(serviceCounter.get(serviceType).value()))
 					.append("\n");

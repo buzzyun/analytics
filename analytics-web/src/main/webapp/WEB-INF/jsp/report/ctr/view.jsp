@@ -264,6 +264,10 @@ $(document).ready(function() {
 	int totalClickHit = 0;
 	float totalClickRate = 0f;
 	int delta = clickHitList.size() / 10;
+	if(delta < 1) {
+		delta = 1;
+	}
+		
 	for(int i=0;i<clickHitList.size(); i++){
 		Integer pv = searchPvList.get(i);
 		Integer clickHit = clickHitList.get(i);

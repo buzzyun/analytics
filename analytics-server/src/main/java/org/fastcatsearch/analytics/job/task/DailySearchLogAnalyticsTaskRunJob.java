@@ -148,7 +148,7 @@ public class DailySearchLogAnalyticsTaskRunJob extends Job {
 					}else if(type.equals("day_ctr")){
 						/* 1. Daily */
 						TimeSchedule schedule = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
-						DailyClickLogAnalyticsTask task = new DailyClickLogAnalyticsTask(siteId, categoryIdList, schedule, taskSequence++);
+						DailyClickLogAnalyticsTask task = new DailyClickLogAnalyticsTask(siteId, categoryIdList, schedule, taskSequence++, null);
 						taskRunner.addTask(task);
 					}else if(type.equals("week_ctr")){
 						/* 2. Weekly */

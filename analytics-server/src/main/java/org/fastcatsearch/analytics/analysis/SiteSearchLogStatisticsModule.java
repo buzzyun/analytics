@@ -188,7 +188,7 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		 */
 		/* 1. Daily */
 		Schedule clickLogSchedule = new EveryDaySchedule(dailyScheduleTime, delayInSeconds);
-		DailyClickLogAnalyticsTask dailyClickLogAnalyticsTask = new DailyClickLogAnalyticsTask(siteId, categoryIdList, clickLogSchedule, priority++);
+		DailyClickLogAnalyticsTask dailyClickLogAnalyticsTask = new DailyClickLogAnalyticsTask(siteId, categoryIdList, clickLogSchedule, priority++, dailyClickRawLogger);
 		dailyTaskRunner.addTask(dailyClickLogAnalyticsTask);
 		
 		/* 2. Monthly */

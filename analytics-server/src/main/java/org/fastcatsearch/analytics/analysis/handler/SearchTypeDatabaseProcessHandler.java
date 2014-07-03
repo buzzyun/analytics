@@ -11,6 +11,7 @@ import org.fastcatsearch.analytics.db.mapper.SearchTypeHitMapper;
 import org.fastcatsearch.analytics.db.vo.SearchTypeHitVO;
 import org.fastcatsearch.analytics.service.ServiceManager;
 import org.fastcatsearch.analytics.util.Counter;
+import org.fastcatsearch.ir.io.CharVector;
 
 public class SearchTypeDatabaseProcessHandler extends ProcessHandler {
 
@@ -18,7 +19,7 @@ public class SearchTypeDatabaseProcessHandler extends ProcessHandler {
 	private String categoryId;
 	private String timeFrom;
 	private String timeTo;
-	private Map<String, Integer> typeMap;
+	private Map<CharVector, Integer> typeMap;
 	
 	public SearchTypeDatabaseProcessHandler(String siteId, String categoryId, String timeFrom, String timeTo, List<TypeSetting> typeList) {
 		this.siteId = siteId;
@@ -26,9 +27,9 @@ public class SearchTypeDatabaseProcessHandler extends ProcessHandler {
 		this.timeFrom = timeFrom;
 		this.timeTo = timeTo;
 		
-		typeMap = new HashMap<String, Integer>();
+		typeMap = new HashMap<CharVector, Integer>();
 		for (int inx = 0; inx < typeList.size(); inx++) {
-			typeMap.put(typeList.get(inx).getId(), inx);
+			typeMap.put(new CharVector(typeList.get(inx).getId(), true), inx);
 		}
 	}
 
@@ -43,16 +44,16 @@ public class SearchTypeDatabaseProcessHandler extends ProcessHandler {
 				SearchTypeHitMapper mapper = mapperSession.getMapper();
 				entryList = mapper.getEntryListGroupByType(siteId, categoryId, timeFrom, timeTo);
 				@SuppressWarnings("unchecked")
-				Map<String, Counter>[] map = new Map[typeMap.size()];
+				Map<CharVector, Counter>[] map = new Map[typeMap.size()];
 				for (int inx = 0; inx < typeMap.size(); inx++) {
-					map[inx] = new HashMap<String, Counter>();
+					map[inx] = new HashMap<CharVector, Counter>();
 				}
 				
 				for (int inx = 0; inx < entryList.size(); inx++) {
 					SearchTypeHitVO vo = entryList.get(inx);
-					Integer colInx = typeMap.get(vo.getTypeId());
+					Integer colInx = typeMap.get(new CharVector(vo.getTypeId(), true));
 					if(colInx != null && colInx >= 0 && colInx < map.length) {
-						map[colInx].put(vo.getDtype(), new Counter(vo.getHit()));
+						map[colInx].put(new CharVector(vo.getDtype(), true), new Counter(vo.getHit()));
 					}
 				}
 				return map;

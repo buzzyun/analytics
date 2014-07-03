@@ -61,8 +61,8 @@ public class SearchStatisticsPropertiesTest {
 		Calendar startTime = null;
 		Calendar endTime = null;
 		
-		startTime = StatisticsUtils.getCorrectedStartTime(Calendar.getInstance(Locale.GERMAN), type);
-		endTime = StatisticsUtils.getCorrectedEndTime(Calendar.getInstance(Locale.GERMAN), type);
+		startTime = StatisticsUtils.getCorrectedStartTime(StatisticsUtils.getCalendar(), type);
+		endTime = StatisticsUtils.getCorrectedEndTime(StatisticsUtils.getCalendar(), type);
 		
 		System.out.println("start = " + startTime.getTime());
 		System.out.println("end = " + endTime.getTime());
@@ -81,7 +81,7 @@ public class SearchStatisticsPropertiesTest {
 		today.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 		System.out.println(">>> " + today.getTime() + " : " + today.get(Calendar.WEEK_OF_YEAR));	
 	
-		today = Calendar.getInstance(Locale.GERMAN);
+		today = StatisticsUtils.getCalendar();
 		System.out.println("Locale.GERMAN > " + today.getFirstDayOfWeek() + " > " + today.getTime() + " : " + today.get(Calendar.DAY_OF_WEEK));
 		today.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 		System.out.println(">>> " + today.getTime() + " : " + today.get(Calendar.WEEK_OF_YEAR));

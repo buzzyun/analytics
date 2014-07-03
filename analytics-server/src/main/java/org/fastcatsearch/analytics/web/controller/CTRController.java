@@ -43,6 +43,20 @@ public class CTRController extends AbstractController {
 	public ModelAndView view(@PathVariable String siteId,
 		@RequestParam(required = false) String timeText,
 		@RequestParam(required = false) String timeViewType) {
+		
+		int timeTypeCode = Calendar.DATE;
+		
+		if("H".equalsIgnoreCase(timeViewType)) {
+			timeTypeCode = Calendar.HOUR_OF_DAY;
+		} else if("W".equalsIgnoreCase(timeViewType)) {
+			timeTypeCode = Calendar.WEEK_OF_YEAR;
+		} else if("M".equalsIgnoreCase(timeViewType)) {
+			timeTypeCode = Calendar.MONTH;
+		} else if("Y".equalsIgnoreCase(timeViewType)) {
+			timeTypeCode = Calendar.YEAR;
+		} else {
+			timeViewType = "D";
+		}
 
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/ctr/view");
@@ -75,32 +89,45 @@ public class CTRController extends AbstractController {
 			startTime = StatisticsUtils.parseDatetimeString(timeFrom, true);
 			endTime = StatisticsUtils.parseDatetimeString(timeTo, false);
 		} else {
-			endTime = Calendar.getInstance();
-			startTime = Calendar.getInstance();
-			startTime.add(Calendar.MONTH, -6);
-			startTime.set(Calendar.DAY_OF_MONTH, 1);
-			
-			endTime.add(Calendar.MONTH, 1);
-			endTime.set(Calendar.DAY_OF_MONTH, -1);
+			endTime = StatisticsUtils.getCalendar();
+			startTime = StatisticsUtils.getCalendar();
+			if(timeTypeCode == Calendar.DAY_OF_MONTH) {
+				startTime = StatisticsUtils.getFirstDayOfWeek(startTime);
+				endTime = StatisticsUtils.getLastDayOfWeek(startTime);
+			} else if(timeTypeCode == Calendar.WEEK_OF_YEAR) {
+				startTime.set(Calendar.DAY_OF_MONTH, 1);
+				startTime.add(Calendar.MONTH, -2); //2달간.
+				startTime = StatisticsUtils.getFirstDayOfWeek(startTime);
+				endTime = StatisticsUtils.getLastDayOfWeek(endTime);
+			} else if(timeTypeCode == Calendar.MONTH) {
+				if(startTime.get(Calendar.MONTH) == 0) {
+					startTime.add(Calendar.YEAR, -1);
+					startTime.set(Calendar.MONTH, 0);
+					startTime.set(Calendar.DAY_OF_MONTH, 1);
+					
+					endTime.set(Calendar.MONTH, 12);
+					endTime.set(Calendar.DAY_OF_MONTH, 0);
+				} else {
+					startTime.set(Calendar.MONTH, 0);
+					startTime.set(Calendar.DAY_OF_MONTH, 1);
+					
+					endTime.set(Calendar.MONTH, 12);
+					endTime.set(Calendar.DAY_OF_MONTH, 0);
+				}
+			} else if(timeTypeCode == Calendar.YEAR) {
+				startTime.add(Calendar.YEAR, -5);
+				startTime.set(Calendar.MONTH, 0);
+				startTime.set(Calendar.DAY_OF_MONTH, 1);
+				
+				endTime.set(Calendar.MONTH, 12);
+				endTime.set(Calendar.DAY_OF_MONTH, 0);
+			}
 			
 			String timeFrom = StatisticsUtils.toDatetimeString(startTime);
 			String timeTo = StatisticsUtils.toDatetimeString(endTime);
 			timeText = timeFrom + " - " + timeTo;
 		}
 		
-		int timeTypeCode = Calendar.DATE;
-		
-		if("H".equalsIgnoreCase(timeViewType)) {
-			timeTypeCode = Calendar.HOUR_OF_DAY;
-		} else if("W".equalsIgnoreCase(timeViewType)) {
-			timeTypeCode = Calendar.WEEK_OF_YEAR;
-		} else if("M".equalsIgnoreCase(timeViewType)) {
-			timeTypeCode = Calendar.MONTH;
-		} else if("Y".equalsIgnoreCase(timeViewType)) {
-			timeTypeCode = Calendar.YEAR;
-		} else {
-			timeViewType = "D";
-		}
 		
 		Calendar startTime2 = (Calendar) startTime.clone();
 		
@@ -233,7 +260,7 @@ public class CTRController extends AbstractController {
 		if(timeText != null) {
 			calendar = StatisticsUtils.parseDatetimeString(timeText, true);
 		} else {
-			calendar = Calendar.getInstance();
+			calendar = StatisticsUtils.getCalendar();
 			timeText = StatisticsUtils.toDatetimeString(calendar);
 		}
 		
@@ -381,7 +408,7 @@ public class CTRController extends AbstractController {
 		if(timeText != null) {
 			calendar = StatisticsUtils.parseDatetimeString(timeText, true);
 		} else {
-			calendar = Calendar.getInstance();
+			calendar = StatisticsUtils.getCalendar();
 			timeText = StatisticsUtils.toDatetimeString(calendar);
 		}
 		
@@ -519,7 +546,7 @@ public class CTRController extends AbstractController {
 		if(timeText != null) {
 			calendar = StatisticsUtils.parseDatetimeString(timeText, true);
 		} else {
-			calendar = Calendar.getInstance();
+			calendar = StatisticsUtils.getCalendar();
 			timeText = StatisticsUtils.toDatetimeString(calendar);
 		}
 		

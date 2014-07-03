@@ -243,7 +243,7 @@ public class GlobalConfigurationController extends AbstractController {
 		final SimpleDateFormat targetFormat = new SimpleDateFormat("yyyyMMdd");
 		
 		//년, 월 입력.
-		Calendar calendar = Calendar.getInstance(Locale.GERMAN);
+		Calendar calendar = StatisticsUtils.getCalendar();
 		
 		if (date != null && !"".equals(date)) {
 			try {
@@ -335,7 +335,7 @@ public class GlobalConfigurationController extends AbstractController {
 		
 		Writer writer = null;
 		SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy.MM.dd");
-		Calendar calendar = Calendar.getInstance(Locale.GERMAN);
+		Calendar calendar = StatisticsUtils.getCalendar();
 		if (date != null && !"".equals(date)) {
 			try {
 				calendar.setTime(timeFormat.parse(date));
@@ -407,7 +407,7 @@ public class GlobalConfigurationController extends AbstractController {
 		final SimpleDateFormat monthFormat = new SimpleDateFormat("yyyy.MM");
 		
 		//년, 월 입력.
-		Calendar calendar = Calendar.getInstance(Locale.GERMAN);
+		Calendar calendar = StatisticsUtils.getCalendar();
 		
 		if (date != null && !"".equals(date)) {
 			try {

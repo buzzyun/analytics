@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Calendar;
 import java.util.List;
 
+import org.fastcatsearch.analytics.analysis.DailyRawLogger;
 import org.fastcatsearch.analytics.analysis.calculator.Calculator;
 import org.fastcatsearch.analytics.analysis.calculator.DailyClickKeywordHitCalculator;
 import org.fastcatsearch.analytics.analysis.log.ClickLog;
@@ -16,9 +17,12 @@ import org.fastcatsearch.analytics.analysis.schedule.Schedule;
 public class DailyClickLogAnalyticsTask extends AnalyticsTask<ClickLog> {
 
 	private static final long serialVersionUID = 4212969890908932929L;
+	
+	DailyRawLogger dailyClickLogger;
 
-	public DailyClickLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
+	public DailyClickLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority, DailyRawLogger dailyClickLogger ) {
 		super("DAILY_CLICK", "DailyClickLogAnalyticsTask", siteId, categoryIdList, schedule, priority);
+		this.dailyClickLogger = dailyClickLogger;
 	}
 
 	@Override
@@ -28,5 +32,12 @@ public class DailyClickLogAnalyticsTask extends AnalyticsTask<ClickLog> {
 		// calc를 카테고리별로 모두 만든다.
 		Calculator<ClickLog> popularKeywordCalculator = new DailyClickKeywordHitCalculator("Daily click log calculator", calendar, baseDir, siteId, categoryIdList);
 		addCalculator(popularKeywordCalculator);
+	}
+	
+	@Override
+	protected void preProcess() {
+		if (dailyClickLogger != null) {
+			dailyClickLogger.rolling();
+		}
 	}
 }

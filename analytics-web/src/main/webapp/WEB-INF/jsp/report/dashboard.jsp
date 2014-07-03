@@ -124,6 +124,9 @@ DecimalFormat format = new DecimalFormat("#,###");
 		int totalClickHit = 0;
 		float totalClickRate = 0f;
 		delta = searchPvList.size() / 10;
+		if(delta < 1) {
+			delta = 1;
+		}
 		for(int i=0;i<searchPvList.size(); i++){
 			Integer pv = searchPvList.get(i);
 			if(pv==null) { pv = 0; }
@@ -317,9 +320,8 @@ DecimalFormat format = new DecimalFormat("#,###");
 								<i class="icon-calendar"></i> Period : 
 								<input class="form-control fcol2-1 " type="text" name="timeText" id="timeText" value="<%=timeText %>" >
 								<div id="timeViewTypeList" class="btn-group">
-									<button type="button" class="btn <%="W".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Weekly</button>
-									<button type="button" class="btn <%="M".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Monthly</button>
-									<button type="button" class="btn <%="Y".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Yearly</button>
+									<button type="button" class="btn <%="W".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Week</button>
+									<button type="button" class="btn <%="M".equals(timeViewType) ? "btn-primary" : "btn-default" %>">Month</button>
 									<input type="hidden" name="timeViewType" value="<%=timeViewType %>">
 								</div>
 								<input type="submit" class="btn btn-primary" value="Submit">

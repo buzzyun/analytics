@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
+import org.fastcatsearch.analytics.analysis.StatisticsUtils;
+
 public class LogGenerator {
 	public static void main(String[] args) {
 		if (args.length != 10) {
@@ -260,7 +262,7 @@ public class LogGenerator {
 	}
 	
 	private static Calendar parseDate(String dateStr) {
-		Calendar calendar = Calendar.getInstance(Locale.GERMAN);
+		Calendar calendar = StatisticsUtils.getCalendar();
 		if(!(dateStr == null || "".equals(dateStr))) {
 			SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmssS");
 			try {

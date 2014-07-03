@@ -38,6 +38,9 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping("/{siteId}/report")
 public class ReportMainController extends AbstractController {
+	
+	
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	@RequestMapping("/index")
 	public ModelAndView index(@PathVariable String siteId) {
@@ -139,28 +142,35 @@ public class ReportMainController extends AbstractController {
 			
 			timeText = StatisticsUtils.toDatetimeString(fromDate);
 					//+ " - " + StatisticsUtils.toDatetimeString(toDate);
+			
+			logger.trace("getData [current] {}~{}", fromTimeId, toTimeId);
 		
 			List<SearchHitVO> currentWeek = fillData(
 					hitMapper.getEntryListBetween(siteId, categoryId,
-							fromTimeId, toTimeId), fromDate, toDate);
+							fromTimeId, toTimeId), fromDate, toDate, timeTypeCode);
 			
 			if(timeTypeCode == Calendar.WEEK_OF_YEAR) {
 				fromDate.add(Calendar.DAY_OF_MONTH, -7);
 				toDate.add(Calendar.DAY_OF_MONTH, -7);
+				fromTimeId = StatisticsUtils.getTimeId(fromDate, Calendar.DAY_OF_MONTH);
+				toTimeId = StatisticsUtils.getTimeId(toDate, Calendar.DAY_OF_MONTH);
 			} else if(timeTypeCode == Calendar.MONTH) {
 				fromDate.add(Calendar.MONTH, -1);
 				toDate.add(Calendar.MONTH, -1);
+				fromTimeId = StatisticsUtils.getTimeId(fromDate, Calendar.DAY_OF_MONTH);
+				toTimeId = StatisticsUtils.getTimeId(toDate, Calendar.DAY_OF_MONTH);
 			} else if(timeTypeCode == Calendar.YEAR) {
 				fromDate.add(Calendar.YEAR, -1);
 				toDate.add(Calendar.YEAR, -1);
+				fromTimeId = StatisticsUtils.getTimeId(fromDate, Calendar.MONTH);
+				toTimeId = StatisticsUtils.getTimeId(toDate, Calendar.MONTH);
 			}
 			
-			fromTimeId = StatisticsUtils.getTimeId(fromDate, timeTypeCode);
-			toTimeId = StatisticsUtils.getTimeId(toDate, timeTypeCode);
+			logger.trace("getData [last] {}~{}", fromTimeId, toTimeId);
 			
 			List<SearchHitVO> lastWeek = fillData(
 					hitMapper.getEntryListBetween(siteId, categoryId,
-							fromTimeId, toTimeId), fromDate, toDate);
+							fromTimeId, toTimeId), fromDate, toDate, timeTypeCode);
 			
 			mav.addObject("currentWeekData", currentWeek);
 			mav.addObject("lastWeekData", lastWeek);
@@ -211,7 +221,7 @@ public class ReportMainController extends AbstractController {
 			if(timeTypeCode == Calendar.WEEK_OF_YEAR) {
 				fromDate = StatisticsUtils.getFirstDayOfWeek(calendar);
 				toDate = StatisticsUtils.getLastDayOfWeek(calendar);
-				toDate.add(Calendar.WEEK_OF_YEAR, 1);
+				//toDate.add(Calendar.WEEK_OF_YEAR, 1);
 				dateUnit = Calendar.DAY_OF_MONTH;
 			} else if(timeTypeCode == Calendar.MONTH) {
 				fromDate = (Calendar) calendar.clone();
@@ -330,15 +340,18 @@ public class ReportMainController extends AbstractController {
 		return mav;
 	}
 	
-	private List<SearchHitVO> fillData(List<SearchHitVO> list, Calendar from, Calendar to) {
+	private List<SearchHitVO> fillData(List<SearchHitVO> list, Calendar from, Calendar to, int timeTypeCode) {
+		int usingTimeType = Calendar.DAY_OF_MONTH;
+		if (timeTypeCode == Calendar.WEEK_OF_YEAR || timeTypeCode == Calendar.MONTH) {
+			usingTimeType = Calendar.DAY_OF_MONTH;
+		}
 		
 		Calendar fromDate = (Calendar) from.clone();
 		Calendar toDate = (Calendar) to.clone();
-			
 		if (list != null && list.size() > 0) {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			for (int timeInx = 0; fromDate.getTimeInMillis() <= toDate.getTimeInMillis(); timeInx++) {
-				String timeString = StatisticsUtils.toDatetimeString(fromDate, Calendar.DAY_OF_MONTH);
+				String timeString = "";
+				timeString = StatisticsUtils.toDatetimeString(fromDate, usingTimeType);
 				logger.trace("timeString > {}", timeString);
 				int hit = 0;
 				if(timeInx < list.size()) {
@@ -348,8 +361,7 @@ public class ReportMainController extends AbstractController {
 						logger.trace("startTime > {} : timeCurrent > {}:{}", sdf.format(fromDate.getTime()), 
 								sdf.format(timeCurrent.getTime()), vo.getTimeId());
 					}
-
-					if (StatisticsUtils.isEquals(fromDate, timeCurrent, Calendar.DAY_OF_MONTH)) {
+					if (StatisticsUtils.isEquals(fromDate, timeCurrent, usingTimeType)) {
 						hit = vo.getHit();
 						vo.setTimeId(timeString);
 						list.set(timeInx, vo);
@@ -372,10 +384,11 @@ public class ReportMainController extends AbstractController {
 					newVO.setHit(hit);
 					list.add(newVO);
 				}
+				
+				fromDate.add(usingTimeType, 1);
 
-				fromDate.add(Calendar.DAY_OF_MONTH, 1);
 				if(logger.isTraceEnabled()) {
-					logger.trace("startTime:{}", StatisticsUtils.toDatetimeString(fromDate, Calendar.DAY_OF_MONTH));
+					logger.trace("startTime:{}", StatisticsUtils.toDatetimeString(fromDate, usingTimeType));
 					logger.trace("startTime:{} / endTime:{}",sdf.format(fromDate.getTime()), sdf.format(toDate.getTime()));
 				}
 			}

@@ -163,6 +163,9 @@ public class SearchProgressController extends AbstractController {
 			mav.addObject("timeViewType", timeViewType);
 			mav.addObject("list", list);
 			
+			
+			mav.addObject("today", StatisticsUtils.toDatetimeString( StatisticsUtils.getCalendar() ));
+			
 		} catch (Exception e) {
 			logger.error("", e);
 		} finally {

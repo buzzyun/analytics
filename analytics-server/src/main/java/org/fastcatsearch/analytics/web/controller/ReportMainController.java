@@ -314,6 +314,9 @@ public class ReportMainController extends AbstractController {
 			} catch (Exception ignore) { 
 			}
 		}
+		
+		mav.addObject("today", StatisticsUtils.toDatetimeString(
+				StatisticsUtils.getCalendar()));
 
 		mav.setViewName("report/dashboard");
 		return mav;

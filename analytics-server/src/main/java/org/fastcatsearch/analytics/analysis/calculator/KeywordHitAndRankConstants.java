@@ -20,6 +20,7 @@ public class KeywordHitAndRankConstants {
 	public static final String TMP_LOG_FILENAME = "tmp.log";
 	public static final String SERVICE_COUNT_FILENAME = "service-count.log";
 	public static final String RUN_CLICK_TYPE_FILENAME = "run_click_type.log";
+	public static final String RUN_CLICK_KEY_TYPE_FILENAME = "run_click_key_type.log";
+	public static final String RUN_CLICK_KEY_TARGET_TYPE_FILENAME = "run_click_key_target_type.log";
 	public static final String CLICK_TARGET_FILENAME = "click-target.log";
-	public static final String CLICK_KEY_COUNT_FILENAME = "click-key-count.log";
 }

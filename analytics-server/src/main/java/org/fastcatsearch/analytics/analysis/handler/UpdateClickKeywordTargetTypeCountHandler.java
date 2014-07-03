@@ -16,17 +16,19 @@ public class UpdateClickKeywordTargetTypeCountHandler extends ProcessHandler {
 	String timeId;
 	File file;
 	String encoding;
+	boolean doDelete;
 	
-	public UpdateClickKeywordTargetTypeCountHandler(String siteId, String timeId, File file, String encoding) {
+	public UpdateClickKeywordTargetTypeCountHandler(String siteId, String timeId, File file, String encoding, boolean doDelete) {
 		this.siteId = siteId;
 		this.timeId = timeId;
 		this.file = file;
 		this.encoding = encoding;
+		this.doDelete = doDelete;
 	}
 
 	@Override
 	public Object process(Object parameter) throws Exception {
-		
+
 		AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
 		
 		BufferedReader br = null;
@@ -64,6 +66,10 @@ public class UpdateClickKeywordTargetTypeCountHandler extends ProcessHandler {
 					logger.trace("#### UpdateClickKeywordTargetTypeHit {} >> {} > {} / {}", timeId, clickType, mapper);
 					mapper.putEntry(siteId, timeId, keyword, target, clickType, count);
 					
+				}
+				
+				if(doDelete) {
+					file.delete();
 				}
 			}
 		} finally {

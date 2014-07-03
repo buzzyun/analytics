@@ -634,3 +634,55 @@ function fillCategoryList(siteId, categoryOject, defaultCategoryId){
 		}
 	});
 }
+
+
+function getFirstDayOfWeek (date) {
+	var newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+	newDate.setDate( newDate.getDate() - ( ( newDate.getDay() + 6 ) % 7 ) );
+	return newDate;
+}
+
+function getLastDayOfWeek (date) {
+	var newDate = getFirstDayOfWeek(date);
+	newDate.setDate( newDate.getDate() + 6 );
+	return newDate;
+}
+
+function getFirstDayOfMonth (date) {
+	return new Date(date.getFullYear(), date.getMonth(), 1);
+}
+
+function getLastDayOfMonth (date) {
+	return new Date(date.getFullYear(), date.getMonth() + 1, 0);
+}
+
+function getFirstDayOfYear (date) {
+	return new Date(date.getFullYear(), 0, 1);
+}
+
+function getLastDayOfYear (date) {
+	return new Date(date.getFullYear(), 11, 31);
+}
+
+function parseDate(dateStr) {
+	if(!$.isArray(dateStr)) {
+		src = dateStr.split("."); src = dateStr.split(".");
+		return new Date(src[0], src[1] - 1, src[2]);
+	};
+}
+
+function cloneDate(date) {
+	return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function formatDate(dateObj, failValue) {
+	if(dateObj==null) {
+		dateObj = parseDate(failValue);
+	}
+	var year = dateObj.getFullYear();
+	var month = (dateObj.getMonth() + 1);
+	var date = dateObj.getDate();
+	if(month < 10) { month = "0"+month; }
+	if(date < 10) { date = "0"+date; }
+	return year+"."+month+"."+date;
+}

@@ -61,17 +61,16 @@ DecimalFormat format = new DecimalFormat("#,###");
 					[<%=inx%>, <%=vo.getHit() %>]
 				<% } %>
 			];
+			<% for(int inx=0;inx<currentWeek.size();inx++) { %>
+				<% totalCurrentWeek += currentWeek.get(inx).getHit(); %>
+			<% } %>
+			
 			var ticksHit=[
-				<% int delta = currentWeek.size() / 10; %>
-				<% for(int inx=0;inx<currentWeek.size();inx++) { %>
-					<% 
-					SearchHitVO vo = currentWeek.get(inx);
-					if(inx > 0) { 
-					%>,<%
-					}
-					totalCurrentWeek += vo.getHit();
-					%>
-					[<%=inx%>, "<%=(delta==0 || inx%delta==0)?vo.getTimeId():"" %>"]
+				<% int delta = labelList.size() / 10; %>
+				<% if (delta < 1) { delta = 1; } %>
+				<% for(int inx=0;inx<labelList.size();inx++) { %>
+					<% if(inx > 0) { %>,<% } %>
+					[<%=inx%>, "<%=(inx%delta==0)?labelList.get(inx):"" %>"]
 				<% } %>
 			];
 			
@@ -276,9 +275,13 @@ DecimalFormat format = new DecimalFormat("#,###");
 				$(this).siblings().addClass("btn-default");
 				$(this).siblings().removeClass("btn-primary");
 				
-				$("#timeViewTypeList input[name=timeViewType]").val($(this).text().charAt(0));
-				
-				//TODO 달력의 날짜를 확인하여, 주,월,년의 경우 시작/끝 날짜를 조정해준다.
+				var timeType = $(this).text().charAt(0);
+				$("#timeViewTypeList input[name=timeViewType]").val(timeType);
+				if(timeType=="W") {
+					$("#timeText").val(formatDate(getFirstDayOfWeek(parseDate("${today}"))));
+				} else if(timeType=="M") {
+					$("#timeText").val(formatDate(getFirstDayOfMonth(parseDate("${today}"))));
+				}
 			});
 		});
 </script>
@@ -383,17 +386,22 @@ DecimalFormat format = new DecimalFormat("#,###");
 										<th>#</th>
 										<th>KEYWORD</th>
 										<th>COUNT</th>
-										<th>CHANGE</th>
+										<th>RANK CHANGE</th>
 									</tr>
 									<% 
 									for(int inx=0;inx < popularKeywordList.size(); inx++) { 
 										RankKeywordVO vo = popularKeywordList.get(inx);
-										int diff = vo.getCountDiff();
+										String diffType = String.valueOf(vo.getRankDiffType());
+										int diff = vo.getRankDiff();
 										String diffStr = "";
-										if(diff > 0) {
+										if("NEW".equals(diffType)) {
+											diffStr = "NEW";
+										} else if("UP".equals(diffType)) {
 											diffStr = "+"+diff;
-										} else if(diff < 0) {
+										} else if("DN".equals(diffType)) {
 											diffStr = "-"+diff;
+										} else {
+											diffStr = ""+diff;
 										}
 									%>
 									<tr>
@@ -423,17 +431,22 @@ DecimalFormat format = new DecimalFormat("#,###");
 										<th>#</th>
 										<th>KEYWORD</th>
 										<th>COUNT</th>
-										<th>CHANGE</th>
+										<th>RANK CHANGE</th>
 									</tr>
 									<% 
 									for(int inx=0;inx < hotKeywordList.size(); inx++) { 
 										RankKeywordVO vo = hotKeywordList.get(inx);
-										int diff = vo.getCountDiff();
+										String diffType = String.valueOf(vo.getRankDiffType());
+										int diff = vo.getRankDiff();
 										String diffStr = "";
-										if(diff > 0) {
+										if("NEW".equals(diffType)) {
+											diffStr = "NEW";
+										} else if("UP".equals(diffType)) {
 											diffStr = "+"+diff;
-										} else if(diff < 0) {
+										} else if("DN".equals(diffType)) {
 											diffStr = "-"+diff;
+										} else {
+											diffStr = ""+diff;
 										}
 									%>
 									<tr>
@@ -462,17 +475,22 @@ DecimalFormat format = new DecimalFormat("#,###");
 										<th>#</th>
 										<th>KEYWORD</th>
 										<th>COUNT</th>
-										<th>CHANGE</th>
+										<th>RANK CHANGE</th>
 									</tr>
 									<% 
 									for(int inx=0;inx < newKeywordList.size(); inx++) { 
 										RankKeywordVO vo = newKeywordList.get(inx);
-										int diff = vo.getCountDiff();
+										String diffType = String.valueOf(vo.getRankDiffType());
+										int diff = vo.getRankDiff();
 										String diffStr = "";
-										if(diff > 0) {
+										if("NEW".equals(diffType)) {
+											diffStr = "NEW";
+										} else if("UP".equals(diffType)) {
 											diffStr = "+"+diff;
-										} else if(diff < 0) {
+										} else if("DN".equals(diffType)) {
 											diffStr = "-"+diff;
+										} else {
+											diffStr = ""+diff;
 										}
 									%>
 									<tr>

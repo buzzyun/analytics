@@ -65,11 +65,18 @@ $(document).ready(function(){
 		$(this).siblings().addClass("btn-default");
 		$(this).siblings().removeClass("btn-primary");
 		
-		$("#timeViewTypeList input[name=timeViewType]").val($(this).text().charAt(0));
+		var timeType = $(this).text().charAt(0);
+		$("#timeViewTypeList input[name=timeViewType]").val(timeType);
 		
-		//TODO 달력의 날짜를 확인하여, 주,월,년의 경우 시작/끝 날짜를 조정해준다.
-		
-		
+		if(timeType=="D") {
+			$("#timeText").val(formatDate(parseDate("${today}")));
+		} else if(timeType=="W") {
+			$("#timeText").val(formatDate(getFirstDayOfWeek(parseDate("${today}"))));
+		} else if(timeType=="M") {
+			$("#timeText").val(formatDate(getFirstDayOfMonth(parseDate("${today}"))));
+		} else if(timeType=="Y") {
+			$("#timeText").val(formatDate(getFirstDayOfYear(parseDate("${today}"))));
+		}
 	});
 	
 	$("div.tab-content div.tab-pane a.btn-sm span.icon-download").parent().click(function() {
@@ -151,7 +158,7 @@ $(document).ready(function(){
 								<div class="widget">
 									<div class="widget-header">
 										<h4>
-											<i class="icon-calendar"></i> Period : <%=timeText %>
+											<i class="icon-calendar"></i> Period : ${timeTextBlock}
 											<a class="btn btn-default btn-sm">
 												<span class="icon icon-download"></span> Download
 											</a>											

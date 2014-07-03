@@ -70,7 +70,7 @@ public class YearlyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		File[] serviceCountFiles = new File[diff];
 		Calendar dailyCalendar = (Calendar) calendar.clone();
 		for(int inx=0;inx < diff; inx++) {
-			File timeDir = StatisticsUtils.getDayDataDir(baseDir, dailyCalendar);
+			File timeDir = StatisticsUtils.getMonthDataDir(baseDir, dailyCalendar);
 			keyCountFiles[inx] = new File(new File(timeDir, categoryId), KEY_COUNT_FILENAME);
 			keyEmptyFiles[inx] = new File(new File(timeDir, categoryId), KEY_COUNT_EMPTY_FILENAME);
 			serviceCountFiles[inx] = new File(new File(timeDir, categoryId), SERVICE_COUNT_FILENAME);

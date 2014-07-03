@@ -348,6 +348,33 @@ public class StatisticsUtils {
 		ret.add(Calendar.DAY_OF_MONTH, (8 - ret.get(Calendar.DAY_OF_WEEK)) % 7);
 		return ret;
 	}
+	
+	public static Calendar getFirstDayOfMonth(Calendar calendar) {
+		Calendar ret = (Calendar) calendar.clone();
+		ret.set(Calendar.DAY_OF_MONTH, 1);
+		return ret;
+	}
+	
+	public static Calendar getLastDayOfMonth(Calendar calendar) {
+		Calendar ret = (Calendar) calendar.clone();
+		ret.add(Calendar.MONTH, 1);
+		ret.set(Calendar.DAY_OF_MONTH, 0);
+		return ret;
+	}
+	
+	public static Calendar getFirstDayOfYear(Calendar calendar) {
+		Calendar ret = (Calendar) calendar.clone();
+		ret.set(Calendar.MONTH, 0);
+		ret.set(Calendar.DAY_OF_MONTH, 1);
+		return ret;
+	}
+	
+	public static Calendar getLastDayOfYear(Calendar calendar) {
+		Calendar ret = (Calendar) calendar.clone();
+		ret.set(Calendar.MONTH, 11);
+		ret.set(Calendar.DAY_OF_MONTH, 31);
+		return ret;
+	}
 
 	public static boolean isEquals(Calendar startTime, Calendar timeCurrent, int type) {
 		if(startTime == null || timeCurrent == null) {

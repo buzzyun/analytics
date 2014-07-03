@@ -60,15 +60,17 @@ public class KeyCountProcessHandler extends ProcessHandler {
 			}
 			
 			Map<String, Object> calc = mapperSession.getMapper().getCalcHitAndTime(siteId, categoryId, dateFrom, dateTo);
-			try {
-				sumCount = Integer.parseInt(String.valueOf(calc.get("hit")));
-			} catch (NumberFormatException ignore) { }
-			try {
-				avgTime = Integer.parseInt(String.valueOf(calc.get("avgTime")));
-			} catch (NumberFormatException ignore) { }
-			try {
-				maxTime = Integer.parseInt(String.valueOf(calc.get("maxTime")));
-			} catch (NumberFormatException ignore) { }
+			if(calc!=null) {
+				try {
+					sumCount = Integer.parseInt(String.valueOf(calc.get("hit")));
+				} catch (NumberFormatException ignore) { }
+				try {
+					avgTime = Integer.parseInt(String.valueOf(calc.get("avgTime")));
+				} catch (NumberFormatException ignore) { }
+				try {
+					maxTime = Integer.parseInt(String.valueOf(calc.get("maxTime")));
+				} catch (NumberFormatException ignore) { }
+			}
 			
 		} catch (IOException e) {
 			logger.error("", e);

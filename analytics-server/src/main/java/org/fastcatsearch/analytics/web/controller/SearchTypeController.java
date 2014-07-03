@@ -90,6 +90,8 @@ public class SearchTypeController extends AbstractController {
 			mav.addObject("typeId", typeId);
 			mav.addObject("list", list);
 			mav.addObject("typeArray", typeArray);
+			mav.addObject("today", StatisticsUtils.toDatetimeString(
+					StatisticsUtils.getCalendar()));
 			
 		} catch (Exception e) {
 			logger.error("", e);

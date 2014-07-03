@@ -17,6 +17,8 @@ import org.fastcatsearch.analytics.analysis.config.StatisticsSettings;
 import org.fastcatsearch.analytics.analysis.handler.MergeClickTypeCountProcessHandler;
 import org.fastcatsearch.analytics.analysis.handler.MergeKeyCountProcessHandler;
 import org.fastcatsearch.analytics.analysis.handler.ProcessHandler;
+import org.fastcatsearch.analytics.analysis.handler.UpdateClickKeywordTargetTypeCountHandler;
+import org.fastcatsearch.analytics.analysis.handler.UpdateClickKeywordTypeCountHandler;
 import org.fastcatsearch.analytics.analysis.handler.UpdateClickTypeCountHandler;
 import org.fastcatsearch.analytics.analysis.log.ClickLog;
 import org.fastcatsearch.analytics.analysis.log.KeyCountLog;
@@ -68,11 +70,15 @@ public class YearlyClickTypeHitCalculator extends Calculator<ClickLog> {
 			StatisticsSettings statisticsSettings = ServiceManager.getInstance().getService(StatisticsService.class).getStatisticsSetting(siteId);
 			int minimumClickCount = statisticsSettings.getCtrSetting().getMinimumClickCount();
 			
-			File[] clickKeyCountFiles = new File[diff];
+			File[] clickTypeCountFiles = new File[diff];
+			File[] clickKeyTypeCountFiles = new File[diff];
+			File[] clickKeyTargetTypeCountFiles = new File[diff];
 			Calendar monthlyCalendar = (Calendar) calendar.clone();
 			for (int inx = 0; inx < diff; inx++) {
 				File timeDir = StatisticsUtils.getMonthDataDir(baseDir, monthlyCalendar);
-				clickKeyCountFiles[inx] = new File(timeDir, CLICK_KEY_COUNT_FILENAME);
+				clickTypeCountFiles[inx] = new File(timeDir, RUN_CLICK_TYPE_FILENAME);
+				clickKeyTypeCountFiles[inx] = new File(timeDir, RUN_CLICK_KEY_TYPE_FILENAME);
+				clickKeyTargetTypeCountFiles[inx] = new File(timeDir, RUN_CLICK_KEY_TARGET_TYPE_FILENAME);
 				monthlyCalendar.add(Calendar.MONTH, -1);
 			}
 			
@@ -86,15 +92,28 @@ public class YearlyClickTypeHitCalculator extends Calculator<ClickLog> {
 			 * type별 클릭수.
 			 **/
 			
-			KeyCountRunEntryParser entryParser = new KeyCountRunEntryParser();
-			
-			ProcessHandler mergeKeyCount = new MergeKeyCountProcessHandler(clickKeyCountFiles, 
+			EntryParser<KeyCountRunEntry> entryParser = new KeyCountRunEntryParser();
+			ProcessHandler mergeKeyCount = new MergeKeyCountProcessHandler(clickTypeCountFiles, 
 					workingDir, RUN_CLICK_TYPE_FILENAME, encoding, entryParser).attachProcessTo(categoryProcess);
+			ProcessHandler updateClickTypeCountHandler = new UpdateClickTypeCountHandler(siteId, timeId, file
+					,encoding, true).appendTo(mergeKeyCount);
 			
-			new UpdateClickTypeCountHandler(siteId, timeId, file
-					,new File(workingDir, RUN_CLICK_TYPE_FILENAME)
-					,encoding).appendTo(mergeKeyCount);
-			file.delete();
+			/*
+			 * 2. 키워드별 type별 클릭수.
+			 * */
+			entryParser = new KeyCountRunEntryParser(new int[] {0, 1}, 2);
+			mergeKeyCount = new MergeKeyCountProcessHandler(clickKeyTypeCountFiles, 
+					workingDir, RUN_CLICK_TYPE_FILENAME, encoding, entryParser).appendTo(updateClickTypeCountHandler);
+			updateClickTypeCountHandler = new UpdateClickKeywordTypeCountHandler(siteId, timeId, file, encoding, true).appendTo(mergeKeyCount);
+			
+			
+			/*
+			 * 3. 키워드별 type별 클릭대상별 클릭수.
+			 * */
+			entryParser = new KeyCountRunEntryParser(new int[] {0, 1, 2}, 3);
+			mergeKeyCount = new MergeKeyCountProcessHandler(clickKeyTargetTypeCountFiles, 
+					workingDir, RUN_CLICK_TYPE_FILENAME, encoding, entryParser).appendTo(updateClickTypeCountHandler);
+			updateClickTypeCountHandler = new UpdateClickKeywordTargetTypeCountHandler(siteId, timeId, file, encoding, true).appendTo(mergeKeyCount);
 		}
 		return categoryProcess;
 	}

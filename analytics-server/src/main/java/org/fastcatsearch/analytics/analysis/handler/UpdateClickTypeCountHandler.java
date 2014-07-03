@@ -16,15 +16,15 @@ public class UpdateClickTypeCountHandler extends ProcessHandler {
 	String siteId;
 	String timeId;
 	File file;
-	File renameTo;
 	String encoding;
+	boolean doDelete;
 	
-	public UpdateClickTypeCountHandler(String siteId, String timeId, File file, File renameTo, String encoding) {
+	public UpdateClickTypeCountHandler(String siteId, String timeId, File file, String encoding, boolean doDelete) {
 		this.siteId = siteId;
 		this.timeId = timeId;
 		this.file = file;
-		this.renameTo = renameTo;
 		this.encoding = encoding;
+		this.doDelete = doDelete;
 	}
 
 	@Override
@@ -66,8 +66,8 @@ public class UpdateClickTypeCountHandler extends ProcessHandler {
 					
 				}
 				
-				if(renameTo!=null) {
-					file.renameTo(renameTo);
+				if(doDelete) {
+					file.delete();
 				}
 			}
 		} finally {

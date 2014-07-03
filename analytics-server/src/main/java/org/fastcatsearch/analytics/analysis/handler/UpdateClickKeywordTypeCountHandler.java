@@ -16,12 +16,14 @@ public class UpdateClickKeywordTypeCountHandler extends ProcessHandler {
 	String timeId;
 	File file;
 	String encoding;
+	boolean doDelete;
 	
-	public UpdateClickKeywordTypeCountHandler(String siteId, String timeId, File file, String encoding) {
+	public UpdateClickKeywordTypeCountHandler(String siteId, String timeId, File file, String encoding, boolean doDelete) {
 		this.siteId = siteId;
 		this.timeId = timeId;
 		this.file = file;
 		this.encoding = encoding;
+		this.doDelete = doDelete;
 	}
 
 	@Override
@@ -59,6 +61,10 @@ public class UpdateClickKeywordTypeCountHandler extends ProcessHandler {
 					logger.trace("#### UpdateClickKeywordTypeHit {} >> {} > {} / {}", timeId, clickType, mapper);
 					mapper.putEntry(siteId, timeId, keyword, clickType, count);
 
+				}
+				
+				if(doDelete) {
+					file.delete();
 				}
 			}
 		} finally {

@@ -110,6 +110,29 @@ public class SearchRankController extends AbstractController {
 				list = mapper.getEntryList(siteId, categoryId, timeId, rankDiffType, rankDiffOver, start, length);
 			}
 			
+			String timeTextBlock = "";
+			if(timeTypeCode == Calendar.DAY_OF_MONTH) {
+				timeTextBlock = timeText;
+			} else if(timeTypeCode == Calendar.WEEK_OF_YEAR) {
+				timeTextBlock = "" +
+				StatisticsUtils.toDatetimeString(
+				StatisticsUtils.getFirstDayOfWeek(StatisticsUtils.parseDatetimeString(timeText, true))) + " - " +
+				StatisticsUtils.toDatetimeString(
+				StatisticsUtils.getLastDayOfWeek(StatisticsUtils.parseDatetimeString(timeText, false)));
+			} else if(timeTypeCode == Calendar.MONTH) {
+				timeTextBlock = "" +
+				StatisticsUtils.toDatetimeString(
+				StatisticsUtils.getFirstDayOfMonth(StatisticsUtils.parseDatetimeString(timeText, true))) + " - " +
+				StatisticsUtils.toDatetimeString(
+				StatisticsUtils.getLastDayOfMonth(StatisticsUtils.parseDatetimeString(timeText, false)));
+			} else if(timeTypeCode == Calendar.YEAR) {
+				timeTextBlock = "" +
+				StatisticsUtils.toDatetimeString(
+				StatisticsUtils.getFirstDayOfYear(StatisticsUtils.parseDatetimeString(timeText, true))) + " - " +
+				StatisticsUtils.toDatetimeString(
+				StatisticsUtils.getLastDayOfYear(StatisticsUtils.parseDatetimeString(timeText, false)));
+			}
+			
 			mav.setViewName("report/rank/searchKeyword");
 			mav.addObject("typeArray", typeArray);
 			mav.addObject("categoryId", categoryId);
@@ -117,11 +140,14 @@ public class SearchRankController extends AbstractController {
 			mav.addObject("length", length);
 			mav.addObject("pageNo", pageNo);
 			mav.addObject("timeText", timeText);
+			mav.addObject("timeTextBlock",timeTextBlock);
 			mav.addObject("categoryId", categoryId);
 			mav.addObject("keywordType", keywordType);
 			mav.addObject("totalCount", totalCount);
 			mav.addObject("timeViewType", timeViewType);
 			mav.addObject("list", list);
+			mav.addObject("today", StatisticsUtils.toDatetimeString(
+					StatisticsUtils.getCalendar()));
 			
 		} catch (Exception e) {
 			logger.error("", e);

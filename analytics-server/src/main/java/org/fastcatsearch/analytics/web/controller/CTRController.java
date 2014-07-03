@@ -157,7 +157,14 @@ public class CTRController extends AbstractController {
 			int timeInx = 0;
 			for (;startTime.getTimeInMillis() <= endTime.getTimeInMillis();timeInx++) {
 				String timeId = StatisticsUtils.getTimeId(startTime, timeTypeCode);
-				String label = StatisticsUtils.toDatetimeString(startTime, Calendar.MONTH);
+				
+				int timeViewCode = Calendar.DAY_OF_MONTH;
+				
+				if(timeTypeCode == Calendar.YEAR) {
+					timeViewCode = Calendar.MONTH;
+				}
+				
+				String label = StatisticsUtils.toDatetimeString(startTime, timeViewCode);
 				labelList.add(label);
 				List<SearchPathHitVO> list = searchPathHitMapper.getEntryByTimeId(siteId, timeId);
 				if (list != null) {
@@ -232,6 +239,8 @@ public class CTRController extends AbstractController {
 			mav.addObject("timeText", timeText);
 			mav.addObject("labelList", labelList);
 			mav.addObject("clickTypeSettingList", clickTypeSettingList);
+			mav.addObject("today", StatisticsUtils.toDatetimeString(
+					StatisticsUtils.getCalendar()));
 		} catch (Exception e) {
 			logger.error("", e);
 		} finally {

@@ -232,6 +232,7 @@ public class CTRController extends AbstractController {
 				String timeId = StatisticsUtils.getTimeId(startTime, timeTypeCode);
 				Integer hit = clickMapper.getHit(siteId, timeId);
 				clickHitList.add(hit);
+logger.info("timeId:{}", timeId);
 				startTime.add(timeTypeCode, 1);
 			}
 			

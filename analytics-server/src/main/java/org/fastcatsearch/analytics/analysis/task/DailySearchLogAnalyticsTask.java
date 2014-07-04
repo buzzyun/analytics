@@ -24,11 +24,8 @@ public class DailySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 
 	private static final long serialVersionUID = 4212969890908932929L;
 
-	DailyRawLogger dailyRawLogger;
-	
-	public DailySearchLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority, DailyRawLogger dailyRawLogger) {
+	public DailySearchLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
 		super("DAILY_SP", "DailySearchLogAnalyticsTask", siteId, categoryIdList, schedule, priority);
-		this.dailyRawLogger = dailyRawLogger;
 	}
 
 	@Override
@@ -52,12 +49,4 @@ public class DailySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 		addCalculator(keywordHitAndRankCalculator);
 		
 	}
-	
-	@Override
-	protected void preProcess() {
-		if (dailyRawLogger != null) {
-			dailyRawLogger.rolling();
-		}
-	}
-
 }

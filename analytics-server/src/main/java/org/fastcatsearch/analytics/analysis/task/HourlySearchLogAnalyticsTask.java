@@ -24,11 +24,8 @@ public class HourlySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 
 	private static final long serialVersionUID = 4212969890908932929L;
 
-	DailyRawLogger dailyRawLogger;
-	
-	public HourlySearchLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority, DailyRawLogger dailyRawLogger) {
+	public HourlySearchLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
 		super("HOURLY_SP", "HourlySearchLogAnalyticsTask", siteId, categoryIdList, schedule, priority);
-		this.dailyRawLogger = dailyRawLogger;
 	}
 
 	@Override
@@ -51,12 +48,4 @@ public class HourlySearchLogAnalyticsTask extends AnalyticsTask<SearchLog> {
 		addCalculator(popularKeywordCalculator);
 		
 	}
-	
-	@Override
-	protected void preProcess() {
-		if (dailyRawLogger != null) {
-			dailyRawLogger.rolling();
-		}
-	}
-
 }

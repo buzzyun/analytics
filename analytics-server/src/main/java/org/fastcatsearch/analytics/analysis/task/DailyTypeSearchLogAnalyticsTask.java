@@ -23,11 +23,8 @@ public class DailyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchLog
 
 	private static final long serialVersionUID = -1324147495414071499L;
 
-	DailyRawLogger dailyTypeRawLogger;
-	
-	public DailyTypeSearchLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority, DailyRawLogger dailyTypeRawLogger) {
+	public DailyTypeSearchLogAnalyticsTask(String siteId, List<String> categoryIdList, Schedule schedule, int priority) {
 		super("DAILY_TYPE", "DailyTypeSearchLogAnalyticsTask", siteId, categoryIdList, schedule, priority);
-		this.dailyTypeRawLogger = dailyTypeRawLogger;
 	}
 
 	@Override
@@ -51,12 +48,5 @@ public class DailyTypeSearchLogAnalyticsTask extends AnalyticsTask<TypeSearchLog
 		Calculator<TypeSearchLog> dailyTypeHitCalculator = new DailyTypeHitCalculator("Daily type hit calculator", calendar, baseDir, siteId, categoryIdList);
 		addCalculator(dailyTypeHitCalculator);
 		
-	}
-
-	@Override
-	protected void preProcess() {
-		if (dailyTypeRawLogger != null) {
-			dailyTypeRawLogger.rolling();
-		}
 	}
 }

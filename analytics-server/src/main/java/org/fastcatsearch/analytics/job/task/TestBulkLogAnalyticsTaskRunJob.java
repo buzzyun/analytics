@@ -81,17 +81,17 @@ public class TestBulkLogAnalyticsTaskRunJob extends Job {
 				SimpleTaskRunner taskRunner = new SimpleTaskRunner("search-log-task-runner", JobService.getInstance(), environment);
 				/* 1. raw.log */
 				TimeSchedule schedule = new TimeSchedule(currentDay.getTimeInMillis(), 0);
-				HourlySearchLogAnalyticsTask task = new HourlySearchLogAnalyticsTask(siteId, categoryIdList, schedule, 0, null);
+				HourlySearchLogAnalyticsTask task = new HourlySearchLogAnalyticsTask(siteId, categoryIdList, schedule, 0);
 				taskRunner.addTask(task);
 			
 				/* 1. raw.log */
 				TimeSchedule schedule1 = new TimeSchedule(currentDay.getTimeInMillis(), 0);
-				DailySearchLogAnalyticsTask task1 = new DailySearchLogAnalyticsTask(siteId, categoryIdList, schedule1, 1, null);
+				DailySearchLogAnalyticsTask task1 = new DailySearchLogAnalyticsTask(siteId, categoryIdList, schedule1, 1);
 				taskRunner.addTask(task1);
 				
 				/* 2. type_raw.log */
 				TimeSchedule schedule2 = new TimeSchedule(currentDay.getTimeInMillis(), 0);
-				DailyTypeSearchLogAnalyticsTask task2 = new DailyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule2, 2, null);
+				DailyTypeSearchLogAnalyticsTask task2 = new DailyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule2, 2);
 				taskRunner.addTask(task2);
 				
 				//
@@ -144,7 +144,7 @@ public class TestBulkLogAnalyticsTaskRunJob extends Job {
 			
 				/* click log */
 				TimeSchedule schedule9 = new TimeSchedule(currentDay.getTimeInMillis(), 0);
-				DailyClickLogAnalyticsTask task9 = new DailyClickLogAnalyticsTask(siteId, categoryIdList, schedule9, 9, null);
+				DailyClickLogAnalyticsTask task9 = new DailyClickLogAnalyticsTask(siteId, categoryIdList, schedule9, 9);
 				taskRunner.addTask(task9);
 				
 				//

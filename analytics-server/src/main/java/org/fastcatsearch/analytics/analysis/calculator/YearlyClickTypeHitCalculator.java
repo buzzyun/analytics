@@ -104,7 +104,7 @@ public class YearlyClickTypeHitCalculator extends Calculator<ClickLog> {
 			entryParser = new KeyCountRunEntryParser(new int[] {0, 1}, 2);
 			mergeKeyCount = new MergeKeyCountProcessHandler(clickKeyTypeCountFiles, 
 					workingDir, RUN_CLICK_TYPE_FILENAME, encoding, entryParser).appendTo(updateClickTypeCountHandler);
-			updateClickTypeCountHandler = new UpdateClickKeywordTypeCountHandler(siteId, timeId, file, encoding, true).appendTo(mergeKeyCount);
+			//updateClickTypeCountHandler = new UpdateClickKeywordTypeCountHandler(siteId, timeId, file, encoding, true).appendTo(mergeKeyCount);
 			
 			
 			/*
@@ -112,8 +112,8 @@ public class YearlyClickTypeHitCalculator extends Calculator<ClickLog> {
 			 * */
 			entryParser = new KeyCountRunEntryParser(new int[] {0, 1, 2}, 3);
 			mergeKeyCount = new MergeKeyCountProcessHandler(clickKeyTargetTypeCountFiles, 
-					workingDir, RUN_CLICK_TYPE_FILENAME, encoding, entryParser).appendTo(updateClickTypeCountHandler);
-			updateClickTypeCountHandler = new UpdateClickKeywordTargetTypeCountHandler(siteId, timeId, file, encoding, true).appendTo(mergeKeyCount);
+					workingDir, RUN_CLICK_TYPE_FILENAME, encoding, entryParser).appendTo(mergeKeyCount);
+			//updateClickTypeCountHandler = new UpdateClickKeywordTargetTypeCountHandler(siteId, timeId, file, encoding, true).appendTo(mergeKeyCount);
 		}
 		return categoryProcess;
 	}

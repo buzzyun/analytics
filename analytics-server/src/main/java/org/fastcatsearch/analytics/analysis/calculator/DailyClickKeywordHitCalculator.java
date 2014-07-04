@@ -84,7 +84,7 @@ public class DailyClickKeywordHitCalculator extends Calculator<ClickLog> {
 			mergeKeyCount = new MergeClickTypeCountProcessHandler(
 					clickLogFiles, encoding, clickTypeLogAggregator,
 					MergeClickTypeCountProcessHandler.RUN_CASE_CLICK_KEYWORD).appendTo(updateClickTypeCountHandler);
-			updateClickTypeCountHandler = new UpdateClickKeywordTypeCountHandler(siteId, timeId, file, encoding, true).appendTo(mergeKeyCount);
+			//updateClickTypeCountHandler = new UpdateClickKeywordTypeCountHandler(siteId, timeId, file, encoding, true).appendTo(mergeKeyCount);
 			
 			/*
 			 * 키워드별 type별 클릭대상별 클릭수.
@@ -93,8 +93,8 @@ public class DailyClickKeywordHitCalculator extends Calculator<ClickLog> {
 			clickTypeLogAggregator = new KeyCountLogAggregator<ClickLog>(workingDir, RUN_CLICK_TYPE_FILENAME, runKeySize, encoding, minimumClickCount, clickTypeParser);
 			mergeKeyCount = new MergeClickTypeCountProcessHandler(
 					clickLogFiles, encoding, clickTypeLogAggregator,
-					MergeClickTypeCountProcessHandler.RUN_CASE_CLICK_KEYWORD_TARGET).appendTo(updateClickTypeCountHandler);
-			updateClickTypeCountHandler = new UpdateClickKeywordTargetTypeCountHandler(siteId, timeId, file, encoding, true).appendTo(mergeKeyCount);
+					MergeClickTypeCountProcessHandler.RUN_CASE_CLICK_KEYWORD_TARGET).appendTo(mergeKeyCount);
+			//updateClickTypeCountHandler = new UpdateClickKeywordTargetTypeCountHandler(siteId, timeId, file, encoding, true).appendTo(mergeKeyCount);
 			file.delete();
 		}
 		return categoryProcess;

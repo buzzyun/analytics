@@ -136,7 +136,7 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		dailyTaskRunner = new ScheduledTaskRunner("daily-search-log-task-runner", JobService.getInstance(), environment);
 		
 		//로그롤링
-		Schedule dailySchedule0 = new EveryDaySchedule(dailyScheduleTime, delayInSeconds);
+		Schedule dailySchedule0 = new EveryDaySchedule(0, 0);
 		DailyLogRollingTask dailyLogRollingTask = new DailyLogRollingTask(siteId, categoryIdList, dailySchedule0, priority++, new DailyRawLogger[] 
 				{ dailyRawLogger, dailyTypeRawLogger, dailyClickRawLogger });
 		dailyTaskRunner.addTask(dailyLogRollingTask);

@@ -101,7 +101,7 @@ public class MonthlyClickKeywordHitCalculator extends Calculator<ClickLog> {
 					clickLogFiles, encoding, clickTypeLogAggregator,
 					MergeClickTypeCountProcessHandler.RUN_CASE_CLICK_KEYWORD).appendTo(updateClickTypeCountHandler);
 			updateClickTypeCountHandler = new UpdateClickKeywordTypeCountHandler(siteId, timeId, clickKeywordTypeFile, encoding, false).appendTo(mergeKeyCount);
-			
+
 			/*
 			 * 3. 키워드별 type별 클릭대상별 클릭수.
 			 * */
@@ -111,7 +111,6 @@ public class MonthlyClickKeywordHitCalculator extends Calculator<ClickLog> {
 					clickLogFiles, encoding, clickTypeLogAggregator,
 					MergeClickTypeCountProcessHandler.RUN_CASE_CLICK_KEYWORD_TARGET).appendTo(updateClickTypeCountHandler);
 			updateClickTypeCountHandler = new UpdateClickKeywordTargetTypeCountHandler(siteId, timeId, clickKeywordTargetTypeFile, encoding, false).appendTo(mergeKeyCount);
-			
 		}
 		return categoryProcess;
 	}

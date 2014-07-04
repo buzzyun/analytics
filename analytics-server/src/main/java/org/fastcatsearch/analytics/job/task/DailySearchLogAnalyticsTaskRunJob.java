@@ -103,12 +103,12 @@ public class DailySearchLogAnalyticsTaskRunJob extends Job {
 					if(type.equals("hour_sp")){
 						/* 1. Hourly */
 						TimeSchedule schedule = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
-						HourlySearchLogAnalyticsTask task = new HourlySearchLogAnalyticsTask(siteId, categoryIdList, schedule, taskSequence++, null);
+						HourlySearchLogAnalyticsTask task = new HourlySearchLogAnalyticsTask(siteId, categoryIdList, schedule, taskSequence++);
 						taskRunner.addTask(task);
 					}else if(type.equals("day_sp")){
 						/* 2. Daily */
 						TimeSchedule schedule = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
-						DailySearchLogAnalyticsTask task = new DailySearchLogAnalyticsTask(siteId, categoryIdList, schedule, taskSequence++, null);
+						DailySearchLogAnalyticsTask task = new DailySearchLogAnalyticsTask(siteId, categoryIdList, schedule, taskSequence++);
 						taskRunner.addTask(task);
 					}else if(type.equals("week_sp")){
 						TimeSchedule schedule = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
@@ -124,7 +124,7 @@ public class DailySearchLogAnalyticsTaskRunJob extends Job {
 						taskRunner.addTask(task);
 					}else if(type.equals("day_type")){
 						TimeSchedule schedule = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
-						DailyTypeSearchLogAnalyticsTask task = new DailyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule, taskSequence++, null);
+						DailyTypeSearchLogAnalyticsTask task = new DailyTypeSearchLogAnalyticsTask(siteId, categoryIdList, schedule, taskSequence++);
 						taskRunner.addTask(task);
 					}else if(type.equals("week_type")){
 						TimeSchedule schedule = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
@@ -148,7 +148,7 @@ public class DailySearchLogAnalyticsTaskRunJob extends Job {
 					}else if(type.equals("day_ctr")){
 						/* 1. Daily */
 						TimeSchedule schedule = new TimeSchedule(currentDay.getTimeInMillis(), 0, false);
-						DailyClickLogAnalyticsTask task = new DailyClickLogAnalyticsTask(siteId, categoryIdList, schedule, taskSequence++, null);
+						DailyClickLogAnalyticsTask task = new DailyClickLogAnalyticsTask(siteId, categoryIdList, schedule, taskSequence++);
 						taskRunner.addTask(task);
 					}else if(type.equals("week_ctr")){
 						/* 2. Weekly */

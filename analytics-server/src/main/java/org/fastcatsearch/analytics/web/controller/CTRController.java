@@ -374,7 +374,7 @@ logger.info("timeId:{}", timeId);
 						int keywordClickTypeCount = clickKeywordHitMapper.getKeywordTypeClickCount(siteId, timeId, keyword, clickType[0]);
 						typeCountMap.put(clickType[0], String.format("%,d", keywordClickTypeCount));
 					} catch (NullPointerException e) {
-						logger.error("error:{}",e.getMessage());
+						logger.error("error:", e);
 						typeCountMap.put(clickType[0], String.format("%,d", 0));
 					}
 				}

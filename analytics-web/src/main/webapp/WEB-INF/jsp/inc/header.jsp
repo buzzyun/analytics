@@ -34,9 +34,9 @@
 <!--[if IE 8]>
 		<link href="${contextPath}/resources/assets/css/ie8.css" rel="stylesheet" type="text/css" />
 	<![endif]-->
-<link
-	href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700'
-	rel='stylesheet' type='text/css'>
+<!-- <link -->
+<!-- 	href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700' -->
+<!-- 	rel='stylesheet' type='text/css'> -->
 	
 <link rel="stylesheet"
 	href="${contextPath}/resources/assets/css/console.css">

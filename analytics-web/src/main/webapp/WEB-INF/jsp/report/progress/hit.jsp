@@ -124,6 +124,10 @@ $(document).ready(function() {
 			grid : {
 				hoverable : true,
 				clickable : true
+			}, legend : {
+				position: "nw",
+				noColumns: 10,
+				container: $("#progress-legend")
 			},
 			tooltip : true,
 			tooltipOpts : {
@@ -390,6 +394,7 @@ $(document).ready(function() {
 						<div class="widget box">
 							<div class="widget-header">
 								<h4>Total Count</h4>
+								<div id="progress-legend" class="main-chart-legend"></div>
 							</div>
 							<div class="widget-content">
 								<div id="chart_dashboard_main" class="chart"></div>

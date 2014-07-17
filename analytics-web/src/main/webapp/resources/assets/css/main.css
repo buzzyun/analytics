@@ -3312,6 +3312,9 @@ ul.stats li.light strong {
   color: #eaebee;
 }
 
+div.main-chart-legend { 
+	float:right;padding:0 30px 0 0 
+}
 
 
 

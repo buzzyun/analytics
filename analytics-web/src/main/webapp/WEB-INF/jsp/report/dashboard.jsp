@@ -33,7 +33,7 @@ DecimalFormat format = new DecimalFormat("#,###");
 <html>
 <head>
 <c:import url="${ROOT_PATH}/inc/header.jsp" />
-<script>
+<script type="text/javascript">
 	$(document).ready(function() {
 
 			// Sample Data
@@ -109,7 +109,12 @@ DecimalFormat format = new DecimalFormat("#,###");
 					}, grid : {
 						hoverable : true,
 						clickable : true
+					}, legend : {
+						position: "nw",
+						noColumns: 10,
+						container: $("#progress-legend")
 					}, tooltip : true,
+				
 					tooltipOpts : { content : '%s: %y' }
 				}));
 			
@@ -195,6 +200,10 @@ DecimalFormat format = new DecimalFormat("#,###");
 					], grid : {
 						hoverable : true,
 						clickable : true
+					}, legend : {
+						position: "nw",
+						noColumns: 10,
+						container: $("#ctr-legend")
 					}, tooltip : true,
 					tooltipOpts : { content : '%s: %y' },
 					series : {
@@ -338,6 +347,7 @@ DecimalFormat format = new DecimalFormat("#,###");
 						<div class="widget box">
 							<div class="widget-header">
 								<h4>Hit Progress</h4>
+								<div id="progress-legend" class="main-chart-legend"></div>
 							</div>
 							<div class="widget-content">
 								<div id="chart_dashboard_main" class="chart"></div>
@@ -537,6 +547,8 @@ DecimalFormat format = new DecimalFormat("#,###");
 						<div class="widget box">
 							<div class="widget-header">
 								<h4>Click-through Rate</h4>
+								<div id="ctr-legend" class="main-chart-legend">
+								</div>
 							</div>
 							<div class="widget-content">
 								<div id="chart_dashboard_ctr" class="chart"></div>

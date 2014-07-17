@@ -1,13 +1,14 @@
 package org.fastcatsearch.analytics.analysis.vo;
 
 import org.fastcatsearch.analytics.db.vo.RankKeywordVO.RankDiffType;
+import org.fastcatsearch.ir.io.CharVector;
 
 /**
  * 로그취합결과로 얻어진 인기키워드.
  * */
 public class RankKeyword {
 
-	private String keyword;
+	private CharVector keyword;
 	private int rank;
 	private int count;
 	
@@ -20,17 +21,22 @@ public class RankKeyword {
 		this(keyword, rank, 0);
 	}
 	public RankKeyword(String keyword, int rank, int count) {
-		this.keyword = keyword;
+		this.keyword = new CharVector(keyword, true);
 		this.rank = rank;
 		this.count = count;
 	}
 
 	public String getKeyword() {
-		return keyword;
+		return keyword.toString();
 	}
 
 	public void setKeyword(String keyword) {
-		this.keyword = keyword;
+		this.keyword = new CharVector(keyword, true);
+	}
+	
+	public void setKeyword(CharVector keyword) {
+		this.keyword = keyword.clone();
+		this.keyword.setIgnoreCase();
 	}
 
 	public int getRank() {

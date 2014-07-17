@@ -9,6 +9,7 @@ import org.fastcatsearch.analytics.analysis.EntryParser;
 import org.fastcatsearch.analytics.analysis.FileRunEntryReader;
 import org.fastcatsearch.analytics.analysis.vo.RankKeyword;
 import org.fastcatsearch.analytics.db.vo.RankKeywordVO.RankDiffType;
+import org.fastcatsearch.ir.io.CharVector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,9 +66,9 @@ public class KeywordLogRankDiffer {
 
 					while (compareReader.next()) {
 						KeyCountRunEntry entry = compareReader.entry();
-						String compareKeyword = entry.getKey();
+						CharVector compareKeyword = new CharVector(entry.getKey(), true);
 						for (RankKeyword keyword : result) {
-							String targetKeyword = keyword.getKeyword();
+							CharVector targetKeyword = new CharVector(keyword.getKeyword(), true);
 							if (compareKeyword.equals(targetKeyword)) {
 								int rankDiff = prevRank - keyword.getRank();
 								int countDiff = keyword.getCount() - entry.getCount();
@@ -104,7 +105,7 @@ public class KeywordLogRankDiffer {
 			logger.error("", e);
 			return null;
 		}
-logger.debug("result size : {}", result.size());
+		logger.trace("result size : {} / targetFile:{}", result.size(), targetFile);
 		return result;
 	}
 }

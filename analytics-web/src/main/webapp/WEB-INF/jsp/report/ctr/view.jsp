@@ -308,6 +308,10 @@ $(document).ready(function() {
 			], grid : {
 				hoverable : true,
 				clickable : true
+			}, legend : {
+				position: "nw",
+				noColumns: 10,
+				container: $("#search-legend")
 			}, tooltip : true,
 			tooltipOpts : { content : "%s: %y" }
 		})
@@ -369,7 +373,11 @@ $(document).ready(function() {
 		},
 		yaxes: [ { min:"0" },{ min:"0", position: "right", tickFormatter: yFormatter } ],
 		grid : { hoverable : true, clickable : true },
-		tooltip : true,
+		legend : {
+			position: "nw",
+			noColumns: 10,
+			container: $("#ctr-legend")
+		}, tooltip : true,
 		tooltipOpts : { content : '%s: %y' }
 	}));
 });
@@ -440,6 +448,7 @@ $(document).ready(function() {
 						<div class="widget box">
 							<div class="widget-header">
 								<h4>Search-through Rate</h4>
+								<div id="search-legend" class="main-chart-legend"></div>
 							</div>
 							<div class="widget-content">
 								<div id="chart_search_rate" class="chart"></div>
@@ -477,6 +486,7 @@ $(document).ready(function() {
 						<div class="widget box">
 							<div class="widget-header">
 								<h4>Click-through Rate</h4>
+								<div id="ctr-legend" class="main-chart-legend"></div>
 							</div>
 							<div class="widget-content">
 								<div id="chart_ctr" class="chart"></div>

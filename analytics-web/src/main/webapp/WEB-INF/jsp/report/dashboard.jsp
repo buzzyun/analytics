@@ -61,9 +61,6 @@ DecimalFormat format = new DecimalFormat("#,###");
 					[<%=inx%>, <%=vo.getHit() %>]
 				<% } %>
 			];
-			<% for(int inx=0;inx<currentWeek.size();inx++) { %>
-				<% totalCurrentWeek += currentWeek.get(inx).getHit(); %>
-			<% } %>
 			
 			var ticksHit=[
 				<% int delta = labelList.size() / 10; %>

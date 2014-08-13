@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="org.fastcatsearch.analytics.db.mapper.SearchKeywordHitMapper">
+
+	<update id="createTable" parameterType="map" >
+		create table ${siteId}_hit_keyword (
+			categoryId varchar(30), 
+			timeId varchar(11),
+			keyword varchar(128),
+			hit int,
+			primary key (categoryId, timeId, keyword)
+		) ${option}
+	</update>
+	
+	<update id="createIndex" parameterType="map" >
+		create index timeId_${siteId}_hit_keyword on ${siteId}_hit_keyword(categoryId, timeId, keyword)
+	</update>
+	
+	<select id="validateTable" parameterType="map" resultType="map">
+		select categoryId, timeId, keyword, hit
+		from ${siteId}_hit_keyword
+		where categoryId = ''
+	</select>
+
+	<update id="dropTable" parameterType="map">
+		drop table ${siteId}_hit_keyword
+	</update>
+	
+	<select id="getEntry" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.SearchHitVO">
+		select * from ${siteId}_hit_keyword 
+		where 
+		categoryId=#{categoryId} 
+		and timeId=#{timeId}
+		and keyword=#{keyword}
+	</select>
+	
+	<select id="getCount" parameterType="map" resultType="int">
+		select count(*) from ${siteId}_hit_keyword 
+		where 
+		categoryId=#{categoryId} 
+		and timeId=#{timeId}
+	</select>
+	
+	<delete id="updateClear" parameterType="map">
+		delete from ${siteId}_hit_keyword
+		where 
+		categoryId=#{categoryId}
+		and timeId = #{timeId}
+	</delete>
+	
+	<select id="getEntryListBetween" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.SearchHitVO">
+		select * from ${siteId}_hit_keyword
+		<where>
+			categoryId=#{categoryId}
+			<if test="keyword != null and keyword != ''">
+			and keyword = #{keyword}
+			</if>
+			<if test="from != null and from != ''">
+				and timeId &gt;= #{from} 
+			</if>
+			<if test="to != null and to !=''">
+				and timeId &lt;= #{to}
+			</if>
+		</where>
+	</select>
+	
+	<insert id="putEntry" parameterType="map" useGeneratedKeys="true" >
+		insert ignore into ${siteId}_hit_keyword 
+		(categoryId, timeId, keyword, hit) values (#{categoryId}, #{timeId},#{keyword}, #{hit})
+	</insert>
+	
+	
+	<!-- 아래 메소드는 아직 미사용. -->
+	
+	<select id="getCountBetween" parameterType="map" resultType="int">
+		select count(*) from ${siteId}_hit_keyword 
+		<where>
+			categoryId=#{categoryId}
+			<if test="keyword != null and keyword !=''">
+				and keyword = #{keyword}
+			</if>
+			<if test="from != null and from != ''">
+				and timeId &gt;= #{from} 
+			</if>
+			<if test="to != null and to !=''">
+				and timeId &lt;= #{to}
+			</if>
+			and timeId like '${dFilter}%'
+		</where>
+	</select>
+		
+
+	
+	
+	<select id="getMinEntry" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.SearchHitVO">
+		select * from ${siteId}_hit_keyword 
+		where
+		categoryId=#{categoryId} 
+		and timeId=(
+			select min(timeId) from ${siteId}_hit_keyword 
+			where timeId like '${dFilter}%'
+			<if test="keyword != null and keyword != ''">
+			and keyword=#{keyword}
+			</if>
+		) 
+		limit 1
+	</select>
+	
+	<select id="getMaxEntry" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.SearchHitVO">
+		select * from ${siteId}_hit_keyword where 
+		timeId=(
+			select max(timeId) from ${siteId}_hit_keyword where timeId like '${dFilter}%'
+			<if test="keyword != null and keyword != ''">
+			and keyword=#{keyword}
+			</if>
+		) 
+		limit 1
+	</select>
+	
+	<select id="getSumBetween" parameterType="map" resultType="int">
+		select sum(hit) from ${siteId}_hit_keyword 
+		<where>
+			categoryId=#{categoryId}
+			<if test="keyword != null and keyword !=''">
+			and keyword = #{keyword} 
+			</if>
+			and timeId between #{from} and #{to}
+		</where>
+	</select>
+	
+	<update id="updateEntry" parameterType="map">
+		update ${siteId}_hit_keyword set hit = #{hit} 
+		where 
+		categoryId=#{categoryId} 
+		and timeId = #{timeId} 
+		and keyword = #{keyword}
+	</update>
+	
+	<delete id="deleteEntry" parameterType="map">
+		delete from 
+		${siteId}_hit_keyword
+		where 
+		categoryId=#{categoryId}
+		and timeId = #{timeId}
+		and keyword = #{keyword}
+	</delete>
+	
+	<delete id="deleteEntryBetween" parameterType="map">
+		delete from 
+		${siteId}_hit_keyword set hit = #{hit}
+		<where>
+			categoryId=#{categoryId}
+			<if test="keyword != null and keyword != '' ">
+				and keyword=#{keyword}
+			</if>
+			and timeId between #{from} and #{to} 
+		</where>
+	</delete>
+	
+	<delete id="truncate" parameterType="map">
+		truncate table ${siteId}_hit_keyword 
+	</delete>
+
+</mapper>

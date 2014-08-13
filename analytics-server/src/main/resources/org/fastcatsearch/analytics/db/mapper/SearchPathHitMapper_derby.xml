@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="org.fastcatsearch.analytics.db.mapper.SearchPathHitMapper">
+
+	<update id="createTable" parameterType="map" >
+		create table ${siteId}_searchpath_hit (
+			timeId varchar(11),
+			searchId varchar(30), 
+			hit int,
+			primary key (timeId, searchId)
+		) ${option}
+	</update>
+	
+	<select id="validateTable" parameterType="map" resultType="map">
+		select timeId, searchId, hit
+		from ${siteId}_searchpath_hit
+		where searchId = ''
+	</select>
+
+	<update id="createIndex" parameterType="map" >
+		create index timeId_${siteId}_searchpath_hit on ${siteId}_searchpath_hit(timeId, searchId)
+	</update>
+	
+	<update id="dropTable" parameterType="map">
+		drop table ${siteId}_searchpath_hit
+	</update>
+	
+	<delete id="truncate" parameterType="map">
+		truncate table ${siteId}_searchpath_hit 
+	</delete>
+	
+	<select id="getEntry" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.SearchPathHitVO">
+		select * from ${siteId}_searchpath_hit 
+		<where>
+			timeId=#{timeId}
+			and searchId=#{searchId} 
+		</where>
+	</select>
+	
+	<select id="getEntryByTimeId" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.SearchPathHitVO">
+		select * from ${siteId}_searchpath_hit 
+		<where>
+			timeId=#{timeId}
+		</where>
+	</select>
+	
+	<insert id="putEntry" parameterType="map">
+		insert into ${siteId}_searchpath_hit 
+		(timeId, searchId, hit) values (#{timeId}, #{searchId}, #{hit})
+	</insert>
+	
+	<update id="updateEntry" parameterType="map">
+		update ${siteId}_searchpath_hit set hit = #{hit}
+		<where>
+			timeId = #{timeId}
+			and searchId=#{searchId}
+		</where>
+	</update>
+	
+	<delete id="deleteEntry" parameterType="map">
+		delete from ${siteId}_searchpath_hit
+		<where>
+			timeId = #{timeId}
+			and searchId=#{searchId}
+		</where>
+	</delete>
+	
+	<select id="getEntryListBetween" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.SearchPathHitVO">
+		select * from ${siteId}_searchpath_hit
+		<where>
+			<if test="from != null and from != ''">
+				timeId &gt;= #{from} 
+			</if>
+			<if test="to != null and to !=''">
+				and timeId &lt;= #{to}
+			</if>
+		</where>
+		order by timeId asc
+	</select>
+	
+</mapper>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- default field : id, keyword -->
+<mapper namespace="org.fastcatsearch.analytics.db.mapper.TaskResultMapper">
+
+	<update id="createTable">
+		create table TaskResult (
+			siteId varchar(30),
+			targetTime varchar(8),
+			taskId varchar(30),
+			startTime timestamp,
+			endTime timestamp,
+			duration varchar(30),
+			scheduled varchar(10),
+			resultStatus varchar(30),
+			taskName varchar(200),
+			detail varchar(3000),
+			primary key (siteId, targetTime, taskId)
+		) ${option}
+	</update>
+	
+	<update id="createIndex" >
+		create index site_time_TaskResult_index on TaskResult(siteId, targetTime)
+	</update>
+	
+	
+	<select id="validateTable" parameterType="map" resultType="map">
+		select siteId, targetTime, startTime, endTime, duration, scheduled, resultStatus
+		, taskId, taskName, detail
+		from TaskResult 
+		limit 1
+	</select>
+
+	<update id="dropTable" parameterType="map">
+		drop table TaskResult
+	</update>
+	
+	<select id="getEntryList" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.TaskResultVO">
+		select *
+		from TaskResult 
+		where siteId = #{siteId} and targetTime = #{targetTime}
+		order by startTime asc
+	</select>
+	
+	<select id="getEntry" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.TaskResultVO">
+		select *
+		from TaskResult 
+		where siteId = #{siteId} and targetTime = #{targetTime} and taskId = #{taskId}
+	</select>
+	
+	<insert id="putEntry" parameterType="org.fastcatsearch.analytics.db.vo.TaskResultVO">
+		insert into TaskResult ( 
+		siteId, targetTime, startTime, endTime, duration, scheduled, resultStatus
+		, taskId, taskName, detail
+		)
+		values (
+		#{siteId}, #{targetTime}, #{startTime}, #{endTime}, #{duration}, #{scheduled}, #{resultStatus}
+		, #{taskId}, #{taskName}, #{detail}
+		)
+	</insert>
+	
+	<update id="updateEntry" parameterType="org.fastcatsearch.analytics.db.vo.TaskResultVO">
+		update TaskResult 
+		set startTime=#{startTime}, endTime=#{endTime}, duration=#{duration}
+		, scheduled=#{scheduled}, resultStatus=#{resultStatus}, detail=#{detail}
+		where siteId = #{siteId} and targetTime = #{targetTime} and taskId = #{taskId}
+	</update>
+	
+	<update id="deleteEntry" parameterType="map">
+		delete from TaskResult
+		where siteId = #{siteId} and targetTime = #{targetTime}
+	</update>
+
+</mapper>

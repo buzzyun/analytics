@@ -225,6 +225,12 @@ public class CharVector implements CharSequence, Comparable<CharSequence>, Seria
 		for (int cinx = 0; cinx < minlen; cinx++) {
 			char c1 = this.charAt(cinx);
 			char c2 = cs.charAt(cinx);
+			
+			if(isIgnoreCase) {
+				if(c2 >='a' && c2 <='z') {
+					c2 -= 32;
+				}
+			}
 
 			if (c1 == c2) {
 
@@ -253,10 +259,17 @@ public class CharVector implements CharSequence, Comparable<CharSequence>, Seria
 		int len = len1 < len2 ? len1 : len2;
 
 		for (int i = 0; i < len; i++) {
-			char ch = charAt(i);
+			char c1 = charAt(i);
+			char c2 = key[offset + i];
+			
+			if(isIgnoreCase) {
+				if(c2 >='a' && c2 <='z') {
+					c2 -= 32;
+				}
+			}
 
-			if (ch != key[offset + i]) {
-				return ch - key[offset + i];
+			if (c1 != c2) {
+				return c1 - c2;
 			}
 		}
 

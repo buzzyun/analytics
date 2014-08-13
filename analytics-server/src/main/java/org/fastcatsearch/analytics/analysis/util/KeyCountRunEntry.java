@@ -38,11 +38,14 @@ public class KeyCountRunEntry extends RunEntry {
 		if(e.key == null){
 			return -1;
 		}
-		if(key.equalsIgnoreCase(e.key)) {
+		String k1 = key.toLowerCase();
+		String k2 = e.key.toLowerCase();
+		
+		if(k1.equals(k2)) {
 			return 0;
 		}
 		
-		return key.compareTo(e.key);
+		return k1.compareTo(k2);
 	}
 
 	@Override

@@ -43,7 +43,7 @@ public class DumpPopularKeywordHitCalculator extends Calculator<ClickLog> {
 			
 			Calendar dailyCalendar = (Calendar) calendar.clone();
 			
-			int diff = StatisticsUtils.getDateDiff(fromDate, calendar);
+			int diff = StatisticsUtils.getDateDiff(fromDate, calendar) + 1;
 			
 			File workingDir = targetFile.getParentFile();
 			
@@ -60,7 +60,6 @@ public class DumpPopularKeywordHitCalculator extends Calculator<ClickLog> {
 			}
 			
 			KeyCountRunEntryParser parser = new KeyCountRunEntryParser(new int[]{0}, 1 );
-			
 			MergeKeyCountProcessHandler mergeProcessHandler = new MergeKeyCountProcessHandler(clickLogFiles, workingDir, tmpFileName, encoding, parser);
 			mergeProcessHandler.attachProcessTo(categoryProcess);
 			

@@ -63,7 +63,7 @@ public class MonthlyClickKeywordHitCalculator extends Calculator<ClickLog> {
 			int minimumClickCount = statisticsSettings.getCtrSetting().getMinimumClickCount();
 			//
 			//1일부터 현재일자 (DAY_OF_MONTH) 까지.
-			int diff = calendar.get(Calendar.DAY_OF_MONTH);
+			int diff = calendar.get(Calendar.DAY_OF_MONTH) + 1;
 			
 			File[] clickLogFiles = new File[diff];
 			Calendar dailyCalendar = (Calendar) calendar.clone();

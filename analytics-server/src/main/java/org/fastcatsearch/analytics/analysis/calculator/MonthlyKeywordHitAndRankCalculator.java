@@ -43,7 +43,7 @@ public class MonthlyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 	protected CategoryProcess<SearchLog> newCategoryProcess(String categoryId){
 		String encoding = StatisticsProperties.encoding;
 		
-		int diff = StatisticsUtils.getDateDiff(prevCalendar, calendar);
+		int diff = StatisticsUtils.getDateDiff(prevCalendar, calendar) + 1;
 		
 		File workingDir = new File(StatisticsUtils.getMonthDataDir(baseDir, calendar), categoryId);
 		File prevWorkingDir = new File(StatisticsUtils.getMonthDataDir(baseDir, prevCalendar), categoryId);

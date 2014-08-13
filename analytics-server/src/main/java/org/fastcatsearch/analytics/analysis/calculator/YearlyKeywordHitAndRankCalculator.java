@@ -44,7 +44,7 @@ public class YearlyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		
 		String encoding = StatisticsProperties.encoding;
 		
-		int diff = StatisticsUtils.getMonthDiff(prevCalendar, calendar);
+		int diff = StatisticsUtils.getMonthDiff(prevCalendar, calendar) + 1;
 		
 		File workingDir = new File(StatisticsUtils.getYearDataDir(baseDir, calendar), categoryId);
 		File prevWorkingDir = new File(StatisticsUtils.getYearDataDir(baseDir, prevCalendar), categoryId);

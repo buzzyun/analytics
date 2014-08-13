@@ -66,7 +66,7 @@ public class WeeklyClickTypeHitCalculator extends Calculator<ClickLog> {
 			int minimumClickCount = statisticsSettings.getCtrSetting().getMinimumClickCount();
 			//
 			//이번주말부터 이번주초까지
-			int diff = StatisticsUtils.getDateDiff(prevCalendar, calendar);
+			int diff = StatisticsUtils.getDateDiff(prevCalendar, calendar) + 1;
 			
 			File[] clickLogFiles = new File[diff];
 			Calendar dailyCalendar = (Calendar) calendar.clone();

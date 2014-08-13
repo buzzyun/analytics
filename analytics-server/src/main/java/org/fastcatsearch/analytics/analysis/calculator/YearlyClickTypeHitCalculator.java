@@ -52,7 +52,7 @@ public class YearlyClickTypeHitCalculator extends Calculator<ClickLog> {
 		
 			String encoding = StatisticsProperties.encoding;
 			
-			int diff = StatisticsUtils.getMonthDiff(prevCalendar, calendar);
+			int diff = StatisticsUtils.getMonthDiff(prevCalendar, calendar) + 1;
 			
 			File monthlyBaseDir = StatisticsUtils.getMonthDataDir(baseDir, calendar);
 			

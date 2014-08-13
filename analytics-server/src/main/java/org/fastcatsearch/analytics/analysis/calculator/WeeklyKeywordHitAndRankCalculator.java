@@ -41,7 +41,7 @@ public class WeeklyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 	protected CategoryProcess<SearchLog> newCategoryProcess(String categoryId){
 		String encoding = StatisticsProperties.encoding;
 		
-		int diff = StatisticsUtils.getDateDiff(prevCalendar, calendar);
+		int diff = StatisticsUtils.getDateDiff(prevCalendar, calendar) + 1;
 		
 		File workingDir = new File(StatisticsUtils.getWeekDataDir(baseDir, calendar), categoryId);
 		File prevWorkingDir = new File(StatisticsUtils.getWeekDataDir(baseDir, prevCalendar), categoryId);

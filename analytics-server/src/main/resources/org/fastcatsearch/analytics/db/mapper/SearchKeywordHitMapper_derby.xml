@@ -68,10 +68,11 @@
 	</select>
 	
 	<insert id="putEntry" parameterType="map" useGeneratedKeys="true" >
-		insert ignore into ${siteId}_hit_keyword 
-		(categoryId, timeId, keyword, hit) values (#{categoryId}, #{timeId},#{keyword}, #{hit})
+		insert into ${siteId}_hit_keyword 
+		(categoryId, timeId, keyword, hit) 
+		(select #{categoryId} as categoryId, #{timeId} as timeId,#{keyword} as keyword, #{hit} as hit
+		from ${siteId}_hit_keyword where categoryId=#{categoryId} and timeId=#{timeId} and keyword=#{keyword})
 	</insert>
-	
 	
 	<!-- 아래 메소드는 아직 미사용. -->
 	

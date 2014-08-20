@@ -170,7 +170,8 @@ public class SearchRankController extends AbstractController {
 			@RequestParam String timeText,
 			@RequestParam(required = false) String timeText2,
 			@RequestParam(required = false, defaultValue="ALL") String keywordType,
-			@RequestParam(required = false) Boolean forView) throws Exception {
+			@RequestParam(required = false) Boolean forView, 
+			@RequestParam(required = false, defaultValue="0") Integer maxLength) throws Exception {
 		
 		int rankDiffOver = 0;
 		String rankDiffType = null;
@@ -274,7 +275,13 @@ public class SearchRankController extends AbstractController {
 				.append("count changes").append(delimiter)
 				.append("\n");
 			
-			for (int i = 0; i < list.size(); i++) {
+			int size = list.size();
+			
+			if (maxLength != null && maxLength > 0) {
+				size = maxLength;
+			}
+			
+			for (int i = 0; i < size; i++) {
 				RankKeywordVO entry = list.get(i);
 				
 				String keywordStr = StringEscapeUtils.escapeCsv(entry.getKeyword());

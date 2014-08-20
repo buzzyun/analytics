@@ -122,7 +122,7 @@
 	<select id="getCalcHitAndTime" parameterType="map" resultType="map">
 		select 
 		sum(hit) as hit, 
-		round(sum(avgTime * hit) / sum(hit)) as avgTime, 
+		case when sum(hit) = 0 then 0 else ceil(sum(avgTime * hit) / sum(hit)) end as avgTime, 
 		max(maxTime) as maxTime 
 		from ${siteId}_hit 
 		where

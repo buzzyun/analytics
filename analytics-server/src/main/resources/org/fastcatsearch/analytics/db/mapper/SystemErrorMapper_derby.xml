@@ -6,9 +6,10 @@
 
 	<update id="createTable" parameterType="map">
 		create table SystemError (
-			id int not null primary key,
+			id int not null generated always as identity (start with 1, increment by 1),
 			time timestamp,
-			errorMessage varchar(3000)
+			errorMessage varchar(3000),
+			primary key (id)
 		) ${option}
 	</update>
 	

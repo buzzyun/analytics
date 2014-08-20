@@ -6,9 +6,10 @@
 
 	<update id="createTable" parameterType="map">
 		create table ${siteId}_relate_keyword_value (
-			id int not null primary key,
+			id int not null generated always as identity (start with 1, increment by 1),
 			keyId int not null,
-			value varchar(64)
+			value varchar(64),
+			primary key(id)
 		) ${option}
 	</update>
 	
@@ -27,10 +28,15 @@
 	</select>
 	
 	<insert id="putEntry" parameterType="map">
-		insert ignore into ${siteId}_relate_keyword_value (keyId, value) 
-		select * from (select #{keyId},#{value} ) a where 
-		(select count(*) from ${siteId}_relate_keyword_value 
-			where keyId=#{keyId} and value=#{value})=0 limit 1
+		insert into ${siteId}_relate_keyword_value (keyId, value) 
+		select keyId, value from (
+		select row_number() over() as r, keyId, value from (
+			select #{keyId} as keyId,#{value} as value ) a where (
+				select count(*) from ${siteId}_relate_keyword_value 
+				where keyId=#{keyId} and value=#{value}
+				
+			)=0 
+		) a where r = 1
 	</insert>
 	
 	<delete id="deleteValues" parameterType="map">

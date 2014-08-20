@@ -67,9 +67,9 @@
 	</delete>
 	
 	<insert id="putEntry" parameterType="map" useGeneratedKeys="true" >
-		insert ignore into ${siteId}_click_hit_keyword 
-		(timeId, keyword, clickType, hit) values (#{timeId}, #{keyword}, #{clickType}, #{hit})
+		insert into ${siteId}_click_hit_keyword 
+		(timeId, keyword, clickType, hit) 
+		(select #{timeId} as timeId, #{keyword} as keyword, #{clickType} as clickType, #{hit} as hit
+		from ${siteId}_click_hit_keyword where timeId=#{timeId} and keyword=#{keyword} and clickType=#{clickType} having count(*)=0)
 	</insert>
-
-
 </mapper>

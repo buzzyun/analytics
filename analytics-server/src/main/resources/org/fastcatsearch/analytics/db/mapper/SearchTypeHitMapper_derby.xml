@@ -73,7 +73,8 @@
 	</select>
 	
 	<select id="getEntryListGroupByType" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.SearchTypeHitVO">
-		select categoryId, timeId, typeId, dtype, sum(hit) as hit
+		select max(categoryId) as categoryId, max(timeId) as timeId, 
+		max(typeId) as typeId, max(dtype) as dtype, sum(hit) as hit
 		from ${siteId}_type_hit 
 		<where>
 			categoryId=#{categoryId}
@@ -88,7 +89,7 @@
 	</select>
 	
 	<select id="getTypeCountListBetween" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.SearchTypeHitVO">
-		select dtype, sum(hit) as hit from ${siteId}_type_hit 
+		select max(dtype) as dtype, sum(hit) as hit from ${siteId}_type_hit 
 		<where>
 			categoryId=#{categoryId}
 			<if test="from != null and from != ''">

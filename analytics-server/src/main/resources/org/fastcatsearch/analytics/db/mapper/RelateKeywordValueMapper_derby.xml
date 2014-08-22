@@ -18,9 +18,10 @@
 	</update>
 	
 	<select id="validateTable" parameterType="map" resultType="map">
-		select id, keyId, value
+		select id, keyId, value from (
+		select row_number() over() as r, id, keyId, value
 		from ${siteId}_relate_keyword_value
-		limit 1;
+		) a where r = 1
 	</select>
 	
 	<select id="valueList" parameterType="int" resultType="int">

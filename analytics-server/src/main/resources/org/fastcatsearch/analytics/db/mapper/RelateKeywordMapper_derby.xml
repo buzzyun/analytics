@@ -18,9 +18,10 @@
 	</update>
 	
 	<select id="validateTable" parameterType="map" resultType="map">
-		select id, keyword, updateTime
-		from ${siteId}_relate_keyword
-		limit 1
+		select id, keyword, updateTime from (
+		select row_number() over() as r, id, keyword, updateTime
+		from ${siteId}_relate_keyword 
+		) a where r = 1
 	</select>
 
 	<update id="dropTable" parameterType="map">
@@ -38,13 +39,20 @@
 	</select>
 	
 	<select id="getEntryList" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.RelateKeywordVO">
-		select a.id, a.keyword, 
-		(select max(b.value) FROM ${siteId}_relate_keyword_value b 
+		select id, keyword, value, updateTime from (
+		select 
+		row_number() over() as r, a.* from (
+		select 
+		a.id, a.keyword, 
+		(select 
+		max(b.value) FROM ${siteId}_relate_keyword_value b 
 		where a.id = b.keyid group by b.keyid) value,
 		a.updateTime
 		from ${siteId}_relate_keyword a 
+		) a 
+		) a
 		<if test="end > 0">
-		limit #{start}, #{end}
+		where r &gt;= #{start} and r &lt; ( ${start} + #{end} )
 		</if>
 	</select>
 	
@@ -57,30 +65,36 @@
 		where a.id=#{id}
 	</select>
 	<select id="getEntryListByWhereCondition" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.RelateKeywordVO">
-		select a.id, a.keyword, 
+		select id, keyword from (
+		select 
+		row_number() over() as r, 
+		a.id, a.keyword, 
 		(select max(b.value) FROM ${siteId}_relate_keyword_value b 
 		where a.id = b.keyid group by b.keyid) value,
 		a.updateTime
-		from ${siteId}_relate_keyword a
+		from ${siteId}_relate_keyword a 
+		) a where
+		( r &gt;= #{start} and r &lt; ${start} + ${end} )
 		<if test="whereCondition != ''">
-		where ${whereCondition}
+		and ${whereCondition}
 		</if>
-		limit #{start}, #{end}
 	</select>
 	
 	<select id="getEntryListByKeyword" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.RelateKeywordVO">
+		select * from (
 		select a.id, a.keyword, 
 		(select max(b.value) FROM ${siteId}_relate_keyword_value b 
 		where a.id = b.keyid group by b.keyid) value,
 		a.updateTime
-		from ${siteId}_relate_keyword a
+		from ${siteId}_relate_keyword a 
+		) a where
+		( r &gt;= #{start} and r &lt; ${start} + ${end} )
 		<if test="exactMatch == true">
-		where (a.keyword=#{keyword} or b.value=#{keyword})
+		and (a.keyword=#{keyword} or b.value=#{keyword})
 		</if>
 		<if test="exactMatch == false">
-		where (a.keyword like concat('%',#{keyword},'%') or concat('%',b.value=#{keyword},'%'))
+		and (a.keyword like concat('%',#{keyword},'%') or concat('%',b.value=#{keyword},'%'))
 		</if>
-		limit #{start}, #{end}
 	</select>
 	
 	<select id="getCountByWhereCondition" parameterType="map" resultType="int">

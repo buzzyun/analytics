@@ -85,20 +85,22 @@
 	
 	
 	<select id="getMinEntry" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.SearchHitVO">
-		select * from ${siteId}_hit 
+		select categoryId, timeId, hit, avgTime, maxTime from (
+		select row_number() over() as r, * from ${siteId}_hit 
 		where 
 		categoryId=#{categoryId} 
 		and timeId=(select min(timeId) 
 		from ${siteId}_hit where timeId like '${dFilter}%') 
-		limit 1
+		) a where r = 1
 	</select>
 	
 	<select id="getMaxEntry" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.SearchHitVO">
-		select * from ${siteId}_hit 
+		select categoryId, timeId, hit, avgTime, maxTime  from (
+		select row_number() over() as r, * from ${siteId}_hit 
 		where 
 		categoryId=#{categoryId} 
 		and timeId=(select max(timeId) from ${siteId}_hit where timeId like '${dFilter}%') 
-		limit 1
+		) a where r = 1
 	</select>
 	
 	<select id="getCountBetween" parameterType="map" resultType="int">

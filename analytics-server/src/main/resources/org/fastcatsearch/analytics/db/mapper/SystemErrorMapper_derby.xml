@@ -18,9 +18,10 @@
 	</update>
 	
 	<select id="validateTable" parameterType="map" resultType="map">
-		select id, time, errorMessage
+		select time, errorMessage from (
+		select row_number() over() as r, id, time, errorMessage
 		from SystemError
-		limit 1
+		) a where r = 1
 	</select>
 
 	<update id="dropTable" parameterType="map">
@@ -29,9 +30,10 @@
 	
 	<select id="getEntryList" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.SystemErrorVO">
 		<if test="start &gt;= 0 and len &gt;= 0">
-			select * from SystemError 
+			select time, errorMessage from (
+			select row_number() over() as r, * from SystemError 
 			order by time desc
-			limit #{start}, #{len}
+			) a where r &gt;= #{start} and r &lt; #{start} + #{len}
 		</if>
 	</select>
 

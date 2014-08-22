@@ -23,9 +23,10 @@
 	
 	
 	<select id="validateTable" parameterType="map" resultType="map">
-		select id, name, userId, password, sms
+		select id, name, userId, password, sms from (
+		select row_number() over() as r, id, name, userId, password, sms
 		from UserAccount 
-		limit 1
+		) where r = 1
 	</select>
 
 	<update id="dropTable" parameterType="map">

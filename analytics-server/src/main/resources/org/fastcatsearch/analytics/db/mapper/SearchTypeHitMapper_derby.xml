@@ -21,9 +21,10 @@
 	</update>
 	
 	<select id="validateTable" parameterType="map" resultType="map">
-		select categoryId, timeId, typeId, dtype, hit
+		select categoryId, timeId, typeId, dtype, hit from (
+		select row_number() over() as r, categoryId, timeId, typeId, dtype, hit
 		from ${siteId}_type_hit
-		limit 1
+		) a where r = 1
 	</select>
 
 	<update id="dropTable" parameterType="map">

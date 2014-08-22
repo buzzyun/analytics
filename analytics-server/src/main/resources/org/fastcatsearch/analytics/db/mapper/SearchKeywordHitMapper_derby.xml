@@ -97,7 +97,8 @@
 	
 	
 	<select id="getMinEntry" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.SearchHitVO">
-		select * from ${siteId}_hit_keyword 
+		select categoryId, timeId, keyword, hit from (
+		select row_number() over() as r, * from ${siteId}_hit_keyword 
 		where
 		categoryId=#{categoryId} 
 		and timeId=(
@@ -106,19 +107,18 @@
 			<if test="keyword != null and keyword != ''">
 			and keyword=#{keyword}
 			</if>
-		) 
-		limit 1
+		))a where r = 1
 	</select>
 	
 	<select id="getMaxEntry" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.SearchHitVO">
-		select * from ${siteId}_hit_keyword where 
+		select categoryId, timeId, keyword, hit from (
+		select row_number() over() as r, * from ${siteId}_hit_keyword where 
 		timeId=(
 			select max(timeId) from ${siteId}_hit_keyword where timeId like '${dFilter}%'
 			<if test="keyword != null and keyword != ''">
 			and keyword=#{keyword}
 			</if>
-		) 
-		limit 1
+		)) a where r = 1
 	</select>
 	
 	<select id="getSumBetween" parameterType="map" resultType="int">

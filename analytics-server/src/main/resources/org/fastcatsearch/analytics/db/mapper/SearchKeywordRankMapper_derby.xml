@@ -23,9 +23,10 @@
 	</update>
 	
 	<select id="validateTable" parameterType="map" resultType="map">
-		select categoryId, timeId, rank, keyword, count, countDiff, rankDiffType, rankDiff
+		select categoryId, timeId, rank, keyword, count, countDiff, rankDiffType, rankDiff from (
+		select row_number() over() as r, categoryId, timeId, rank, keyword, count, countDiff, rankDiffType, rankDiff
 		from ${siteId}_rank_keyword
-		limit 1
+		) a where r = 1
 	</select>
 
 	<update id="dropTable" parameterType="map">
@@ -37,8 +38,9 @@
 	</delete>
 	
 	<select id="getEntryList" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.RankKeywordVO">
-		select *
-		from ${siteId}_rank_keyword
+		select categoryId, timeId, rank, keyword, count, countDiff, rankDiffType, rankDiff from (
+		select row_number() over() as r, a.*
+		from ${siteId}_rank_keyword a
 		where categoryId = #{categoryId}
 		and timeId = #{timeId}
 		<if test="rankDiffType != null">
@@ -49,7 +51,7 @@
 		</if>
 		order by rank asc
 		<if test="start >= 0 and length > 0">
-		limit #{start}, #{length}
+		) a where r &gt;= #{start} and r &lt; ${start} + ${length}
 		</if>
 	</select>
 	

@@ -240,7 +240,7 @@ public class AnalyticsDBService extends AbstractDBService {
 			
 			if(userAccountMapper.getCount() == 0) {
 				try{
-					userAccountMapper.putEntry(new UserAccountVO("Administrator", "admin", "1111", "", ""));
+					userAccountMapper.putEntry(new UserAccountVO("Administrator", "admin", "1111", "", "", UserAccountVO.UserLevel.operator.toString()));
 				} finally {
 					if (mapperSession != null) {
 						mapperSession.closeSession();

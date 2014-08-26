@@ -13,6 +13,7 @@
 			password varchar(200),
 			email varchar(60),
 			sms varchar(60),
+			userLevel varchar(10),
 			primary key (id)
 		) ${option}
 	</update>
@@ -23,10 +24,11 @@
 	
 	
 	<select id="validateTable" parameterType="map" resultType="map">
-		select id, name, userId, password, sms from (
-		select row_number() over() as r, id, name, userId, password, sms
+		select id, name, userId, password, email, sms, userLevel from (
+		select row_number() over() as r, 
+		id, name, userId, password, email, sms, userLevel 
 		from UserAccount 
-		) where r = 1
+		) a where r = 1
 	</select>
 
 	<update id="dropTable" parameterType="map">
@@ -44,7 +46,7 @@
 	</select>
 
 	<select id="getEntryByUserIdAndPassword" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.UserAccountVO">
-		select * 
+		select *
 		from UserAccount where userId = #{userId} and password = #{password}
 	</select>
 
@@ -64,16 +66,16 @@
 
 	<insert id="putEntry" parameterType="org.fastcatsearch.analytics.db.vo.UserAccountVO" useGeneratedKeys="true" keyProperty="id">
 		insert into UserAccount ( 
-		name, userId, password, email, sms
+		name, userId, password, email, sms, userLevel
 		)
 		values (
-		#{name}, #{userId}, #{password}, #{email}, #{sms}
+		#{name}, #{userId}, #{password}, #{email}, #{sms}, #{userLevel}
 		)
 	</insert>
 	
 	<update id="updateEntry" parameterType="org.fastcatsearch.analytics.db.vo.UserAccountVO">
 		update UserAccount 
-		set name=#{name}, password=#{password}, email=#{email}, sms=#{sms}
+		set name=#{name}, password=#{password}, email=#{email}, sms=#{sms}, userLevel=#{userLevel}
 		where id=#{id}
 	</update>
 	

@@ -37,12 +37,22 @@ function showUpdateUserModal(id){
 			var userId = response["userId"];
 			var email = response["email"];
 			var sms = response["sms"];
+			var userLevel = response["userLevel"];
 			console.log("response>", response);
  			$("div#userEdit input[name|=name]").val(userName);
  			$("div#userEdit input[name|=id]").val(id);
  			$("div#userEdit input[name|=userId]").val(userId);
  			$("div#userEdit input[name|=email]").val(email);
  			$("div#userEdit input[name|=sms]").val(sms);
+ 			var userLevelObj = $("div#userEdit input[name|=userLevel]");
+ 			
+ 			for (var inx=0; inx < userLevelObj.length; inx++ ) {
+ 				if ( userLevelObj[inx].value == userLevel ) {
+ 					userLevelObj[inx].checked = true;
+ 					break;
+ 				}
+ 			}
+ 			
 			$("#userEdit").modal({show: true, backdrop: 'static'});
 		}, fail:function(response){
  			noty({text: "Can't submit data error : ["+response+"] error", layout:"topRight", timeout: 5000});
@@ -63,6 +73,12 @@ function update(formId, mode) {
 	}
 	form = form[0];
 	
+	var userLevel = form.userLevel[0].value;
+	
+	if(form.userLevel[1].checked) {
+		userLevel = form.userLevel[1].value;
+	}
+	
 	if(valid) {
 		$.ajax({
 			url:"update-user.html",
@@ -74,6 +90,7 @@ function update(formId, mode) {
 				,userId:form.userId.value
 				,email:form.email.value
 				,sms:form.sms.value
+				,userLevel:userLevel
 				,password:form.password.value
 			}, dataType:"json",
 			success:function(response) {
@@ -136,6 +153,7 @@ function update(formId, mode) {
 													<th>User Id</th>
 													<th>Email</th>
 													<th>Sms</th>
+													<th>Admin</th>
 													<th></th>
 												</tr>
 											</thead>	
@@ -150,13 +168,14 @@ function update(formId, mode) {
 												String userName = vo.name;
 												String email = vo.email;
 												String sms = vo.sms;
-												
+												String userLevel = vo.userLevel;
 											%>
 												<tr>
 													<td><strong><%=userName %></strong></td>
 													<td><%=userId %></td>
 													<td><%=email %></td>
 													<td><%=sms %></td>
+													<td><%=userLevel %></td>
 													<td><a href="javascript:showUpdateUserModal('<%=id%>')">Edit</a></td>
 												</tr>
 											<%
@@ -222,6 +241,13 @@ function update(formId, mode) {
 								<input type="text" class="form-control number" id="sms" name="sms" placeholder="SMS">
 							</div>
 						</div>
+						<div class="form-group">
+							<label for="sms" class="col-sm-3 control-label">User Level</label>
+							<div class="col-sm-9">
+								<input type="radio" class="col-sm-1 form-control" id="userLevel" name="userLevel" value="user"/> <span class="col-sm-3">User</span>
+								<input type="radio" class="col-sm-1 form-control" id="userLevel" name="userLevel" value="operator"/> <span class="col-sm-3">Operator</span>
+							</div>
+						</div>
 					</form>
 				</div>
 				<div class="modal-footer">
@@ -267,6 +293,13 @@ function update(formId, mode) {
 							<label for="sms" class="col-sm-3 control-label">SMS</label>
 							<div class="col-sm-9">
 								<input type="text" class="form-control number" id="sms" name="sms" placeholder="SMS">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="sms" class="col-sm-3 control-label">Is Admin</label>
+							<div class="col-sm-9">
+								<input type="radio" class="col-sm-1 form-control" id="userLevel" name="userLevel" value="user"/> <span class="col-sm-3">User</span>
+								<input type="radio" class="col-sm-1 form-control" id="userLevel" name="userLevel" value="operator"/> <span class="col-sm-3">Operator</span>
 							</div>
 						</div>
 						<div class="form-group">

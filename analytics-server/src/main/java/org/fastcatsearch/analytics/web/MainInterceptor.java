@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import org.fastcatsearch.analytics.analysis.StatisticsService;
 import org.fastcatsearch.analytics.analysis.config.SiteListSetting;
 import org.fastcatsearch.analytics.analysis.config.SiteListSetting.SiteSetting;
+import org.fastcatsearch.analytics.db.vo.UserAccountVO;
 import org.fastcatsearch.analytics.service.ServiceManager;
 import org.fastcatsearch.analytics.web.controller.MainController;
 import org.slf4j.Logger;
@@ -30,7 +31,7 @@ public class MainInterceptor extends HandlerInterceptorAdapter {
 
 		HttpSession session = request.getSession();
 		
-		if(session.getAttribute(MainController.USER_ID) == null) {
+		if(session.getAttribute(UserAccountVO.USER_ID) == null) {
 			checkLoginRedirect(request, response);
 			return false;
 		}

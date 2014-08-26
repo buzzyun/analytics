@@ -1,6 +1,6 @@
 package org.fastcatsearch.analytics.web.controller;
 
-import java.io.IOException;
+import static org.fastcatsearch.analytics.db.vo.UserAccountVO.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -18,9 +18,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class MainController extends AbstractController {
-
-	public static final String USER_ID = "_USERID";
-	public static final String USER_NAME = "_USERNAME";
 
 	@RequestMapping("/index")
 	public ModelAndView index(HttpSession session) throws Exception {
@@ -53,6 +50,7 @@ public class MainController extends AbstractController {
 		try{
 			UserAccountMapper mapper = mapperSession.getMapper();
 			UserAccountVO account = mapper.getEntryByUserId(userId);
+			
 			if (account != null && account.isEqualsEncryptedPassword(password)) {
 				// 로그인이 올바를 경우 메인 화면으로 이동한다.
 				ModelAndView mav = new ModelAndView();
@@ -62,10 +60,11 @@ public class MainController extends AbstractController {
 					// 로그인되었다면 바로 start.html로 간다.
 					mav.setViewName("redirect:main/start.html");
 				}
-	
+				
 				// session에 로그인 정보를 담는다.
 				session.setAttribute(USER_ID, userId);
 				session.setAttribute(USER_NAME, account.name);
+				session.setAttribute(USER_LEVEL, account.userLevel);
 	
 				return mav;
 			}
@@ -124,9 +123,13 @@ public class MainController extends AbstractController {
 	}
 
 	@RequestMapping("/main/profile-update")
-	public ModelAndView updateProfile(HttpSession session, @RequestParam String id, @RequestParam String name, @RequestParam(required = false) String email, @RequestParam(required = false) String sms,
-			@RequestParam(required = false) String password, @RequestParam(required = false) String newPassword, @RequestParam(required = false) String reqPassword)
-			throws Exception {
+	public ModelAndView updateProfile(HttpSession session,
+			@RequestParam String id, @RequestParam String name,
+			@RequestParam(required = false) String email,
+			@RequestParam(required = false) String sms,
+			@RequestParam(required = false) String password,
+			@RequestParam(required = false) String newPassword,
+			@RequestParam(required = false) String reqPassword) throws Exception {
 		String userId = (String) session.getAttribute(USER_ID);
 		AnalyticsDBService analyticsDBService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
 		MapperSession<UserAccountMapper> mapperSession = null;
@@ -135,7 +138,6 @@ public class MainController extends AbstractController {
 			UserAccountMapper mapper = mapperSession.getMapper();
 			UserAccountVO account = mapper.getEntryByUserId(userId);
 			if(account != null){
-				
 				account.name = name;
 				account.email = email;
 				account.sms = sms;
@@ -146,7 +148,6 @@ public class MainController extends AbstractController {
 
 				//한번더 디비에서 가져온다.
 				account = mapper.getEntryByUserId(userId);
-				
 			}
 			ModelAndView mav = new ModelAndView();
 			mav.setViewName("redirect:profile.html");
@@ -166,6 +167,5 @@ public class MainController extends AbstractController {
 		mav.addObject("content", content);
 		mav.setViewName("text");
 		return mav;
-
 	}
 }

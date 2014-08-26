@@ -68,6 +68,7 @@ public class AccountController extends AbstractController {
 				.key("userId").value(entry.userId)
 				.key("email").value(entry.email)
 				.key("sms").value(entry.sms)
+				.key("userLevel").value(entry.userLevel)
 			.endObject();
 			
 			responseWriter.done();
@@ -93,6 +94,7 @@ public class AccountController extends AbstractController {
 			, @RequestParam("userId") String userId
 			, @RequestParam("email") String email
 			, @RequestParam("sms") String sms
+			, @RequestParam("userLevel") String userLevel
 			, @RequestParam("password") String password ) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("text");
@@ -140,7 +142,7 @@ public class AccountController extends AbstractController {
 				
 				entry.email = email;
 				entry.sms = sms;
-				
+				entry.userLevel = userLevel;
 				
 				if("update".equals(updateMode)) {
 					mapper.updateEntry(entry);

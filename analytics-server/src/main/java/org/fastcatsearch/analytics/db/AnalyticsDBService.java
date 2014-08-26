@@ -204,7 +204,6 @@ public class AnalyticsDBService extends AbstractDBService {
 		List<SiteSetting> siteCategoryConfig = config.getSiteList();
 
 		for (Class<?> mapperDAO : mapperList) {
-//			if(mapperDAO.isAssignableFrom(AnalyticsMapper.class)){
 			if(AnalyticsMapper.class.isAssignableFrom(mapperDAO)){
 				Class<? extends AnalyticsMapper> clazz = (Class<? extends AnalyticsMapper>) mapperDAO;
 				logger.debug("class : {}", clazz.getSimpleName());
@@ -229,7 +228,6 @@ public class AnalyticsDBService extends AbstractDBService {
 						mapperSession.closeSession();
 					}
 				}
-				
 			}
 		}
 		

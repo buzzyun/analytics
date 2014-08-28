@@ -315,7 +315,7 @@ function update(formId, mode) {
 						<div class="form-group">
 							<label for="password" class="col-sm-3 control-label">Password</label>
 							<div class="col-sm-4">
-								<input type="password" class="form-control" id="password2" name="password" placeholder="Leave empty for no change" minlength="4">
+								<input type="password" class="form-control" id="password2" name="password" placeholder="Password" minlength="4">
 							</div>
 							<div class="col-sm-4">
 								<input type="password" class="form-control" id="confirmPassword2" name="confirmPassword" placeholder="Confirm Password" equalTo="[id='password2']" minlength="4">

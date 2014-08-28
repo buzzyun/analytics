@@ -153,7 +153,7 @@ function update(formId, mode) {
 													<th>User Id</th>
 													<th>Email</th>
 													<th>Sms</th>
-													<th>Admin</th>
+													<th>User Type</th>
 													<th></th>
 												</tr>
 											</thead>	
@@ -175,7 +175,7 @@ function update(formId, mode) {
 													<td><%=userId %></td>
 													<td><%=email %></td>
 													<td><%=sms %></td>
-													<td><%=userLevel %></td>
+													<td><%=userLevel != null ? userLevel.toUpperCase() : "" %></td>
 													<td><a href="javascript:showUpdateUserModal('<%=id%>')">Edit</a></td>
 												</tr>
 											<%
@@ -243,10 +243,15 @@ function update(formId, mode) {
 						</div>
 						<div class="form-group">
 							<label for="sms" class="col-sm-3 control-label">User Level</label>
-							<div class="col-sm-9">
-								<input type="radio" class="col-sm-1 form-control" id="userLevel" name="userLevel" value="user"/> <span class="col-sm-3">User</span>
-								<input type="radio" class="col-sm-1 form-control" id="userLevel" name="userLevel" value="operator"/> <span class="col-sm-3">Operator</span>
-							</div>
+                            <div class="col-sm-9">
+                                <label class="radio inline-block">
+                                    <input type="radio" class="col-sm-1 form-control" id="userLevel" name="userLevel" value="user" checked/> <span>User</span>
+                                </label>
+                                &nbsp;&nbsp;&nbsp;
+                                <label class="radio inline-block">
+                                    <input type="radio" class="col-sm-1 form-control" id="userLevel" name="userLevel" value="operator"/> <span>Operator</span>
+                                </label>
+                            </div>
 						</div>
 					</form>
 				</div>
@@ -296,21 +301,27 @@ function update(formId, mode) {
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="sms" class="col-sm-3 control-label">Is Admin</label>
+							<label for="sms" class="col-sm-3 control-label">User Type</label>
 							<div class="col-sm-9">
-								<input type="radio" class="col-sm-1 form-control" id="userLevel" name="userLevel" value="user"/> <span class="col-sm-3">User</span>
-								<input type="radio" class="col-sm-1 form-control" id="userLevel" name="userLevel" value="operator"/> <span class="col-sm-3">Operator</span>
+                                <label class="radio inline-block">
+                                    <input type="radio" class="col-sm-1 form-control" id="userLevel" name="userLevel" value="user"/> <span>User</span>
+                                </label>
+                                &nbsp;&nbsp;&nbsp;
+                                <label class="radio inline-block">
+                                    <input type="radio" class="col-sm-1 form-control" id="userLevel" name="userLevel" value="operator"/> <span>Operator</span>
+                                </label>
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="password" class="col-sm-3 control-label">Password</label>
 							<div class="col-sm-4">
-								<input type="password" class="form-control" id="password2" name="password" placeholder="Password" minlength="4">
+								<input type="password" class="form-control" id="password2" name="password" placeholder="Leave empty for no change" minlength="4">
 							</div>
 							<div class="col-sm-4">
 								<input type="password" class="form-control" id="confirmPassword2" name="confirmPassword" placeholder="Confirm Password" equalTo="[id='password2']" minlength="4">
 							</div>
 						</div>
+                        <div class="col-sm-offset-3 help-block">&nbsp;&nbsp;* Leave empty for no password-change</div>
 					</form>
 				</div>
 				<div class="modal-footer">

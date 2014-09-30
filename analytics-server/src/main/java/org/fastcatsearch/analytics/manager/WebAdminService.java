@@ -1,8 +1,5 @@
 package org.fastcatsearch.analytics.manager;
 
-import java.io.File;
-import java.io.FilenameFilter;
-
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.fastcatsearch.analytics.env.Environment;
@@ -11,6 +8,9 @@ import org.fastcatsearch.analytics.exception.AnalyticsException;
 import org.fastcatsearch.analytics.service.AbstractService;
 import org.fastcatsearch.analytics.service.ServiceManager;
 import org.fastcatsearch.analytics.web.controller.AbstractController;
+
+import java.io.File;
+import java.io.FilenameFilter;
 
 public class WebAdminService extends AbstractService {
 
@@ -39,12 +39,15 @@ public class WebAdminService extends AbstractService {
 		File warFile = null;
 		if(files != null && files.length > 0){
 			warFile = files[0];
+            logger.info("Use WepApp war = {}", warFile.getAbsolutePath());
 		}else{
 			//war파일을 찾지못했다면 개발환경 경로를 확인한다.
-			File devWebApp = new File("../analytics-web/src/main/webapp");
+			File devWebApp = new File("analytics-web/src/main/webapp");
+            logger.info("Use WepApp dir = {}", devWebApp.getAbsolutePath());
 			if(devWebApp.exists()){
 				warFile = devWebApp;
 			}else{
+                logger.error("Cannot find webapp");
 				return false;
 			}
 		}

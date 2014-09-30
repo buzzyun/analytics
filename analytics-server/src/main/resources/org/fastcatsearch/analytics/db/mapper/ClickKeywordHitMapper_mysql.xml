@@ -51,12 +51,14 @@
 	</select>
 	
 	<select id="getKeywordTypeClickCount" parameterType="map" resultType="int">
-		select hit from ${siteId}_click_hit_keyword 
+		select case when hit is null then 0 else hit end hit from (
+		select hit, count(1) from ${siteId}_click_hit_keyword 
 		<where>
 			timeId=#{timeId}
 			and keyword = #{keyword}
 			and clickType = #{clickType}
 		</where>
+		) a
 	</select>
 	
 	<delete id="updateClear" parameterType="map">

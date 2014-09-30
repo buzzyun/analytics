@@ -517,17 +517,11 @@ logger.info("timeId:{}", timeId);
 				
 				Map<String, String> typeCountMap = new HashMap<String, String>();
 				for(String[] clickType : clickTypeList){
-					try {
-						logger.debug("clickKeywordHitMapper:{}", clickKeywordHitMapper);
-						logger.debug("siteId:{} / timeId:{} / keyword:{} / clickType:{}", siteId, timeId, keyword, clickType);
-						int keywordClickTypeCount = clickKeywordHitMapper.getKeywordTypeClickCount(siteId, timeId, keyword, clickType[0]);
-						typeCountMap.put(clickType[0], String.format("%,d", keywordClickTypeCount));
-						writer.append(delimiter).append(String.valueOf(keywordClickTypeCount));
-					} catch (NullPointerException e) {
-						logger.error("error:{}",e.getMessage());
-						typeCountMap.put(clickType[0], String.format("%,d", 0));
-						writer.append(delimiter).append(String.valueOf(0));
-					}
+					logger.debug("clickKeywordHitMapper:{}", clickKeywordHitMapper);
+					logger.debug("siteId:{} / timeId:{} / keyword:{} / clickType:{}", siteId, timeId, keyword, clickType);
+					int keywordClickTypeCount = clickKeywordHitMapper.getKeywordTypeClickCount(siteId, timeId, keyword, clickType[0]);
+					typeCountMap.put(clickType[0], String.format("%,d", keywordClickTypeCount));
+					writer.append(delimiter).append(String.valueOf(keywordClickTypeCount));
 				}
 				typeCountMapList.add(typeCountMap);
 				writer.append("\n");

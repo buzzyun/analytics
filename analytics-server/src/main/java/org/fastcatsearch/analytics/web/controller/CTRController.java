@@ -232,7 +232,7 @@ public class CTRController extends AbstractController {
 				String timeId = StatisticsUtils.getTimeId(startTime, timeTypeCode);
 				Integer hit = clickMapper.getHit(siteId, timeId);
 				clickHitList.add(hit);
-				logger.trace("timeId:{}", timeId);
+				//logger.trace("timeId:{}", timeId);
 				startTime.add(timeTypeCode, 1);
 			}
 			
@@ -369,8 +369,8 @@ public class CTRController extends AbstractController {
 				Map<String, String> typeCountMap = new HashMap<String, String>();
 				for(String[] clickType : clickTypeList){
 					try {
-						logger.trace("clickKeywordHitMapper:{}", clickKeywordHitMapper);
-						logger.trace("siteId:{} / timeId:{} / keyword:{} / clickType:{}", siteId, timeId, keyword, clickType);
+						//logger.trace("clickKeywordHitMapper:{}", clickKeywordHitMapper);
+						//logger.trace("siteId:{} / timeId:{} / keyword:{} / clickType:{}", siteId, timeId, keyword, clickType);
 						int keywordClickTypeCount = clickKeywordHitMapper.getKeywordTypeClickCount(siteId, timeId, keyword, clickType[0]);
 						typeCountMap.put(clickType[0], String.format("%,d", keywordClickTypeCount));
 					} catch (NullPointerException e) {
@@ -517,8 +517,8 @@ public class CTRController extends AbstractController {
 				
 				Map<String, String> typeCountMap = new HashMap<String, String>();
 				for(String[] clickType : clickTypeList){
-					logger.trace("clickKeywordHitMapper:{}", clickKeywordHitMapper);
-					logger.trace("siteId:{} / timeId:{} / keyword:{} / clickType:{}", siteId, timeId, keyword, clickType);
+					//logger.trace("clickKeywordHitMapper:{}", clickKeywordHitMapper);
+					//logger.trace("siteId:{} / timeId:{} / keyword:{} / clickType:{}", siteId, timeId, keyword, clickType);
 					int keywordClickTypeCount = clickKeywordHitMapper.getKeywordTypeClickCount(siteId, timeId, keyword, clickType[0]);
 					typeCountMap.put(clickType[0], String.format("%,d", keywordClickTypeCount));
 					writer.append(delimiter).append(String.valueOf(keywordClickTypeCount));

@@ -14,10 +14,12 @@ import org.fastcatsearch.analytics.analysis.WeightedKeyCountRunEntryReader;
 public class WeightedSortedRunFileMerger extends SortedRunFileMerger {
 
 	private float[] weightList;
+	private boolean ignoreZero;
 
-	public WeightedSortedRunFileMerger(File[] runFileList, float[] weightList, String encoding, AggregationResultWriter writer, EntryParser<KeyCountRunEntry> entryParser) {
+	public WeightedSortedRunFileMerger(File[] runFileList, float[] weightList, String encoding, boolean ignoreZero, AggregationResultWriter writer, EntryParser<KeyCountRunEntry> entryParser) {
 		super(runFileList, encoding, writer, entryParser);
 		this.weightList = weightList;
+		this.ignoreZero = ignoreZero;
 	}
 
 	@Override
@@ -30,7 +32,7 @@ public class WeightedSortedRunFileMerger extends SortedRunFileMerger {
 				if (weightList != null) {
 					weight = weightList[i];
 				}
-				WeightedKeyCountRunEntryReader r = new WeightedKeyCountRunEntryReader(f, encoding, weight, entryParser);
+				WeightedKeyCountRunEntryReader r = new WeightedKeyCountRunEntryReader(f, encoding, weight, ignoreZero, entryParser);
 				r.next();
 				list.add(r);
 			}

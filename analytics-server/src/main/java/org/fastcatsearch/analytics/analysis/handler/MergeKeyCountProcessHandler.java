@@ -16,17 +16,19 @@ public class MergeKeyCountProcessHandler extends ProcessHandler {
 	private EntryParser<KeyCountRunEntry> entryParser;
 	private File[] inFileList;
 	private float[] weightList;
+	private boolean ignoreZero;
 	
-	public MergeKeyCountProcessHandler(File[] inFileList, File resultDir, String outFileName, String encoding, EntryParser<KeyCountRunEntry> entryParser) {
-		this(inFileList, null, resultDir, outFileName, encoding, entryParser);
+	public MergeKeyCountProcessHandler(File[] inFileList, File resultDir, String outFileName, String encoding, boolean ignoreZero, EntryParser<KeyCountRunEntry> entryParser) {
+		this(inFileList, null, resultDir, outFileName, encoding, ignoreZero, entryParser);
 	}
-	public MergeKeyCountProcessHandler(File[] inFileList, float[] weightList, File resultDir, String outFileName, String encoding, EntryParser<KeyCountRunEntry> entryParser) {
+	public MergeKeyCountProcessHandler(File[] inFileList, float[] weightList, File resultDir, String outFileName, String encoding, boolean ignoreZero, EntryParser<KeyCountRunEntry> entryParser) {
 		this.resultDir = resultDir;
 		this.outFileName = outFileName;
 		this.encoding = encoding;
 		this.entryParser = entryParser;
 		this.inFileList = inFileList;
 		this.weightList = weightList;
+		this.ignoreZero = ignoreZero;
 	}
 	
 	@Override
@@ -49,7 +51,7 @@ public class MergeKeyCountProcessHandler extends ProcessHandler {
 			logger.debug("writing key-count file : {}", keyCountFile);
 			
 			writer =new AggregationResultFileWriter(keyCountFile, encoding);
-			merger = new WeightedSortedRunFileMerger(inFileList, weightList, encoding, writer, entryParser);
+			merger = new WeightedSortedRunFileMerger(inFileList, weightList, encoding, ignoreZero, writer, entryParser);
 			merger.merge();
 		} catch (IOException e) {
 			logger.error("", e);

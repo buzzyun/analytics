@@ -60,7 +60,7 @@ public class DumpPopularKeywordHitCalculator extends Calculator<ClickLog> {
 			}
 			
 			KeyCountRunEntryParser parser = new KeyCountRunEntryParser(new int[]{0}, 1 );
-			MergeKeyCountProcessHandler mergeProcessHandler = new MergeKeyCountProcessHandler(clickLogFiles, workingDir, tmpFileName, encoding, parser);
+			MergeKeyCountProcessHandler mergeProcessHandler = new MergeKeyCountProcessHandler(clickLogFiles, workingDir, tmpFileName, encoding, true, parser);
 			mergeProcessHandler.attachProcessTo(categoryProcess);
 			
 			new KeyCountLogSortHandler(workingDir, tmpFileName, fileName, encoding, runKeySize, parser).appendTo(mergeProcessHandler);

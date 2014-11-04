@@ -12,15 +12,18 @@ import org.fastcatsearch.analytics.analysis.util.KeyCountRunEntry;
 public class WeightedKeyCountRunEntryReader extends FileRunEntryReader<KeyCountRunEntry> {
 
 	private float weight;
+	private boolean ignoreZero = false;
 
-	public WeightedKeyCountRunEntryReader(File file, String encoding, float weight, EntryParser<KeyCountRunEntry> entryParser) throws IOException {
+	public WeightedKeyCountRunEntryReader(File file, String encoding, float weight, boolean ignoreZero, EntryParser<KeyCountRunEntry> entryParser) throws IOException {
 		super(file, encoding, entryParser);
 		this.weight = weight;
+		this.ignoreZero = ignoreZero;
 	}
 
-	public WeightedKeyCountRunEntryReader(InputStream is, String encoding, float weight, EntryParser<KeyCountRunEntry> entryParser) throws IOException {
+	public WeightedKeyCountRunEntryReader(InputStream is, String encoding, float weight, boolean ignoreZero, EntryParser<KeyCountRunEntry> entryParser) throws IOException {
 		super(is, encoding, entryParser);
 		this.weight = weight;
+		this.ignoreZero = ignoreZero;
 	}
 
 	@Override
@@ -33,6 +36,9 @@ public class WeightedKeyCountRunEntryReader extends FileRunEntryReader<KeyCountR
 				entry.setCount((int) (entry.getCount() * weight));
 				if (entry == null) {
 					// 파싱실패시 다음 라인확인.
+					continue;
+				}
+				if(ignoreZero && entry.getCount() == 0) {
 					continue;
 				}
 				return true;

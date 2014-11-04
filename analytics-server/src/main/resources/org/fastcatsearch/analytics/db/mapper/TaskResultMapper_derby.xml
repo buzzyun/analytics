@@ -16,7 +16,7 @@
 			scheduled varchar(10),
 			resultStatus varchar(30),
 			taskName varchar(200),
-			detail varchar(3000),
+			detail varchar(32000),
 			primary key (siteId, targetTime, taskId)
 		) ${option}
 	</update>

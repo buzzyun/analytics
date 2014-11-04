@@ -85,13 +85,13 @@ public class WeeklyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		
 		new NullLogHandler<SearchLog>(categoryId).attachLogHandlerTo(categoryProcess);
 		
-		ProcessHandler mergeKeyCount = new MergeKeyCountProcessHandler(keyCountFiles, workingDir, KEY_COUNT_FILENAME, encoding, entryParser).attachProcessTo(categoryProcess);
+		ProcessHandler mergeKeyCount = new MergeKeyCountProcessHandler(keyCountFiles, workingDir, KEY_COUNT_FILENAME, encoding, true, entryParser).attachProcessTo(categoryProcess);
 		
-		mergeKeyCount = new MergeKeyCountProcessHandler(keyEmptyFiles, workingDir, KEY_COUNT_EMPTY_FILENAME, encoding, entryParser).appendTo(mergeKeyCount);
+		mergeKeyCount = new MergeKeyCountProcessHandler(keyEmptyFiles, workingDir, KEY_COUNT_EMPTY_FILENAME, encoding, true, entryParser).appendTo(mergeKeyCount);
 		
 		//서비스타입 기록
 		if("_root".equals(categoryId)) {
-			mergeKeyCount = new MergeKeyCountProcessHandler(serviceCountFiles, workingDir, SERVICE_COUNT_FILENAME, encoding, entryParser).appendTo(mergeKeyCount);
+			mergeKeyCount = new MergeKeyCountProcessHandler(serviceCountFiles, workingDir, SERVICE_COUNT_FILENAME, encoding, true, entryParser).appendTo(mergeKeyCount);
 		}
 		
 		ProcessHandler hitCounter = new KeyCountProcessHandler(siteId,

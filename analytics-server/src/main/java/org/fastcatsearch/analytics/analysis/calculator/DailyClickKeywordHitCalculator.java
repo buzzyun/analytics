@@ -15,6 +15,7 @@ import org.fastcatsearch.analytics.analysis.StatisticsService;
 import org.fastcatsearch.analytics.analysis.StatisticsUtils;
 import org.fastcatsearch.analytics.analysis.config.StatisticsSettings;
 import org.fastcatsearch.analytics.analysis.handler.MergeClickTypeCountProcessHandler;
+import org.fastcatsearch.analytics.analysis.handler.MoveFileHandler;
 import org.fastcatsearch.analytics.analysis.handler.ProcessHandler;
 import org.fastcatsearch.analytics.analysis.handler.UpdateClickKeywordTargetTypeCountHandler;
 import org.fastcatsearch.analytics.analysis.handler.UpdateClickKeywordTypeCountHandler;
@@ -94,8 +95,9 @@ public class DailyClickKeywordHitCalculator extends Calculator<ClickLog> {
 			mergeKeyCount = new MergeClickTypeCountProcessHandler(
 					clickLogFiles, encoding, clickTypeLogAggregator,
 					MergeClickTypeCountProcessHandler.RUN_CASE_CLICK_KEYWORD_TARGET).appendTo(mergeKeyCount);
+			
+			new MoveFileHandler(workingDir, RUN_CLICK_TYPE_FILENAME, CLICK_COUNT_FILENAME).appendTo(mergeKeyCount);
 			//updateClickTypeCountHandler = new UpdateClickKeywordTargetTypeCountHandler(siteId, timeId, file, encoding, true).appendTo(mergeKeyCount);
-			file.delete();
 		}
 		return categoryProcess;
 	}

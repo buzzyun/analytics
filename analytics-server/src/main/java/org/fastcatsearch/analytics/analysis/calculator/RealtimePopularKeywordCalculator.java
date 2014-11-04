@@ -61,7 +61,7 @@ public class RealtimePopularKeywordCalculator extends Calculator<SearchLog> {
 		new RealtimeSearchLogKeyCountHandler(categoryId, storeDir, tmpLogFilename, minimumHitCount, realtimeSearchLogLimit, logValidator, entryParser).attachLogHandlerTo(categoryProcess);
 		
 		/* 2. store/#.log파일들을 모아서 하나의 key-count.log로 저장한다. */
-		ProcessHandler mergeKeyCount = new MergeRealtimeKeyCountProcessHandler(storeDir, workingDir, KEY_COUNT_FILENAME, encoding, realtimeSearchLogLimit, entryParser).attachProcessTo(categoryProcess);
+		ProcessHandler mergeKeyCount = new MergeRealtimeKeyCountProcessHandler(storeDir, workingDir, KEY_COUNT_FILENAME, encoding, true, realtimeSearchLogLimit, entryParser).attachProcessTo(categoryProcess);
 		
 		// key-count가 비어있으면 중지.
 		ProcessHandler checkKeyCountFile = new CheckFileEmptyHandler(new File(workingDir, KEY_COUNT_FILENAME)).appendTo(mergeKeyCount);

@@ -37,7 +37,7 @@ public class NDaysClickKeywordHitCalculator extends Calculator<ClickLog> {
 		CTRSetting ctrSetting = ServiceManager.getInstance().getService(StatisticsService.class).getStatisticsSetting(siteId).getCtrSetting();
 		Integer nDays = ctrSetting.getDumpFileDaySize();
 		String targetFilePath = ctrSetting.getTargetFilePath();
-		logger.trace("targetFilePath:{}", targetFilePath);
+		logger.debug("targetFilePath:{}", targetFilePath);
 		
 		if(nDays == null || nDays <= 0){
 			return categoryProcess;
@@ -85,15 +85,15 @@ public class NDaysClickKeywordHitCalculator extends Calculator<ClickLog> {
 			KeyCountRunEntryParser clickTypeParser = new KeyCountRunEntryParser(new int[]{0, 1}, 3 );
 			
 			File file = new File(workingDir, CLICK_TARGET_FILENAME);
-			MergeKeyCountProcessHandler mergeProcessHandler = new MergeKeyCountProcessHandler(clickLogFiles, weightList, workingDir, CLICK_TARGET_FILENAME, encoding, clickTypeParser);
+			MergeKeyCountProcessHandler mergeProcessHandler = new MergeKeyCountProcessHandler(clickLogFiles, weightList, workingDir, CLICK_TARGET_FILENAME, encoding, true, clickTypeParser);
 			
 			if(targetFilePath != null && targetFilePath.length() > 0) {
-				logger.trace("targetFilePath:{}", targetFilePath);
+				logger.debug("targetFilePath:{}", targetFilePath);
 				
 				if (targetFilePath != null && !"".equals(targetFilePath)) {
 					
 					try {
-						logger.trace("click log copy {} -> {}", file.getAbsolutePath(), targetFilePath);
+						logger.debug("click log copy {} -> {}", file.getAbsolutePath(), targetFilePath);
 						if(file.exists()) {
 							FileUtils.copyFile(file, new File(targetFilePath));
 						}

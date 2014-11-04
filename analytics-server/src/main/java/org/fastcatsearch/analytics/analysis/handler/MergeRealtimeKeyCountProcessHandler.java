@@ -17,14 +17,16 @@ public class MergeRealtimeKeyCountProcessHandler extends ProcessHandler {
 	String outFileName;
 	int fileLimitCount;
 	String encoding;
+	private boolean ignoreZero;
 	KeyCountRunEntryParser entryParser;
 	
-	public MergeRealtimeKeyCountProcessHandler(File baseDir, File resultDir, String outFileName, String encoding, int fileLimitCount, KeyCountRunEntryParser entryParser) {
+	public MergeRealtimeKeyCountProcessHandler(File baseDir, File resultDir, String outFileName, String encoding, boolean ignoreZero, int fileLimitCount, KeyCountRunEntryParser entryParser) {
 		this.baseDir = baseDir;
 		this.resultDir = resultDir;
 		this.outFileName = outFileName;
 		this.fileLimitCount = fileLimitCount;
 		this.encoding = encoding;
+		this.ignoreZero = ignoreZero;
 		this.entryParser = entryParser;
 	}
 
@@ -52,7 +54,7 @@ public class MergeRealtimeKeyCountProcessHandler extends ProcessHandler {
 			}
 			
 			writer = new AggregationResultFileWriter(keyCountFile, encoding);
-			merger = new WeightedSortedRunFileMerger(inFileList, weightList, encoding, writer, entryParser);
+			merger = new WeightedSortedRunFileMerger(inFileList, weightList, encoding, ignoreZero, writer, entryParser);
 			merger.merge();
 		} catch (IOException e) {
 			logger.error("", e);

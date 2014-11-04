@@ -31,9 +31,9 @@
 	<select id="getEntryList" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.SystemErrorVO">
 		<if test="start &gt;= 0 and len &gt;= 0">
 			select time, errorMessage from (
-			select row_number() over() as r, * from SystemError 
+			select row_number() over() as r, a.* from SystemError a
 			order by time desc
-			) a where r &gt;= #{start} and r &lt; #{start} + #{len}
+			) a where r &gt;= #{start} and r &lt; ${start} + ${len}
 		</if>
 	</select>
 

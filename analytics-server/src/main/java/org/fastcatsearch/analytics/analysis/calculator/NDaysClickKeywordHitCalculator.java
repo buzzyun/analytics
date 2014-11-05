@@ -13,6 +13,7 @@ import org.fastcatsearch.analytics.analysis.StatisticsService;
 import org.fastcatsearch.analytics.analysis.StatisticsUtils;
 import org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CTRSetting;
 import org.fastcatsearch.analytics.analysis.handler.MergeKeyCountProcessHandler;
+import org.fastcatsearch.analytics.analysis.handler.MoveFileHandler;
 import org.fastcatsearch.analytics.analysis.log.ClickLog;
 import org.fastcatsearch.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatsearch.analytics.service.ServiceManager;
@@ -87,23 +88,12 @@ public class NDaysClickKeywordHitCalculator extends Calculator<ClickLog> {
 			File file = new File(workingDir, CLICK_TARGET_FILENAME);
 			MergeKeyCountProcessHandler mergeProcessHandler = new MergeKeyCountProcessHandler(clickLogFiles, weightList, workingDir, CLICK_TARGET_FILENAME, encoding, true, clickTypeParser);
 			
-			if(targetFilePath != null && targetFilePath.length() > 0) {
-				logger.debug("targetFilePath:{}", targetFilePath);
-				
-				if (targetFilePath != null && !"".equals(targetFilePath)) {
-					
-					try {
-						logger.debug("click log copy {} -> {}", file.getAbsolutePath(), targetFilePath);
-						if(file.exists()) {
-							FileUtils.copyFile(file, new File(targetFilePath));
-						}
-					} catch (IOException e) {
-						logger.error("", e);
-					};
-				}
-			}
-			
 			mergeProcessHandler.attachProcessTo(categoryProcess);
+			
+			if (targetFilePath != null && !"".equals(targetFilePath)) {
+				File destFile = new File(targetFilePath);
+				new MoveFileHandler(workingDir, CLICK_TARGET_FILENAME, destFile.getParentFile(), destFile.getName()).appendTo(mergeProcessHandler);
+			}
 		}
 		return categoryProcess;
 	}

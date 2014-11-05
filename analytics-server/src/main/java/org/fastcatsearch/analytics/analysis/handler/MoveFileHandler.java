@@ -8,11 +8,20 @@ import org.fastcatsearch.analytics.util.DumpFile;
 public class MoveFileHandler extends ProcessHandler {
 
 	private File baseDir;
+	private File destDir;
 	String srcFileName;
 	String destFileName;
 
 	public MoveFileHandler(File baseDir, String srcFileName, String destFileName) {
 		this.baseDir = baseDir;
+		this.destDir = baseDir;
+		this.srcFileName = srcFileName;
+		this.destFileName = destFileName;
+	}
+	
+	public MoveFileHandler(File baseDir, String srcFileName, File destDir, String destFileName) {
+		this.baseDir = baseDir;
+		this.destDir = destDir;
 		this.srcFileName = srcFileName;
 		this.destFileName = destFileName;
 	}
@@ -20,7 +29,7 @@ public class MoveFileHandler extends ProcessHandler {
 	@Override
 	public Object process(Object parameter) throws Exception {
 		File srcFile = new File(baseDir, srcFileName);
-		File destFile = new File(baseDir, destFileName);
+		File destFile = new File(destDir, destFileName);
 		if (srcFile.exists()) {
 			if (destFile.exists()) {
 				destFile.delete();

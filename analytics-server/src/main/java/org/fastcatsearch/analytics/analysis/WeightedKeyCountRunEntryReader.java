@@ -33,7 +33,7 @@ public class WeightedKeyCountRunEntryReader extends FileRunEntryReader<KeyCountR
 			while ((line = reader.readLine()) != null) {
 
 				entry = entryParser.parse(line); // exception발생시 종료.
-				entry.setCount((int) (entry.getCount() * weight));
+				entry.setCount(Math.round(entry.getCount() * weight));
 				if (entry == null) {
 					// 파싱실패시 다음 라인확인.
 					continue;

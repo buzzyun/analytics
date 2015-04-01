@@ -14,6 +14,9 @@
 	</update>
 	
 	<update id="createIndex" parameterType="map">
+	    <!--
+	    create derby aggregate GROUP_CONCAT for varchar(32672) external name 'org.fastcatsearch.analytics.util.DerbyGroupConcat'
+		-->
 		create index id_${siteId}_relate_keyword on ${siteId}_relate_keyword(id)
 	</update>
 	
@@ -29,13 +32,13 @@
 	</update>
 	
 	<select id="getEntry" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.RelateKeywordVO">
-	select a.keyword,  
+	select id, keyword, value, updateTime from (
 		select a.id, a.keyword, 
-		(select max(b.value) FROM ${siteId}_relate_keyword_value b 
-		where a.id = b.keyid group by b.keyid) value,
+		(select GROUP_CONCAT(b.value) FROM ${siteId}_relate_keyword_value b 
+		where a.id = b.keyid group by b.keyid) as value,
 		a.updateTime
 		from ${siteId}_relate_keyword a 
-		where keyword = #{keyword}
+		where keyword = #{keyword} ) a
 	</select>
 	
 	<select id="getEntryList" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.RelateKeywordVO">
@@ -45,8 +48,8 @@
 		select 
 		a.id, a.keyword, 
 		(select 
-		max(b.value) FROM ${siteId}_relate_keyword_value b 
-		where a.id = b.keyid group by b.keyid) value,
+		GROUP_CONCAT(b.value) FROM ${siteId}_relate_keyword_value b 
+		where a.id = b.keyid group by b.keyid) as value,
 		a.updateTime
 		from ${siteId}_relate_keyword a 
 		) a 
@@ -57,22 +60,25 @@
 	</select>
 	
 	<select id="getEntryById" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.RelateKeywordVO">
+		select id, keyword, value, updateTime from (
 		select a.id, a.keyword, 
-		(select max(b.value) FROM ${siteId}_relate_keyword_value b 
-		where a.id = b.keyid group by b.keyid) value,
+		(select GROUP_CONCAT(b.value) FROM ${siteId}_relate_keyword_value b 
+		where a.id = b.keyid group by b.keyid) as value,
 		a.updateTime
 		from ${siteId}_relate_keyword a
-		where a.id=#{id}
+		where a.id=#{id}) a
 	</select>
 	<select id="getEntryListByWhereCondition" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.RelateKeywordVO">
-		select id, keyword from (
+		select id, keyword, value, updateTime from (
 		select 
-		row_number() over() as r, 
+		row_number() over() as r, a.* from (
+		select 
 		a.id, a.keyword, 
-		(select max(b.value) FROM ${siteId}_relate_keyword_value b 
-		where a.id = b.keyid group by b.keyid) value,
+		(select GROUP_CONCAT(b.value) FROM ${siteId}_relate_keyword_value b 
+		where a.id = b.keyid group by b.keyid) as value,
 		a.updateTime
 		from ${siteId}_relate_keyword a 
+		) a 
 		) a where
 		( r &gt;= #{start} and r &lt; ${start} + ${end} )
 		<if test="whereCondition != ''">
@@ -81,10 +87,10 @@
 	</select>
 	
 	<select id="getEntryListByKeyword" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.RelateKeywordVO">
-		select * from (
+		select id, keyword, value, updateTime from (
 		select a.id, a.keyword, 
-		(select max(b.value) FROM ${siteId}_relate_keyword_value b 
-		where a.id = b.keyid group by b.keyid) value,
+		(select GROUP_CONCAT(b.value) FROM ${siteId}_relate_keyword_value b 
+		where a.id = b.keyid group by b.keyid) as value,
 		a.updateTime
 		from ${siteId}_relate_keyword a 
 		) a where

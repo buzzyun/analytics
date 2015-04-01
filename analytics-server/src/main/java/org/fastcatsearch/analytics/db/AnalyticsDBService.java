@@ -22,6 +22,7 @@ import org.fastcatsearch.analytics.db.mapper.AnalyticsMapper;
 import org.fastcatsearch.analytics.db.mapper.ClickHitMapper;
 import org.fastcatsearch.analytics.db.mapper.ClickKeywordHitMapper;
 import org.fastcatsearch.analytics.db.mapper.ClickKeywordTargetHitMapper;
+import org.fastcatsearch.analytics.db.mapper.DBInitMapper;
 import org.fastcatsearch.analytics.db.mapper.RelateKeywordMapper;
 import org.fastcatsearch.analytics.db.mapper.RelateKeywordValueMapper;
 import org.fastcatsearch.analytics.db.mapper.SearchHitMapper;
@@ -43,7 +44,8 @@ import org.fastcatsearch.analytics.service.ServiceManager;
 public class AnalyticsDBService extends AbstractDBService {
 
 	private static Class<?>[] mapperList = new Class<?>[] { 
-		SearchKeywordHitMapper.class
+		DBInitMapper.class
+		, SearchKeywordHitMapper.class
 		, SearchHitMapper.class
 		, RelateKeywordMapper.class
 		, RelateKeywordValueMapper.class
@@ -204,7 +206,23 @@ public class AnalyticsDBService extends AbstractDBService {
 		List<SiteSetting> siteCategoryConfig = config.getSiteList();
 
 		for (Class<?> mapperDAO : mapperList) {
-			if(AnalyticsMapper.class.isAssignableFrom(mapperDAO)){
+			if(DBInitMapper.class.isAssignableFrom(mapperDAO)) {
+				Class<? extends DBInitMapper> clazz = (Class<? extends DBInitMapper>) mapperDAO;
+				MapperSession<? extends DBInitMapper> mapperSession = (MapperSession<? extends DBInitMapper>) getMapperSession(clazz);
+				try {
+					DBInitMapper mapper = mapperSession.getMapper();
+					if(mapper.test()) {
+						mapper.init();
+					}
+				} catch (Exception e) {
+					logger.error("", e);
+				} finally {
+					if (mapperSession != null) {
+						mapperSession.closeSession();
+					}
+				}
+				
+			} else if(AnalyticsMapper.class.isAssignableFrom(mapperDAO)){
 				Class<? extends AnalyticsMapper> clazz = (Class<? extends AnalyticsMapper>) mapperDAO;
 				logger.debug("class : {}", clazz.getSimpleName());
 				MapperSession<? extends AnalyticsMapper> mapperSession = (MapperSession<? extends AnalyticsMapper>) getMapperSession(clazz);

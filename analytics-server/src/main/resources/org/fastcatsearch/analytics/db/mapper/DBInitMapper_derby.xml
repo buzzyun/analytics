@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.fastcatsearch.analytics.db.mapper.RelateKeywordMapper">
+	<select id="test" resultType="boolean">
+		select CASE WHEN COUNT(*)>0 THEN 'true' ELSE 'false' END  from sys.SYSALIASES where alias='GROUP_CONCAT' and ALIASTYPE='G' and NAMESPACE='G' 
+	</select>
+	<update id="init">
+		create derby aggregate GROUP_CONCAT for varchar(32672) external name 'org.fastcatsearch.analytics.util.DerbyGroupConcat'
+	</update>
+</mapper>

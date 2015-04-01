@@ -32,7 +32,7 @@
 		insert into ${siteId}_relate_keyword_value (keyId, value) 
 		select keyId, value from (
 		select row_number() over() as r, keyId, value from (
-			select #{keyId} as keyId,#{value} as value ) a where (
+			select #{keyId} as keyId,#{value} as value from SYSIBM.SYSDUMMY1) a where (
 				select count(*) from ${siteId}_relate_keyword_value 
 				where keyId=#{keyId} and value=#{value}
 				

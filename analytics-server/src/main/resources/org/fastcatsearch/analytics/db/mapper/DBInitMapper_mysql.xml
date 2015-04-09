@@ -2,11 +2,14 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.fastcatsearch.analytics.db.mapper.RelateKeywordMapper">
-	<select id="test" resultType="boolean">
-		select 'false'
+<mapper namespace="org.fastcatsearch.analytics.db.mapper.DBInitMapper">
+	<select id="validateTable" resultType="boolean">
+		select 'true'
 	</select>
-	<update id="init">
-		set names utf8
+	<update id="createTable">
+		select 'true'
+	</update>
+	<update id="createIndex">
+		select 'true'
 	</update>
 </mapper>

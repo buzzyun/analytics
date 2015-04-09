@@ -204,25 +204,8 @@ public class AnalyticsDBService extends AbstractDBService {
 
 		SiteListSetting config = ServiceManager.getInstance().getService(StatisticsService.class).getSiteListSetting();
 		List<SiteSetting> siteCategoryConfig = config.getSiteList();
-
 		for (Class<?> mapperDAO : mapperList) {
-			if(DBInitMapper.class.isAssignableFrom(mapperDAO)) {
-				Class<? extends DBInitMapper> clazz = (Class<? extends DBInitMapper>) mapperDAO;
-				MapperSession<? extends DBInitMapper> mapperSession = (MapperSession<? extends DBInitMapper>) getMapperSession(clazz);
-				try {
-					DBInitMapper mapper = mapperSession.getMapper();
-					if(mapper.test()) {
-						mapper.init();
-					}
-				} catch (Exception e) {
-					logger.error("", e);
-				} finally {
-					if (mapperSession != null) {
-						mapperSession.closeSession();
-					}
-				}
-				
-			} else if(AnalyticsMapper.class.isAssignableFrom(mapperDAO)){
+			if(AnalyticsMapper.class.isAssignableFrom(mapperDAO)){
 				Class<? extends AnalyticsMapper> clazz = (Class<? extends AnalyticsMapper>) mapperDAO;
 				logger.debug("class : {}", clazz.getSimpleName());
 				MapperSession<? extends AnalyticsMapper> mapperSession = (MapperSession<? extends AnalyticsMapper>) getMapperSession(clazz);

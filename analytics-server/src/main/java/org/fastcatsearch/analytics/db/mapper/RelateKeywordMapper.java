@@ -1,9 +1,9 @@
 package org.fastcatsearch.analytics.db.mapper;
 
-import java.util.List;
-
 import org.apache.ibatis.annotations.Param;
 import org.fastcatsearch.analytics.db.vo.RelateKeywordVO;
+
+import java.util.List;
 
 /*
  * 연관키워드 테이블.
@@ -14,9 +14,9 @@ public interface RelateKeywordMapper extends AnalyticsMapper {
 	
 	public RelateKeywordVO getEntryById(@Param("siteId") String siteId, @Param("id") String id) throws Exception;
 	
-	public List<RelateKeywordVO> getEntryList(@Param("siteId") String siteId, @Param("start")int start, @Param("end")int end) throws Exception;
+	public List<RelateKeywordVO> getEntryList(@Param("siteId") String siteId, @Param("start")int start, @Param("size")int size) throws Exception;
 	
-	public List<RelateKeywordVO> getEntryListByWhereCondition(@Param("siteId") String siteId, @Param("whereCondition") String whereCondition ,@Param("start")int start, @Param("end")int end) throws Exception; 
+	public List<RelateKeywordVO> getEntryListByWhereCondition(@Param("siteId") String siteId, @Param("whereCondition") String whereCondition ,@Param("start")int start, @Param("size")int size) throws Exception;
 	
 	public List<RelateKeywordVO> getEntryListByKeyword(@Param("siteId") String siteId, @Param("exactMatch") boolean exactMatch, @Param("keyword") String keyword ,@Param("start")int start, @Param("end")int end) throws Exception; 
 	

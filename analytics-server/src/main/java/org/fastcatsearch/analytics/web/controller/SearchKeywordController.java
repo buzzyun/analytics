@@ -1,21 +1,5 @@
 package org.fastcatsearch.analytics.web.controller;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.Writer;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.fastcatsearch.analytics.analysis.StatisticsService;
 import org.fastcatsearch.analytics.db.AnalyticsDBService;
 import org.fastcatsearch.analytics.db.MapperSession;
@@ -33,6 +17,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.*;
+import java.sql.Timestamp;
+import java.util.*;
 
 @Controller
 @RequestMapping("/{siteId}/report/keyword")
@@ -134,7 +124,7 @@ public class SearchKeywordController extends AbstractController {
 		int PAGE_SIZE=100;
 		
 		int start = 0;
-		
+
 		try {
 			
 			relateMapperSession = service.getMapperSession(RelateKeywordMapper.class);
@@ -142,26 +132,27 @@ public class SearchKeywordController extends AbstractController {
 			RelateKeywordMapper relateMapper = relateMapperSession.getMapper();
 			
 			int totalSize = relateMapper.getCount(siteId);
-			
-			List<RelateKeywordVO> entryList = relateMapper.getEntryList(siteId, start, totalSize );
+
 			Map<String, List<String>>keywordMap = new HashMap<String, List<String>>();
 			
-			for (int rsize=0;rsize<totalSize;) {
-				
-				int readSize = entryList.size();
-				if(readSize == 0) {
-					break;
-				}
-				rsize += readSize;
+			while(start < totalSize) {
+
+				List<RelateKeywordVO> entryList = relateMapper.getEntryList(siteId, start, PAGE_SIZE);
+
 				for (int i = 0; i < entryList.size(); i++) {
 					RelateKeywordVO entry = entryList.get(i);
 					String valueString = entry.getValue();
-					if(valueString==null) {
-						valueString = "";
+					if(valueString!=null) {
+						String[] values = valueString.split(",");
+						if(values.length > 0) {
+							List<String> keywordList = new ArrayList<String>(values.length);
+							for (String v : values) {
+								keywordList.add(v);
+							}
+							keywordMap.put(entry.getKeyword(), keywordList);
+							logger.trace("keyword:{} / values:{}", entry.getKeyword(), keywordList);
+						}
 					}
-					List<String> keywordList = Arrays.asList(valueString.split(","));
-					keywordMap.put(entry.getKeyword(), keywordList);
-					logger.trace("keyword:{} / values:{}", entry.getKeyword(), keywordList);
 				}
 				
 				start+=PAGE_SIZE;

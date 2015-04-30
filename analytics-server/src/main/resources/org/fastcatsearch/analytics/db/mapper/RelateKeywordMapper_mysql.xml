@@ -68,7 +68,7 @@
 			group by a.id
 		) a left join ${siteId}_relate_keyword_value b on b.keyId = a.id
 		group by a.id
-		limit #{start}, #{end}
+		limit #{start}, #{size}
 	</select>
 	
 	<select id="getEntryListByKeyword" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.RelateKeywordVO">

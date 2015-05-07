@@ -18,6 +18,11 @@
 	<packaging>pom</packaging>
 	<dependencyManagement>
 		<dependencies>
+            <dependency>
+                <groupId>co.fastcat.analytics</groupId>
+                <artifactId>analytics-server</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 			<dependency>
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>

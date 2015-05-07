@@ -9,12 +9,12 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.fastcatsearch</groupId>
+	<groupId>co.fastcat</groupId>
 	<artifactId>analytics</artifactId>
-	<version>1.14.6</version>
+	<version>1.15.0-SNAPSHOT</version>
 	<name>analytics</name>
 	<description>analytics package</description>
-	<url>http://fastcatgroup.org</url>
+	<url>http://www.fastcat.co</url>
 	<packaging>pom</packaging>
 	<dependencyManagement>
 		<dependencies>

@@ -42,8 +42,8 @@
 		a.updateTime
 		from ${siteId}_relate_keyword a left join ${siteId}_relate_keyword_value b on b.keyId = a.id
 		group by a.id
-		<if test="end > 0">
-		limit #{start}, #{end}
+		<if test="size > 0">
+		limit #{start}, #{size}
 		</if>
 	</select>
 	
@@ -87,7 +87,7 @@
 			group by a.id
 		) a left join ${siteId}_relate_keyword_value b on b.keyId = a.id
 		group by a.id
-		limit #{start}, #{end}
+		limit #{start}, #{size}
 	</select>
 	
 	<select id="getCountByWhereCondition" parameterType="map" resultType="int">

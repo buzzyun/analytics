@@ -18,7 +18,7 @@ public interface RelateKeywordMapper extends AnalyticsMapper {
 	
 	public List<RelateKeywordVO> getEntryListByWhereCondition(@Param("siteId") String siteId, @Param("whereCondition") String whereCondition ,@Param("start")int start, @Param("size")int size) throws Exception;
 	
-	public List<RelateKeywordVO> getEntryListByKeyword(@Param("siteId") String siteId, @Param("exactMatch") boolean exactMatch, @Param("keyword") String keyword ,@Param("start")int start, @Param("end")int end) throws Exception; 
+	public List<RelateKeywordVO> getEntryListByKeyword(@Param("siteId") String siteId, @Param("exactMatch") boolean exactMatch, @Param("keyword") String keyword ,@Param("start")int start, @Param("size")int size) throws Exception;
 	
 	public void updateEntry(@Param("siteId") String siteId, @Param("entry") RelateKeywordVO vo) throws Exception;
 	

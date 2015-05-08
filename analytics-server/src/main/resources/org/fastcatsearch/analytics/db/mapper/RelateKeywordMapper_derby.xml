@@ -54,8 +54,8 @@
 		from ${siteId}_relate_keyword a 
 		) a 
 		) a
-		<if test="end > 0">
-		where r &gt;= #{start} and r &lt; ( ${start} + #{end} )
+		<if test="size > 0">
+		where r &gt;= #{start} and r &lt; ( ${start} + #{size} )
 		</if>
 	</select>
 	
@@ -80,7 +80,7 @@
 		from ${siteId}_relate_keyword a 
 		) a 
 		) a where
-		( r &gt;= #{start} and r &lt; ${start} + ${end} )
+		( r &gt;= #{start} and r &lt; ${start} + ${size} )
 		<if test="whereCondition != ''">
 		and ${whereCondition}
 		</if>
@@ -94,7 +94,7 @@
 		a.updateTime
 		from ${siteId}_relate_keyword a 
 		) a where
-		( r &gt;= #{start} and r &lt; ${start} + ${end} )
+		( r &gt;= #{start} and r &lt; ${start} + ${size} )
 		<if test="exactMatch == true">
 		and (a.keyword=#{keyword} or b.value=#{keyword})
 		</if>

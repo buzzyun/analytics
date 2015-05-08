@@ -11,35 +11,19 @@
 
 package org.fastcatsearch.analytics.db;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
 import org.fastcatsearch.analytics.analysis.StatisticsService;
 import org.fastcatsearch.analytics.analysis.config.SiteListSetting;
 import org.fastcatsearch.analytics.analysis.config.SiteListSetting.SiteSetting;
-import org.fastcatsearch.analytics.db.mapper.AnalyticsMapper;
-import org.fastcatsearch.analytics.db.mapper.ClickHitMapper;
-import org.fastcatsearch.analytics.db.mapper.ClickKeywordHitMapper;
-import org.fastcatsearch.analytics.db.mapper.ClickKeywordTargetHitMapper;
-import org.fastcatsearch.analytics.db.mapper.DBInitMapper;
-import org.fastcatsearch.analytics.db.mapper.RelateKeywordMapper;
-import org.fastcatsearch.analytics.db.mapper.RelateKeywordValueMapper;
-import org.fastcatsearch.analytics.db.mapper.SearchHitMapper;
-import org.fastcatsearch.analytics.db.mapper.SearchKeywordEmptyMapper;
-import org.fastcatsearch.analytics.db.mapper.SearchKeywordHitMapper;
-import org.fastcatsearch.analytics.db.mapper.SearchKeywordRankMapper;
-import org.fastcatsearch.analytics.db.mapper.SearchPathHitMapper;
-import org.fastcatsearch.analytics.db.mapper.SearchTypeHitMapper;
-import org.fastcatsearch.analytics.db.mapper.SystemErrorMapper;
-import org.fastcatsearch.analytics.db.mapper.SystemMapper;
-import org.fastcatsearch.analytics.db.mapper.TaskResultMapper;
-import org.fastcatsearch.analytics.db.mapper.UserAccountMapper;
+import org.fastcatsearch.analytics.db.mapper.*;
 import org.fastcatsearch.analytics.db.vo.UserAccountVO;
 import org.fastcatsearch.analytics.env.Environment;
 import org.fastcatsearch.analytics.env.Settings;
 import org.fastcatsearch.analytics.exception.AnalyticsException;
 import org.fastcatsearch.analytics.service.ServiceManager;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 public class AnalyticsDBService extends AbstractDBService {
 

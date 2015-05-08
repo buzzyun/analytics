@@ -1,40 +1,11 @@
 package org.fastcatsearch.analytics.analysis;
 
-import static org.fastcatsearch.analytics.analysis.calculator.KeywordHitAndRankConstants.CLICK_RAW_FILENAME;
-import static org.fastcatsearch.analytics.analysis.calculator.KeywordHitAndRankConstants.POPULAR_FILENAME;
-import static org.fastcatsearch.analytics.analysis.calculator.KeywordHitAndRankConstants.RAW_LOG_FILENAME;
-import static org.fastcatsearch.analytics.analysis.calculator.KeywordHitAndRankConstants.TYPE_RAW_FILENAME;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-
 import org.fastcatsearch.analytics.analysis.config.StatisticsSettings;
 import org.fastcatsearch.analytics.analysis.schedule.EveryDaySchedule;
 import org.fastcatsearch.analytics.analysis.schedule.FixedSchedule;
 import org.fastcatsearch.analytics.analysis.schedule.Schedule;
 import org.fastcatsearch.analytics.analysis.schedule.ScheduledTaskRunner;
-import org.fastcatsearch.analytics.analysis.task.DailyClickLogAnalyticsTask;
-import org.fastcatsearch.analytics.analysis.task.DailyLogRollingTask;
-import org.fastcatsearch.analytics.analysis.task.DailySearchLogAnalyticsTask;
-import org.fastcatsearch.analytics.analysis.task.DailyTypeSearchLogAnalyticsTask;
-import org.fastcatsearch.analytics.analysis.task.HourlySearchLogAnalyticsTask;
-import org.fastcatsearch.analytics.analysis.task.MonthlyClickLogAnalyticsTask;
-import org.fastcatsearch.analytics.analysis.task.MonthlySearchLogAnalyticsTask;
-import org.fastcatsearch.analytics.analysis.task.MonthlyTypeSearchLogAnalyticsTask;
-import org.fastcatsearch.analytics.analysis.task.NDaysClickLogAnalyticsTask;
-import org.fastcatsearch.analytics.analysis.task.RealtimeSearchLogAnalyticsTask;
-import org.fastcatsearch.analytics.analysis.task.RelateSearchLogAnalyticsTask;
-import org.fastcatsearch.analytics.analysis.task.WeeklySearchLogAnalyticsTask;
-import org.fastcatsearch.analytics.analysis.task.WeeklyTypeSearchLogAnalyticsTask;
-import org.fastcatsearch.analytics.analysis.task.YearlySearchLogAnalyticsTask;
-import org.fastcatsearch.analytics.analysis.task.YearlyTypeSearchLogAnalyticsTask;
+import org.fastcatsearch.analytics.analysis.task.*;
 import org.fastcatsearch.analytics.analysis.vo.RankKeyword;
 import org.fastcatsearch.analytics.control.JobService;
 import org.fastcatsearch.analytics.db.vo.RankKeywordVO.RankDiffType;
@@ -42,6 +13,13 @@ import org.fastcatsearch.analytics.env.Environment;
 import org.fastcatsearch.analytics.env.Settings;
 import org.fastcatsearch.analytics.module.AbstractModule;
 import org.fastcatsearch.analytics.module.ModuleException;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+import static org.fastcatsearch.analytics.analysis.calculator.KeywordHitAndRankConstants.*;
 
 public class SiteSearchLogStatisticsModule extends AbstractModule {
 	private File siteFileHome;
@@ -73,10 +51,9 @@ public class SiteSearchLogStatisticsModule extends AbstractModule {
 		/*
 		 * 실시간 인기검색어 서비스 로딩
 		 */
-		File siteDir = new File(realtimeKeywordBaseDir, siteId);
-		logger.debug("Search stat resultDir > {}", siteDir.getAbsolutePath());
-		if (siteDir.exists()) {
-			File[] categoryDirList = listCategoryDir(siteDir);
+		logger.debug("Search stat resultDir > {}", realtimeKeywordBaseDir.getAbsolutePath());
+		if (realtimeKeywordBaseDir.exists()) {
+			File[] categoryDirList = listCategoryDir(realtimeKeywordBaseDir);
 			for (File categoryDir : categoryDirList) {
 				String categoryId = categoryDir.getName();
 				logger.debug("Search stat categoryDir {}", categoryDir.getAbsolutePath() );

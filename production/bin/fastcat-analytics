@@ -1,0 +1,54 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides: fastcat-analytics
+# Required-Start:
+# Required-Stop:
+# Default-Start:  2 3 4 5
+# Default-Stop: 0 1 6
+# Description: fastcat-analytics service
+
+status() {
+	echo "OK"
+}
+
+stopit() {
+    echo "Stopping fastcat-analytics ..."
+	su - joara -c '/bin/bash /home/$USER/analytics/bin/analytics.sh stop notail'
+}
+startit() {
+    echo "Starting fastcat-analytics ..."
+	su - joara -c '/bin/bash /home/$USER/analytics/bin/analytics.sh start notail'
+}
+
+
+case "$1" in
+    'start')
+        startit
+        ;;
+
+    'stop')
+        stopit
+        ;;
+
+    'restart')
+        stopit
+        startit
+        ;;
+
+
+    'force-reload')
+        stopit
+        startit
+        ;;
+
+    'status')
+        status
+        ;;
+
+    *)
+        echo "Usage: $0 { start | stop | restart | status }"
+        exit 1
+        ;;
+esac
+
+exit $?

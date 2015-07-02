@@ -50,8 +50,9 @@
 		and rankDiff >= #{rankDiffOver}
 		</if>
 		order by rank asc
+		) a
 		<if test="start >= 0 and length > 0">
-		) a where r &gt;= #{start} and r &lt; ${start} + ${length}
+		where r &gt;= #{start} and r &lt; ${start} + ${length}
 		</if>
 	</select>
 	

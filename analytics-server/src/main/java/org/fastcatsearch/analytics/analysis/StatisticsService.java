@@ -107,7 +107,24 @@ public class StatisticsService extends AbstractService {
 		StatisticsProperties.encoding = settings.getString("encoding", "utf-8");
 		StatisticsProperties.ROOT_ID = settings.getString("rootId", "_root");
 	}
-	
+
+	public void addSite(String siteId, SiteSetting setting) {
+		if(!statisticsSettingMap.containsKey(siteId)) {
+			this.siteListSetting.getSiteList().add(setting);
+			AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
+			dbService.addNewSiteMappers(siteId);
+
+			File siteFileHome = new File(statisticsHome, siteId);
+			if(!siteFileHome.exists()){
+				siteFileHome.mkdir();
+			}
+			List<String> categoryIdList = new ArrayList<String>();
+			SiteSearchLogStatisticsModule module = new SiteSearchLogStatisticsModule(this, siteFileHome, siteId, categoryIdList, environment, settings);
+			siteStatisticsModuleMap.put(siteId, module);
+			statisticsSettingMap.put(siteId, setting.getStatisticsSettings());
+		}
+	}
+
 	public void deleteConfig(String siteId) {
 		File confDir = new File(environment.filePaths().file(),"conf");
 		File confSiteDir = new File(confDir,"sites");
@@ -367,15 +384,6 @@ public class StatisticsService extends AbstractService {
 			
 		}
 		return list;
-	}
-	
-	public void addSite(String siteId, SiteSetting setting) {
-		if(!statisticsSettingMap.containsKey(siteId)) {
-			this.siteListSetting.getSiteList().add(setting);
-			statisticsSettingMap.put(siteId, setting.getStatisticsSettings());
-			AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
-			dbService.addNewSiteMappers(siteId);
-		}
 	}
 	
 	public void removeSite(String siteId) {

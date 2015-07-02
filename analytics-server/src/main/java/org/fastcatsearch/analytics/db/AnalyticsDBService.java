@@ -78,13 +78,15 @@ public class AnalyticsDBService extends AbstractDBService {
 	
 	public void addNewSiteMappers(String siteId) {
 		for (Class<?> mapperDAO : mapperList) {
-			if(mapperDAO.isAssignableFrom(AnalyticsMapper.class)){
+			if (AnalyticsMapper.class.isAssignableFrom(mapperDAO)) {
 				Class<? extends AnalyticsMapper> clazz = (Class<? extends AnalyticsMapper>) mapperDAO;
 				MapperSession<? extends AnalyticsMapper> mapperSession = (MapperSession<? extends AnalyticsMapper>) getMapperSession(clazz);
 				try {
 					addNewSiteMapper(siteId, mapperSession, clazz);
 				} finally {
-					mapperSession.closeSession();
+					if (mapperSession != null) {
+						mapperSession.closeSession();
+					}
 				}
 			}
 		}

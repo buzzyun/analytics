@@ -10,7 +10,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>co.fastcat</groupId>
 	<artifactId>analytics</artifactId>
-	<version>1.15.4-SNAPSHOT</version>
+	<version>1.15.4</version>
 	<name>analytics</name>
 	<description>analytics package</description>
 	<url>http://www.fastcat.co</url>

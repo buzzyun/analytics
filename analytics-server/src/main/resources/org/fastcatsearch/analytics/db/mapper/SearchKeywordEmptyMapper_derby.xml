@@ -39,14 +39,14 @@
 	
 	<select id="getEntryList" parameterType="map" resultType="org.fastcatsearch.analytics.db.vo.RankKeywordVO">
 		select categoryId, timeId, rank, keyword, count, countDiff, rankDiffType, rankDiff from (
-		select row_number() over() as r, *
-		from ${siteId}_empty_keyword
+		select row_number() over() as r, a.*
+		from ${siteId}_empty_keyword a
 		where categoryId = #{categoryId}
 		and timeId = #{timeId}
 		order by rank asc
 		) a
 		<if test="start >= 0 and length > 0">
-		where r &gt;= #{start} and r &lt; #{start} + #{length}
+		where r &gt;= #{start} and r &lt; ${start} + ${length}
 		</if>
 	</select>
 	

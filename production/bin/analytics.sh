@@ -28,7 +28,7 @@ PROFILE_AGENT=PROFILE_AGENT_LINUX_X86_64
 PROFILE_PORT=10001
 
 JVM_OPTS="-Xms$heap_memory_size -Xmx$heap_memory_size -XX:+HeapDumpOnOutOfMemoryError"
-JAVA_OPTS="-server -Dfile.encoding=UTF-8 -Dlogback.configurationFile=$CONF/logback.xml -Dderby.stream.error.file=$LOGS/db.log -Duser.timezone=Asis/Seoul"
+JAVA_OPTS="-server -Dfile.encoding=UTF-8 -Dlogback.configurationFile=$CONF/logback.xml -Dderby.stream.error.file=$LOGS/db.log -Duser.timezone=Asia/Seoul"
 DEBUG_OPT="-agentlib:jdwp=transport=dt_socket,suspend=n,server=y,address=localhost:59090"
 PROFILE_OPT_JMX="-verbosegc -XX:+PrintGCDetails -Dcom.sun.management.jmxremote"
 PROFILE_OPT="-agentpath:$PROFILE_AGENT=port=$PROFILE_PORT"

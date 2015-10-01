@@ -2,7 +2,7 @@
 
 mvn clean
 
-mvn release:prepare
+mvn release:prepare || exit
 
 cd target
 

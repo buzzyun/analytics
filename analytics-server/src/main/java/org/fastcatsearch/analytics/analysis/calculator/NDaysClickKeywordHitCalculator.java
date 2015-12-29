@@ -39,13 +39,13 @@ public class NDaysClickKeywordHitCalculator extends Calculator<ClickLog> {
 		Integer nDays = ctrSetting.getDumpFileDaySize();
 		String targetFilePath = ctrSetting.getTargetFilePath();
 		logger.debug("targetFilePath:{}", targetFilePath);
-		
+
+		new NullLogHandler<ClickLog>(categoryId).attachLogHandlerTo(categoryProcess);
+
 		if(nDays == null || nDays <= 0){
 			return categoryProcess;
 		}
-		
-		new NullLogHandler<ClickLog>(categoryId).attachLogHandlerTo(categoryProcess);
-			
+
 		if(categoryId.equals("_root")) {
 		
 			String encoding = StatisticsProperties.encoding;

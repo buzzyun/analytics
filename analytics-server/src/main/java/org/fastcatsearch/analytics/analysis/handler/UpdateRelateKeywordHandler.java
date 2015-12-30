@@ -21,10 +21,12 @@ public class UpdateRelateKeywordHandler extends ProcessHandler {
 
 	String siteId;
 	File file;
+	String encoding;
 
-	public UpdateRelateKeywordHandler(String siteId, File file) {
+	public UpdateRelateKeywordHandler(String siteId, File file, String encoding) {
 		this.siteId = siteId;
 		this.file = file;
+		this.encoding = encoding;
 	}
 
 	@Override
@@ -45,7 +47,7 @@ public class UpdateRelateKeywordHandler extends ProcessHandler {
 				RelateKeywordValueMapper vmapper = vmapperSession.getMapper();
 				Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-				reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+				reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), encoding));
 				String line = null;
 
 				// file 한줄씩 읽어서 입력.

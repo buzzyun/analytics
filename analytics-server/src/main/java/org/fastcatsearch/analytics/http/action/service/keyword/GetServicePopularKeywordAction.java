@@ -72,7 +72,24 @@ public class GetServicePopularKeywordAction extends ServiceAction {
 				calendar = StatisticsUtils.parseTimeId(timeId);
 				
 				Calendar dailyCalendar = (Calendar) calendar.clone();
-				File timeDir = StatisticsUtils.getDayDataDir(baseDir, dailyCalendar);
+				File timeDir;
+
+				/*
+				* 2016-01-14 전제현 수정
+				* timeId를 사용할 경우, 해당 값 앞에 붙어있는 타입으로 해당 기간에 맞는 popular.log에 존재하는 키워드 리스트를 불러온다.
+				* */
+				if (timeId.startsWith("D")) {
+					timeDir = StatisticsUtils.getDayDataDir(baseDir, dailyCalendar);
+				} else if (timeId.startsWith("W")) {
+					timeDir = StatisticsUtils.getWeekDataDir(baseDir, dailyCalendar);
+				} else if (timeId.startsWith("M")) {
+					timeDir = StatisticsUtils.getMonthDataDir(baseDir, dailyCalendar);
+				} else if (timeId.startsWith("Y")) {
+					timeDir = StatisticsUtils.getYearDataDir(baseDir, dailyCalendar);
+				} else {
+					timeDir = StatisticsUtils.getDayDataDir(baseDir, dailyCalendar);
+				}
+
 				File file = new File(new File(timeDir, categoryId), POPULAR_FILENAME);
 				BufferedReader reader = null;
 				
@@ -80,7 +97,11 @@ public class GetServicePopularKeywordAction extends ServiceAction {
 					reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StatisticsProperties.encoding));
 					list = new ArrayList<RankKeyword>();
 					int rank = 1;
-					for (String rline = null; (ln == 0 || rank <= (sn + ln))
+					/*
+					* 2016-01-14 전제현 수정
+					* 키워드 호출 개수를 ln 개수에 맞게 불러온다.
+					* */
+					for (String rline = null; (ln == 0 || rank < (sn + ln))
 							&& (rline = reader.readLine()) != null; rank++) {
 						String [] data = rline.split("\t");
 						if(rank >= sn)  {

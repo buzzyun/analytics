@@ -2,9 +2,7 @@ package org.fastcatsearch.analytics.analysis;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
-import org.fastcatsearch.analytics.analysis.StatisticsUtils;
 import org.junit.Test;
 
 public class SearchStatisticsPropertiesTest {
@@ -12,7 +10,7 @@ public class SearchStatisticsPropertiesTest {
 	@Test
 	public void test() {
 		
-		Calendar calendar = StatisticsUtils.getCalendar();
+		Calendar calendar = StatisticsUtils.getNowCalendar();
 		int type = Calendar.HOUR_OF_DAY;
 		String timeId = StatisticsUtils.getTimeId(calendar, type);
 		System.out.println("HOUR_OF_DAY :" + timeId);
@@ -56,32 +54,13 @@ public class SearchStatisticsPropertiesTest {
 	}
 
 	@Test
-	public void testCorrectedTimeId() {
-		int type = Calendar.WEEK_OF_YEAR;
-		Calendar startTime = null;
-		Calendar endTime = null;
-		
-		startTime = StatisticsUtils.getCorrectedStartTime(StatisticsUtils.getCalendar(), type);
-		endTime = StatisticsUtils.getCorrectedEndTime(StatisticsUtils.getCalendar(), type);
-		
-		System.out.println("start = " + startTime.getTime());
-		System.out.println("end = " + endTime.getTime());
-		
-		String startTimeId = StatisticsUtils.getTimeId(startTime, type);
-		String endTimeId = StatisticsUtils.getTimeId(endTime, type);
-		
-		System.out.println("start = " + startTimeId);
-		System.out.println("end = " + endTimeId);
-	}
-	
-	@Test
 	public void testCalendarLocale() {
-		Calendar today = StatisticsUtils.getCalendar();
+		Calendar today = StatisticsUtils.getNowCalendar();
 		System.out.println("default > " + today.getFirstDayOfWeek() + " > " + today.getTime() + " : " + today.get(Calendar.DAY_OF_WEEK));
 		today.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 		System.out.println(">>> " + today.getTime() + " : " + today.get(Calendar.WEEK_OF_YEAR));	
 	
-		today = StatisticsUtils.getCalendar();
+		today = StatisticsUtils.getNowCalendar();
 		System.out.println("Locale.GERMAN > " + today.getFirstDayOfWeek() + " > " + today.getTime() + " : " + today.get(Calendar.DAY_OF_WEEK));
 		today.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 		System.out.println(">>> " + today.getTime() + " : " + today.get(Calendar.WEEK_OF_YEAR));

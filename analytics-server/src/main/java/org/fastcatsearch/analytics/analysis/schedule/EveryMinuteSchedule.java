@@ -18,8 +18,8 @@ public class EveryMinuteSchedule extends Schedule {
 
 	@Override
 	public void updateSchduleTime() {
-		Calendar now = StatisticsUtils.getCalendar();
-		Calendar calendar = StatisticsUtils.getCalendar();
+		Calendar now = StatisticsUtils.getNowCalendar();
+		Calendar calendar = StatisticsUtils.getNowCalendar();
 //		calendar.set(Calendar.HOUR_OF_DAY, timeInDay);
 //		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);

@@ -82,7 +82,7 @@ public class SearchRankController extends AbstractController {
 		}
 		
 		if(timeText == null){
-			Calendar calendar = StatisticsUtils.getCalendar();
+			Calendar calendar = StatisticsUtils.getNowCalendar();
 			calendar.add(Calendar.DATE, -1);
 			timeText = StatisticsUtils.toDatetimeString(calendar);
 		}
@@ -147,7 +147,7 @@ public class SearchRankController extends AbstractController {
 			mav.addObject("timeViewType", timeViewType);
 			mav.addObject("list", list);
 			mav.addObject("today", StatisticsUtils.toDatetimeString(
-					StatisticsUtils.getCalendar()));
+					StatisticsUtils.getNowCalendar()));
 			
 		} catch (Exception e) {
 			logger.error("", e);
@@ -205,7 +205,7 @@ public class SearchRankController extends AbstractController {
 		}
 		
 		if(timeText == null){
-			Calendar calendar = StatisticsUtils.getCalendar();
+			Calendar calendar = StatisticsUtils.getNowCalendar();
 			calendar.add(Calendar.DATE, -1);
 			timeText = StatisticsUtils.toDatetimeString(calendar);
 		}

@@ -36,7 +36,7 @@ public class SearchTypeController extends AbstractController {
 		
 		
 		if(timeText == null){
-			Calendar calendar = StatisticsUtils.getCalendar();
+			Calendar calendar = StatisticsUtils.getNowCalendar();
 			calendar.add(Calendar.DATE, -1);
 			String timeTo = StatisticsUtils.toDatetimeString(calendar);
 			timeText = timeTo + " - " + timeTo;
@@ -91,7 +91,7 @@ public class SearchTypeController extends AbstractController {
 			mav.addObject("list", list);
 			mav.addObject("typeArray", typeArray);
 			mav.addObject("today", StatisticsUtils.toDatetimeString(
-					StatisticsUtils.getCalendar()));
+					StatisticsUtils.getNowCalendar()));
 			
 		} catch (Exception e) {
 			logger.error("", e);

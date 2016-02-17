@@ -2,7 +2,6 @@ package org.fastcatsearch.analytics.web.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -103,7 +102,7 @@ public class ReportMainController extends AbstractController {
 			
 			
 			//일주일치와 그 전주의 일자별 데이터를 가져온다.
-			//Calendar calendar = StatisticsUtils.getCalendar();
+			//Calendar calendar = StatisticsUtils.getNowCalendar();
 			Calendar calendar = null;
 			Calendar fromDate = null;
 			Calendar toDate = null;
@@ -111,7 +110,7 @@ public class ReportMainController extends AbstractController {
 			if(timeText!=null && !"".equals(timeText)) {
 				calendar = StatisticsUtils.parseDatetimeString(timeText.split(" - ")[0], true);
 			} else {
-				calendar = StatisticsUtils.getCalendar();
+				calendar = StatisticsUtils.getNowCalendar();
 			}
 			
 			String fromTimeId = "";
@@ -316,7 +315,7 @@ public class ReportMainController extends AbstractController {
 		}
 		
 		mav.addObject("today", StatisticsUtils.toDatetimeString(
-				StatisticsUtils.getCalendar()));
+				StatisticsUtils.getNowCalendar()));
 
 		mav.setViewName("report/dashboard");
 		return mav;

@@ -12,7 +12,6 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.fastcatsearch.analytics.analysis.StatisticsService;
 import org.fastcatsearch.analytics.analysis.StatisticsUtils;
-import org.fastcatsearch.analytics.analysis.config.SiteListSetting;
 import org.fastcatsearch.analytics.analysis.config.SiteListSetting.SiteSetting;
 import org.fastcatsearch.analytics.analysis.config.StatisticsSettings.CategorySetting;
 import org.fastcatsearch.analytics.db.MapperSession;
@@ -25,6 +24,7 @@ import org.fastcatsearch.analytics.keyword.PopularKeywordDictionary;
 import org.fastcatsearch.analytics.keyword.KeywordDictionary.KeywordDictionaryType;
 import org.fastcatsearch.analytics.service.ServiceManager;
 
+@Deprecated
 public class KeywordDictionaryCompileApplyJob extends Job {
 
 	private static final long serialVersionUID = 5101762691161535526L;
@@ -43,7 +43,7 @@ public class KeywordDictionaryCompileApplyJob extends Job {
 
 		SimpleDateFormat dateFormat = null;
 
-		Calendar calendar = StatisticsUtils.getCalendar();
+		Calendar calendar = StatisticsUtils.getNowCalendar();
 
 		KeywordService keywordService = ServiceManager.getInstance().getService(KeywordService.class);
 

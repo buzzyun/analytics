@@ -89,8 +89,8 @@ public class CTRController extends AbstractController {
 			startTime = StatisticsUtils.parseDatetimeString(timeFrom, true);
 			endTime = StatisticsUtils.parseDatetimeString(timeTo, false);
 		} else {
-			endTime = StatisticsUtils.getCalendar();
-			startTime = StatisticsUtils.getCalendar();
+			endTime = StatisticsUtils.getNowCalendar();
+			startTime = StatisticsUtils.getNowCalendar();
 			if(timeTypeCode == Calendar.DAY_OF_MONTH) {
 				startTime = StatisticsUtils.getFirstDayOfWeek(startTime);
 				endTime = StatisticsUtils.getLastDayOfWeek(startTime);
@@ -241,7 +241,7 @@ public class CTRController extends AbstractController {
 			mav.addObject("labelList", labelList);
 			mav.addObject("clickTypeSettingList", clickTypeSettingList);
 			mav.addObject("today", StatisticsUtils.toDatetimeString(
-					StatisticsUtils.getCalendar()));
+					StatisticsUtils.getNowCalendar()));
 		} catch (Exception e) {
 			logger.error("", e);
 		} finally {
@@ -270,7 +270,7 @@ public class CTRController extends AbstractController {
 		if(timeText != null) {
 			calendar = StatisticsUtils.parseDatetimeString(timeText, true);
 		} else {
-			calendar = StatisticsUtils.getCalendar();
+			calendar = StatisticsUtils.getNowCalendar();
 			timeText = StatisticsUtils.toDatetimeString(calendar);
 		}
 		
@@ -418,7 +418,7 @@ public class CTRController extends AbstractController {
 		if(timeText != null) {
 			calendar = StatisticsUtils.parseDatetimeString(timeText, true);
 		} else {
-			calendar = StatisticsUtils.getCalendar();
+			calendar = StatisticsUtils.getNowCalendar();
 			timeText = StatisticsUtils.toDatetimeString(calendar);
 		}
 		
@@ -550,7 +550,7 @@ public class CTRController extends AbstractController {
 		if(timeText != null) {
 			calendar = StatisticsUtils.parseDatetimeString(timeText, true);
 		} else {
-			calendar = StatisticsUtils.getCalendar();
+			calendar = StatisticsUtils.getNowCalendar();
 			timeText = StatisticsUtils.toDatetimeString(calendar);
 		}
 		

@@ -4,8 +4,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.fastcatsearch.analytics.analysis.StatisticsUtils;
-import org.fastcatsearch.analytics.analysis.schedule.EveryDaySchedule;
-import org.fastcatsearch.analytics.analysis.schedule.Schedule;
 import org.junit.Test;
 
 public class ScheduleTest {
@@ -30,10 +28,10 @@ public class ScheduleTest {
 	public void testNextDaytime(){
 		int timeInDay = 0;
 		int hour = 1;
-		Calendar now = StatisticsUtils.getCalendar();
+		Calendar now = StatisticsUtils.getNowCalendar();
 		now.set(Calendar.HOUR_OF_DAY, hour);
 		System.out.println("now > " + new Date(now.getTimeInMillis()));
-		Calendar calendar = StatisticsUtils.getCalendar();
+		Calendar calendar = StatisticsUtils.getNowCalendar();
 		calendar.set(Calendar.HOUR_OF_DAY, timeInDay);
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);

@@ -67,6 +67,8 @@ public class StatisticsUtils {
 	}
 	
 	public static File getWeekDataDir(File dir, Calendar calendar) {
+        //올바른 주수를 알려면 일요일로 옮긴다.
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 		int year = calendar.get(Calendar.YEAR);
 		int week = calendar.get(Calendar.WEEK_OF_YEAR);
 		String yearString = "Y" + year;
@@ -79,53 +81,19 @@ public class StatisticsUtils {
 		}
 		return new File(new File(new File(dir, yearString), weekString), "data");
 	}
-	
-	
-	//type 에 따라 날짜를 변경한다. 예를들어, week type의 경우 입력날짜가 일요일이 아니더라도 일요일로 리턴한다.
-	public static Calendar getCorrectedStartTime(Calendar calendar, int type) {
-		if(type == Calendar.HOUR_OF_DAY){
-			//금일 0시.
-			calendar.set(Calendar.HOUR_OF_DAY, 0);
-		}else if(type == Calendar.DAY_OF_MONTH){
-			//변경안함.
-		}else if(type == Calendar.WEEK_OF_YEAR){
-			//해당 week의 월요일로 변경.
-			calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONTH);
-		}else if(type == Calendar.MONTH){
-			//1월 1일 0시로 변경.
-			calendar.set(Calendar.DAY_OF_MONTH, 1);
-		}else if(type == Calendar.YEAR){
-			//변경안함.
-		}
-		return calendar;
-	}
-	
-	public static Calendar getCorrectedEndTime(Calendar calendar, int type) {
-		if(type == Calendar.HOUR_OF_DAY){
-			//금일 0시.
-			calendar.set(Calendar.HOUR_OF_DAY, 23);
-		}else if(type == Calendar.DAY_OF_MONTH){
-			//변경안함.
-		}else if(type == Calendar.WEEK_OF_YEAR){
-			//해당 week의 일요일로 변경.
-			calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-		}else if(type == Calendar.MONTH){
-			//1월 1일 0시로 변경.
-			calendar.set(Calendar.DAY_OF_MONTH, 1);
-		}else if(type == Calendar.YEAR){
-			//변경안함.
-		}
-		return calendar;
-	}
-	
+
 	public static String[] getTimeComponent(Calendar calendar, int type) {
 		int year = calendar.get(Calendar.YEAR);
 		int month = calendar.get(Calendar.MONTH) + 1;
 		int day = calendar.get(Calendar.DAY_OF_MONTH);
 		int hour = calendar.get(Calendar.HOUR_OF_DAY);
 		int week = calendar.get(Calendar.WEEK_OF_YEAR);
-		
-		//년말에 작년과 신년 사이에 한 주가 걸쳐있다면 년도를 증가해준다.
+
+        /*
+        * 중요!! 년말에 작년과 신년 사이에 한 주가 걸쳐있다면 년도를 증가해준다.
+        * 2016.2.17 swsong
+        * day를 SUNDAY로 옮기지 않고, 조건부로 year를 증가
+        * */
 		logger.trace("y:{}/m:{}/d:{}/w:{}",year,month,day,week);
 		if(month == 12 && week == 1 && type==Calendar.WEEK_OF_YEAR) {
 			year++;
@@ -175,7 +143,7 @@ public class StatisticsUtils {
 	
 	public static String getTimeId(Calendar calendar, int type) {
 		String timeId = null;
-		
+
 		String[] timeComponent = getTimeComponent(calendar, type);
 		
 		String yearString = timeComponent[0];
@@ -221,9 +189,15 @@ public class StatisticsUtils {
 		return null;
 	}
 	
-	public static Calendar getCalendar() {
+	public static Calendar getNowCalendar() {
 		return Calendar.getInstance(Locale.GERMAN);
 	}
+
+    public static Calendar getCalendar() {
+        Calendar cal = getNowCalendar();
+        cal.clear();
+        return cal;
+    }
 
 	public static String toDatetimeString(Calendar calendar) {
 		return toDatetimeString(calendar, Calendar.DAY_OF_MONTH);
@@ -268,9 +242,9 @@ public class StatisticsUtils {
 			calendar.set(Calendar.MONTH, month);
 			calendar.set(Calendar.DAY_OF_MONTH, day);
 			calendar.set(Calendar.HOUR_OF_DAY, hour);
-			calendar.set(Calendar.MINUTE, 0);
-			calendar.set(Calendar.SECOND, 0);
-			calendar.set(Calendar.MILLISECOND, 0);
+//			calendar.set(Calendar.MINUTE, 0);
+//			calendar.set(Calendar.SECOND, 0);
+//			calendar.set(Calendar.MILLISECOND, 0);
 			return calendar;
 		}else if(type == 'D'){
 			int year = Integer.parseInt(timeId.substring(1,5));
@@ -281,9 +255,9 @@ public class StatisticsUtils {
 			calendar.set(Calendar.MONTH, month);
 			calendar.set(Calendar.DAY_OF_MONTH, day);
 			calendar.set(Calendar.HOUR_OF_DAY, 0);
-			calendar.set(Calendar.MINUTE, 0);
-			calendar.set(Calendar.SECOND, 0);
-			calendar.set(Calendar.MILLISECOND, 0);
+//			calendar.set(Calendar.MINUTE, 0);
+//			calendar.set(Calendar.SECOND, 0);
+//			calendar.set(Calendar.MILLISECOND, 0);
 			return calendar;
 		}else if(type == 'W'){
 			int year = Integer.parseInt(timeId.substring(1,5));
@@ -291,11 +265,16 @@ public class StatisticsUtils {
 			Calendar calendar = StatisticsUtils.getCalendar();
 			calendar.set(Calendar.YEAR, year);
 			calendar.set(Calendar.WEEK_OF_YEAR, week);
-			calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+            /*
+            * 2016.2.17 swsong 주간을 선택시 요일을 일요일로 옮긴다.
+            * 기존과 같이 월요일을 사용할 경우 한해의 마지막 날짜에 year는 2015, week는 1인 경우가 발생하나,
+            * 일요일을 사용할 경우, 한 주의 마지막 요일이므로, week와 year가 함께 변경된다.
+            * */
+			calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 			calendar.set(Calendar.HOUR_OF_DAY, 0);
-			calendar.set(Calendar.MINUTE, 0);
-			calendar.set(Calendar.SECOND, 0);
-			calendar.set(Calendar.MILLISECOND, 0);
+//			calendar.set(Calendar.MINUTE, 0);
+//			calendar.set(Calendar.SECOND, 0);
+//			calendar.set(Calendar.MILLISECOND, 0);
 			return calendar;
 		}else if(type == 'M'){
 			int year = Integer.parseInt(timeId.substring(1,5));
@@ -305,9 +284,9 @@ public class StatisticsUtils {
 			calendar.set(Calendar.MONTH, month);
 			calendar.set(Calendar.DAY_OF_MONTH, 1);
 			calendar.set(Calendar.HOUR_OF_DAY, 0);
-			calendar.set(Calendar.MINUTE, 0);
-			calendar.set(Calendar.SECOND, 0);
-			calendar.set(Calendar.MILLISECOND, 0);
+//			calendar.set(Calendar.MINUTE, 0);
+//			calendar.set(Calendar.SECOND, 0);
+//			calendar.set(Calendar.MILLISECOND, 0);
 			return calendar;
 		}else if(type == 'Y'){
 			int year = Integer.parseInt(timeId.substring(1,5));
@@ -316,9 +295,9 @@ public class StatisticsUtils {
 			calendar.set(Calendar.MONTH, 0);
 			calendar.set(Calendar.DAY_OF_MONTH, 1);
 			calendar.set(Calendar.HOUR_OF_DAY, 0);
-			calendar.set(Calendar.MINUTE, 0);
-			calendar.set(Calendar.SECOND, 0);
-			calendar.set(Calendar.MILLISECOND, 0);
+//			calendar.set(Calendar.MINUTE, 0);
+//			calendar.set(Calendar.SECOND, 0);
+//			calendar.set(Calendar.MILLISECOND, 0);
 			return calendar;
 		}
 		

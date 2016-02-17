@@ -37,7 +37,7 @@ public class UpdateSearchTypeHitHandler extends ProcessHandler {
 		try {
 			SearchTypeHitMapper mapper = mapperSession.getMapper();
 			// 기준시각.
-			Calendar cal = StatisticsUtils.getCalendar();
+			Calendar cal = StatisticsUtils.getNowCalendar();
 			cal.add(Calendar.DAY_OF_MONTH, -1);
 
 			for (int i = 0; i < typeList.size(); i++) {

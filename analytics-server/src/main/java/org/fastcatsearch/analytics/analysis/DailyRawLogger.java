@@ -19,12 +19,12 @@ public class DailyRawLogger {
 	public DailyRawLogger(Calendar calendar, File baseDir, String fileName) {
 		this.baseDir = baseDir;
 		this.fileName = fileName;
-		this.writer = newLogger(StatisticsUtils.getCalendar());
+		this.writer = newLogger(calendar);
 	}
 
 	public void rolling() {
 		BufferedLogger prevWriter = writer;
-		writer = newLogger(StatisticsUtils.getCalendar());
+		writer = newLogger(StatisticsUtils.getNowCalendar());
 		
 		if (prevWriter != null) {
 			prevWriter.close();

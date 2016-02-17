@@ -3,7 +3,6 @@ package org.fastcatsearch.analytics.http.action.service.keyword;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -44,7 +43,7 @@ public class GetServicePopularKeywordAction extends ServiceAction {
 		int interval = request.getIntParameter("interval", 1);
 		String errorMessage = null;
 
-		Calendar calendar = StatisticsUtils.getCalendar();
+		Calendar calendar = StatisticsUtils.getNowCalendar();
 		
 		try {
 			//String timeId = null;
@@ -64,7 +63,9 @@ public class GetServicePopularKeywordAction extends ServiceAction {
 					list = statisticsService.getPopularKeywordList(siteId, categoryId, timeId);
 				}
 			} else {
-				//TODO: interval 을 0으로 주고 date 를 직접 기재한 경우
+				/*
+				 * interval 을 0으로 주고 date 를 직접 기재한 경우
+				 */
 				//파일기반에서 덤프 하도록 한다.
 				//ln 이 0 인 경우 모조리 덤프 한다.
 				

@@ -13,6 +13,7 @@ import org.fastcatsearch.analytics.keyword.KeywordService;
 import org.fastcatsearch.analytics.keyword.KeywordDictionary.KeywordDictionaryType;
 import org.fastcatsearch.analytics.service.ServiceManager;
 
+@Deprecated
 public class ReloadKeywordDictionaryJob extends Job implements Streamable {
 
 	private static final long serialVersionUID = 4992122572477600971L;

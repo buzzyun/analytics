@@ -1,9 +1,7 @@
 package org.fastcatsearch.analytics.analysis;
 
 import java.io.File;
-import java.util.Calendar;
 
-import org.fastcatsearch.analytics.analysis.StatisticsUtils;
 import org.fastcatsearch.analytics.analysis.log.SearchLog;
 import org.fastcatsearch.analytics.analysis.schedule.FixedSchedule;
 import org.fastcatsearch.analytics.analysis.schedule.Schedule;
@@ -22,7 +20,7 @@ public class RealtimePopularKeywordTaskTest {
 		String encoding = "utf-8";
 		ScheduledTaskRunner taskRunner = new ScheduledTaskRunner("test", new TestJobExecutor(), new Environment("."));
 		File f = new File("/Users/swsong/tmp/test.log");
-		Schedule schedule = new FixedSchedule(StatisticsUtils.getCalendar(), 3, 1);
+		Schedule schedule = new FixedSchedule(StatisticsUtils.getNowCalendar(), 3, 1);
 		AnalyticsTask<SearchLog> task = null;
 		
 		File workingDir = new File("/Users/swsong/tmp/rt/working");

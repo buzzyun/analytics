@@ -39,11 +39,11 @@ public class SearchProgressController extends AbstractController {
 		mav.setViewName("report/progress/hit");
 		
 		if(timeText == null){
-			Calendar calendar = StatisticsUtils.getCalendar();
+			Calendar calendar = StatisticsUtils.getNowCalendar();
 			calendar.add(Calendar.DATE, -7);
 			String timeFrom = StatisticsUtils.toDatetimeString(calendar);
 			
-			calendar = StatisticsUtils.getCalendar();
+			calendar = StatisticsUtils.getNowCalendar();
 			calendar.add(Calendar.DATE, -1);
 			String timeTo = StatisticsUtils.toDatetimeString(calendar);
 			
@@ -164,7 +164,7 @@ public class SearchProgressController extends AbstractController {
 			mav.addObject("list", list);
 			
 			
-			mav.addObject("today", StatisticsUtils.toDatetimeString( StatisticsUtils.getCalendar() ));
+			mav.addObject("today", StatisticsUtils.toDatetimeString( StatisticsUtils.getNowCalendar() ));
 			
 		} catch (Exception e) {
 			logger.error("", e);
@@ -190,11 +190,11 @@ public class SearchProgressController extends AbstractController {
 
 		
 		if(timeText == null){
-			Calendar calendar = StatisticsUtils.getCalendar();
+			Calendar calendar = StatisticsUtils.getNowCalendar();
 			calendar.add(Calendar.DATE, -7);
 			String timeFrom = StatisticsUtils.toDatetimeString(calendar);
 			
-			calendar = StatisticsUtils.getCalendar();
+			calendar = StatisticsUtils.getNowCalendar();
 			calendar.add(Calendar.DATE, -1);
 			String timeTo = StatisticsUtils.toDatetimeString(calendar);
 			

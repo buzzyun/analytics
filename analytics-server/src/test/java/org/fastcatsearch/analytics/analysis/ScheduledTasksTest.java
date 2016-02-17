@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
 
-import org.fastcatsearch.analytics.analysis.StatisticsUtils;
 import org.fastcatsearch.analytics.analysis.log.SearchLog;
 import org.fastcatsearch.analytics.analysis.schedule.EveryMinuteSchedule;
 import org.fastcatsearch.analytics.analysis.schedule.FixedSchedule;
@@ -25,7 +24,7 @@ public class ScheduledTasksTest {
 		File f = new File("/Users/swsong/tmp/test.log");
 		String siteId = "a";
 		List<String> categoryIdList = null;
-		Calendar calendar = StatisticsUtils.getCalendar();
+		Calendar calendar = StatisticsUtils.getNowCalendar();
 		Schedule schedule = new EveryMinuteSchedule(1);
 		AnalyticsTask<SearchLog> task = new TestAnalyticsTask("1111", siteId, categoryIdList, schedule, 1);
 		taskRunner.addTask(task);
@@ -45,7 +44,7 @@ public class ScheduledTasksTest {
 		
 		ScheduledTaskRunner taskRunner = new ScheduledTaskRunner("test", new TestJobExecutor(), new Environment("."));
 		File f = new File("/Users/swsong/tmp/test.log");
-		Schedule schedule = new FixedSchedule(StatisticsUtils.getCalendar(), 2, 1);
+		Schedule schedule = new FixedSchedule(StatisticsUtils.getNowCalendar(), 2, 1);
 		AnalyticsTask<SearchLog> task = null;
 		String categoryId = "cat1";
 		taskRunner.addTask(task);

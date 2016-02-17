@@ -89,7 +89,7 @@ public abstract class AnalyticsTask<LogType extends LogData> extends Job impleme
 			calculatorList.clear();
 			
 			preProcess();
-			Calendar calendar = StatisticsUtils.getCalendar();
+			Calendar calendar = StatisticsUtils.getNowCalendar();
 			calendar.setTimeInMillis(getBaseTime());
 			
 			prepare(calendar);

@@ -56,7 +56,7 @@ public class SiteConfigurationController extends AbstractController {
 			String[] dateArr = date.split(" - ");
 			calendar1 = StatisticsUtils.parseDatetimeString(dateArr[0], true);
 		} else {
-			calendar1 = StatisticsUtils.getCalendar();
+			calendar1 = StatisticsUtils.getNowCalendar();
 			calendar1.add(Calendar.DATE, -1);
 		}
 
@@ -127,7 +127,7 @@ public class SiteConfigurationController extends AbstractController {
 			}
 			mav.addObject("date", date);
 		}else{
-			Calendar now = StatisticsUtils.getCalendar();
+			Calendar now = StatisticsUtils.getNowCalendar();
 			String timeString = StatisticsUtils.toDatetimeString(now, Calendar.DAY_OF_MONTH);
 			mav.addObject("date", timeString + " - " + timeString);
 		}

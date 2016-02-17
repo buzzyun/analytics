@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Random;
 
 import org.fastcatsearch.analytics.analysis.StatisticsUtils;
@@ -262,7 +261,7 @@ public class LogGenerator {
 	}
 	
 	private static Calendar parseDate(String dateStr) {
-		Calendar calendar = StatisticsUtils.getCalendar();
+		Calendar calendar = StatisticsUtils.getNowCalendar();
 		if(!(dateStr == null || "".equals(dateStr))) {
 			SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmssS");
 			try {

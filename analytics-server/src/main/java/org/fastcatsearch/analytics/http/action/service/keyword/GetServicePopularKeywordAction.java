@@ -35,7 +35,7 @@ public class GetServicePopularKeywordAction extends ServiceAction {
 		responseWriter.object();
 
 		String siteId = request.getParameter("siteId");
-		String categoryId = request.getParameter("categoryId");
+		String categoryId = request.getParameter("categoryId", "_root");
 		String timeType = request.getParameter("timeType");
 		String timeId = request.getParameter("timeId");
 		int sn = request.getIntParameter("sn", 1);

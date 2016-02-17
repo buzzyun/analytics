@@ -59,8 +59,8 @@ public class CommonDBHandler {
 		}
 
 		String dbType = settings.getString("type");
-		driverProperties.setProperty("user", settings.getString("user"));
-		driverProperties.setProperty("password", settings.getString("password"));
+		driverProperties.setProperty("user", settings.getString("user", ""));
+		driverProperties.setProperty("password", settings.getString("password", ""));
 		driverProperties.setProperty("driver.encoding", "UTF-8");
 
 		boolean isAutoCommit = settings.getBoolean("autocommit", true);

@@ -26,7 +26,7 @@ public class DailyTypeHitCalculator extends Calculator<TypeSearchLog> {
 		
 		SiteAttribute siteAttribute = ServiceManager.getInstance().getService(StatisticsService.class).getStatisticsSetting(siteId).getSiteAttribute();
 		List<TypeSetting> typeList = siteAttribute.getTypeList();
-		logger.debug("@@@@typeList > {}", "", typeList);
+		logger.debug("@@@@typeList > {}", typeList);
 		
 		CategoryProcess<TypeSearchLog> categoryProcess = new CategoryProcess<TypeSearchLog>(categoryId);
 		new TypeSearchLogKeyCountHandler(categoryId, typeList).attachLogHandlerTo(categoryProcess);

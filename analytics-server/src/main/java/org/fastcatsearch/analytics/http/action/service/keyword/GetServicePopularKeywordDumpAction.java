@@ -29,7 +29,7 @@ public class GetServicePopularKeywordDumpAction extends ServiceAction {
 		responseWriter.object();
 
 		String siteId = request.getParameter("siteId");
-		String categoryId = request.getParameter("categoryId");
+		String categoryId = request.getParameter("categoryId", "_root");
 		String fromDateStr = request.getParameter("from");
 		String toDateStr = request.getParameter("to");
 		int sn = request.getIntParameter("sn", 1);
@@ -74,7 +74,7 @@ public class GetServicePopularKeywordDumpAction extends ServiceAction {
 			responseWriter.endArray();
 
 		} catch (Exception e) {
-			errorMessage = e.getMessage();
+			errorMessage = e.toString();
 		} finally {
 			if (errorMessage != null) {
 				responseWriter.key("errorMessage").value(errorMessage);

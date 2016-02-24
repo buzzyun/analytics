@@ -64,7 +64,7 @@ public class MainController extends AbstractController {
 					if (redirect.matches("http://" + domain + ".*") || redirect.matches("https://" + domain + ".*")) {
 						mav.setViewName("redirect:" + redirect);
 					} else {
-						mav.setViewName("redirect:login.html");
+						mav.setViewName("redirect:main/start.html");
 					}
 				} else {
 					// 로그인되었다면 바로 start.html로 간다.

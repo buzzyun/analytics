@@ -67,18 +67,10 @@ public class StatisticsUtils {
 	}
 	
 	public static File getWeekDataDir(File dir, Calendar calendar) {
-        //올바른 주수를 알려면 일요일로 옮긴다.
-        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-		int year = calendar.get(Calendar.YEAR);
-		int week = calendar.get(Calendar.WEEK_OF_YEAR);
-		String yearString = "Y" + year;
-		String weekString = null;
-		
-		if(week < 10) {
-			weekString = "W0" + week;
-		} else {
-			weekString = "W"+week;
-		}
+        String[] timeComponent = getTimeComponent(calendar, Calendar.WEEK_OF_YEAR);
+		String yearString = "Y" + timeComponent[0];
+        String weekString = "W" + timeComponent[4];
+
 		return new File(new File(new File(dir, yearString), weekString), "data");
 	}
 
@@ -90,15 +82,23 @@ public class StatisticsUtils {
 		int week = calendar.get(Calendar.WEEK_OF_YEAR);
 
         /*
-        * 중요!! 년말에 작년과 신년 사이에 한 주가 걸쳐있다면 년도를 증가해준다.
-        * 2016.2.17 swsong
+        * 중요!! 년말에 작년과 신년 사이에 한 주가 걸쳐있다면 조건에 따라 년도를 수정한다.
+        * 표준에 따르면, 월요일~일요일중에 날짜가 더 많은 년도로 주가 옮겨진다.
+        * 그래서 2015년도 12월 31일은 2016년 1주이다.
+        * 2016.3.12 swsong
         * day를 SUNDAY로 옮기지 않고, 조건부로 year를 증가
         * */
 		logger.trace("y:{}/m:{}/d:{}/w:{}",year,month,day,week);
-		if(month == 12 && week == 1 && type==Calendar.WEEK_OF_YEAR) {
-			year++;
-		}
-		
+        if(type==Calendar.WEEK_OF_YEAR) {
+            if(month == 12 && week == 1) {
+                //주가 다음년도 기준으로 잡힐경우.
+                year++;
+            } else if(month == 1 && week > 10) {
+                //주가 이전년도 기준으로 잡힐경우.
+                year--;
+            }
+        }
+
 		String[] component = new String[5];
 		
 		String yearString = String.valueOf(year);

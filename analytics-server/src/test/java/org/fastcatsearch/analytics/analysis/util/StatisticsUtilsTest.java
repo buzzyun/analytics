@@ -14,6 +14,25 @@ public class StatisticsUtilsTest {
     /**
      *
      * */
+
+    @Test
+    public void test2017GetTimeId() {
+        assertEqualsYearWeek("2016.12.24", 2016, 51);
+        assertEqualsYearWeek("2016.12.25", 2016, 51);
+        assertEqualsYearWeek("2016.12.26", 2016, 52);
+        assertEqualsYearWeek("2016.12.27", 2016, 52);
+        assertEqualsYearWeek("2016.12.28", 2016, 52);
+        assertEqualsYearWeek("2016.12.29", 2016, 52);
+        assertEqualsYearWeek("2016.12.30", 2016, 52);
+        assertEqualsYearWeek("2016.12.31", 2016, 52);
+        assertEqualsYearWeek("2017.01.01", 2016, 52);
+        assertEqualsYearWeek("2017.01.02", 2017, 1);
+        assertEqualsYearWeek("2017.01.03", 2017, 1);
+        assertEqualsYearWeek("2017.01.04", 2017, 1);
+    }
+
+
+
     @Test
     public void test2016GetTimeId() {
         assertEqualsYearWeek("2015.12.27", 2015, 52);
@@ -76,8 +95,7 @@ public class StatisticsUtilsTest {
         System.out.println(calendar.getTime());
     }
 
-    public void testGetFirstDayOfWeek() {
+    public void testWeekYear() {
         Calendar calendar = StatisticsUtils.getNowCalendar();
-        Calendar c1 = StatisticsUtils.getFirstDayOfWeek(calendar);
     }
 }

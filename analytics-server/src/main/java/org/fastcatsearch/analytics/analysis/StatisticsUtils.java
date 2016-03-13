@@ -86,18 +86,10 @@ public class StatisticsUtils {
         * 표준에 따르면, 월요일~일요일중에 날짜가 더 많은 년도로 주가 옮겨진다.
         * 그래서 2015년도 12월 31일은 2016년 1주이다.
         * 2016.3.12 swsong
-        * day를 SUNDAY로 옮기지 않고, 조건부로 year를 증가
-        * Type 이 Calendar.WEEK_OF_YEAR 일경우, year를 weekyear로 바꾼다.
+        * 단순하게 weekyear를 가져오면 끝.
         * */
-		logger.trace("y:{}/m:{}/d:{}/w:{}",year,month,day,week);
-        if(type==Calendar.WEEK_OF_YEAR) {
-            if(month == 12 && week == 1) {
-                //주가 다음년도 기준으로 잡힐경우.
-                year++;
-            } else if(month == 1 && week > 10) {
-                //주가 이전년도 기준으로 잡힐경우.
-                year--;
-            }
+        if (type == Calendar.WEEK_OF_YEAR) {
+            year = calendar.getWeekYear();
         }
 
 		String[] component = new String[5];

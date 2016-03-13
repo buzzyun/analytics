@@ -266,13 +266,7 @@ public class StatisticsUtils {
 			Calendar calendar = StatisticsUtils.getCalendar();
 			calendar.set(Calendar.YEAR, year);
 			calendar.set(Calendar.WEEK_OF_YEAR, week);
-            /*
-            * 2016.2.17 swsong 주간을 선택시 요일을 일요일로 옮긴다.
-            * 기존과 같이 월요일을 사용할 경우 한해의 마지막 날짜에 year는 2015, week는 1인 경우가 발생하나,
-            * 일요일을 사용할 경우, 한 주의 마지막 요일이므로, week와 year가 함께 변경된다.
-            * */
-			calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-			calendar.set(Calendar.HOUR_OF_DAY, 0);
+//			calendar.set(Calendar.HOUR_OF_DAY, 0);
 //			calendar.set(Calendar.MINUTE, 0);
 //			calendar.set(Calendar.SECOND, 0);
 //			calendar.set(Calendar.MILLISECOND, 0);
@@ -283,8 +277,8 @@ public class StatisticsUtils {
 			Calendar calendar = StatisticsUtils.getCalendar();
 			calendar.set(Calendar.YEAR, year);
 			calendar.set(Calendar.MONTH, month);
-			calendar.set(Calendar.DAY_OF_MONTH, 1);
-			calendar.set(Calendar.HOUR_OF_DAY, 0);
+//			calendar.set(Calendar.DAY_OF_MONTH, 1);
+//			calendar.set(Calendar.HOUR_OF_DAY, 0);
 //			calendar.set(Calendar.MINUTE, 0);
 //			calendar.set(Calendar.SECOND, 0);
 //			calendar.set(Calendar.MILLISECOND, 0);
@@ -293,9 +287,9 @@ public class StatisticsUtils {
 			int year = Integer.parseInt(timeId.substring(1,5));
 			Calendar calendar = StatisticsUtils.getCalendar();
 			calendar.set(Calendar.YEAR, year);
-			calendar.set(Calendar.MONTH, 0);
-			calendar.set(Calendar.DAY_OF_MONTH, 1);
-			calendar.set(Calendar.HOUR_OF_DAY, 0);
+//			calendar.set(Calendar.MONTH, 0);
+//			calendar.set(Calendar.DAY_OF_MONTH, 1);
+//			calendar.set(Calendar.HOUR_OF_DAY, 0);
 //			calendar.set(Calendar.MINUTE, 0);
 //			calendar.set(Calendar.SECOND, 0);
 //			calendar.set(Calendar.MILLISECOND, 0);

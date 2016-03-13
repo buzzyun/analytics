@@ -67,4 +67,17 @@ public class StatisticsUtilsTest {
         Calendar calendar = StatisticsUtils.parseDatetimeString(timeText, true);
         System.out.println(calendar.getTime());
     }
+
+    @Test
+    public void test2016SetWeek() {
+        Calendar calendar = StatisticsUtils.getCalendar();
+        calendar.set(Calendar.YEAR, 2015);
+        calendar.set(Calendar.HOUR, 11);
+        System.out.println(calendar.getTime());
+    }
+
+    public void testGetFirstDayOfWeek() {
+        Calendar calendar = StatisticsUtils.getNowCalendar();
+        Calendar c1 = StatisticsUtils.getFirstDayOfWeek(calendar);
+    }
 }

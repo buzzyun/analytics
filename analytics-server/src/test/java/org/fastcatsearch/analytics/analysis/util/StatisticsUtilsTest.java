@@ -11,8 +11,11 @@ import static org.junit.Assert.assertEquals;
  * Created by swsong on 2016. 3. 12..
  */
 public class StatisticsUtilsTest {
+    /**
+     *
+     * */
     @Test
-    public void testGetTimeId() {
+    public void test2016GetTimeId() {
         assertEqualsYearWeek("2015.12.27", 2015, 52);
         assertEqualsYearWeek("2015.12.28", 2015, 53);
         assertEqualsYearWeek("2015.12.29", 2015, 53);
@@ -22,6 +25,19 @@ public class StatisticsUtilsTest {
         assertEqualsYearWeek("2016.01.02", 2015, 53);
         assertEqualsYearWeek("2016.01.03", 2015, 53);
         assertEqualsYearWeek("2016.01.04", 2016, 1);
+    }
+
+    @Test
+    public void test2015GetTimeId() {
+        assertEqualsYearWeek("2014.12.28", 2014, 52);
+        assertEqualsYearWeek("2014.12.29", 2015, 1);
+        assertEqualsYearWeek("2014.12.30", 2015, 1);
+        assertEqualsYearWeek("2014.12.31", 2015, 1);
+        assertEqualsYearWeek("2015.01.01", 2015, 1);
+        assertEqualsYearWeek("2015.01.02", 2015, 1);
+        assertEqualsYearWeek("2015.01.03", 2015, 1);
+        assertEqualsYearWeek("2015.01.04", 2015, 1);
+        assertEqualsYearWeek("2015.01.05", 2015, 2);
     }
 
     private void assertEqualsYearWeek(String timeText, int year, int week) {

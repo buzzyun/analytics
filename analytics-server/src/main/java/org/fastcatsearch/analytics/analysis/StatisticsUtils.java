@@ -87,6 +87,7 @@ public class StatisticsUtils {
         * 그래서 2015년도 12월 31일은 2016년 1주이다.
         * 2016.3.12 swsong
         * day를 SUNDAY로 옮기지 않고, 조건부로 year를 증가
+        * Type 이 Calendar.WEEK_OF_YEAR 일경우, year를 weekyear로 바꾼다.
         * */
 		logger.trace("y:{}/m:{}/d:{}/w:{}",year,month,day,week);
         if(type==Calendar.WEEK_OF_YEAR) {

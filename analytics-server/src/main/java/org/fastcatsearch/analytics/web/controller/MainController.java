@@ -35,7 +35,7 @@ public class MainController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/doLogin", method = { RequestMethod.GET, RequestMethod.POST })
-	public ModelAndView doLogin(HttpServletRequest request, HttpSession session, @RequestParam("userId") String userId, @RequestParam("password") String password,
+	public ModelAndView doLogin(HttpSession session, @RequestParam("userId") String userId, @RequestParam("password") String password,
 			@RequestParam(value = "redirect", required = false) String redirect) throws Exception {
 
 		logger.debug("login {}:{}", userId, password);
@@ -55,17 +55,8 @@ public class MainController extends AbstractController {
 			if (account != null && account.isEqualsEncryptedPassword(password)) {
 				// 로그인이 올바를 경우 메인 화면으로 이동한다.
 				ModelAndView mav = new ModelAndView();
-				if (redirect != null && redirect.length() > 0) {
-
-					/*
-					* URL 경로 재지정을 통한 피싱 방지
-					* */
-					String domain = request.getServerName().toString();
-					if (redirect.matches("http://" + domain + ".*") || redirect.matches("https://" + domain + ".*")) {
-						mav.setViewName("redirect:" + redirect);
-					} else {
-						mav.setViewName("redirect:main/start.html");
-					}
+				if((redirect != null && redirect.length() > 0 ) && !redirect.equalsIgnoreCase("null")){
+					mav.setViewName("redirect:main/start.html");
 				} else {
 					// 로그인되었다면 바로 start.html로 간다.
 					mav.setViewName("redirect:main/start.html");

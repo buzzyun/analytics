@@ -3,25 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <c:import url="inc/common.jsp" />
-<%
-String redirect = request.getParameter("redirect");
-if(redirect == null){
-	redirect = "";
-} else if (redirect != null && redirect.length() > 0){
-	redirect = redirect.replaceAll("<", "& lt;").replaceAll(">", "& gt;");
-	redirect = redirect.replaceAll("\\(", "& #40;").replaceAll("\\)", "& #41;");
-	redirect = redirect.replaceAll("'", "& #39;");
-	redirect = redirect.replaceAll("\"", "& quot;");
-	redirect = redirect.replaceAll("&", "& amp;");
-	redirect = redirect.replaceAll("%", "% 29;");
-	redirect = redirect.replaceAll(";", "");
-	redirect = redirect.replaceAll("eval\\((.*)\\)", "");
-	redirect = redirect.replaceAll("[\\\"\\\'][\\s]*javascript:(.*)[\\\"\\\']", "\"\"");
-	redirect = redirect.replaceAll("script", "");
-	redirect = redirect.replaceAll("iframe", "");
-}
-
-%>
+<% String redirect = request.getParameter("redirect"); %>
 <html>
 <head>
 <c:import url="inc/header.jsp" />

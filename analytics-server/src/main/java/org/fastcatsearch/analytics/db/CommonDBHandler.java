@@ -59,15 +59,12 @@ public class CommonDBHandler {
 		}
 
 		String dbType = settings.getString("type");
-		logger.debug("dbType: {}", dbType);
 		driverProperties.setProperty("user", settings.getString("user", ""));
 		driverProperties.setProperty("password", settings.getString("password", ""));
 		driverProperties.setProperty("driver.encoding", "UTF-8");
 
 		boolean isAutoCommit = settings.getBoolean("autocommit", true);
-		logger.debug("autocommit: {}", isAutoCommit);
 		boolean usePooling = settings.getBoolean("usePooling", true);
-		logger.debug("usePooling: {}", usePooling);
 		
 		DataSource dataSource = null;
 		if(usePooling){
@@ -131,13 +128,10 @@ public class CommonDBHandler {
 		}
 
 		sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
-		logger.debug("sqlSessionFactory: {}", sqlSessionFactory.toString());
 		return true;
 	}
 
 	public SqlSession openSession() {
-
-		logger.debug("sqlSessionFactory: {}", sqlSessionFactory.toString());
 		return sqlSessionFactory.openSession();
 	}
 

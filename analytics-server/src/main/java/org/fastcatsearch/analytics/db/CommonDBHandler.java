@@ -131,10 +131,13 @@ public class CommonDBHandler {
 		}
 
 		sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
+		logger.debug("sqlSessionFactory: {}", sqlSessionFactory.toString());
 		return true;
 	}
 
 	public SqlSession openSession() {
+
+		logger.debug("sqlSessionFactory: {}", sqlSessionFactory.toString());
 		return sqlSessionFactory.openSession();
 	}
 

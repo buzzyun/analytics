@@ -47,13 +47,9 @@ public class CommonDBHandler {
 
 	public CommonDBHandler(Settings settings, Class<?>[] mapperList, Properties driverProperties, Map<String, Object> globalParam) {
 		this.settings = settings;
-		logger.debug("settings: {}", this.settings.properties().toString());
 		this.driverProperties = driverProperties;
-		logger.debug("driverProperties: {}", this.driverProperties.toString());
 		this.globalParam = globalParam;
-		logger.debug("globalParam: {}", this.globalParam.toString());
 		this.mapperList = mapperList;
-		logger.debug("mapperList: {}", this.mapperList.toString());
 	}
 
 	public boolean load() {

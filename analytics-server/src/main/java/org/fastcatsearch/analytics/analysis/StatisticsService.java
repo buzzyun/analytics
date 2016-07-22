@@ -247,7 +247,7 @@ public class StatisticsService extends AbstractService {
 			realtimePopularKeywordMap.put(siteId, map);
 		}
 		map.put(categoryId, keywordList);
-		logger.debug("realtime keyword. map:{}", map);
+		logger.trace("realtime keyword. map:{}", map);
 	}
 
 	public Map<String, List<String>> getRelateKeywordMap(String siteId) {
@@ -264,7 +264,7 @@ public class StatisticsService extends AbstractService {
 
 		logger.debug("## updateRelativeKeyword {}:{} > {}", siteId, keywordMap);
 		relateKeywordMap.put(siteId, keywordMap);
-		logger.debug("relative keyword. map:{}", keywordMap);
+		logger.trace("relative keyword. map:{}", keywordMap);
 	}
 
 	@Override

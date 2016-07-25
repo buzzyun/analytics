@@ -85,6 +85,10 @@ public class SearchRankController extends AbstractController {
 			Calendar calendar = StatisticsUtils.getNowCalendar();
 			calendar.add(Calendar.DATE, -1);
 			timeText = StatisticsUtils.toDatetimeString(calendar);
+		} else if (timeText.length() == 0 || timeText == "") {
+			Calendar calendar = StatisticsUtils.getNowCalendar();
+			calendar.add(Calendar.DATE, -1);
+			timeText = StatisticsUtils.toDatetimeString(calendar);
 		}
 		
 		Calendar calendar = StatisticsUtils.parseDatetimeString(timeText, true);

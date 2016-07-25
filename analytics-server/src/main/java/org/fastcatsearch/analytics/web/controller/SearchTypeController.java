@@ -40,6 +40,11 @@ public class SearchTypeController extends AbstractController {
 			calendar.add(Calendar.DATE, -1);
 			String timeTo = StatisticsUtils.toDatetimeString(calendar);
 			timeText = timeTo + " - " + timeTo;
+		} else if (timeText.length() == 0 || timeText == "") {
+			Calendar calendar = StatisticsUtils.getNowCalendar();
+			calendar.add(Calendar.DATE, -1);
+			String timeTo = StatisticsUtils.toDatetimeString(calendar);
+			timeText = timeTo + " - " + timeTo;
 		}
 		
 		int timeTypeCode = Calendar.DATE;

@@ -38,7 +38,7 @@ public class SearchProgressController extends AbstractController {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("report/progress/hit");
 		
-		if(timeText == null){
+		if(timeText == null || timeText.trim().equals("")){
 			Calendar calendar = StatisticsUtils.getNowCalendar();
 			calendar.add(Calendar.DATE, -7);
 			String timeFrom = StatisticsUtils.toDatetimeString(calendar);

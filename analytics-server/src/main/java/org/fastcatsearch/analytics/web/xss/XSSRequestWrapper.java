@@ -24,9 +24,12 @@ public class XSSRequestWrapper extends HttpServletRequestWrapper {
 			Pattern.compile(".*eval\\((.*?)\\).*", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
 			Pattern.compile(".*expression\\((.*?)\\).*", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
 			Pattern.compile(".*javascript.*:", Pattern.CASE_INSENSITIVE),
+			Pattern.compile(".*img src.*:", Pattern.CASE_INSENSITIVE),
 			Pattern.compile(".*iframe.*:", Pattern.CASE_INSENSITIVE),
+			Pattern.compile(".*script.*:", Pattern.CASE_INSENSITIVE),
 			Pattern.compile(".*vbscript.*:", Pattern.CASE_INSENSITIVE),
-			Pattern.compile(".*onload(.*?)=.*", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL)
+			Pattern.compile(".*onload(.*?)=.*", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+			Pattern.compile(".*<img.*>(.*?)", Pattern.CASE_INSENSITIVE)
 	};
 
 	public XSSRequestWrapper(HttpServletRequest servletRequest) {
@@ -78,7 +81,23 @@ public class XSSRequestWrapper extends HttpServletRequestWrapper {
 			value = value.replaceAll("\0", "");
 			for (Pattern scriptPattern : patterns) {
 				if (scriptPattern.matcher(value).matches()) {
-					value = value.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+					value = value
+							.replace("<", "&lt;")
+							.replace("%3C", "&lt;")
+							.replace(">", "&gt;")
+							.replace("%3E", "&gt;")
+							.replaceAll("\"", "&quot;")
+							.replaceAll("\'", "&#39;")
+							.replaceAll("%", "&#37;")
+							.replaceAll(";", "&#59;")
+							.replaceAll("\\(", "&#40;")
+							.replaceAll("\\)", "&#41;")
+							.replaceAll("&", "&amp;")
+							.replaceAll("\\+", "&#43;");
+
+					value = value
+							.replaceAll("img src", "")
+							.replaceAll("javascript:", "");
 				}
 			}
 		}

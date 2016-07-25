@@ -34,7 +34,11 @@ public class XSSFilter implements Filter {
 
     private boolean includeUrl(HttpServletRequest request) {
         String uri = request.getRequestURI().toString().trim();
-        if(uri.endsWith("ogin.html")){
+        if (uri.endsWith("ogin.html")) {
+            return true;
+        } else if (uri.endsWith("/report/rank/searchKeyword.html")){
+            return true;
+        } else if (uri.endsWith("/report/type/index.html")){
             return true;
         } else {
             return false;

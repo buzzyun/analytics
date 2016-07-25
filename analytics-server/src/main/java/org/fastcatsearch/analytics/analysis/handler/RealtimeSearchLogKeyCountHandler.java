@@ -32,7 +32,7 @@ public class RealtimeSearchLogKeyCountHandler extends CategoryLogHandler<SearchL
 
 	@Override
 	public void handleLog(SearchLog logData) throws IOException {
-		logger.debug("handleLog[{}] > {}", categoryId, logData);
+		logger.trace("handleLog[{}] > {}", categoryId, logData);
 		String keyword = logData.keyword();
 		if (keyword != null && keyword.length() > 0) {
 			if (categoryId.equals(logData.categoryId())) {

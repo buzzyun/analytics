@@ -80,12 +80,8 @@ public class SearchRankController extends AbstractController {
 		} else {
 			timeViewType = "D";
 		}
-		
-		if(timeText == null){
-			Calendar calendar = StatisticsUtils.getNowCalendar();
-			calendar.add(Calendar.DATE, -1);
-			timeText = StatisticsUtils.toDatetimeString(calendar);
-		} else if (timeText.length() == 0 || timeText == "") {
+
+		if(timeText == null || timeText.trim().equals("")){
 			Calendar calendar = StatisticsUtils.getNowCalendar();
 			calendar.add(Calendar.DATE, -1);
 			timeText = StatisticsUtils.toDatetimeString(calendar);
@@ -207,14 +203,14 @@ public class SearchRankController extends AbstractController {
 		} else {
 			timeViewType = "D";
 		}
-		
-		if(timeText == null){
+
+		if(timeText == null || timeText.trim().equals("")){
 			Calendar calendar = StatisticsUtils.getNowCalendar();
 			calendar.add(Calendar.DATE, -1);
 			timeText = StatisticsUtils.toDatetimeString(calendar);
 		}
-		
-		if(timeText2 == null) {
+
+		if(timeText2 == null || timeText2.trim().equals("")){
 			timeText2 = timeText;
 		}
 		

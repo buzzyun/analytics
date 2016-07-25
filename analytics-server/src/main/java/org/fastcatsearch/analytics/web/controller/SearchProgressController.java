@@ -101,7 +101,7 @@ public class SearchProgressController extends AbstractController {
 				SearchHitMapper mapper = hitMapperSession.getMapper();
 				list = mapper.getEntryListBetween(siteId, categoryId, startTimeId, endTimeId);
 			}
-			
+
 			if (list != null && list.size() > 0) {
 				
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -188,8 +188,8 @@ public class SearchProgressController extends AbstractController {
 			@RequestParam(required = false) String timeViewType,
 			@RequestParam(required = false) Boolean forView) {
 
-		
-		if(timeText == null){
+
+		if(timeText == null || timeText.trim().equals("")){
 			Calendar calendar = StatisticsUtils.getNowCalendar();
 			calendar.add(Calendar.DATE, -7);
 			String timeFrom = StatisticsUtils.toDatetimeString(calendar);

@@ -33,14 +33,9 @@ public class SearchTypeController extends AbstractController {
 		
 		SiteAttribute siteAttribute = ServiceManager.getInstance().getService(StatisticsService.class).getStatisticsSetting(siteId).getSiteAttribute();
 		List<TypeSetting> typeArray = siteAttribute.getTypeList();
-		
-		
-		if(timeText == null){
-			Calendar calendar = StatisticsUtils.getNowCalendar();
-			calendar.add(Calendar.DATE, -1);
-			String timeTo = StatisticsUtils.toDatetimeString(calendar);
-			timeText = timeTo + " - " + timeTo;
-		} else if (timeText.length() == 0 || timeText == "") {
+
+
+		if(timeText == null || timeText.trim().equals("")){
 			Calendar calendar = StatisticsUtils.getNowCalendar();
 			calendar.add(Calendar.DATE, -1);
 			String timeTo = StatisticsUtils.toDatetimeString(calendar);

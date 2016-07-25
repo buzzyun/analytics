@@ -10,7 +10,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>co.fastcat</groupId>
 	<artifactId>analytics</artifactId>
-	<version>1.16.5-SNAPSHOT</version>
+	<version>1.16.5</version>
 	<name>analytics</name>
 	<description>analytics package</description>
 	<url>http://www.fastcat.co</url>
@@ -181,7 +181,7 @@
         <connection>scm:git:https://github.com/fastcat-co/analytics</connection>
         <developerConnection>scm:git:https://github.com/fastcat-co/analytics</developerConnection>
         <url>scm:git:https://github.com/fastcat-co/analytics</url>
-        <tag>HEAD</tag>
+        <tag>v1.16.5</tag>
     </scm>
 
     <licenses>

@@ -13,6 +13,10 @@ import org.fastcatsearch.ir.io.CharVector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/*
+ * 연간 순위비교에서 시간이 많이 걸리는 관계로 deprecated 됨.
+ * */
+@Deprecated
 public class KeywordLogRankDiffer {
 
 	protected static Logger logger = LoggerFactory.getLogger(KeywordLogRankDiffer.class);

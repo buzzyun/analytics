@@ -198,9 +198,9 @@ public class StatisticsService extends AbstractService {
 							}
 							
 							siteRelateKeywordMap.put(keyword, relateKeywordList);
-							logger.debug("[{}]relate {} > {}", siteId, keyword, relateKeywordList);
+							logger.trace("[{}]relate {} > {}", siteId, keyword, relateKeywordList);
 						}else{
-							logger.debug("[{}]relate NULL VALUE {}", siteId, keyword);
+							logger.trace("[{}]relate NULL VALUE {}", siteId, keyword);
 						}
 					}
 				}
@@ -240,7 +240,7 @@ public class StatisticsService extends AbstractService {
 
 	public void updateRealtimePopularKeywordList(String siteId, String categoryId, List<RankKeyword> keywordList) {
 
-		logger.debug("## updateRealtimePopularKeyword {}:{} > {}", siteId, categoryId, keywordList);
+		logger.trace("## updateRealtimePopularKeyword {}:{} > {}", siteId, categoryId, keywordList);
 		Map<String, List<RankKeyword>> map = realtimePopularKeywordMap.get(siteId);
 		if (map == null) {
 			map = new ConcurrentHashMap<String, List<RankKeyword>>();
@@ -262,7 +262,7 @@ public class StatisticsService extends AbstractService {
 
 	public void updateRelativeKeywordMap(String siteId, Map<String, List<String>> keywordMap) {
 
-		logger.debug("## updateRelativeKeyword {}:{} > {}", siteId, keywordMap);
+		logger.trace("## updateRelativeKeyword {}:{} > {}", siteId, keywordMap);
 		relateKeywordMap.put(siteId, keywordMap);
 		logger.trace("relative keyword. map:{}", keywordMap);
 	}
@@ -357,7 +357,7 @@ public class StatisticsService extends AbstractService {
 					list.add(keyword);
 				}
 				
-				logger.debug("## Update RankKeyword list {}:{}:{} > {}", siteId, categoryId, timeId, list);
+				logger.trace("## Update RankKeyword list {}:{}:{} > {}", siteId, categoryId, timeId, list);
 			
 			} catch (Exception e) {
 				logger.error("", e);

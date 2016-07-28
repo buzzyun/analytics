@@ -54,7 +54,7 @@ public class UpdateClickTypeCountHandler extends ProcessHandler {
 						count = Integer.parseInt(data[1]);
 					} catch (NumberFormatException ignore) { }
 					
-					logger.debug("#### UpdateClickTypeHit {} >> {} > {} / {}", timeId, clickType, mapper);
+					logger.trace("#### UpdateClickTypeHit {} >> {} > {} / {}", timeId, clickType, mapper);
 					
 					ClickHitVO vo = mapper.getEntry(siteId, timeId, clickType);
 					

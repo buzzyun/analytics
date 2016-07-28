@@ -30,7 +30,7 @@ public class UpdateSearchHitHandler extends ProcessHandler {
 		MapperSession<SearchHitMapper> mapperSession = dbService.getMapperSession(SearchHitMapper.class);
 		try {
 			SearchHitMapper mapper = mapperSession.getMapper();
-			logger.debug("#### UpdateSearchHit {} >> {} > {} / {}", timeId, categoryId, searchLogResult, mapper);
+			logger.trace("#### UpdateSearchHit {} >> {} > {} / {}", timeId, categoryId, searchLogResult, mapper);
 			
 			SearchHitVO vo = mapper.getEntry(siteId, categoryId, timeId);
 			if(vo != null){

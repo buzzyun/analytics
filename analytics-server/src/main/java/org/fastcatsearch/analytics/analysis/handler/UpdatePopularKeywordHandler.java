@@ -38,7 +38,7 @@ public class UpdatePopularKeywordHandler extends ProcessHandler {
 				if(count > 0){
 					mapper.updateClean(siteId, categoryId, timeId);
 				}
-				logger.debug("result size : {}", keywordList.size());
+				logger.trace("result size : {}", keywordList.size());
 				int i = 0;
 				for (int inx = 0; inx < keywordList.size(); inx++) {
 					RankKeyword rankKeyword  = keywordList.get(inx);

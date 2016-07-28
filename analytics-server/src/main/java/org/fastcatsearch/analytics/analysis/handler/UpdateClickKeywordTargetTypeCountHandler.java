@@ -50,7 +50,7 @@ public class UpdateClickKeywordTargetTypeCountHandler extends ProcessHandler {
 					String[] data = rline.split("\t");
 					
 					if(data.length < 4) {
-						logger.debug("unparsable data:{} / {}",rline, file);
+						logger.error("unparsable data:{} / {}",rline, file);
 						continue;
 					}
 					

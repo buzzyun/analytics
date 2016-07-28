@@ -29,7 +29,7 @@ public class UpdateHourlySearchHitHandler extends ProcessHandler {
 		
 		AnalyticsDBService dbService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
 		
-		logger.debug("hourly result : {}{}", "", searchLogResultArray);
+		logger.trace("hourly result : {}{}", "", searchLogResultArray);
 		
 		for (int timeInx = 0; timeInx < searchLogResultArray.length; timeInx++) {
 			SearchLogResult searchLogResult = searchLogResultArray[timeInx];

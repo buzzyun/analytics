@@ -32,7 +32,7 @@ public class KeyCountLogSortHandler extends ProcessHandler {
 
 	@Override
 	public Object process(Object parameter) throws Exception {
-		logger.debug("process {} [{}]", getClass().getSimpleName(), parameter);
+		logger.trace("process {} [{}]", getClass().getSimpleName(), parameter);
 		File keyCountFile = new File(baseDir, inFileName);
 		File rankFile = new File(baseDir, sortedFileName);
 

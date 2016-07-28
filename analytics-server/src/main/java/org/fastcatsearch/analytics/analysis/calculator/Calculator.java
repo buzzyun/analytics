@@ -76,9 +76,10 @@ public abstract class Calculator<LogType extends LogData> {
 					try{
 						next.setExplainLogWriter(explainLogWriter);
 						parameter = next.process(parameter);
-						logger.debug("Process >>> {}", next.getClass().getSimpleName());
+//						logger.debug("Process >>> {}", next.getClass().getSimpleName());
+                        logger.debug("###### calculate category process {} > {}:{}:{}", getClass().getSimpleName(), siteId, process.categoryId(), next.getClass().getSimpleName());
 					}catch(ProcessDropException e){
-						logger.info("Process Drop. cause={}", e.getMessage());
+						logger.info("###### calculate category process drop! {} > {}:{}:{} cause={}", getClass().getSimpleName(), siteId, process.categoryId(), next.getClass().getSimpleName(), e);
 						break;
 					}
 					ProcessHandler[] nextList = next.next();

@@ -60,7 +60,7 @@ public class UpdateKeywordHitHandler extends ProcessHandler {
 					i++;
 				}
 				
-				explainLog("[UpdateKeywordHit] stored count=", i);
+//				explainLog("[UpdateKeywordHit] stored count=", i);
 			} finally {
 				if (targetReader != null) {
 					targetReader.close();

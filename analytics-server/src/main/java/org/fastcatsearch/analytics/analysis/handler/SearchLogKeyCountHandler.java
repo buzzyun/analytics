@@ -65,7 +65,7 @@ public class SearchLogKeyCountHandler extends CategoryLogHandler<SearchLog> {
 	public Object done() throws IOException {
 		aggregator.done();
 		int averageResponseTime = count > 0 ? (int) (sumResponseTime / count) : 0;
-		explainLog("[SearchLogKeyCountHandler/",categoryId, "] count=", count, ", averageResponseTime=", averageResponseTime, ", maxResponseTime=", maxResponseTime); 
+//		explainLog("[SearchLogKeyCountHandler/",categoryId, "] count=", count, ", averageResponseTime=", averageResponseTime, ", maxResponseTime=", maxResponseTime);
 		return new SearchLogResult(count, 0, averageResponseTime, maxResponseTime);
 	}
 }

@@ -52,7 +52,7 @@ public class UpdatePopularKeywordHandler extends ProcessHandler {
 						logger.error("", e);
 					}
 				}
-				explainLog("[PopularKeyword] db update count=", i);
+//				explainLog("[PopularKeyword] db update count=", i);
 			} finally {
 				if (mapperSession != null) {
 					mapperSession.closeSession();

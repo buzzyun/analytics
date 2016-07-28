@@ -51,7 +51,7 @@ public class UpdateEmptyKeywordHandler extends ProcessHandler {
 						logger.error("", e);
 					}
 				}
-				explainLog("[PopularKeyword Empty] db update count=", i);
+//				explainLog("[PopularKeyword Empty] db update count=", i);
 			} finally {
 				if (mapperSession != null) {
 					mapperSession.closeSession();

@@ -30,6 +30,11 @@ public class RankKeyword {
 		return keyword.toString();
 	}
 
+    public CharVector getKey() {
+        return keyword;
+    }
+
+
 	public void setKeyword(String keyword) {
 		this.keyword = new CharVector(keyword, true);
 	}

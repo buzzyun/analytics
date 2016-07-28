@@ -20,10 +20,12 @@ public class KeywordLogRankDifferTest {
     @Test
     public void diffYearRoot() {
 //        diffYear("_root", 50000);
-        int topCount = 50000;
+        int topCount = 20000;
         int printCount = 10;
 //        diffYear("_root", topCount, printCount);
         diffYearLite("_root", topCount, printCount);
+        long usedMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+        System.out.println("Memory usage : " + Formatter.getFormatSize(usedMem));
     }
 
     @Test
@@ -32,6 +34,8 @@ public class KeywordLogRankDifferTest {
         int printCount = 10;
         diffYear("cat1", topCount, printCount);
         diffYearLite("cat1", topCount, printCount);
+        long usedMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+        System.out.println("Memory usage : " + Formatter.getFormatSize(usedMem));
     }
 
     public void diffYear(String cate, int topCount, int resultCount) {

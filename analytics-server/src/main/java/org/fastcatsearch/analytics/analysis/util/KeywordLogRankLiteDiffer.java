@@ -58,7 +58,7 @@ public class KeywordLogRankLiteDiffer {
 				}
 			}
 
-            Map<String, RankKeyword> compareMap = new HashMap<String, RankKeyword>();
+            Map<CharVector, RankKeyword> compareMap = new HashMap<CharVector, RankKeyword>();
 			// 2. compareFile를 순차로 읽으면서 해당 키워드가 있는지 확인한다.
             // Lite 버전에서는 이전 키워드 리스트도 topCount 만큼만 비교한다. 모두 비교할 경우 연산이 너무 길어지는 문제에 대한 해결방안임.
 			if (compareFile.exists()) {
@@ -76,7 +76,7 @@ public class KeywordLogRankLiteDiffer {
 
                         RankKeyword rankKeyword = new RankKeyword(entry.getKey(), rank++, entry.getCount());
 //                        result.add(rankKeyword);
-                        compareMap.put(entry.getKey(), rankKeyword);
+                        compareMap.put(rankKeyword.getKey(), rankKeyword);
                     }
                 } finally {
                     if (compareReader != null) {
@@ -87,7 +87,7 @@ public class KeywordLogRankLiteDiffer {
 
 
             for(RankKeyword keyword : result) {
-                RankKeyword prevRankKeyword = compareMap.get(keyword.getKeyword());
+                RankKeyword prevRankKeyword = compareMap.get(keyword.getKey());
 
                 if (prevRankKeyword != null) {
 

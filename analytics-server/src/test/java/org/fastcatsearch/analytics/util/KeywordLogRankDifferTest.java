@@ -2,6 +2,7 @@ package org.fastcatsearch.analytics.util;
 
 import org.fastcatsearch.analytics.analysis.log.KeyCountRunEntryParser;
 import org.fastcatsearch.analytics.analysis.util.KeywordLogRankDiffer;
+import org.fastcatsearch.analytics.analysis.util.KeywordLogRankLiteDiffer;
 import org.fastcatsearch.analytics.analysis.vo.RankKeyword;
 import org.junit.Test;
 
@@ -19,12 +20,18 @@ public class KeywordLogRankDifferTest {
     @Test
     public void diffYearRoot() {
 //        diffYear("_root", 50000);
-        diffYear("_root", 20000, 10);
+        int topCount = 50000;
+        int printCount = 10;
+//        diffYear("_root", topCount, printCount);
+        diffYearLite("_root", topCount, printCount);
     }
 
     @Test
     public void diffYearCat1() {
-        diffYear("cat1", 20000, -1);
+        int topCount = 20000;
+        int printCount = 10;
+        diffYear("cat1", topCount, printCount);
+        diffYearLite("cat1", topCount, printCount);
     }
 
     public void diffYear(String cate, int topCount, int resultCount) {
@@ -34,10 +41,30 @@ public class KeywordLogRankDifferTest {
         File rankLogFile = new File(workingDir, KEY_COUNT_RANK_FILENAME);
         File compareRankLogFile = new File(workingDir, KEY_COUNT_RANK_PREV_FILENAME);
         System.out.println("["+cate+"] Category rank log diff start!");
+        System.out.println("topCount : " + topCount);
         System.out.println("rankLogFile : " + rankLogFile + " , " + Formatter.getFormatSize(rankLogFile.length()));
         System.out.println("compareRankLogFile : " + compareRankLogFile + " , " + Formatter.getFormatSize(compareRankLogFile.length()));
         System.out.println("Processing...");
         KeywordLogRankDiffer differ = new KeywordLogRankDiffer(rankLogFile, compareRankLogFile, topCount, encoding, entryParser);
+        long st = System.currentTimeMillis();
+        List<RankKeyword> result = differ.diff();
+        long duration = System.currentTimeMillis() - st;
+        System.out.println("Done. time = " + Formatter.getFormatTime(duration));
+        printResult(result, resultCount);
+    }
+
+    public void diffYearLite(String cate, int topCount, int resultCount) {
+        KeyCountRunEntryParser entryParser = new KeyCountRunEntryParser();
+        String encoding = "utf-8";
+        String workingDir = "src/test/resources/yearly/" + cate;
+        File rankLogFile = new File(workingDir, KEY_COUNT_RANK_FILENAME);
+        File compareRankLogFile = new File(workingDir, KEY_COUNT_RANK_PREV_FILENAME);
+        System.out.println("["+cate+"] Category rank log diff start! (Lite version)");
+        System.out.println("topCount : " + topCount);
+        System.out.println("rankLogFile : " + rankLogFile + " , " + Formatter.getFormatSize(rankLogFile.length()));
+        System.out.println("compareRankLogFile : " + compareRankLogFile + " , " + Formatter.getFormatSize(compareRankLogFile.length()));
+        System.out.println("Processing...");
+        KeywordLogRankLiteDiffer differ = new KeywordLogRankLiteDiffer(rankLogFile, compareRankLogFile, topCount, encoding, entryParser);
         long st = System.currentTimeMillis();
         List<RankKeyword> result = differ.diff();
         long duration = System.currentTimeMillis() - st;

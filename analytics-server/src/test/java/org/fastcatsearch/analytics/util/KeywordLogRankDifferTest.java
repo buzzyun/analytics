@@ -20,7 +20,7 @@ public class KeywordLogRankDifferTest {
     @Test
     public void diffYearRoot() {
 //        diffYear("_root", 50000);
-        int topCount = 20000;
+        int topCount = 50000;
         int printCount = 10;
 //        diffYear("_root", topCount, printCount);
         diffYearLite("_root", topCount, printCount);

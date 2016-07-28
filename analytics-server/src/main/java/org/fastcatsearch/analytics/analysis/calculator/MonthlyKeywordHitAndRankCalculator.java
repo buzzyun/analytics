@@ -124,7 +124,6 @@ public class MonthlyKeywordHitAndRankCalculator extends Calculator<SearchLog> {
 		File popularEmptyKeywordLogFile = new File(workingDir, POPULAR_EMPTY_FILENAME);
 		
 		StatisticsSettings statisticsSettings = ServiceManager.getInstance().getService(StatisticsService.class).getStatisticsSetting(siteId);
-		statisticsSettings.getPopularKeywordSetting().getRootStoreCount();
 		int topCount = 0;
 		//카테고리가 _root이면 10000개, 나머지는 100개씩.
 		if(categoryId.equals("_root")){

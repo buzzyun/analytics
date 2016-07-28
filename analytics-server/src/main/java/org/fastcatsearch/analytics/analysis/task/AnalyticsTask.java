@@ -137,13 +137,12 @@ public abstract class AnalyticsTask<LogType extends LogData> extends Job impleme
 			//Update task result
 			AnalyticsDBService analyticsDBService = ServiceManager.getInstance().getService(AnalyticsDBService.class);
 			MapperSession<TaskResultMapper> mapperSession = analyticsDBService.getMapperSession(TaskResultMapper.class);
-			
+
+            String explainString = explainStringWriter.toString();
+            TaskResultVO taskResultVO = new TaskResultVO(siteId, targetTime, new Timestamp(startTime), new Timestamp(endTime)
+                    , durationString, schedule.isScheduled() ? "SCHEDULE" : "MANUAL" , isSuccess ? "SUCCESS" : "FAIL", taskId(), taskName()
+                    , explainString);
 			try{ 
-				String explainString = explainStringWriter.toString();
-				TaskResultVO taskResultVO = new TaskResultVO(siteId, targetTime, new Timestamp(startTime), new Timestamp(endTime)
-				, durationString, schedule.isScheduled() ? "SCHEDULE" : "MANUAL" , isSuccess ? "SUCCESS" : "FAIL", taskId(), taskName()
-				, explainString);
-				
 				TaskResultMapper mapper = mapperSession.getMapper();
 				TaskResultVO vo = mapper.getEntry(siteId, targetTime, taskId());
 				if(vo != null) {
@@ -155,6 +154,11 @@ public abstract class AnalyticsTask<LogType extends LogData> extends Job impleme
 				}
 			} catch (Exception e) {
 				logger.error("error while insert task result log.", e);
+                logger.error("TaskResultVO siteId[{}] taskId[{}] resultStatus[{}] startTime[{}] duration[{}]\ndetail : {}"
+                        , taskResultVO.getSiteId(), taskResultVO.getTaskId()
+                        , taskResultVO.getResultStatus(), new Date(taskResultVO.getStartTime().getTime())
+                        , taskResultVO.getDuration(), taskResultVO.getDetail());
+
 			} finally {
 				if(mapperSession != null) {
 					mapperSession.closeSession();
